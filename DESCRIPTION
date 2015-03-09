@@ -1,0 +1,10 @@
+Package: PKPDsim
+Type: Package
+Title: Simulate dose regimens for PKPD models described by ODE systems
+Version: 0.1
+Date: 2015-03-07
+Author: Ron Keizer
+Maintainer: Ron Keizer <ronkeizer@gmail.com>
+Description: Simulate dose regimens for PKPD models described by ODE systems
+License: MIT
+LazyData: TRUE

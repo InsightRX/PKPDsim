@@ -1,0 +1,17 @@
+{
+    "contents" : "library(PKPDsim)\nlibrary(ggplot2)\n\np <- list(CL = 38.48,\n          V  = 7.4,\n          Q2 = 7.844,\n          V2 = 5.19,\n          Q3 = 9.324,\n          V3 = 111)\nr1 <- new_regimen(amt = 100,\n              times = c(0, 24, 36),\n              type = \"infusion\")\ndat <- sim_ode (ode = pk_3cmt_iv,\n                par = p,\n                regimen = r1)\nomega <- c(0.3,       # IIV CL\n           0.1, 0.3)  # IIV V\n\n# Plots\nggplot(dat, aes(x=t, y=y)) +\n  geom_line() +\n  scale_y_log10() +\n  facet_wrap(~comp)\n\ndat_iiv <- sim_ode (ode = pk_3cmt_iv,\n                    par = p,\n                    omega = omega,\n                    n_ind = 10,\n                    regimen = regimen)\nggplot(dat_iiv, aes(x=t, y=y, colour=factor(id), group=id)) +\n  geom_line() +\n  scale_y_log10() +\n  facet_wrap(~comp)\n\n# now create a shiny app on-the-fly using the same parameters\n# but with the sim_ode_shiny() function\nsim_ode_shiny(ode = pk_3cmt_iv,\n              par = p,\n              omega = omega)\n\n\n",
+    "created" : 1425781404148.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3198694148",
+    "id" : "81B6506F",
+    "lastKnownWriteTime" : 1425927094,
+    "path" : "~/git/PKPDsim/R/examples/sim_pk.R",
+    "project_path" : "R/examples/sim_pk.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

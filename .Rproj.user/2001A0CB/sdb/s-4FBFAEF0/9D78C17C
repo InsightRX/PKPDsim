@@ -1,0 +1,17 @@
+{
+    "contents" : "#' @export\n\nserver_text <- '\nlibrary(shiny)\nlibrary(deSolve)\nlibrary(dplyr)\nlibrary(ggplot2)\n\node     <- readRDS(\"ode.rds\")\np       <- readRDS(\"parameters.rds\")\nlen     <- round(length(names(p))/2)\nregimen <- readRDS(\"regimen.rds\")\nmisc    <- readRDS(\"misc.rds\")\nif(is.null(misc$tmax)) {\n  if(!is.null(regimen$interval)) {\n    misc$tmax <- (regimen$interval * (regimen$n+1))\n  } else {\n    misc$tmax <- max(regimen$times)\n  }\n}\nshinyServer(function(input, output) {\n  output$parInputs <-\n      renderUI({\n        w <- \"\"\n        for(j in 1:len) {\n          idx <- (j-1)*2+1\n          if (j < len || len == length(names(p))/2) {\n            val1 <- p[[names(p)[idx]]]\n            val2 <- p[[names(p)[idx+1]]]\n            w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=signif(val1/5, 1), max=signif(val1*5,1), value=val1)),\n                                   column(6, sliderInput(names(p)[idx+1], names(p)[idx+1], min=signif(val2/5, 1), max=signif(val2*5,1), value=val2)\n                                   )))\n          } else {\n            val1 <- p[[names(p)[idx]]]\n            w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=signif(val1/5, 1), max=signif(val1*5,1), value=val1)\n            )))\n          }\n        }\n        HTML(w)\n       })\n  output$ind_plot <- renderPlot({\n    regimen <- new_regimen(\n      amt = as.numeric(input$amt),\n      n = input$n,\n      interval = as.numeric(input$interval),\n      type = tolower(input$type),\n      t_inf = as.numeric(input$t_inf)\n    )\n    pars <- p\n    for(i in 1:length(names(p))) {\n       if (!is.null(input[[names(p)[i]]])) {\n        pars[[names(p)[i]]] <- input[[names(p)[i]]]\n      }\n    }\n    dat <- sim_ode (ode = ode,\n                    parameters = pars,\n                    omega = misc$omega,\n                    n_ind = input$n_ind,\n                    regimen = regimen,\n                    A_init = misc$A_init,\n                    tmax = NULL)\n    if (input$plot_show != \"all compartments\") {\n      dat <- dat %>% filter(comp == \"obs\")\n    }\n    p <- ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) +\n      geom_line() +\n      facet_grid(comp ~ .) +\n      theme_plain() +\n      scale_colour_discrete(guide = FALSE) +\n      xlab(\"time\") + ylab(\"\")\n    if(input$plot_yaxis == \"log10\") {\n      p <- p + scale_y_log10()\n    }\n    return(p)\n  })\n  outputOptions(output, name = \"parInputs\")\n})\n'\n",
+    "created" : 1425786519046.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3061428040",
+    "id" : "9D78C17C",
+    "lastKnownWriteTime" : 1425927257,
+    "path" : "~/git/PKPDsim/R/server_text.R",
+    "project_path" : "R/server_text.R",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

@@ -1,0 +1,18 @@
+{
+    "contents" : "#' Dose regimen for sim_ode\n#'\n#' Create a dosing regimen for use with sim_ode\n#' @param amt dosing amount, either a single value (which will repeated for multiple doses), or a vector with doses for each administration\n#' @param interval dosing interval (requires n as argument)\n#' @param n number of doses (requires interval as argument)\n#' @param times vector describing dosing times. Overrides specified times using interval and n arguments\n#' @param type either \"infusion\" or \"bolus\" (default)\n#' @param t_inf infusion time (if type==infusion)\n#' @return a list containing calculated VPC information, and a ggplot2 object\n#' @export\n#' @seealso \\link{sim_ode}\n#' @examples\n#'\n#'r1 <- regimen(amt=50, interval=12, n=20) # dose 50mg, q12hrs for 10 days\n#'r2 <- regimen(amt=50, times=c(0:19)*12)  # same, but using explicit times\n#'r3 <- regimen(amt=c(rep(100,4), rep(50,16)), times=c(0:19)*12)  # first 4 doses higher dose\n\nnew_regimen <- function(amt = 100,\n                    interval = 12,\n                    n = 3,\n                    times = NULL,\n                    type = \"bolus\",\n                    t_inf = NULL) {\n  reg <- structure(list(amt = amt,\n                        interval = interval,\n                        n = n,\n                        type = type,\n                        t_inf = t_inf), class = \"regimen\")\n  if (is.null(reg$times)) {\n    if(is.null(reg$interval)) {\n      stop(\"Dose times or dosing interval has to be specified.\")\n    } else {\n      if (is.null(reg$n)) {\n        stop(\"The number of doses (n) must be specified in the regimen object.\")\n      } else {\n        reg$dose_times <- c(0:(reg$n-1)) * reg$interval\n      }\n      if(is.null(t_inf)) {\n        reg$t_inf = 1\n      }\n    }\n  } else {\n    reg$dose_times <- reg$times\n  }\n  if (is.null(reg$cmt) || length(reg$cmt) == 0) {\n    reg$cmt <- 1\n  }\n  reg$n <- length(reg$dose_times)\n  if (length(reg$amt) != length(reg$dose_times)) {\n    reg$dose_amts <- rep(reg$amt[1], length(reg$dose_times))\n  } else {\n    reg$dose_amts <- reg$amt\n  }\n  return(reg)\n}\n",
+    "created" : 1425925238257.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "994823069",
+    "id" : "9584A0D5",
+    "lastKnownWriteTime" : 1425925565,
+    "path" : "~/git/PKPDsim/R/new_regimen.R",
+    "project_path" : "R/new_regimen.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
