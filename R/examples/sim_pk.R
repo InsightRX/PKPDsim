@@ -15,6 +15,7 @@ dat <- sim_ode (ode = pk_3cmt_iv,
                 regimen = r1)
 omega <- c(0.3,       # IIV CL
            0.1, 0.3)  # IIV V
+omega <- cv_to_omega (list(CL=0.3, V=0.3), p)
 
 # Plots
 ggplot(dat, aes(x=t, y=y)) +
@@ -26,7 +27,7 @@ dat_iiv <- sim_ode (ode = pk_3cmt_iv,
                     par = p,
                     omega = omega,
                     n_ind = 10,
-                    regimen = regimen)
+                    regimen = r1)
 ggplot(dat_iiv, aes(x=t, y=y, colour=factor(id), group=id)) +
   geom_line() +
   scale_y_log10() +

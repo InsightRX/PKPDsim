@@ -23,6 +23,7 @@ Recently, Inria (through the DDMoRe consortium) released a similar library for R
 ## Future plans
 - will be released to CRAN
 - implement models as compiled C code
+- allow creation of ggvis plots in Shiny app
 
 ## Installation
 
@@ -80,8 +81,12 @@ ggplot(dat, aes(x=t, y=y)) +
 
 ## Example between-subject variability
 ```
-omega <- c(0.3,       # IIV CL
-           0.1, 0.3)  # IIV V
+# specify BSV as lower-triangle of matrix
+omega <- c(0.3,       # BSV CL
+           0.1, 0.3)  # BSV V
+
+# or as list of CV (assuming no correlation between parameters):
+omega <- cv_to_omega (list(CL=0.3, V=0.3), p)
 
 dat <- sim_ode (ode = pk_3cmt_iv,
                 par = p,
