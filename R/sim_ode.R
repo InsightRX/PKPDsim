@@ -24,7 +24,7 @@
 #'          Q3 = 9.324,
 #'          V3 = 111)
 #'
-#'r1 <- regimen(amt = 100,
+#'r1 <- new_regimen(amt = 100,
 #'              times = c(0, 24, 36),
 #'              type = "infusion")
 #'
