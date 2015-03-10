@@ -58,6 +58,7 @@ shinyServer(function(input, output) {
                     n_ind = input$n_ind,
                     regimen = regimen,
                     A_init = misc$A_init,
+                    adherence = list(markov = list(p01 = input$adh_p01, p11 = input$adh_p11)),
                     tmax = NULL)
     if (input$plot_show != "all compartments") {
       dat <- dat %>% filter(comp == "obs")
