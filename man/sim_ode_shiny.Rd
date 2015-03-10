@@ -37,6 +37,7 @@ a list containing calculated VPC information, and a ggplot2 object
 Creates a VPC plot from observed and simulation data
 }
 \examples{
+library(PKPDsim)
 p <- list(CL = 38.48,
          V  = 7.4,
          Q2 = 7.844,
@@ -48,6 +49,7 @@ omega <- c(0.3,       # IIV CL
           0.1, 0.3)  # IIV V
 
 sim_ode_shiny(ode = pk_3cmt_iv,
+             omega = omega,
              par = p)
 }
 \seealso{

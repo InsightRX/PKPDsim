@@ -5,8 +5,9 @@
 \title{Simulate ODE}
 \usage{
 sim_ode(ode = function() { }, parameters = list(), omega = NULL,
-  omega_type = "exponential", n_ind = 1, regimen = NULL, A_init = NULL,
-  step_size = 0.25, tmax = NULL, output_cmt = NULL)
+  omega_type = "exponential", n_ind = 1, regimen = NULL,
+  adherence = NULL, A_init = NULL, step_size = 0.25, tmax = NULL,
+  output_cmt = NULL)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
@@ -20,6 +21,8 @@ sim_ode(ode = function() { }, parameters = list(), omega = NULL,
 \item{n_ind}{number of individuals to simulate}
 
 \item{regimen}{a regimen object created using the regimen() function}
+
+\item{adherence}{List specifying adherence. Simulates adherence using either markov model or binomial sampling.}
 
 \item{A_init}{vector with the initial state of the ODE system}
 
@@ -36,6 +39,7 @@ a list containing calculated VPC information, and a ggplot2 object
 Simulates a specified ODE system and regimen
 }
 \examples{
+library(PKPDsim)
 p <- list(CL = 38.48,
          V  = 7.4,
          Q2 = 7.844,
@@ -43,7 +47,7 @@ p <- list(CL = 38.48,
          Q3 = 9.324,
          V3 = 111)
 
-r1 <- regimen(amt = 100,
+r1 <- new_regimen(amt = 100,
              times = c(0, 24, 36),
              type = "infusion")
 

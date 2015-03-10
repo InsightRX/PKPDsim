@@ -23,10 +23,12 @@ ggplot(dat, aes(x=t, y=y)) +
   scale_y_log10() +
   facet_wrap(~comp)
 
+n_ind <- 10
 dat_iiv <- sim_ode (ode = pk_3cmt_iv,
                     par = p,
                     omega = omega,
-                    n_ind = 10,
+                    n_ind = n_ind,
+                    adherence = list(markov = list(p01 = 1, p11 = 1)),
                     regimen = r1)
 ggplot(dat_iiv, aes(x=t, y=y, colour=factor(id), group=id)) +
   geom_line() +

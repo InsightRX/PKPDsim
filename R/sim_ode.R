@@ -7,6 +7,7 @@
 #' @param omega_type exponential or normal
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
+#' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
 #' @param step_size the step size between the observations (NOT the step size of the differential equation solver)
 #' @param tmax maximum simulation time, if not specified will pick the end of the regimen as maximum
@@ -58,6 +59,7 @@ sim_ode <- function (ode = function() {},
                      omega_type = "exponential",
                      n_ind = 1,
                      regimen = NULL,
+                     adherence = NULL,
                      A_init = NULL,
                      step_size = .25,
                      tmax = NULL,
@@ -88,6 +90,13 @@ sim_ode <- function (ode = function() {},
   if(is.null(regimen)) {
     regimen <- new_regimen()
   }
+  if(!is.null(adherence)) {
+    if(is.null(adherence$p_binom)) {
+      if(!all(c("p01", "p11") %in% names(adherence$markov))) {
+        stop("Adherence simulation using Markov model requires specification of p01 and p11!")
+      }
+    }
+  }
   comb <- list()
   if (is.null(A_init)) {
     A_init <- rep(0, get_size_ode(ode, parameters))
@@ -99,11 +108,12 @@ sim_ode <- function (ode = function() {},
   if(regimen$type == "infusion") {
     p$t_inf <- regimen$t_inf
     p$dose_type <- "infusion"
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts), cbind(t=regimen$dose_times + regimen$t_inf, dose=0))) %>%
+    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0),
+                               cbind(t=regimen$dose_times + regimen$t_inf, dose=0, dum = 1))) %>%
       dplyr::arrange(t)
   } else {
     p$dose_type <- "bolus"
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts)))
+    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0)))
   }
   if (is.null(tmax)) {
     tmax <- tail(design$t,1) + max(diff(regimen$dose_times))
@@ -114,6 +124,17 @@ sim_ode <- function (ode = function() {},
   times <- seq(from=0, to=tail(design$t,1), by=step_size)
   for (i in 1:n_ind) {
     p_i <- p
+    design_i <- design
+    if (!is.null(adherence)) {
+      if(is.null(adherence$p_binom)) {
+        adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
+                                 markov = list(p01 = adherence$markov$p01, p11 = adherence$markov$p11))
+      } else {
+        adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
+                               p_binom = adherence$p_bionm)
+      }
+      design_i[design_i$dum == 0,]$dose <- design_i[design_i$dum == 0,]$dose * adh_i
+    }
     if (!is.null(omega)) {
       if (omega_type=="exponential") {
         p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
@@ -129,13 +150,13 @@ sim_ode <- function (ode = function() {},
       }
       p_i$rate <- 0
       if(p_i$dose_type != "infusion") {
-        A_upd[regimen$cmt] <- A_upd[regimen$cmt] + regimen$dose_amts[k]
+        A_upd[regimen$cmt] <- A_upd[regimen$cmt] + design_i[design_i$dum == 0,]$dose[k]
       } else {
-        if(design$dose[k] > 0) {
-          p_i$rate <- design$dose[k] / p_i$t_inf
+        if(design_i$dose[k] > 0) {
+          p_i$rate <- design_i$dose[k] / p_i$t_inf
         }
       }
-      time_window <- times[(times >= design$t[k]) & (times <= design$t[k+1])]
+      time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
       dat <- num_int_wrapper (time_window, A_upd, ode, p_i)
       comb <- rbind(comb, cbind(id = i, dat))
     }
