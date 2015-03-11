@@ -12,7 +12,7 @@ cv_to_omega <- function(par_cv = list(), par = list()) {
   omega <- c()
   for (i in 1:length(nam)) {
     if (nam[i] %in% names(par_cv)) {
-      om_diag <- sqrt(par_cv[[nam[i]]])
+      om_diag <- (par_cv[[nam[i]]])^2
     } else {
       om_diag <- 0
     }
