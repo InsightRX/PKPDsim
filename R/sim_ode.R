@@ -77,12 +77,25 @@ sim_ode <- function (ode = function() {},
     dum <- ode(1, rep(1, 1000), p)
     length(dum[[1]])
   }
-  trans.lower <- function(x,y) { ifelse(y<x, x*(x-1)/2 + y, y*(y-1)/2 + x) }
-  full.mat <- function(p) { outer(1:p,1:p, trans.lower) }
+  triangle_to_full <- function (vect) {
+    lower_triangle_mat_size <- function (mat) {
+      x <- length(mat)
+      i <- 1
+      while (x > 0) {
+        x <- x-i
+        i <- i+1
+      }
+      return(i-1)
+    }
+    nr <- lower_triangle_mat_size (vect)
+    k_given_i_j <- function(x , y ) ifelse( y<x, x*(x-1)/2 + y, y*(y-1)/2 + x )
+    k_mat <- function(p) outer( 1:p, 1:p, k_given_i_j )
+    return (matrix(vect[ k_mat( nr ) ] , nr = nr ))
+  }
+  size <- get_size_ode(ode, parameters)  
   if (!is.null(omega)) {
-    omega_mat <- matrix (omega[full.mat(2)], nrow=2, byrow=T)
-    require(MASS)
-    etas   <- mvrnorm(n = n_ind, mu=rep(0, 2), Sigma=omega_mat)
+    omega_mat <- triangle_to_full(omega)
+    etas   <- MASS::mvrnorm(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat)
     if(n_ind == 1) {
       etas <- t(matrix(etas))
     }
@@ -98,9 +111,6 @@ sim_ode <- function (ode = function() {},
     }
   }
   comb <- list()
-  if (is.null(A_init)) {
-    A_init <- rep(0, get_size_ode(ode, parameters))
-  }
   p <- parameters
   if(class(regimen) != "regimen") {
     stop("Please create a regimen using the new_regimen() function!")
@@ -122,9 +132,13 @@ sim_ode <- function (ode = function() {},
                     dplyr::filter(t < tmax), tail(design,1))
   design[length(design[,1]), c("t", "dose")] <- c(tmax,0)
   times <- seq(from=0, to=tail(design$t,1), by=step_size)
+  if (is.null(A_init)) {
+    A_init <- rep(0, size)
+  }  
   for (i in 1:n_ind) {
     p_i <- p
     design_i <- design
+    A_init_i = A_init
     if (!is.null(adherence)) {
       if(adherence$type == "markov") {
         adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
@@ -142,11 +156,16 @@ sim_ode <- function (ode = function() {},
         p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])
       }
     }
+    if(class(A_init) == "function") {
+      A_init_i = A_init(p_i)  
+      print(p_i)
+      print(A_init_i)
+    } 
     for (k in 1:(length(design$t)-1)) {
       if (k > 1) {
         A_upd <- dat[dat$t==tail(time_window,1),]$y
       } else {
-        A_upd <- A_init
+        A_upd <- A_init_i
       }
       p_i$rate <- 0
       if(p_i$dose_type != "infusion") {
