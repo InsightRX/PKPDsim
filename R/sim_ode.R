@@ -158,8 +158,6 @@ sim_ode <- function (ode = function() {},
     }
     if(class(A_init) == "function") {
       A_init_i = A_init(p_i)  
-      print(p_i)
-      print(A_init_i)
     } 
     for (k in 1:(length(design$t)-1)) {
       if (k > 1) {
