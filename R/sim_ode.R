@@ -91,7 +91,7 @@ sim_ode <- function (ode = function() {},
     regimen <- new_regimen()
   }
   if(!is.null(adherence)) {
-    if(is.null(adherence$p_binom)) {
+    if(adherence$type = "markov") {
       if(!all(c("p01", "p11") %in% names(adherence$markov))) {
         stop("Adherence simulation using Markov model requires specification of p01 and p11!")
       }
@@ -126,7 +126,7 @@ sim_ode <- function (ode = function() {},
     p_i <- p
     design_i <- design
     if (!is.null(adherence)) {
-      if(is.null(adherence$p_binom)) {
+      if(adherence$type = "markov") {
         adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
                                  markov = list(p01 = adherence$markov$p01, p11 = adherence$markov$p11))
       } else {
