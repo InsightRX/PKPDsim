@@ -4,7 +4,7 @@
 \alias{sim_ode}
 \title{Simulate ODE}
 \usage{
-sim_ode(ode = function() { }, parameters = list(), omega = NULL,
+sim_ode(ode = NULL, parameters = list(), omega = NULL,
   omega_type = "exponential", n_ind = 1, regimen = NULL,
   adherence = NULL, A_init = NULL, step_size = 0.25, tmax = NULL,
   output_cmt = NULL)

@@ -21,18 +21,18 @@ if(is.null(misc$tmax)) {
 shinyServer(function(input, output) {
   output$parInputs <-
       renderUI({
-        w <- ""
+        w <- h4("Model parameters")
         for(j in 1:len) {
           idx <- (j-1)*2+1
           if (j < len || len == length(names(p))/2) {
             val1 <- p[[names(p)[idx]]]
             val2 <- p[[names(p)[idx+1]]]
-            w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=signif(val1/5, 1), max=signif(val1*5,1), value=val1)),
-                                   column(6, sliderInput(names(p)[idx+1], names(p)[idx+1], min=signif(val2/5, 1), max=signif(val2*5,1), value=val2)
+            w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=signif(val1/5, 1), max=signif(val1*3,1), value=val1)),
+                                   column(6, sliderInput(names(p)[idx+1], names(p)[idx+1], min=signif(val2/5, 1), max=signif(val2*3,1), value=val2)
                                    )))
           } else {
             val1 <- p[[names(p)[idx]]]
-            w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=signif(val1/5, 1), max=signif(val1*5,1), value=val1)
+            w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=signif(val1/5, 1), max=signif(val1*3,1), value=val1)
             )))
           }
         }

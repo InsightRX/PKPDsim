@@ -10,14 +10,16 @@ parInputs <- function(idx) {
 
 # Define UI for application that draws a histogram
 fluidPage(
-    fluidRow(column(3, h4("Parameters")), column(6, h4("")), column(3, h4("Dose regimen"))),
+#    fluidRow(column(3, h4("Parameters")), column(6, h4("")), column(3, h4("Dose regimen"))),
+    fluidRow(p(" ")),
     fluidRow(
       column(3, parInputs("a")),
       column(6,
-             plotOutput("ind_plot")
+        plotOutput("ind_plot")
       ),
       column(3,
         wellPanel(
+          h4("Regimen"),
           fluidRow(
             column(12, sliderInput("n_ind", "Number of individuals:", min = 1, max = 50, value = 1))),
           fluidRow(
