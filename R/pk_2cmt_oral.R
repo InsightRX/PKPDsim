@@ -3,13 +3,19 @@
 #' @export
 pk_2cmt_oral <- function (t, A, p) {
   with(p, {
+
+    ## Parameter translation & calculations:
     KEL <- CL/V
     K12 <- Q2/V
     K21 <- Q2/V2
-    dAdt_1 <- -KA*A[1] + rate
-    dAdt_2 <- -KEL*A[1] - K12*A[1] + K21*A[2] + KA*A[1]
-    dAdt_3 <- +K12*A[1] - K21*A[2]
-    return ( list ( c (  dAdt_1, dAdt_2, dAdt_3 ) ) )
+
+    ## ODE definitions
+    return(list(c(
+      -KA*A[1] + rate,
+      -KEL*A[1] - K12*A[1] + K21*A[2] + KA*A[1],
+      +K12*A[1] - K21*A[2]
+    )))
   })
 }
+## Indicate observation compartment and scaling:
 attributes(pk_2cmt_oral) <- list(obs = list (cmt = 2, scale = "V"))

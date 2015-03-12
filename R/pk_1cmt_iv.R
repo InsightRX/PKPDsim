@@ -3,9 +3,16 @@
 #' @export
 pk_1cmt_iv <- function (t, A, p) {
   with(p, {
+
+    ## Parameter translation:
     KEL <-  CL/V
-    dAdt_1 <- -KEL*A[1] + rate
-    return ( list ( c (  dAdt_1 ) ) )
+
+        ## ODE definition:
+    return(list(c(
+      -KEL*A[1] + rate
+    )))
   })
 }
+
+## Indicate observation compartment and scaling:
 attributes(pk_1cmt_iv) <- list(obs = list (cmt = 1, scale = "V"))
