@@ -18,3 +18,4 @@ pk_1cmt_oral_pd_viral <- function (t, A, p) {
     return ( list ( c (  dAdt_1, dAdt_2, dAdt_3, dAdt_4, dAdt_5 ) ) )
   })
 }
+attributes(pk_1cmt_oral_pd_viral) <- list(obs = list (cmt = 5, scale = 1))

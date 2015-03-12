@@ -180,7 +180,13 @@ sim_ode <- function (ode = function() {},
   }
   # Add concentration to dataset:
   if(!is.null(attr(ode, "obs"))) {
-    comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/p[[attr(ode, "obs")[["scale"]]]]) )
+    if(class(attr(ode, "obs")[["scale"]]) == "character") {
+      scale <- p[[attr(ode, "obs")[["scale"]]]] 
+    } 
+    if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
+      scale <- attr(ode, "obs")[["scale"]]
+    } 
+    comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/scale))
   }
   if(!is.null(output_cmt)) {
     comb <- comb %>% dplyr::filter(comp %in% output_cmt)
