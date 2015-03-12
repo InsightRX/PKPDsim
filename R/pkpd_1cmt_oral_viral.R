@@ -6,7 +6,7 @@ pk_1cmt_oral_pd_viral <- function (t, A, p) {
     ## PK
     K      <- CL / V
     conc   <- A[2] / V
-    dAdt_1 <- -KA*A[1]
+    dAdt_1 <- -KA*A[1] + rate
     dAdt_2 <- -K*A[2] + KA*A[1]
     ## Viral dynamics
     t_bool <- t/24 > tr

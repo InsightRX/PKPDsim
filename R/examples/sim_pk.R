@@ -39,6 +39,7 @@ ggplot(dat_iiv, aes(x=t, y=y, colour=factor(id), group=id)) +
 # but with the sim_ode_shiny() function
 sim_ode_shiny(ode = pk_3cmt_iv,
               par = p,
+              regimen = new_regimen(amt=30),
               omega = omega)
 
 

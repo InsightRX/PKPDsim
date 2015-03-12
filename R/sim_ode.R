@@ -145,7 +145,7 @@ sim_ode <- function (ode = NULL,
     if (!is.null(adherence)) {
       if(adherence$type == "markov") {
         adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
-                                 markov = list(p01 = adherence$markov$p01, p11 = adherence$markov$p11))
+                               markov = list(p01 = adherence$markov$p01, p11 = adherence$markov$p11))
       } else {
         adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
                                p_binom = adherence$p_bionm)

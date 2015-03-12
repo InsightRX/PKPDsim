@@ -3,13 +3,11 @@ library(deSolve)
 library(dplyr)
 library(ggplot2)
 
-source("../sim_ode.r")
-source("../pk_3cmt_iv.R")
-
 ode     <- readRDS("tmp/ode.rds")
 p       <- readRDS("tmp/parameters.rds")
 regimen <- readRDS("tmp/regimen.rds")
 misc    <- readRDS("tmp/misc.rds")
+
 if(is.null(misc$tmax)) {
   misc$tmax <- (regimen$interval * (regimen$n+1))
 }
@@ -18,12 +16,9 @@ if(is.null(misc$output_cmt)) {
 }
 
 shinyServer(function(input, output) {
-  output$parInputs <-
-    #function(idx) {
-#     if (idx == "par") {
-#       return(
-      renderUI({
+  output$parInputs <- renderUI({
         w <- ""
+        len <- length(names(p))
         for(j in 1:len) {
           idx <- (j-1)*2+i
           if (j < len || len == length(names(p))/2) {
@@ -40,7 +35,6 @@ shinyServer(function(input, output) {
         }
         HTML(w)
        })
-#     )
   output$ind_plot <- renderPlot({
     regimen <- list(
       amt = input$amt,
