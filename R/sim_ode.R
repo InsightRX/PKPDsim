@@ -53,7 +53,7 @@
 #'  scale_y_log10() +
 #'  facet_wrap(~comp)
 
-sim_ode <- function (ode = function() {},
+sim_ode <- function (ode = NULL,
                      parameters = list(),
                      omega = NULL,
                      omega_type = "exponential",
@@ -92,6 +92,12 @@ sim_ode <- function (ode = function() {},
     k_mat <- function(p) outer( 1:p, 1:p, k_given_i_j )
     return (matrix(vect[ k_mat( nr ) ] , nr = nr ))
   }
+  if(is.null(ode) | is.null(parameters)) {
+    stop("Please specify at least the required arguments 'ode' and 'parameters'.")
+  }
+  if(is.null(regimen)) {
+    regimen <- new_regimen()
+  }
   size <- get_size_ode(ode, parameters)  
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)
@@ -99,9 +105,6 @@ sim_ode <- function (ode = function() {},
     if(n_ind == 1) {
       etas <- t(matrix(etas))
     }
-  }
-  if(is.null(regimen)) {
-    regimen <- new_regimen()
   }
   if(!is.null(adherence)) {
     if(adherence$type == "markov") {
