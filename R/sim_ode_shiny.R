@@ -47,8 +47,12 @@ sim_ode_shiny <- function(name = "",
   } else {
     unlink(paste0(shiny_folder,"/", c("ui.R", "server.R", "ode.rds", "parameters.rds", "misc.rds", "regimen.rds")))
   }
-  writeLines(ui_text, paste0(shiny_folder, "/ui.R"))
-  writeLines(paste0('setwd("',shiny_folder,'")', server_text), paste0(shiny_folder, "/server.R"))
+  file.copy(system.file("ui.R", package = "PKPDsim"), paste0(shiny_folder, "/ui.R"))
+  file.copy(system.file("server.R", package = "PKPDsim"), paste0(shiny_folder, "/server.R"))
+  if(!file.exists(paste0(shiny_folder,"/www"))) {
+    dir.create(paste0(shiny_folder,"/www"))
+  }
+  file.copy(system.file("style.css", package = "PKPDsim"), paste0(shiny_folder, "/www/style.css"))
   saveRDS(ode, file=paste0(shiny_folder, "/ode.rds"))
   saveRDS(parameters, file=paste0(shiny_folder, "/parameters.rds"))
   saveRDS(regimen, file=paste0(shiny_folder, "/regimen.rds"))
