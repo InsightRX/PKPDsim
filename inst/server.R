@@ -60,12 +60,22 @@ shinyServer(function(input, output) {
     if (input$plot_show != "all compartments") {
       dat <- dat %>% filter(comp == "obs")
     }
-    p <- ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) +
+    if (input$n_ind == 1) {
+      p <- ggplot(dat, aes(x=t, y=y))
+    } else {
+      p <- ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id))
+    }
+    p <- p +
       geom_line() +
-      facet_grid(comp ~ .) +
+      facet_grid(comp ~ ., scales = "free") +
       theme_plain() +
       scale_colour_discrete(guide = FALSE) +
       xlab("time") + ylab("")
+
+    if(!is.null(input$target) && input$target != "") {
+      hline_data <- data.frame(z = as.numeric(input$target), comp="obs")
+      p <- p + geom_hline(data = hline_data, aes(yintercept = z), colour="red", linetype="dashed")
+    }
     if(input$plot_yaxis == "log10") {
       p <- p + scale_y_log10()
     }

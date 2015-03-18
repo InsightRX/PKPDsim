@@ -38,8 +38,11 @@ fluidPage(
            wellPanel(
              h4("Plot"),
              fluidRow(
-               column(6, selectInput("plot_show", "Show:", c("all compartments", "observations only"), selected="all compartments")),
+               column(6, selectInput("plot_show", "Show:", c("all compartments", "observation compartment"), selected="all compartments")),
                column(4, selectInput("plot_yaxis", "Y-axis:", c("log10", "untransformed"), selected="log10"))
+             ),
+             fluidRow(
+              column(4, textInput("target", "Target level", value = ""))
              )
            )
     ),
