@@ -42,7 +42,7 @@
 #'omega <- c(0.3,       # IIV CL
 #'           0.1, 0.3)  # IIV V
 #'
-#'dat <- sim_ode (ode = pk_3cmt_iv,
+#'dat <- sim_ode (ode = "pk_3cmt_iv",
 #'                par = p,
 #'                omega = omega,
 #'                n_ind = 20,
@@ -53,7 +53,7 @@
 #'  scale_y_log10() +
 #'  facet_wrap(~comp)
 
-sim_ode <- function (ode = NULL,
+sim_ode <- function (ode = "",
                      parameters = list(),
                      omega = NULL,
                      omega_type = "exponential",
@@ -71,6 +71,9 @@ sim_ode <- function (ode = NULL,
       dat_ind <- rbind (dat_ind, cbind(t=des_out[,1], comp=j, y=des_out[,(j+1)]))
     }
     return(data.frame(dat_ind))
+  }
+  if (class("ode") == "character") {
+    ode <- get(ode)
   }
   get_size_ode <- function(ode, p) {
     p$rate <- 1
@@ -98,7 +101,7 @@ sim_ode <- function (ode = NULL,
   if(is.null(regimen)) {
     regimen <- new_regimen()
   }
-  size <- get_size_ode(ode, parameters)  
+  size <- get_size_ode(ode, parameters)
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)
     etas   <- MASS::mvrnorm(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat)
@@ -137,7 +140,7 @@ sim_ode <- function (ode = NULL,
   times <- seq(from=0, to=tail(design$t,1), by=step_size)
   if (is.null(A_init)) {
     A_init <- rep(0, size)
-  }  
+  }
   for (i in 1:n_ind) {
     p_i <- p
     design_i <- design
@@ -160,8 +163,8 @@ sim_ode <- function (ode = NULL,
       }
     }
     if(class(A_init) == "function") {
-      A_init_i = A_init(p_i)  
-    } 
+      A_init_i = A_init(p_i)
+    }
     for (k in 1:(length(design$t)-1)) {
       if (k > 1) {
         A_upd <- dat[dat$t==tail(time_window,1),]$y
@@ -184,11 +187,11 @@ sim_ode <- function (ode = NULL,
   # Add concentration to dataset:
   if(!is.null(attr(ode, "obs"))) {
     if(class(attr(ode, "obs")[["scale"]]) == "character") {
-      scale <- p[[attr(ode, "obs")[["scale"]]]] 
-    } 
+      scale <- p[[attr(ode, "obs")[["scale"]]]]
+    }
     if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
       scale <- attr(ode, "obs")[["scale"]]
-    } 
+    }
     comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/scale))
   }
   if(!is.null(output_cmt)) {

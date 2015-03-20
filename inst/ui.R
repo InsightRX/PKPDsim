@@ -34,17 +34,23 @@ fluidPage(
            )
     ),
     column(6,
-           plotOutput("ind_plot"),
-           wellPanel(
-             h4("Plot"),
-             fluidRow(
-               column(6, selectInput("plot_show", "Show:", c("all compartments", "observation compartment"), selected="all compartments")),
-               column(4, selectInput("plot_yaxis", "Y-axis:", c("log10", "untransformed"), selected="log10"))
-             ),
-             fluidRow(
-              column(4, textInput("target", "Target level", value = ""))
-             )
+      tabsetPanel(
+         tabPanel("Plot",
+              plotOutput("ind_plot"),
+              wellPanel(
+                 fluidRow(
+                   column(6, selectInput("plot_show", "Show:", c("all compartments", "observation compartment"), selected="all compartments")),
+                   column(4, selectInput("plot_yaxis", "Y-axis:", c("log10", "untransformed"), selected="log10"))
+                  ),
+                fluidRow(
+                  column(4, textInput("target", "Target level", value = ""))
+                )
            )
+          ),
+          tabPanel("Code",
+            verbatimTextOutput("code")
+          )
+        )
     ),
     column(3, parInputs("a"))
   ),

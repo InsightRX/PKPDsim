@@ -4,13 +4,12 @@
 \alias{sim_ode_shiny}
 \title{Simulate ODE and create a Shiny app}
 \usage{
-sim_ode_shiny(name = "", ode = function() { }, parameters = list(),
-  omega = NULL, omega_type = "exponential", n_ind = 1, regimen = NULL,
-  A_init = NULL, step_size = 1, tmax = NULL,
-  shiny_folder = "~/shiny-pkpd")
+sim_ode_shiny(name = "", ode = "", parameters = list(), omega = NULL,
+  omega_type = "exponential", n_ind = 1, regimen = NULL, A_init = NULL,
+  step_size = 1, tmax = NULL, shiny_folder = "~/shiny-pkpd")
 }
 \arguments{
-\item{ode}{function describing the ODE system}
+\item{name}{of function describing the ODE system (as string)}
 
 \item{parameters}{}
 
@@ -48,7 +47,7 @@ p <- list(CL = 38.48,
 omega <- c(0.3,       # IIV CL
           0.1, 0.3)  # IIV V
 
-sim_ode_shiny(ode = pk_3cmt_iv,
+sim_ode_shiny(ode = "pk_3cmt_iv",
              omega = omega,
              par = p)
 }

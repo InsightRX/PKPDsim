@@ -4,7 +4,7 @@
 \alias{sim_ode}
 \title{Simulate ODE}
 \usage{
-sim_ode(ode = NULL, parameters = list(), omega = NULL,
+sim_ode(ode = "", parameters = list(), omega = NULL,
   omega_type = "exponential", n_ind = 1, regimen = NULL,
   adherence = NULL, A_init = NULL, step_size = 0.25, tmax = NULL,
   output_cmt = NULL)
@@ -64,7 +64,7 @@ ggplot(dat, aes(x=t, y=y)) +
 omega <- c(0.3,       # IIV CL
           0.1, 0.3)  # IIV V
 
-dat <- sim_ode (ode = pk_3cmt_iv,
+dat <- sim_ode (ode = "pk_3cmt_iv",
                par = p,
                omega = omega,
                n_ind = 20,

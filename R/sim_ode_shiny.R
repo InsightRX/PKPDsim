@@ -1,7 +1,7 @@
 #' Simulate ODE and create a Shiny app
 #'
 #' Creates a VPC plot from observed and simulation data
-#' @param ode function describing the ODE system
+#' @param name of function describing the ODE system (as string)
 #' @param parameters
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal
@@ -27,12 +27,12 @@
 #'omega <- c(0.3,       # IIV CL
 #'           0.1, 0.3)  # IIV V
 #'
-#'sim_ode_shiny(ode = pk_3cmt_iv,
+#'sim_ode_shiny(ode = "pk_3cmt_iv",
 #'              omega = omega,
 #'              par = p)
 
 sim_ode_shiny <- function(name = "",
-                          ode = function() {} ,
+                          ode = "" ,
                           parameters = list(),
                           omega = NULL,
                           omega_type = "exponential",
@@ -53,10 +53,9 @@ sim_ode_shiny <- function(name = "",
     dir.create(paste0(shiny_folder,"/www"))
   }
   file.copy(system.file("style.css", package = "PKPDsim"), paste0(shiny_folder, "/www/style.css"))
-  saveRDS(ode, file=paste0(shiny_folder, "/ode.rds"))
   saveRDS(parameters, file=paste0(shiny_folder, "/parameters.rds"))
   saveRDS(regimen, file=paste0(shiny_folder, "/regimen.rds"))
-  saveRDS(list(omega = omega, omega_type = omega_type, n_ind = n_ind, A_init = A_init, step_size = step_size, tmax = tmax),
+  saveRDS(list(ode=ode, omega = omega, omega_type = omega_type, n_ind = n_ind, A_init = A_init, step_size = step_size, tmax = tmax),
           paste0(shiny_folder, "/misc.rds"))
   runApp(shiny_folder)
 }

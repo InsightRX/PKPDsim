@@ -46,14 +46,14 @@ ggplot(dat_iiv, aes(x=t, y=y, colour=factor(id), group=id)) +
 
 # now create a shiny app on-the-fly using the same parameters
 # but with the sim_ode_shiny() function
-sim_ode_shiny(ode = pk_3cmt_iv,
+sim_ode_shiny(ode = "pk_3cmt_iv",
               par = p,
               regimen = new_regimen(amt=30),
               omega = omega)
 
 p_efv <- list(CL = 10, V=300, KA=0.67)
 
-sim_ode_shiny(ode = pk_1cmt_oral,
-              parameters = p_efv,
+sim_ode_shiny(ode = "pk_3cmt_iv",
+              parameters = p,
               #              regimen = new_regimen (amt=600),
               omega = cv_to_omega (list(CL=0.2, V=0.1, KA=0.1), p_efv))
