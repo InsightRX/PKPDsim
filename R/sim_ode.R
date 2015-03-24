@@ -63,17 +63,20 @@ sim_ode <- function (ode = "",
                      A_init = NULL,
                      step_size = .25,
                      tmax = NULL,
-                     output_cmt = NULL) {
+                     output_cmt = NULL,
+                     dde = NULL) {
   num_int_wrapper <- function (times, A_init, des, p_ind) {
-    des_out <- deSolve::lsoda(A_init, times, des, p_ind)
+    if (!is.null(dde)) {
+      lsoda_func <- deSolve::dede
+    } else {
+      lsoda_func <- deSolve::lsoda
+    }
+    des_out <- lsoda_func(A_init, times, des, p_ind)
     dat_ind <- c()
     for (j in 1:length(A_init)) {
       dat_ind <- rbind (dat_ind, cbind(t=des_out[,1], comp=j, y=des_out[,(j+1)]))
     }
     return(data.frame(dat_ind))
-  }
-  if (class("ode") == "character") {
-    ode <- get(ode)
   }
   get_size_ode <- function(ode, p) {
     p$rate <- 1
@@ -94,6 +97,12 @@ sim_ode <- function (ode = "",
     k_given_i_j <- function(x , y ) ifelse( y<x, x*(x-1)/2 + y, y*(y-1)/2 + x )
     k_mat <- function(p) outer( 1:p, 1:p, k_given_i_j )
     return (matrix(vect[ k_mat( nr ) ] , nr = nr ))
+  }
+  if(!is.null(dde)) {
+    ode <- dde
+  }
+  if (class("ode") == "character") {
+    ode <- get(ode)
   }
   if(is.null(ode) | is.null(parameters)) {
     stop("Please specify at least the required arguments 'ode' and 'parameters'.")

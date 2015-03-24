@@ -3,16 +3,23 @@ library(deSolve)
 library(dplyr)
 library(ggplot2)
 
-ode     <- readRDS("tmp/ode.rds")
 p       <- readRDS("tmp/parameters.rds")
 regimen <- readRDS("tmp/regimen.rds")
 misc    <- readRDS("tmp/misc.rds")
 
+if(!is.null(misc$dde)) {
+  misc$ode <- misc$dde
+}
 if(is.null(misc$tmax)) {
   misc$tmax <- (regimen$interval * (regimen$n+1))
 }
 if(is.null(misc$output_cmt)) {
-  output_cmt = 1:as.numeric(attr(ode, "size"))
+  if (class("ode") == "character") {
+    ode_tmp <- get(ode)
+  } else {
+    ode_tmp <- ode
+  }
+  output_cmt = 1:as.numeric(attr(ode_tmp, "size"))
 }
 
 shinyServer(function(input, output) {
@@ -49,7 +56,7 @@ shinyServer(function(input, output) {
         pars[[names(p)[i]]] <- input[[names(p)[i]]]
       }
     }
-    dat <- sim_ode (ode = ode,
+    dat <- sim_ode (ode = misc$ode,
                     parameters = pars,
                     omega = misc$omega,
                     n_ind = input$n_ind,

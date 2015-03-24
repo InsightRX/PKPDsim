@@ -33,6 +33,7 @@
 
 sim_ode_shiny <- function(name = "",
                           ode = "" ,
+                          dde = NULL,
                           parameters = list(),
                           omega = NULL,
                           omega_type = "exponential",
@@ -55,7 +56,7 @@ sim_ode_shiny <- function(name = "",
   file.copy(system.file("style.css", package = "PKPDsim"), paste0(shiny_folder, "/www/style.css"))
   saveRDS(parameters, file=paste0(shiny_folder, "/parameters.rds"))
   saveRDS(regimen, file=paste0(shiny_folder, "/regimen.rds"))
-  saveRDS(list(ode=ode, omega = omega, omega_type = omega_type, n_ind = n_ind, A_init = A_init, step_size = step_size, tmax = tmax),
+  saveRDS(list(ode=ode, dde = dde, omega = omega, omega_type = omega_type, n_ind = n_ind, A_init = A_init, step_size = step_size, tmax = tmax),
           paste0(shiny_folder, "/misc.rds"))
   runApp(shiny_folder)
 }
