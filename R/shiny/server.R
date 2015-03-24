@@ -14,6 +14,7 @@ if(is.null(misc$tmax)) {
   misc$tmax <- (regimen$interval * (regimen$n+1))
 }
 if(is.null(misc$output_cmt)) {
+  print(ode)
   if (class("ode") == "character") {
     ode_tmp <- get(ode)
   } else {

@@ -4,7 +4,7 @@ library(dplyr)
 library(ggplot2)
 
 p       <- readRDS("parameters.rds")
-len     <- round(length(names(p))/2)
+len <- round(length(names(p))/2)
 regimen <- readRDS("regimen.rds")
 misc    <- readRDS("misc.rds")
 
@@ -15,6 +15,7 @@ if(is.null(misc$tmax)) {
     misc$tmax <- max(regimen$times)
   }
 }
+
 shinyServer(function(input, output) {
   output$parInputs <-
     renderUI({
@@ -65,16 +66,19 @@ shinyServer(function(input, output) {
     if (!is.null(misc$A_init)) {
       init <- paste0(misc$A_init, '\n') # need to make this work better
     }
-    omega <- ""
+    omega <- "NULL"
     if (!is.null(misc$omega)) {
         if (is.numeric(misc$omega)) {
           omega <- paste0(" c(", paste0(round(misc$omega,4), collapse=", "), ")")
         }
     }
+    ode <- paste0('ode = "', misc$ode, '",\n')
+    if (is.null(misc$ode)) { ode <- NULL }
+    dde <- paste0('dde = "', misc$dde, '",\n')
+    if (is.null(misc$dde)) { dde <- NULL }
     code <- paste0(code, '\n',
       'dat <- sim_ode (
-  ode = "', misc$ode ,'",
-  parameters = pars,
+  ', ode, dde, '  parameters = pars,
   omega = ', omega, ',
   n_ind = ', input$n_ind, ',
   regimen = regimen,\n',
@@ -116,6 +120,7 @@ shinyServer(function(input, output) {
       }
     }
     dat <- sim_ode (ode = misc$ode,
+                    dde = misc$dde,
                     parameters = pars,
                     omega = misc$omega,
                     n_ind = input$n_ind,

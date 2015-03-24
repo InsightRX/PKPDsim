@@ -53,7 +53,8 @@
 #'  scale_y_log10() +
 #'  facet_wrap(~comp)
 
-sim_ode <- function (ode = "",
+sim_ode <- function (ode = NULL,
+                     dde = NULL,
                      parameters = list(),
                      omega = NULL,
                      omega_type = "exponential",
@@ -63,14 +64,14 @@ sim_ode <- function (ode = "",
                      A_init = NULL,
                      step_size = .25,
                      tmax = NULL,
-                     output_cmt = NULL,
-                     dde = NULL) {
+                     output_cmt = NULL
+                     ) {
+  if (!is.null(dde)) {
+    lsoda_func <- deSolve::dede
+  } else {
+    lsoda_func <- deSolve::lsoda
+  }
   num_int_wrapper <- function (times, A_init, des, p_ind) {
-    if (!is.null(dde)) {
-      lsoda_func <- deSolve::dede
-    } else {
-      lsoda_func <- deSolve::lsoda
-    }
     des_out <- lsoda_func(A_init, times, des, p_ind)
     dat_ind <- c()
     for (j in 1:length(A_init)) {
@@ -141,7 +142,11 @@ sim_ode <- function (ode = "",
     design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0)))
   }
   if (is.null(tmax)) {
-    tmax <- tail(design$t,1) + max(diff(regimen$dose_times))
+    if (length(design$t) > 1) {
+      tmax <- tail(design$t,1) + max(diff(regimen$dose_times))
+    } else {
+      tmax <- tail(design$t,1) + 24 # guess timeframe, user should use tmax argument
+    }
   }
   design <- rbind(design %>%
                     dplyr::filter(t < tmax), tail(design,1))

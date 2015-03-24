@@ -16,7 +16,6 @@
 #' @seealso \link{sim_ode}
 #' @examples
 #'
-#'library(PKPDsim)
 #'p <- list(CL = 38.48,
 #'          V  = 7.4,
 #'          Q2 = 7.844,
@@ -32,7 +31,7 @@
 #'              par = p)
 
 sim_ode_shiny <- function(name = "",
-                          ode = "" ,
+                          ode = NULL,
                           dde = NULL,
                           parameters = list(),
                           omega = NULL,
