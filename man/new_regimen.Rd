@@ -27,9 +27,9 @@ a list containing calculated VPC information, and a ggplot2 object
 Create a dosing regimen for use with sim_ode
 }
 \examples{
-r1 <- regimen(amt=50, interval=12, n=20) # dose 50mg, q12hrs for 10 days
-r2 <- regimen(amt=50, times=c(0:19)*12)  # same, but using explicit times
-r3 <- regimen(amt=c(rep(100,4), rep(50,16)), times=c(0:19)*12)  # first 4 doses higher dose
+r1 <- new_regimen(amt=50, interval=12, n=20) # dose 50mg, q12hrs for 10 days
+r2 <- new_regimen(amt=50, times=c(0:19)*12)  # same, but using explicit times
+r3 <- new_regimen(amt=c(rep(100,4), rep(50,16)), times=c(0:19)*12)  # first 4 doses higher dose
 }
 \seealso{
 \link{sim_ode}
