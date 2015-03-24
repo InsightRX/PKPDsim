@@ -33,12 +33,13 @@ sim_ode(ode = "", parameters = list(), omega = NULL,
 \item{output}{vector specifying which compartment numbers to output}
 }
 \value{
-a list containing calculated VPC information, and a ggplot2 object
+a data frame of compartments with associated concentrations at requested times
 }
 \description{
 Simulates a specified ODE system and regimen
 }
 \examples{
+library(ggplot2)
 library(PKPDsim)
 p <- list(CL = 38.48,
          V  = 7.4,
@@ -51,7 +52,7 @@ r1 <- new_regimen(amt = 100,
              times = c(0, 24, 36),
              type = "infusion")
 
-dat <- sim_ode (ode = pk_3cmt_iv,
+dat <- sim_ode (ode = "pk_3cmt_iv",
                par = p,
                regimen = r1)
 
