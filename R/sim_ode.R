@@ -12,11 +12,11 @@
 #' @param step_size the step size between the observations (NOT the step size of the differential equation solver)
 #' @param tmax maximum simulation time, if not specified will pick the end of the regimen as maximum
 #' @param output vector specifying which compartment numbers to output
-#' @return a list containing calculated VPC information, and a ggplot2 object
+#' @return a data frame of compartments with associated concentrations at requested times
 #' @export
 #' @seealso \link{sim_ode_shiny}
 #' @examples
-#'
+#'library(ggplot2)
 #'library(PKPDsim)
 #'p <- list(CL = 38.48,
 #'          V  = 7.4,
@@ -29,7 +29,7 @@
 #'              times = c(0, 24, 36),
 #'              type = "infusion")
 #'
-#'dat <- sim_ode (ode = pk_3cmt_iv,
+#'dat <- sim_ode (ode = "pk_3cmt_iv",
 #'                par = p,
 #'                regimen = r1)
 #'
