@@ -102,8 +102,10 @@ sim_ode <- function (ode = NULL,
   if(!is.null(dde)) {
     ode <- dde
   }
-  if (class("ode") == "character") {
+  if (class(ode) == "character") {
     ode <- get(ode)
+  } else {
+    warning("The preferred input to the 'ode' argument is a character string referencing the function, not the function itself.")
   }
   if(is.null(ode) | is.null(parameters)) {
     stop("Please specify at least the required arguments 'ode' and 'parameters'.")
