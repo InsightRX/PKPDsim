@@ -39,7 +39,7 @@ shinyServer(function(input, output) {
   output$warning_text <- renderPrint({
     warning_text <- ""
     if (length(grep("CI", input$plot_type))>0 & input$n_ind < 10) {
-      warning_text <- "Warning: Please increase number of individuals to >10 to calculate confidence intervals. For precise estimate this number needs to be much higher (n=500 or more depending on the CI chosen)."
+      warning_text <- "Warning: Please increase number of individuals to >10 to calculate confidence intervals. For precise estimate this number needs to be much higher (n=500 or more depending on the CI)."
     }
     cat(warning_text)
   })
@@ -148,7 +148,7 @@ shinyServer(function(input, output) {
                     A_init = misc$A_init,
                     adherence = list(type = "markov", markov = list(p01 = input$adh_p01, p11 = input$adh_p11)),
                     tmax = NULL)
-    if (input$plot_show != "all compartments") {
+    if (input$plot_show != "all") {
       dat <- dat %>% filter(comp == "obs")
     }
     if (length(grep("CI", input$plot_type))>0 & input$n_ind > 1) {
@@ -175,7 +175,7 @@ shinyServer(function(input, output) {
       theme_empty() +
       scale_colour_discrete(guide = FALSE) +
       xlab("time") + ylab("")
-    if (input$plot_show == "all compartments") {
+    if (input$plot_show == "all") {
       p <- p + facet_grid(comp ~ ., scales = "free")
     }
     if(!is.null(input$target) && input$target != "") {
