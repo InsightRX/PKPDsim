@@ -10,20 +10,22 @@ In pharmacometrics, many models are defined as systems of ordinary differential 
 - cumbersome regarding implementation of dose regimens and multi-level variability 
 - not open source/free. 
 
-In essence, the `PKPDsim` tool is an attempt to take the best features of BM, and offer them whithin the R environment so that the modeler can take advantage of e.g. the plotting and visualization tools in R. The library aims to facilitate simulation of any dosing regimen for PKPD mixed-effects models and is implemented as a wrapper around the deSolve library. Inputs for the main function (`sim_ode`) include: a function describing the ODE system, an object describing the regimen, a list of fixed-effects, and a matrix describing the between patient variability. The `PKPDsim` library can dynamically generate Shiny frontends (see figure below) offering features similar to BM. 
+In essence, the `PKPDsim` tool is an attempt to take the best features of BM, and offer them whithin the R environment so that the modeler can take advantage of e.g. the plotting and visualization tools in R. The library aims to facilitate simulation of any dosing regimen for PKPD mixed-effects models and is implemented as a wrapper around the deSolve library. Inputs for the main function (`sim_ode`) include: a function describing the ODE system, an object describing the regimen, a list of fixed-effects, and a matrix describing the between patient variability. The `PKPDsim` library can dynamically generate Shiny frontends (see figure below) offering features similar to BM. The Shiny app also generates the R code for any plot created in the interface.
 
 ![Shiny](images/shiny.png "Shiny example")
 
-Recently, Inria (through the DDMoRe consortium) released a similar library for R (`mlxR`, https://github.com/MarcLavielle/mlxR). While the `mlxR` library offers some great features, the main differences are that `mlxR`:
+Recently, Inria (through the DDMoRe consortium) released a similar library for R (`mlxR`, https://github.com/MarcLavielle/mlxR). The main differences are that `PKPDsim`:
 
-- uses a proprietary and closed-source simulation engine (`simulx`)
-- requires models specified in PharmML instead of R
-- (currently) does not offer functionality to dynamically generate Shiny apps
+- [+] does not use a proprietary and closed-source simulation engine
+- [+/-] does not require/support models written in PharmML
+- [+] offers functionality to dynamically generate Shiny apps
+- [-] is currently slower (support for Rcpp will soon be added)
+- [-] currently does not allow delay differential equations for multidose regimens
 
 ## Future plans
-- will be released to CRAN
-- implement models as compiled C code
-- allow creation of ggvis plots in Shiny app
+- release to CRAN
+- implement models as compiled C code (Rcpp)
+- add more example models
 
 ## Installation
 
@@ -45,7 +47,7 @@ r1 <- new_regimen(amt = 100,
               times = c(0, 24, 36),
               type = "infusion")
 
-dat <- sim_ode (ode = pk_3cmt_iv,
+dat <- sim_ode (ode = "pk_3cmt_iv",
                 par = p,
                 regimen = r1)
 
@@ -68,7 +70,7 @@ pk_1cmt_iv <- function (t, A, p) {
 attributes(pk_1cmt_iv) <- list(obs = list (cmt = 1, scale = "V"))
 p <- list(CL = 38.48, V  = 7.4)
 
-dat <- sim_ode (ode = pk_1cmt_iv,
+dat <- sim_ode (ode = "pk_1cmt_iv",
                 par = p,
                 regimen = r1)
 
@@ -88,7 +90,7 @@ omega <- c(0.3,       # BSV CL
 # or as list of CV (assuming no correlation between parameters):
 omega <- cv_to_omega (list(CL=0.3, V=0.3), p)
 
-dat <- sim_ode (ode = pk_3cmt_iv,
+dat <- sim_ode (ode = "pk_3cmt_iv",
                 par = p,
                 omega = omega,
                 n_ind = 20,
@@ -114,7 +116,7 @@ p <- list(CL = 38.48,
 omega <- c(0.3,       # IIV CL
            0.1, 0.3)  # IIV V
 
-sim_ode_shiny(ode = pk_3cmt_iv,
+sim_ode_shiny(ode = "pk_3cmt_iv",
               par = p,
               omega = omega)
 ```
