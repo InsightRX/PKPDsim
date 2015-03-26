@@ -47,7 +47,7 @@ r1 <- new_regimen(amt = 100,
               times = c(0, 24, 36),
               type = "infusion")
 
-dat <- sim_ode (ode = pk_3cmt_iv,
+dat <- sim_ode (ode = "pk_3cmt_iv",
                 par = p,
                 regimen = r1)
 
@@ -70,7 +70,7 @@ pk_1cmt_iv <- function (t, A, p) {
 attributes(pk_1cmt_iv) <- list(obs = list (cmt = 1, scale = "V"))
 p <- list(CL = 38.48, V  = 7.4)
 
-dat <- sim_ode (ode = pk_1cmt_iv,
+dat <- sim_ode (ode = "pk_1cmt_iv",
                 par = p,
                 regimen = r1)
 
@@ -90,7 +90,7 @@ omega <- c(0.3,       # BSV CL
 # or as list of CV (assuming no correlation between parameters):
 omega <- cv_to_omega (list(CL=0.3, V=0.3), p)
 
-dat <- sim_ode (ode = pk_3cmt_iv,
+dat <- sim_ode (ode = "pk_3cmt_iv",
                 par = p,
                 omega = omega,
                 n_ind = 20,
@@ -116,7 +116,7 @@ p <- list(CL = 38.48,
 omega <- c(0.3,       # IIV CL
            0.1, 0.3)  # IIV V
 
-sim_ode_shiny(ode = pk_3cmt_iv,
+sim_ode_shiny(ode = "pk_3cmt_iv",
               par = p,
               omega = omega)
 ```
