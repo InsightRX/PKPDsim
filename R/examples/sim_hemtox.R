@@ -24,10 +24,6 @@ p <- list(CL = 38.48,
           EC50 = 7.17,
           Emax = 83.9)
 
-pk_1cmt_iv
-
-combine_models <- c()
-
 # Simulate:
 dat <- sim_ode (ode = "pkpd_hemtox",
                 p = p,
