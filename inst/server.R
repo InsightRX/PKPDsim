@@ -113,7 +113,7 @@ shinyServer(function(input, output) {
    code <- paste0(code, gg, '
   geom_line() +
   facet_grid(comp ~ ., scales = "free") +
-  theme_plain() +
+  theme_empty() +
   scale_colour_discrete(guide = FALSE) +
   xlab("time") + ylab("")')
    if(!is.null(input$target) && input$target != "") {
