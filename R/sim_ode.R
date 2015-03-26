@@ -200,6 +200,7 @@ sim_ode <- function (ode = NULL,
   }
   # Add concentration to dataset:
   if(!is.null(attr(ode, "obs"))) {
+    scale <- 1
     if(class(attr(ode, "obs")[["scale"]]) == "character") {
       scale <- p[[attr(ode, "obs")[["scale"]]]]
     }

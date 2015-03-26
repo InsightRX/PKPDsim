@@ -11,11 +11,17 @@ p <- list(CL = 38.48,
 
 r1 <- new_regimen(amt = 100,
                   interval = 24,
-                  n = 10,
-                  type = "infusion")
+                  n = 10)
 
 dat <- sim_ode (ode = pk_3cmt_iv,
                 par = p,
+                n_ind = 1,
+                regimen = r1)
+
+p_oral <- list(CL = 5, V = 50, Q2 = 10, V2 = 100, KA = 1)
+
+dat <- sim_ode (ode = "pk_2cmt_oral",
+                par = p_oral,
                 n_ind = 1,
                 regimen = r1)
 

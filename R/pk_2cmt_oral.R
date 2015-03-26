@@ -12,8 +12,8 @@ pk_2cmt_oral <- function (t, A, p) {
     ## ODE definitions
     return(list(c(
       -KA*A[1] + rate,
-      -KEL*A[1] - K12*A[1] + K21*A[2] + KA*A[1],
-      +K12*A[1] - K21*A[2]
+      -KEL*A[2] - K12*A[2] + K21*A[3] + KA*A[1],
+      +K12*A[2] - K21*A[3]
     )))
   })
 }

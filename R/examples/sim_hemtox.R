@@ -1,8 +1,7 @@
 library (deSolve)
 library (dplyr)
 library (ggplot2)
-source ("sim_ode.R")
-source ("hemtox.R")
+library (PKPDsim)
 
 # Doses:
 # Give 2 doses of 100 mg, but then simulate out 19 intervals more
@@ -10,9 +9,7 @@ source ("hemtox.R")
 regimen <- list(amt = 100,
                 interval = 24,
                 n = 2,
-                cmt = 1,
-                type = "infusion",
-                inf_time = 2)
+                type = "infusion")
 
 # docetaxel PK:
 p <- list(CL = 38.48,
@@ -27,17 +24,20 @@ p <- list(CL = 38.48,
           EC50 = 7.17,
           Emax = 83.9)
 
+pk_1cmt_iv
+
+combine_models <- c()
+
 # Simulate:
-dat <- sim_ode (ode = hemtox,
+dat <- sim_ode (ode = "pkpd_hemtox",
                 p = p,
-                regimen = regimen,
+                regimen = new_regimen(),
                 A_init = c(rep(0, 3), rep(p$circ0, 5)),
                 step_size = 0.25,
-                output_cmt = c(7,8),
                 tmax = 24*21)
 
 ### Plot all compartments:
-ggplot(dat, aes(x=t, y=ipred)) +
+ggplot(dat %>% filter(comp=="obs"), aes(x=t, y=y)) +
   geom_line() +
   scale_y_log10() +
   facet_wrap(~comp)
