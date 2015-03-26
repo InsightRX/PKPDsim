@@ -4,10 +4,10 @@
 pk_1cmt_iv <- function (t, A, p) {
   with(p, {
 
-    ## Parameter translation:
+    ## Parameter translation & calculations
     KEL <-  CL/V
 
-        ## ODE definition:
+    ## ODE definition:
     return(list(c(
       -KEL*A[1] + rate
     )))

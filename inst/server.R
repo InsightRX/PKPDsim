@@ -4,7 +4,7 @@ library(dplyr)
 library(ggplot2)
 
 p       <- readRDS("parameters.rds")
-len <- round(length(names(p))/2)
+len     <- ceiling(length(names(p))/2)
 regimen <- readRDS("regimen.rds")
 misc    <- readRDS("misc.rds")
 

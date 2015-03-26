@@ -1,0 +1,47 @@
+#' ODE system for PK - 1 compartment oral administration with parallel zero and 1st order absorption
+#'
+#' @export
+#' @examples
+#' library(PKPDsim)
+#'
+#' p <- list(CL = 38.48,
+#'           V  = 7.4,
+#'           KA = .3,
+#'           K0 = 4,
+#'           K0_T = 1)
+#'
+#' r1 <- new_regimen(amt = 100,
+#'                   interval = 24,
+#'                   n = 10)
+#'
+#' omega <- cv_to_omega (list(CL = 0.3,
+#'                            V = 0.3,
+#'                            KA = 0.1,
+#'                            K0 = .1,
+#'                            K0_T = .3), p)
+#'
+#' ## sequential k0 and ka
+#' sim_ode_shiny(ode = "pk_1cmt_oral_sequential",
+#'               par = p,
+#'               regimen = new_regimen(amt=30),
+#'               omega = omega)
+
+pk_1cmt_oral_parallel <- function (t, A, p) {
+  with(p, {
+
+    ## Parameter translation & calculations
+    KEL <-  CL/V
+
+    ## for sequential K0 and KA absorption
+    ## the dose times are available in p$dose_times
+    tad <- rev((t-dose_times)[t>=dose_times])[1] # time after dose
+
+    ## ODE definition:
+    return(list(c(
+      -K0*(tad <= K0_T && A[1]>0) - KA*A[1],
+      -KEL*A[2] + K0*(tad <= K0_T && A[1]>0) + KA*A[1]
+    )))
+  })
+}
+## Indicate observation compartment and scaling:
+attributes(pk_1cmt_oral_parallel) <- list(obs = list (cmt = 2, scale = "V"))

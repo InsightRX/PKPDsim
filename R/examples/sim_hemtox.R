@@ -47,7 +47,7 @@ ggplot(dat %>% filter(comp == 8), aes(x=t/24, y=ipred)) +
   ylab("Neutrophils (1e9)") + xlab("Time in days")
 
 ## Create shiny app
-sim_ode_shiny (ode = hemtox,
+sim_ode_shiny (ode = "pkpd_hemtox",
                p = p,
                regimen = regimen,
                A_init = c(rep(0, 3), rep(p$circ0, 5)),

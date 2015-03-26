@@ -40,7 +40,7 @@ fluidPage(
               wellPanel(
                 fluidRow(
                    column(6, selectInput("plot_show", "Show compartment:", c("all", "observation"), selected="all compartments")),
-                   column(6, selectInput("plot_yaxis", "Y-axis:", c("log10", "untransformed"), selected="log10"))
+                   column(6, selectInput("plot_yaxis", "Y-axis:", c("log10", "untransformed"), selected="untransformed"))
                   ),
                 fluidRow(
                   column(6, selectInput("plot_type", "Type:", c("individuals", "80% CI", "90% CI", "95% CI"), selected="individuals")),
