@@ -14,7 +14,7 @@ fluidPage(
            wellPanel(
              h4("Regimen"),
              fluidRow(
-               column(12, sliderInput("n_ind", "Number of individuals:", min = 1, max = 50, value = 1))),
+               column(12, sliderInput("n_ind", "Number of individuals:", min = 1, max = 100, value = 1))),
              fluidRow(
                column(6, textInput("amt", "Amount:", value = "100")),
                column(6, textInput("interval", "Interval:", value = "12"))),
@@ -38,12 +38,16 @@ fluidPage(
          tabPanel("Plot",
               plotOutput("ind_plot"),
               wellPanel(
-                 fluidRow(
-                   column(6, selectInput("plot_show", "Show:", c("all compartments", "observation compartment"), selected="all compartments")),
-                   column(4, selectInput("plot_yaxis", "Y-axis:", c("log10", "untransformed"), selected="log10"))
+                fluidRow(
+                   column(6, selectInput("plot_show", "Show compartment:", c("all", "observation"), selected="all compartments")),
+                   column(6, selectInput("plot_yaxis", "Y-axis:", c("log10", "untransformed"), selected="log10"))
                   ),
                 fluidRow(
+                  column(6, selectInput("plot_type", "Type:", c("individuals", "80% CI", "90% CI", "95% CI"), selected="individuals")),
                   column(4, textInput("target", "Target level", value = ""))
+                ),
+                fluidRow(
+                  column(12, em(textOutput("warning_text")))
                 )
            )
           ),

@@ -36,6 +36,13 @@ shinyServer(function(input, output) {
       }
       HTML(w)
     })
+  output$warning_text <- renderPrint({
+    warning_text <- ""
+    if (length(grep("CI", input$plot_type))>0 & input$n_ind < 10) {
+      warning_text <- "Warning: Please increase number of individuals to >10 to calculate confidence intervals. For precise estimate this number needs to be much higher (n=500 or more depending on the CI chosen)."
+    }
+    cat(warning_text)
+  })
   output$code <- renderPrint({
     adh <- ""
     if(input$adh_p01 != 1 || input$adh_p11 != 1) {
@@ -85,10 +92,23 @@ shinyServer(function(input, output) {
          init,
          adh,
   '  tmax = NULL\n)\n\n')
-   if (input$n_ind == 1) {
-        gg <- "ggplot(dat, aes(x=t, y=y)) + "
-   } else {
-        gg <- "ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) + "
+  if (length(grep("CI", input$plot_type))>0 & input$n_ind >= 10) {
+    ci <- c(0.05, 0.95) # 90%
+    if (input$plot_type == "80% CI") {
+      ci <- c(0.1, 0.9)
+    }
+    if (input$plot_type == "95% CI") {
+      ci <- c(0.025, 0.975)
+    }
+    code <- paste0(code, 'dat_ci <- dat %>%\n  group_by(comp, t) %>%\n  summarise(\n    med = median(y),\n    q_low = quantile(y, ',ci[1],'),\n    q_up = quantile(y, ',ci[2],'))\n\n')
+    gg <- "ggplot(dat_ci, aes(x=t, y=med)) +
+      geom_ribbon(aes(ymin=q_low, ymax=q_up), fill='#bfbfbf', colour=NA) + "
+  } else {
+     if (input$n_ind == 1) {
+       gg <- "ggplot(dat, aes(x=t, y=y)) + "
+     } else {
+       gg <- "ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) + "
+     }
    }
    code <- paste0(code, gg, '
   geom_line() +
@@ -101,7 +121,7 @@ shinyServer(function(input, output) {
      code <- paste0(code, '+\n  geom_hline(data = hline_data, aes(yintercept = z), colour="red", linetype="dashed")')
    }
    if(input$plot_yaxis == "log10") {
-     code <- paste0(code, '+\n  scale_y_log10')
+     code <- paste0(code, '+\n  scale_y_log10()')
    }
     cat(code)
   })
@@ -131,18 +151,33 @@ shinyServer(function(input, output) {
     if (input$plot_show != "all compartments") {
       dat <- dat %>% filter(comp == "obs")
     }
-    if (input$n_ind == 1) {
-      p <- ggplot(dat, aes(x=t, y=y))
+    if (length(grep("CI", input$plot_type))>0 & input$n_ind > 1) {
+      ci <- c(0.05, 0.95) # 90%
+      if (input$plot_type == "80% CI") {
+        ci <- c(0.1, 0.9)
+      }
+      if (input$plot_type == "95% CI") {
+        ci <- c(0.025, 0.975)
+      }
+      dat_tmp <- dat %>% group_by(comp, t) %>% summarise(med = median(y), q_low = quantile(y, ci[1]), q_up = quantile(y, ci[2]))
+      p <- ggplot(dat_tmp, aes(x=t, y=med)) +
+        geom_ribbon(aes(ymin=q_low, ymax=q_up), fill="#bfbfbf", colour=NA) +
+        geom_line(aes(y=med))
     } else {
-      p <- ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id))
-    }
+      if (input$n_ind == 1) {
+        p <- ggplot(dat, aes(x=t, y=y))
+      } else {
+        p <- ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id))
+      }
+     }
     p <- p +
       geom_line() +
-      facet_grid(comp ~ ., scales = "free") +
-      theme_plain() +
+      theme_empty() +
       scale_colour_discrete(guide = FALSE) +
       xlab("time") + ylab("")
-
+    if (input$plot_show == "all compartments") {
+      p <- p + facet_grid(comp ~ ., scales = "free")
+    }
     if(!is.null(input$target) && input$target != "") {
       hline_data <- data.frame(z = as.numeric(input$target), comp="obs")
       p <- p + geom_hline(data = hline_data, aes(yintercept = z), colour="red", linetype="dashed")

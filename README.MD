@@ -118,3 +118,18 @@ sim_ode_shiny(ode = pk_3cmt_iv,
               par = p,
               omega = omega)
 ```
+
+## Troubleshooting
+
+If you encounter the following message when trying to run a Shiny app:
+
+```
+Error in handler(req) : 
+   argument "metaHandler" is missing, with no default 
+```      
+
+you should update the Shiny library:
+
+```
+install.packages("shiny")
+```

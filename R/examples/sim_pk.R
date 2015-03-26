@@ -13,7 +13,7 @@ r1 <- new_regimen(amt = 100,
                   interval = 24,
                   n = 10)
 
-dat <- sim_ode (ode = pk_3cmt_iv,
+dat <- sim_ode (ode = "pk_3cmt_iv",
                 par = p,
                 n_ind = 1,
                 regimen = r1)
@@ -39,7 +39,7 @@ ggplot(dat, aes(x=t, y=y)) +
   scale_y_log10() +
   facet_wrap(~comp)
 
-dat_iiv <- sim_ode (ode = pk_3cmt_iv,
+dat_iiv <- sim_ode (ode = "pk_3cmt_iv",
                     par = p,
                     omega = omega,
                     n_ind = 10,
@@ -49,6 +49,12 @@ ggplot(dat_iiv, aes(x=t, y=y, colour=factor(id), group=id)) +
   geom_line() +
   scale_y_log10() +
   facet_wrap(~comp)
+
+dat_tmp <- dat_iiv %>% group_by(comp, t) %>% summarise(med = median(y), q_low = quantile(y, 0.05), q_up = quantile(y, 0.95))
+ggplot(dat_tmp, aes(x=t, y=med)) +
+  geom_ribbon(aes(ymin=q_low, ymax=q_up), fill="#bfbfbf", colour=NA) +
+  geom_line(aes(y=med)) +
+  facet_wrap(~comp, scales="free") + theme_empty()
 
 # now create a shiny app on-the-fly using the same parameters
 # but with the sim_ode_shiny() function
