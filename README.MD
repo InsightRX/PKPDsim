@@ -23,8 +23,9 @@ Recently, Inria (through the DDMoRe consortium) released a similar library for R
 - [-] currently does not allow delay differential equations for multidose regimens
 
 ## Future plans
-- will be released to CRAN
+- release to CRAN
 - implement models as compiled C code (Rcpp)
+- add more example models
 
 ## Installation
 
