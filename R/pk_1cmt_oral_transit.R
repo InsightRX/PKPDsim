@@ -34,7 +34,7 @@ pk_1cmt_oral_transit <- function (t, A, p) {
     ## Note: this is a somewhat crude implementation, as it assumes that all drug
     ##       is absorbed during the drug interval
 
-    idx <- rev((1:length(dose_times))[t>=dose_times])[1] # time after dose
+    idx <- rev((1:length(dose_times))[t>=dose_times])[1]
     tad <- t - dose_times[idx]
     last_dose_amt <- dose_amts[idx]
     dose_influx <- exp(log(last_dose_amt)+log(KTR)+N*log(KTR*tad)-KTR*tad - (log(2.5066)+(N+0.5)*log(N)-N))

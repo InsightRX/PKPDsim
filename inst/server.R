@@ -25,12 +25,30 @@ shinyServer(function(input, output) {
         if (j < len || len == length(names(p))/2) {
           val1 <- p[[names(p)[idx]]]
           val2 <- p[[names(p)[idx+1]]]
-          w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=signif(val1/5, 1), max=signif(val1*3,1), value=val1)),
-                                 column(6, sliderInput(names(p)[idx+1], names(p)[idx+1], min=signif(val2/5, 1), max=signif(val2*3,1), value=val2)
+          pmin1 <- signif(val1/5, 1)
+          pmax1 <- signif(val1*3, 1)
+          if(val1 == 0) {
+            pmin1 <- -1
+            pmax1 <-  1
+          }
+          pmin2 <- signif(val2/5, 1)
+          pmax2 <- signif(val2*3, 1)
+          if(val2 == 0) {
+            pmin2 <- -1
+            pmax2 <- 1
+          }
+          w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=pmin1, max=pmax1, value=val1)),
+                                 column(6, sliderInput(names(p)[idx+1], names(p)[idx+1], min=pmin2, max=pmax2, value=val2)
                                  )))
         } else {
           val1 <- p[[names(p)[idx]]]
-          w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=signif(val1/5, 1), max=signif(val1*3,1), value=val1)
+          pmin1 <- signif(val1/5, 1)
+          pmax1 <- signif(val1*3, 1)
+          if(val1 == 0) {
+            pmin1 <- -1
+            pmax1 <-  1
+          }
+          w <- paste(w, fluidRow(column(6, sliderInput(names(p)[idx], names(p)[idx], min=pmin1, max=pmin2, value=val1)
           )))
         }
       }

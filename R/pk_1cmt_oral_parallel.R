@@ -34,12 +34,15 @@ pk_1cmt_oral_parallel <- function (t, A, p) {
 
     ## for sequential K0 and KA absorption
     ## the dose times are available in p$dose_times
-    tad <- rev((t-dose_times)[t>=dose_times])[1] # time after dose
+    idx <- rev((1:length(dose_times))[t>=dose_times])[1]
+    tad <- t - dose_times[idx]
+    last_dose_amt <- dose_amts[idx]
+    K0_T <- last_dose_amt / K0
 
     ## ODE definition:
     return(list(c(
-      -K0*(tad <= K0_T && A[1]>0) - KA*A[1],
-      -KEL*A[2] + K0*(tad <= K0_T && A[1]>0) + KA*A[1]
+      K0*(tad <= K0_T) - KA*A[1],
+      -KEL*A[2] + K0*(tad <= K0_T) + KA*A[1]
     )))
   })
 }

@@ -5,8 +5,8 @@ library(ggplot2)
 p <- list(CL = 38.48,
           V  = 7.4,
           KA = .3,
-          K0 = 4,
-          K0_T = 1)
+          K0 = 50, # with dose of 100, K0_T = 2
+          F = 0)
 
 r1 <- new_regimen(amt = 100,
                   interval = 24,
@@ -15,8 +15,7 @@ r1 <- new_regimen(amt = 100,
 omega <- cv_to_omega (list(CL = 0.3,
                            V = 0.3,
                            KA = 0.1,
-                           K0 = .1,
-                           K0_T = .3), p)
+                           K0 = .1), p)
 
 ## sequential k0 and ka
 sim_ode_shiny(ode = "pk_1cmt_oral_sequential",
