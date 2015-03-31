@@ -1,4 +1,9 @@
-#' Miscellaneous functions
+#' covariate function builder
+#'
+#' @export
+f_cov <- function (...) {
+  substitute( with(cov, { ... } ) )
+}
 
 num_int_wrapper <- function (times, A_init, des, p_ind, lsoda_func) {
   des_out <- lsoda_func(A_init, times, des, p_ind)

@@ -61,11 +61,23 @@ sim_ode <- function (ode = NULL,
                      n_ind = 1,
                      regimen = NULL,
                      adherence = NULL,
+                     covariates = NULL,
+                     covariate_model = NULL,
                      A_init = NULL,
                      step_size = .25,
                      tmax = NULL,
                      output_cmt = NULL
                      ) {
+  if (!is.null(covariate_model) && !is.null(covariates)) {
+    n_ind <- length(t(covariates[,1]))
+    message(paste0("Simulating ", n_ind, " individuals with covariates...\n"))
+    if (sum("tbl_df" %in% class(covariates))==0) {
+      covariates <- data_frame(covariates)
+    }
+  }
+  if ((!is.null(covariate_model) && is.null(covariates)) | (is.null(covariate_model) && !is.null(covariates))) {
+    stop("For models with covariates, specify both the 'covariate_model' and the 'covariates' arguments. See help for more information.")
+  }
   if (!is.null(dde)) {
     lsoda_func <- deSolve::dede
   } else {
@@ -136,8 +148,21 @@ sim_ode <- function (ode = NULL,
   if(!is.null(p$F)) {
     design$dose <- design$dose * F
   }
+  scale <- 1
+  if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
+    scale <- attr(ode, "obs")[["scale"]]
+  }
+  comb <- c()
   for (i in 1:n_ind) {
     p_i <- p
+    if (!is.null(covariates) && !is.null(covariate_model)) {
+      keys <- names(p_i)[names(p_i) %in% names(covariate_model)]
+      if (length(keys) > 0) {
+        for (j in seq(keys)) {
+          p_i[[keys[j]]] <- covariate_model[[keys[j]]](par = p_i[[keys[j]]], cov = covariates[i,])
+        }
+      }
+    }
     design_i <- design
     A_init_i = A_init
     if (!is.null(adherence)) {
@@ -160,6 +185,7 @@ sim_ode <- function (ode = NULL,
     if(class(A_init) == "function") {
       A_init_i = A_init(p_i)
     }
+    tmp <- c()
     for (k in 1:(length(design$t)-1)) {
       if (k > 1) {
         A_upd <- dat[dat$t==tail(time_window,1),]$y
@@ -176,19 +202,16 @@ sim_ode <- function (ode = NULL,
       }
       time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
       dat <- num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func)
-      comb <- rbind(comb, cbind(id = i, dat))
+      tmp <- rbind(tmp, cbind(id = i, dat))
     }
-  }
-  # Add concentration to dataset:
-  if(!is.null(attr(ode, "obs"))) {
-    scale <- 1
-    if(class(attr(ode, "obs")[["scale"]]) == "character") {
-      scale <- p[[attr(ode, "obs")[["scale"]]]]
+    # Add concentration to dataset:
+    if(!is.null(attr(ode, "obs"))) {
+      if(class(attr(ode, "obs")[["scale"]]) == "character") {
+        scale <- p_i[[attr(ode, "obs")[["scale"]]]]
+      }
+      tmp <- rbind (tmp, tmp %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/scale))
     }
-    if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
-      scale <- attr(ode, "obs")[["scale"]]
-    }
-    comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/scale))
+    comb <- rbind(comb, tmp)
   }
   if(!is.null(output_cmt)) {
     comb <- comb %>% dplyr::filter(comp %in% output_cmt)

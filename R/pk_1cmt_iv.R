@@ -13,6 +13,5 @@ pk_1cmt_iv <- function (t, A, p) {
     )))
   })
 }
-
 ## Indicate observation compartment and scaling:
 attributes(pk_1cmt_iv) <- list(obs = list (cmt = 1, scale = "V"))

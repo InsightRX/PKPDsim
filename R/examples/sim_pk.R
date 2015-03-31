@@ -2,6 +2,29 @@ install_github("ronkeizer/PKPDsim")
 library(PKPDsim)
 library(ggplot2)
 
+p <- list(CL = 5,
+          V  = 100)
+
+r1 <- new_regimen(amt = 100,
+                  interval = 24,
+                  n = 10)
+
+cov_model <- new_covariate_model(list("CL" = f_cov({ par * (WT/70)^0.75 }),
+                                      "V"  = f_cov({ par * (WT/70)      })))
+covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
+
+dat <- sim_ode (ode = "pk_1cmt_iv",
+                par = p,
+                covariate_model = cov_model,
+                covariates = covariates,
+                regimen = r1)
+
+# Plots
+ggplot(dat, aes(x=t, y=y, group=id)) +
+  geom_line() +
+  facet_wrap(~comp, scales="free")
+
+####
 p <- list(CL = 38.48,
           V  = 7.4,
           Q2 = 7.844,
@@ -9,29 +32,28 @@ p <- list(CL = 38.48,
           Q3 = 9.324,
           V3 = 111)
 
-r1 <- new_regimen(amt = 100,
-                  interval = 24,
-                  n = 10)
 
 dat <- sim_ode (ode = "pk_3cmt_iv",
                 par = p,
-                n_ind = 1,
+                n_ind = 20,
+                covariates = covariates,
+                covariate_model = covariate_model,
                 regimen = r1)
 
-p_oral <- list(CL = 5, V = 50, Q2 = 10, V2 = 100, KA = 1)
-
-dat <- sim_ode (ode = "pk_2cmt_oral",
-                par = p_oral,
-                n_ind = 1,
-                regimen = r1)
+# Plots
+ggplot(dat, aes(x=t, y=y, group=id)) +
+  geom_line() +
+  scale_y_log10() +
+  facet_wrap(~comp, scales="free")
 
 # block
 omega <- c(0.3,       # IIV CL
            0.1, 0.3)  # IIV V
 
-# as CV:
-omega <- cv_to_omega (list(CL=0.3,
-                           V=0.3), p)
+dat <- sim_ode (ode = "pk_2cmt_oral",
+                par = p_oral,
+                n_ind = 1,
+                regimen = r1)
 
 # Plots
 ggplot(dat, aes(x=t, y=y)) +
