@@ -5,6 +5,10 @@ f_cov <- function (...) {
   substitute( with(cov, { ... } ) )
 }
 
+cumhaz_to_surv <- function(cumhaz) {
+  exp(-cumhaz)
+}
+
 num_int_wrapper <- function (times, A_init, des, p_ind, lsoda_func) {
   des_out <- lsoda_func(A_init, times, des, p_ind)
   dat_ind <- c()

@@ -9,7 +9,7 @@
 #' @param regimen a regimen object created using the regimen() function
 #' @param A_init vector with the initial state of the ODE system
 #' @param step_size the step size between the observations (NOT the step size of the differential equation solver)
-#' @param tmax maximum simulation time, if not specified will pick the end of the regimen as maximum
+#' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
 #' @param output vector specifying which compartment numbers to output
 #' @return a list containing calculated VPC information, and a ggplot2 object
 #' @export
@@ -40,7 +40,7 @@ sim_ode_shiny <- function(name = "",
                           regimen = NULL,
                           A_init = NULL,
                           step_size = 1,
-                          tmax = NULL,
+                          t_max = NULL,
                           shiny_folder = "~/shiny-pkpd") {
   if(!file.exists(shiny_folder)) {
     dir.create(shiny_folder)
@@ -55,7 +55,7 @@ sim_ode_shiny <- function(name = "",
   file.copy(system.file("style.css", package = "PKPDsim"), paste0(shiny_folder, "/www/style.css"))
   saveRDS(parameters, file=paste0(shiny_folder, "/parameters.rds"))
   saveRDS(regimen, file=paste0(shiny_folder, "/regimen.rds"))
-  saveRDS(list(ode=ode, dde = dde, omega = omega, omega_type = omega_type, n_ind = n_ind, A_init = A_init, step_size = step_size, tmax = tmax),
+  saveRDS(list(ode=ode, dde = dde, omega = omega, omega_type = omega_type, n_ind = n_ind, A_init = A_init, step_size = step_size, t_max = t_max),
           paste0(shiny_folder, "/misc.rds"))
   runApp(shiny_folder)
 }

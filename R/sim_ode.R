@@ -10,7 +10,10 @@
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
 #' @param step_size the step size between the observations (NOT the step size of the differential equation solver)
-#' @param tmax maximum simulation time, if not specified will pick the end of the regimen as maximum
+#' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
+#' @param t_obs vector of observation times, only output these values
+#' @param t_tte vector of observation times for time-to-event simulation
+#' @param rtte should repeated events be allowed (FALSE by default)
 #' @param output vector specifying which compartment numbers to output
 #' @return a data frame of compartments with associated concentrations at requested times
 #' @export
@@ -65,7 +68,10 @@ sim_ode <- function (ode = NULL,
                      covariate_model = NULL,
                      A_init = NULL,
                      step_size = .25,
-                     tmax = NULL,
+                     t_max = NULL,
+                     t_obs = NULL,
+                     t_tte = NULL,
+                     rtte = FALSE,
                      output_cmt = NULL
                      ) {
   if (!is.null(covariate_model) && !is.null(covariates)) {
@@ -97,6 +103,9 @@ sim_ode <- function (ode = NULL,
   if(is.null(regimen)) {
     regimen <- new_regimen()
   }
+#   if(!is.null(t_tte)) {
+#     stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
+#   }
   # get the ODE size
   size <- get_size_ode(ode, parameters)
 
@@ -129,17 +138,29 @@ sim_ode <- function (ode = NULL,
     p$dose_type <- "bolus"
     design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0)))
   }
-  if (is.null(tmax)) {
+  if (is.null(t_max)) {
     if (length(design$t) > 1) {
-      tmax <- tail(design$t,1) + max(diff(regimen$dose_times))
+      t_max <- tail(design$t,1) + max(diff(regimen$dose_times))
     } else {
-      tmax <- tail(design$t,1) + 24 # guess timeframe, user should use tmax argument
+      t_max <- tail(design$t,1) + 24 # guess timeframe, user should use tmax argument
+    }
+    if(!is.null(t_obs)) {
+      if(is.null(t_max) || t_max < max(t_obs)) { t_max <- max(t_obs) }
+    }
+    if(!is.null(t_tte)) {
+      if(is.null(t_tte) || t_max < max(t_tte)) { t_max <- max(t_tte) }
     }
   }
   design <- rbind(design %>%
-                    dplyr::filter(t < tmax), tail(design,1))
-  design[length(design[,1]), c("t", "dose")] <- c(tmax,0)
+                    dplyr::filter(t < t_max), tail(design,1))
+  design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
   times <- seq(from=0, to=tail(design$t,1), by=step_size)
+  if(!is.null(t_obs)) {
+    times <- unique(c(times, t_obs))
+  }
+  if(!is.null(t_tte)) {
+    times <- unique(c(times, t_tte))
+  }
   if (is.null(A_init)) {
     A_init <- rep(0, size)
   }
@@ -148,11 +169,15 @@ sim_ode <- function (ode = NULL,
   if(!is.null(p$F)) {
     design$dose <- design$dose * F
   }
+<<<<<<< HEAD
+  events <- c() # only for tte
+=======
   scale <- 1
   if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
     scale <- attr(ode, "obs")[["scale"]]
   }
   comb <- c()
+>>>>>>> 460f1a96dbc2693ae71be4135980790164157ea1
   for (i in 1:n_ind) {
     p_i <- p
     if (!is.null(covariates) && !is.null(covariate_model)) {
@@ -185,10 +210,17 @@ sim_ode <- function (ode = NULL,
     if(class(A_init) == "function") {
       A_init_i = A_init(p_i)
     }
+<<<<<<< HEAD
+    event_occurred <- FALSE
+=======
     tmp <- c()
+>>>>>>> 460f1a96dbc2693ae71be4135980790164157ea1
     for (k in 1:(length(design$t)-1)) {
       if (k > 1) {
-        A_upd <- dat[dat$t==tail(time_window,1),]$y
+        A_upd <- dat[dat$comp!="surv" & dat$t==tail(time_window,1),][,]$y
+        if(event_occurred) {
+          A_upd[attr(ode, "surv")[["cumhaz"]]] <- 0 # reset cumulative hazard
+        }
       } else {
         A_upd <- A_init_i
       }
@@ -201,6 +233,44 @@ sim_ode <- function (ode = NULL,
         }
       }
       time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
+<<<<<<< HEAD
+      dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func))
+      if(!is.null(attr(ode, "surv"))) {
+        dat <- rbind (dat, dat %>% dplyr::filter(comp == attr(ode, "surv")[["cumhaz"]]) %>% dplyr::mutate(comp = "surv", y = cumhaz_to_surv(y)))
+        tmp <- tail(dat[dat$t %in% t_tte & dat$comp == "surv",],1)
+        if(length(tmp[,1])>0) {
+          event_occurred <- FALSE
+          if(runif(1) > tmp$y) {
+          #if(runif(1) < tmp$y &! tmp$t[1] %in% events[events[,1] == i,2]) {
+            events <- rbind(events, cbind(id = i, t = tmp$t[1]))
+            event_occurred <- TRUE
+          }
+        }
+      }
+      comb <- rbind(comb, dat)
+    }
+  }
+
+  # Add concentration to dataset, and perform scaling and/or transformation:
+  if(!is.null(attr(ode, "obs"))) {
+    scale <- 1
+    if(class(attr(ode, "obs")[["scale"]]) == "character") {
+      scale <- p[[attr(ode, "obs")[["scale"]]]]
+    }
+    if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
+      scale <- attr(ode, "obs")[["scale"]]
+    }
+    comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/scale))
+    if(!is.null(attr(ode, "obs")[["trans"]])) {
+      if(class(attr(ode, "obs")[["trans"]]) == "character") {
+        trans_func <- get(attr(ode, "obs")[["trans"]])
+        comb[comb$comp == "obs",]$y <- trans_func(comb[comb$comp == "obs",]$y)
+      }
+    }
+  }
+  if(!is.null(t_obs)) {
+    comb <- comb %>% dplyr::filter(t %in% t_obs)
+=======
       dat <- num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func)
       tmp <- rbind(tmp, cbind(id = i, dat))
     }
@@ -212,9 +282,30 @@ sim_ode <- function (ode = NULL,
       tmp <- rbind (tmp, tmp %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/scale))
     }
     comb <- rbind(comb, tmp)
+>>>>>>> 460f1a96dbc2693ae71be4135980790164157ea1
   }
   if(!is.null(output_cmt)) {
     comb <- comb %>% dplyr::filter(comp %in% output_cmt)
   }
+  if(length(events)>0) {
+    events <- data.frame(events)
+    events <- events[!duplicated(paste0(events$id, "_", events$t)),]
+    ids <- unique(comb$id)
+    if(!rtte) { # no repeated TTE
+      events <- events[!duplicated(events$id),]
+      ids_ev <- unique(events[,1])
+    } else {
+      ids_ev <- unique(events[events[,2] == max(t_tte),1])
+    }
+    cens <- setdiff(ids, ids_ev) # censor individuals who didn't have event on last obs day
+    comb <- rbind(comb, cbind(events, comp="event", y = 1))
+    if(length(cens)>0) {
+      comb <- rbind(comb, cbind(id = cens, t = max(comb$t), comp="event", y=0))
+    }
+  }
+  comb$id <- as.numeric(comb$id)
+  comb$t <- as.numeric(comb$t)
+  comb$y <- as.numeric(comb$y)
+  comb <- comb %>% arrange(id, comp, t)
   return(data.frame(comb))
 }
