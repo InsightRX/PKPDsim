@@ -169,15 +169,12 @@ sim_ode <- function (ode = NULL,
   if(!is.null(p$F)) {
     design$dose <- design$dose * F
   }
-<<<<<<< HEAD
   events <- c() # only for tte
-=======
   scale <- 1
   if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
     scale <- attr(ode, "obs")[["scale"]]
   }
   comb <- c()
->>>>>>> 460f1a96dbc2693ae71be4135980790164157ea1
   for (i in 1:n_ind) {
     p_i <- p
     if (!is.null(covariates) && !is.null(covariate_model)) {
@@ -210,11 +207,8 @@ sim_ode <- function (ode = NULL,
     if(class(A_init) == "function") {
       A_init_i = A_init(p_i)
     }
-<<<<<<< HEAD
     event_occurred <- FALSE
-=======
     tmp <- c()
->>>>>>> 460f1a96dbc2693ae71be4135980790164157ea1
     for (k in 1:(length(design$t)-1)) {
       if (k > 1) {
         A_upd <- dat[dat$comp!="surv" & dat$t==tail(time_window,1),][,]$y
@@ -233,17 +227,17 @@ sim_ode <- function (ode = NULL,
         }
       }
       time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
-<<<<<<< HEAD
       dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func))
       if(!is.null(attr(ode, "surv"))) {
+        event_occurred <- FALSE
         dat <- rbind (dat, dat %>% dplyr::filter(comp == attr(ode, "surv")[["cumhaz"]]) %>% dplyr::mutate(comp = "surv", y = cumhaz_to_surv(y)))
-        tmp <- tail(dat[dat$t %in% t_tte & dat$comp == "surv",],1)
+        tmp <- dat %>% dplyr::filter(comp == "surv") %>% dplyr::filter(t %in% t_tte) %>% tail(1)
         if(length(tmp[,1])>0) {
-          event_occurred <- FALSE
           if(runif(1) > tmp$y) {
-          #if(runif(1) < tmp$y &! tmp$t[1] %in% events[events[,1] == i,2]) {
             events <- rbind(events, cbind(id = i, t = tmp$t[1]))
             event_occurred <- TRUE
+          } else {
+            event_occurred <- FALSE
           }
         }
       }
@@ -270,19 +264,6 @@ sim_ode <- function (ode = NULL,
   }
   if(!is.null(t_obs)) {
     comb <- comb %>% dplyr::filter(t %in% t_obs)
-=======
-      dat <- num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func)
-      tmp <- rbind(tmp, cbind(id = i, dat))
-    }
-    # Add concentration to dataset:
-    if(!is.null(attr(ode, "obs"))) {
-      if(class(attr(ode, "obs")[["scale"]]) == "character") {
-        scale <- p_i[[attr(ode, "obs")[["scale"]]]]
-      }
-      tmp <- rbind (tmp, tmp %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/scale))
-    }
-    comb <- rbind(comb, tmp)
->>>>>>> 460f1a96dbc2693ae71be4135980790164157ea1
   }
   if(!is.null(output_cmt)) {
     comb <- comb %>% dplyr::filter(comp %in% output_cmt)
