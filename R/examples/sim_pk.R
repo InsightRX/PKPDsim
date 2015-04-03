@@ -20,9 +20,7 @@ dat <- sim_ode (ode = "pk_1cmt_iv",
                 t_obs = seq(from=0, to=48, by=4),
                 regimen = r1)
 
-vpc(obs=dat %>% filter(comp=="obs"),
-#    obs_cols=list("id"="id", "idv"="t", "dv"="y"),
-    log_y = TRUE)
+vpc(obs = dat, show = list(obs_dv = TRUE), log_y = TRUE)
 
 # Plots
 ggplot(dat, aes(x=t, y=y, group=id)) +
