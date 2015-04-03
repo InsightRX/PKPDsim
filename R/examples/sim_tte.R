@@ -9,7 +9,7 @@ library(survival)
 p <- list(CL = 5,
           V  = 20,
           KA = 0.5,
-          LAMBDA = 0.05)
+          LAMBDA = 2e-3)
 omega <- cv_to_omega (par_cv = list(CL=0.2, V=0.2, KA=0.2), p)
 
 ## set up simulations
