@@ -138,6 +138,12 @@ sim_ode <- function (ode = NULL,
     p$dose_type <- "bolus"
     design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0)))
   }
+  if(!is.null(t_obs)) { # make sure observation times are in dataset
+    design <- data.frame(rbind(design, cbind(t = setdiff(t_obs, design$t), dose = 0, dum = 0))) %>% arrange(t)
+  }
+  if(!is.null(t_tte)) { # make sure tte times are in dataset
+    design <- data.frame(rbind(design, cbind(t = setdiff(t_tte, design$t), dose = 0, dum = 0))) %>% arrange(t)
+  }
   if (is.null(t_max)) {
     if (length(design$t) > 1) {
       t_max <- tail(design$t,1) + max(diff(regimen$dose_times))
@@ -155,12 +161,6 @@ sim_ode <- function (ode = NULL,
                     dplyr::filter(t < t_max), tail(design,1))
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
   times <- seq(from=0, to=tail(design$t,1), by=step_size)
-  if(!is.null(t_obs)) {
-    times <- unique(c(times, t_obs))
-  }
-  if(!is.null(t_tte)) {
-    times <- unique(c(times, t_tte))
-  }
   if (is.null(A_init)) {
     A_init <- rep(0, size)
   }
