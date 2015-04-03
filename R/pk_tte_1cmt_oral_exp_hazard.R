@@ -18,4 +18,4 @@ pk_tte_1cmt_oral_exp_hazard <- function (t, A, p) {
 
 ## Indicate observation compartment and scaling:
 attributes(pk_tte_1cmt_oral_exp_hazard) <- list(obs = list (cmt = 2),
-                                                surv = list (cumhaz = 3))
+                                                cumhaz = list (cmt = 3))

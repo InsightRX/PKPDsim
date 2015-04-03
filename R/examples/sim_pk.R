@@ -9,8 +9,8 @@ r1 <- new_regimen(amt = 100,
                   interval = 24,
                   n = 2)
 
-cov_model <- new_covariate_model(list("CL" = f_cov({ par * (WT/70)^0.75 }),
-                                      "V"  = f_cov({ par * (WT/70)      })))
+cov_model <- new_covariate_model(list("CL" = f_cov( par * (WT/70)^0.75 ),
+                                      "V"  = f_cov( par * (WT/70)      )))
 covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
 
 dat <- sim_ode (ode = "pk_1cmt_iv",

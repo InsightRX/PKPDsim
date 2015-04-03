@@ -138,6 +138,12 @@ sim_ode <- function (ode = NULL,
     p$dose_type <- "bolus"
     design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0)))
   }
+  if(!is.null(t_obs)) { # make sure observation times are in dataset
+    design <- data.frame(rbind(design, cbind(t = setdiff(t_obs, design$t), dose = 0, dum = 0))) %>% arrange(t)
+  }
+  if(!is.null(t_tte)) { # make sure tte times are in dataset
+    design <- data.frame(rbind(design, cbind(t = setdiff(t_tte, design$t), dose = 0, dum = 0))) %>% arrange(t)
+  }
   if (is.null(t_max)) {
     if (length(design$t) > 1) {
       t_max <- tail(design$t,1) + max(diff(regimen$dose_times))
@@ -155,12 +161,6 @@ sim_ode <- function (ode = NULL,
                     dplyr::filter(t < t_max), tail(design,1))
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
   times <- seq(from=0, to=tail(design$t,1), by=step_size)
-  if(!is.null(t_obs)) {
-    times <- unique(c(times, t_obs))
-  }
-  if(!is.null(t_tte)) {
-    times <- unique(c(times, t_tte))
-  }
   if (is.null(A_init)) {
     A_init <- rep(0, size)
   }
@@ -209,11 +209,12 @@ sim_ode <- function (ode = NULL,
     }
     event_occurred <- FALSE
     tmp <- c()
+    prv_cumhaz <- 0
     for (k in 1:(length(design$t)-1)) {
       if (k > 1) {
-        A_upd <- dat[dat$comp!="surv" & dat$t==tail(time_window,1),][,]$y
+        A_upd <- dat[dat$comp!="cumhaz" & dat$t==tail(time_window,1),][,]$y
         if(event_occurred) {
-          A_upd[attr(ode, "surv")[["cumhaz"]]] <- 0 # reset cumulative hazard
+          A_upd[attr(ode, "cumhaz")[["cmt"]]] <- 0 # reset cumulative hazard
         }
       } else {
         A_upd <- A_init_i
@@ -228,12 +229,15 @@ sim_ode <- function (ode = NULL,
       }
       time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
       dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func))
-      if(!is.null(attr(ode, "surv"))) {
+      if(!is.null(attr(ode, "cumhaz"))) {
         event_occurred <- FALSE
-        dat <- rbind (dat, dat %>% dplyr::filter(comp == attr(ode, "surv")[["cumhaz"]]) %>% dplyr::mutate(comp = "surv", y = cumhaz_to_surv(y)))
-        tmp <- dat %>% dplyr::filter(comp == "surv") %>% dplyr::filter(t %in% t_tte) %>% tail(1)
+        dat <- rbind (dat, dat %>%
+                        dplyr::filter(comp == attr(ode, "cumhaz")[["cmt"]]) %>%
+                        dplyr::mutate(comp = "cumhaz", y = y-prv_cumhaz))
+        tmp <- dat %>% dplyr::filter(comp == "cumhaz") %>% dplyr::filter(t %in% t_tte) %>% tail(1)
         if(length(tmp[,1])>0) {
-          if(runif(1) > tmp$y) {
+          prv_cumhaz <- tmp$y
+          if(runif(1) > cumhaz_to_surv(tmp$y)) {
             events <- rbind(events, cbind(id = i, t = tmp$t[1]))
             event_occurred <- TRUE
           } else {
