@@ -27,24 +27,24 @@ new_regimen <- function(amt = 100,
                         n = n,
                         type = type,
                         t_inf = t_inf), class = "regimen")
-  if (is.null(reg$times)) {
-    if(is.null(reg$interval)) {
+  if (is.null(times)) {
+    if(is.null(interval)) {
       stop("Dose times or dosing interval has to be specified.")
     } else {
-      if (is.null(reg$n)) {
+      if (is.null(n)) {
         stop("The number of doses (n) must be specified in the regimen object.")
       } else {
-        reg$dose_times <- c(0:(reg$n-1)) * reg$interval
-      }
-      if(is.null(t_inf)) {
-        reg$t_inf = 1
+        reg$dose_times <- c(0:(n-1)) * interval
       }
     }
   } else {
-    reg$dose_times <- reg$times
+    reg$dose_times <- times
   }
   if (is.null(reg$cmt) || length(reg$cmt) == 0) {
     reg$cmt <- 1
+  }
+  if(is.null(t_inf)) {
+    reg$t_inf = 1
   }
   reg$n <- length(reg$dose_times)
   if (length(reg$amt) != length(reg$dose_times)) {
