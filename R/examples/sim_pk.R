@@ -7,7 +7,7 @@ p <- list(CL = 5,
 
 r1 <- new_regimen(amt = 100,
                   interval = 24,
-                  n = 10)
+                  n = 2)
 
 cov_model <- new_covariate_model(list("CL" = f_cov( par * (WT/70)^0.75 ),
                                       "V"  = f_cov( par * (WT/70)      )))
@@ -17,7 +17,10 @@ dat <- sim_ode (ode = "pk_1cmt_iv",
                 par = p,
                 covariate_model = cov_model,
                 covariates = covariates,
+                t_obs = seq(from=0, to=48, by=4),
                 regimen = r1)
+
+vpc(obs = dat, show = list(obs_dv = TRUE), log_y = TRUE)
 
 # Plots
 ggplot(dat, aes(x=t, y=y, group=id)) +

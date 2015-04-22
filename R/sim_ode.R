@@ -291,6 +291,7 @@ sim_ode <- function (ode = NULL,
   comb$id <- as.numeric(comb$id)
   comb$t <- as.numeric(comb$t)
   comb$y <- as.numeric(comb$y)
-  comb <- comb %>% arrange(id, comp, t)
-  return(data.frame(comb))
+  comb <- data.frame(comb %>% arrange(id, comp, t))
+  class(comb) <- c(class(comb), "PKPDsim")
+  return(comb)
 }

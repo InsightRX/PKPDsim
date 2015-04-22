@@ -1,5 +1,5 @@
-library(devtools)
-install_github("ronkeizer/PKPDsim")
+#library(devtools)
+#install_github("ronkeizer/PKPDsim")
 library(PKPDsim)
 library(ggplot2)
 library(plyr)
