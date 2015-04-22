@@ -7,7 +7,7 @@ pk_1cmt_iv_mm <- function (t, A, p) {
     ## ODE definition:
     CONC <- A[1]/V
     return(list(c(
-      -VMAX * CONC / (CONC + KM)
+      -VMAX * CONC / (CONC + KM) + rate
     )))
 
   })
