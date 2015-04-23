@@ -72,7 +72,9 @@ sim_ode <- function (ode = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
                      rtte = FALSE,
-                     output_cmt = NULL
+                     output_cmt = NULL,
+                     cpp = FALSE,
+                     cpp_recompile = TRUE
                      ) {
   if (!is.null(covariate_model) && !is.null(covariates)) {
     n_ind <- length(t(covariates[,1]))
@@ -91,6 +93,17 @@ sim_ode <- function (ode = NULL,
   }
   if(!is.null(dde)) {
     ode <- dde
+  }
+  if(cpp) {
+    if(cpp_recompile) {
+      if (class(ode) != "character") {
+        stop("The 'ode' argument has to be a character string referencing the function.")
+      } else {
+        message("Compiling simulation function...")
+        compile_sim_cpp(ode)
+        message("Simulating...")
+      }
+    }
   }
   if (class(ode) == "character") {
     ode <- get(ode)
@@ -228,7 +241,7 @@ sim_ode <- function (ode = NULL,
         }
       }
       time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
-      dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func))
+      dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func, cpp))
       if(!is.null(attr(ode, "cumhaz"))) {
         event_occurred <- FALSE
         dat <- rbind (dat, dat %>%

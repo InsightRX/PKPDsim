@@ -1,26 +1,51 @@
 install_github("ronkeizer/PKPDsim")
 library(PKPDsim)
 library(ggplot2)
+library(Rcpp)
+library(inline)
 
 p <- list(CL = 5,
-          V  = 100)
+          V  = 50,
+          KA = 1)
 
 r1 <- new_regimen(amt = 100,
                   interval = 24,
-                  n = 2)
+                  n = 8)
 
-cov_model <- new_covariate_model(list("CL" = f_cov( par * (WT/70)^0.75 ),
-                                      "V"  = f_cov( par * (WT/70)      )))
-covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
+# cov_model <- new_covariate_model(list("CL" = f_cov( par * (WT/70)^0.75 ),
+#                                       "V"  = f_cov( par * (WT/70)      )))
+# covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
 
 dat <- sim_ode (ode = "pk_1cmt_iv",
                 par = p,
-                covariate_model = cov_model,
-                covariates = covariates,
-                t_obs = seq(from=0, to=48, by=4),
-                regimen = r1)
+                regimen = r1,
+                cpp = TRUE, cpp_recompile=TRUE)
+dat2 <- sim_ode (ode = "pk_1cmt_iv",
+                par = p,
+                regimen = r1,
+                cpp = FALSE, cpp_recompile=TRUE)
 
-vpc(obs = dat, show = list(obs_dv = TRUE), log_y = TRUE)
+ggplot(dat, aes(x=t, y=y, group=id)) +
+  geom_line() +
+  facet_wrap(~comp, scales="free")
+
+system.time({
+  for(i in 1:100) {
+    dat <- sim_ode (ode = "pk_1cmt_oral",
+                    par = p,
+                    regimen = r1,
+                    cpp = TRUE, cpp_recompile=FALSE)
+  }
+})
+system.time({
+  for(i in 1:100) {
+    dat <- sim_ode (ode = "pk_1cmt_oral",
+                    par = p,
+                    regimen = r1,
+                    cpp = FALSE)
+  }
+})
+
 
 # Plots
 ggplot(dat, aes(x=t, y=y, group=id)) +
@@ -39,8 +64,8 @@ p <- list(CL = 38.48,
 dat <- sim_ode (ode = "pk_3cmt_iv",
                 par = p,
                 n_ind = 20,
-                covariates = covariates,
-                covariate_model = covariate_model,
+#                covariates = covariates,
+#                covariate_model = covariate_model,
                 regimen = r1)
 
 # Plots
@@ -85,8 +110,8 @@ ggplot(dat_tmp, aes(x=t, y=med)) +
 # but with the sim_ode_shiny() function
 sim_ode_shiny(ode = "pk_3cmt_iv",
               par = p,
-              regimen = new_regimen(amt=30),
-              omega = omega)
+              regimen = new_regimen(amt=30))
+#              omega = omega)
 
 p_efv <- list(CL = 10, V=300, KA=0.67)
 
