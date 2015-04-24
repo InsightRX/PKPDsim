@@ -9,19 +9,6 @@ cumhaz_to_surv <- function(cumhaz) {
   exp(-cumhaz)
 }
 
-num_int_wrapper <- function (times, A_init, des, p_ind, lsoda_func, cpp) {
-  if(cpp) {
-    des_out <- sim_cpp(A_init, c(min(times), max(times)), list(test="test"))
-  } else {
-    des_out <- lsoda_func(A_init, times, des, p_ind)
-  }
-  dat_ind <- c()
-  for (j in 1:length(A_init)) {
-    dat_ind <- rbind (dat_ind, cbind(t=des_out[,1], comp=j, y=des_out[,(j+1)]))
-  }
-  return(data.frame(dat_ind))
-}
-
 get_size_ode <- function(ode, p) {
   p$dose_times <- c(0)
   p$dose_amts  <- c(0)

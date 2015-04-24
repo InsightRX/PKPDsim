@@ -17,6 +17,7 @@ r1 <- new_regimen(amt = 100,
 # covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
 
 dat <- sim_ode (ode = "pk_1cmt_iv",
+                step_size = 4,
                 par = p,
                 regimen = r1,
                 cpp = TRUE, cpp_recompile=TRUE)

@@ -16,12 +16,9 @@ struct push_back_solution
 };
 
 // [[Rcpp::export]]
-NumericMatrix sim_cpp (const NumericVector Ainit, NumericVector times, SEXP par) {
-  double step = 1;
-  double t_start = times(0);
-  double t_end = times(1);
-  double dose = 100;
-  int n_steps = (int) ceil((t_end-t_start)/step)+1;
+NumericMatrix sim_cpp (const NumericVector Ainit, NumericVector times, SEXP par, double step_size) {
+  int n_steps = (int) ceil((times(1)-times(0))/step_size)+1;
+  double t_end = times(0) + ((n_steps-1) * step_size);
   vector<state_type> x_vec;
   vector<double> tim;
 
@@ -31,12 +28,11 @@ NumericMatrix sim_cpp (const NumericVector Ainit, NumericVector times, SEXP par)
     Rcpp::List rparam(par);
     std::string method = Rcpp::as<std::string>(rparam["test"]);
 
-    int i = 0;
     state_type A = {} ;
     for(int j = 0; j < n_comp; j++) {
       A[j] = Ainit(j);
     }
-    integrate_const (stepr , ode, A, times(0), times(1), step, push_back_solution (x_vec, tim));
+    integrate_const (stepr , ode, A, times(0), t_end, step_size, push_back_solution (x_vec, tim));
     for( size_t i=0; i < n_steps; i++ )
     {
       A_ret(i,0) = tim[i];

@@ -67,7 +67,7 @@ sim_ode <- function (ode = NULL,
                      covariates = NULL,
                      covariate_model = NULL,
                      A_init = NULL,
-                     step_size = .25,
+                     step_size = .5,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
@@ -241,7 +241,7 @@ sim_ode <- function (ode = NULL,
         }
       }
       time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
-      dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func, cpp))
+      dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func, cpp, step_size))
       if(!is.null(attr(ode, "cumhaz"))) {
         event_occurred <- FALSE
         dat <- rbind (dat, dat %>%
