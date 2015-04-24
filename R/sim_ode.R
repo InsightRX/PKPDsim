@@ -100,7 +100,7 @@ sim_ode <- function (ode = NULL,
         stop("The 'ode' argument has to be a character string referencing the function.")
       } else {
         message("Compiling simulation function...")
-        compile_sim_cpp(ode)
+        compile_sim_cpp(ode, parameters)
         message("Simulating...")
       }
     }
@@ -224,7 +224,7 @@ sim_ode <- function (ode = NULL,
     tmp <- c()
     prv_cumhaz <- 0
     if(cpp) {
-      tmp <- sim_wrapper_cpp(A_init, design_i$t, design_i[design_i$dum == 0,]$dose, length(design$t), list(test="test"), 1)
+      tmp <- sim_wrapper_cpp(A_init, design_i$t, design_i[design_i$dum == 0,]$dose, length(design$t), p_i, 1)
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
       dat_ind <- c()
       for (j in 1:length(A_init)) {

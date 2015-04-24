@@ -22,7 +22,8 @@ r1 <- new_regimen(amt = 100,
 system.time({
   dat <- sim_ode (ode = "pk_1cmt_oral",
                   step_size = 1,
-                  n_ind = 500,
+                  n_ind = 200,
+                  omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1,"KA"=0.1)),
                   par = p,
                   regimen = r1,
                   cpp = TRUE, cpp_recompile = TRUE)
@@ -31,7 +32,7 @@ system.time({
   dat2 <- sim_ode (ode = "pk_1cmt_oral",
                    step_size = 1,
                    par = p,
-                n_ind = 500,
+                n_ind = 100,
                 regimen = r1,
                 cpp = FALSE, cpp_recompile=TRUE)
 })
