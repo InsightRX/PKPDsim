@@ -223,46 +223,63 @@ sim_ode <- function (ode = NULL,
     event_occurred <- FALSE
     tmp <- c()
     prv_cumhaz <- 0
-    for (k in 1:(length(design$t)-1)) {
-      if (k > 1) {
-        A_upd <- dat[dat$comp!="cumhaz" & dat$t==tail(time_window,1),][,]$y
-        if(event_occurred) {
-          A_upd[attr(ode, "cumhaz")[["cmt"]]] <- 0 # reset cumulative hazard
-        }
-      } else {
-        A_upd <- A_init_i
+    if(cpp) {
+      tmp <- sim_wrapper_cpp(A_init, design_i$t, design_i[design_i$dum == 0,]$dose, length(design$t), list(test="test"), 1)
+      des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
+      dat_ind <- c()
+      for (j in 1:length(A_init)) {
+        dat_ind <- rbind (dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
       }
-      p_i$rate <- 0
-      if(p_i$dose_type != "infusion") {
-        A_upd[regimen$cmt] <- A_upd[regimen$cmt] + design_i[design_i$dum == 0,]$dose[k]
-      } else {
-        if(design_i$dose[k] > 0) {
-          p_i$rate <- design_i$dose[k] / p_i$t_inf
-        }
+      if(i == 1) {
+        l_mat <- length(dat_ind[,1])
+        comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
       }
-      time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
-      dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func, cpp, step_size))
-      if(!is.null(attr(ode, "cumhaz"))) {
-        event_occurred <- FALSE
-        dat <- rbind (dat, dat %>%
-                        dplyr::filter(comp == attr(ode, "cumhaz")[["cmt"]]) %>%
-                        dplyr::mutate(comp = "cumhaz", y = y-prv_cumhaz))
-        tmp <- dat %>% dplyr::filter(comp == "cumhaz") %>% dplyr::filter(t %in% t_tte) %>% tail(1)
-        if(length(tmp[,1])>0) {
-          prv_cumhaz <- tmp$y
-          if(runif(1) > cumhaz_to_surv(tmp$y)) {
-            events <- rbind(events, cbind(id = i, t = tmp$t[1]))
-            event_occurred <- TRUE
-          } else {
-            event_occurred <- FALSE
+      comb[((i-1)*l_mat)+(1:l_mat),] <- dat_ind
+#      comb <- data.frame(dat_ind)
+    } else {
+      for (k in 1:(length(design$t)-1)) {
+        if (k > 1) {
+          A_upd <- dat[dat$comp!="cumhaz" & dat$t==tail(time_window,1),][,]$y
+          if(event_occurred) {
+            A_upd[attr(ode, "cumhaz")[["cmt"]]] <- 0 # reset cumulative hazard
+          }
+        } else {
+          A_upd <- A_init_i
+        }
+        p_i$rate <- 0
+        if(p_i$dose_type != "infusion") {
+          A_upd[regimen$cmt] <- A_upd[regimen$cmt] + design_i[design_i$dum == 0,]$dose[k]
+        } else {
+          if(design_i$dose[k] > 0) {
+            p_i$rate <- design_i$dose[k] / p_i$t_inf
           }
         }
+        time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
+        dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func, cpp, step_size))
+        if(!is.null(attr(ode, "cumhaz"))) {
+          event_occurred <- FALSE
+          dat <- rbind (dat, dat %>%
+                          dplyr::filter(comp == attr(ode, "cumhaz")[["cmt"]]) %>%
+                          dplyr::mutate(comp = "cumhaz", y = y-prv_cumhaz))
+          tmp <- dat %>% dplyr::filter(comp == "cumhaz") %>% dplyr::filter(t %in% t_tte) %>% tail(1)
+          if(length(tmp[,1])>0) {
+            prv_cumhaz <- tmp$y
+            if(runif(1) > cumhaz_to_surv(tmp$y)) {
+              events <- rbind(events, cbind(id = i, t = tmp$t[1]))
+              event_occurred <- TRUE
+            } else {
+              event_occurred <- FALSE
+            }
+          }
+        }
+        comb <- rbind(comb, dat)
       }
-      comb <- rbind(comb, dat)
     }
   }
 
   # Add concentration to dataset, and perform scaling and/or transformation:
+  comb <- data.frame(comb)
+  colnames(comb) <- c("id", "t", "comp", "y")
   if(!is.null(attr(ode, "obs"))) {
     scale <- 1
     if(class(attr(ode, "obs")[["scale"]]) == "character") {

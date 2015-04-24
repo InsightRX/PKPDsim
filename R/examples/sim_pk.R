@@ -3,6 +3,8 @@ library(PKPDsim)
 library(ggplot2)
 library(Rcpp)
 library(inline)
+settings <- getPlugin("Rcpp")
+settings$env$CC <- "g++"
 
 p <- list(CL = 5,
           V  = 50,
@@ -10,21 +12,29 @@ p <- list(CL = 5,
 
 r1 <- new_regimen(amt = 100,
                   interval = 24,
-                  n = 8)
+                  n = 5)
 
 # cov_model <- new_covariate_model(list("CL" = f_cov( par * (WT/70)^0.75 ),
 #                                       "V"  = f_cov( par * (WT/70)      )))
 # covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
 
-dat <- sim_ode (ode = "pk_1cmt_iv",
-                step_size = 4,
-                par = p,
-                regimen = r1,
-                cpp = TRUE, cpp_recompile=TRUE)
-dat2 <- sim_ode (ode = "pk_1cmt_iv",
-                par = p,
+#for(i in 1:10) {
+system.time({
+  dat <- sim_ode (ode = "pk_1cmt_oral",
+                  step_size = 1,
+                  n_ind = 500,
+                  par = p,
+                  regimen = r1,
+                  cpp = TRUE, cpp_recompile = TRUE)
+})
+system.time({
+  dat2 <- sim_ode (ode = "pk_1cmt_oral",
+                   step_size = 1,
+                   par = p,
+                n_ind = 500,
                 regimen = r1,
                 cpp = FALSE, cpp_recompile=TRUE)
+})
 
 ggplot(dat, aes(x=t, y=y, group=id)) +
   geom_line() +
