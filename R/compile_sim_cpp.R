@@ -6,12 +6,14 @@ compile_sim_cpp <- function(func, p) {
     stop("Specified C++ ODE function not found!")
   } else {
     n <- names(p)
-    pars <- ""
+    p$rate <- 0
+    pars <- "\n"
+    par_def <- "\n"
     for(i in seq(n)) {
       pars <- paste0(pars, "double ", n[i], ";\n")
+      par_def <- paste0('  ', par_def, n[i], ' = par["', n[i], '"];\n')
     }
     cpp_code <- readLines(paste0(folder, "/cpp/sim.cpp"))
-    par_def <- 'KA = par["KA"];\n    CL = par["CL"];\n    V = par["V"];'
     idx <- grep("insert_parameter_definitions", cpp_code)
     cpp_code[idx] <- par_def
     sim_func <-
@@ -19,6 +21,7 @@ compile_sim_cpp <- function(func, p) {
              pars,
              paste0(readLines(cpp_file), collapse="\n"),
              paste0(cpp_code, collapse = "\n"))
+#     cat(sim_func)
     sourceCpp(code=sim_func)
   }
 }

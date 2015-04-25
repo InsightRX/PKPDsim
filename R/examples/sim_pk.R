@@ -8,11 +8,13 @@ settings$env$CC <- "g++"
 
 p <- list(CL = 5,
           V  = 50,
-          KA = 1)
+          KA = .2)
 
 r1 <- new_regimen(amt = 100,
+                  type = "infusion",
+                  t_inf = 4,
                   interval = 24,
-                  n = 5)
+                  n = 2)
 
 # cov_model <- new_covariate_model(list("CL" = f_cov( par * (WT/70)^0.75 ),
 #                                       "V"  = f_cov( par * (WT/70)      )))
@@ -20,13 +22,16 @@ r1 <- new_regimen(amt = 100,
 
 #for(i in 1:10) {
 system.time({
-  dat <- sim_ode (ode = "pk_1cmt_oral",
+  dat <- sim_ode (ode = "pk_1cmt_iv",
                   step_size = 1,
-                  n_ind = 200,
-                  omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1,"KA"=0.1)),
+                  n_ind = 1,
+                  omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1), p),
                   par = p,
                   regimen = r1,
                   cpp = TRUE, cpp_recompile = TRUE)
+  ggplot(dat, aes(x=t, y=y, group=id)) +
+    geom_line() +
+    facet_wrap(~comp, scales="free")
 })
 system.time({
   dat2 <- sim_ode (ode = "pk_1cmt_oral",
@@ -36,10 +41,6 @@ system.time({
                 regimen = r1,
                 cpp = FALSE, cpp_recompile=TRUE)
 })
-
-ggplot(dat, aes(x=t, y=y, group=id)) +
-  geom_line() +
-  facet_wrap(~comp, scales="free")
 
 system.time({
   for(i in 1:100) {

@@ -50,7 +50,17 @@ List sim_wrapper_cpp (const NumericVector Ainit, NumericVector times, NumericVec
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];
-    Aupd[0] = Aupd[0] + doses[i];
+    if(strcmp(par["dose_type"], "infusion") != 0) {
+      Aupd[0] = Aupd[0] + doses[i];
+    } else {
+      if(doses[i] > 0.0) {
+//        rate = doses[i] / atof(par["t_inf"]);
+        NumericVector t_inf = par["t_inf"];
+        rate = doses[i] / t_inf(0) ;
+      } else {
+        rate = 0;
+      }
+    }
     ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
     t.insert(t.end(), tmp.time.begin(), tmp.time.end());
     y.insert(y.end(), tmp.y.begin(), tmp.y.end());
