@@ -1,0 +1,13 @@
+[LONGITUDINAL]
+input = {A, k, c, a}
+EQUATION:
+  t0    = 0
+f_0   = A
+ddt_f = -k*f/(c+f)
+DEFINITION:
+  y = {distribution=normal, prediction=f, sd=a}
+
+[INDIVIDUAL]
+input = {k_pop, omega}
+DEFINITION:
+  k = {distribution=lognormal, prediction=k_pop, sd=omega}
