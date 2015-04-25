@@ -1,13 +1,13 @@
 [LONGITUDINAL]
-input = {A, k, c, a}
+input = {ka, V, k, a1}
 EQUATION:
-  t0    = 0
-f_0   = A
-ddt_f = -k*f/(c+f)
+Cc = pkmodel(ka, V, k)
 DEFINITION:
-  y = {distribution=normal, prediction=f, sd=a}
+y1 = {distribution=lognormal, prediction=Cc, sd=a1}
 
 [INDIVIDUAL]
-input = {k_pop, omega}
+input={ka_pop, omega_ka, V_pop, omega_V, k_pop, omega_k}
 DEFINITION:
-  k = {distribution=lognormal, prediction=k_pop, sd=omega}
+ka = {distribution=lognormal, prediction=ka_pop, sd=omega_ka}
+V  = {distribution=lognormal, prediction=V_pop,  sd=omega_V}
+k  = {distribution=lognormal, prediction=k_pop,  sd=omega_k}
