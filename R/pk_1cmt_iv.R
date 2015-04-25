@@ -21,7 +21,7 @@ attributes(pk_1cmt_iv) <- list(obs = list (cmt = 1, scale = "V"))
 ## C++ version ##############################################################
 #' @export
 pk_1cmt_iv_cpp <- "
-  dAdt[0] = -(CL/V)*A[0] + rate;
+  dAdt[1] = -(CL/V)*A[1] + rate ;
 "
 
 ## Indicate observation compartment and scaling (don't forget "size" argument here!):

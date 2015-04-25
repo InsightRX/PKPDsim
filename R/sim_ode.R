@@ -102,7 +102,6 @@ sim_ode <- function (ode = NULL,
       } else {
         message("Compiling simulation function...")
         compile_sim_cpp(ode, parameters, cpp_show_function)
-        message("Simulating...")
       }
     }
   }
@@ -189,6 +188,7 @@ sim_ode <- function (ode = NULL,
     scale <- attr(ode, "obs")[["scale"]]
   }
   comb <- c()
+  message("Simulating...")
   for (i in 1:n_ind) {
     p_i <- p
     if (!is.null(covariates) && !is.null(covariate_model)) {

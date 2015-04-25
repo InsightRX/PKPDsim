@@ -21,8 +21,8 @@ attributes(pk_1cmt_oral) <- list(obs = list (cmt = 2, scale = "V"))
 ## C++ version ##############################################################
 #' @export
 pk_1cmt_oral_cpp <- "
-  dAdt[0] = -KA*A[0];
-  dAdt[1] = KA*A[0] - (CL/V)*A[1];
+  dAdt[0] = -KA*A[1];
+  dAdt[1] = KA*A[1] - (CL/V)*A[2];
 "
 
 ## Indicate observation compartment and scaling (don't forget "size" argument here!):

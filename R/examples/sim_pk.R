@@ -28,10 +28,22 @@ system.time({
                   par = p,
                   regimen = r1,
                   cpp = TRUE, cpp_recompile = TRUE, cpp_show_function = FALSE)
-  ggplot(dat, aes(x=t, y=y, group=id)) +
-    geom_line() +
-    facet_wrap(~comp, scales="free")
 })
+ggplot(dat, aes(x=t, y=y, group=id)) +
+  geom_line() +
+  facet_wrap(~comp, scales="free")
+
+dat <- sim_ode (ode = "pk_1cmt_iv_mm",
+                  n_ind = 10000,
+                  omega = cv_to_omega(par_cv = list("VMAX"=0.1, "KM"=0.1), p),
+                  par = list(VMAX=20, V=50, KM=5),
+                  regimen = r1,
+                  cpp = TRUE, cpp_recompile = FALSE, cpp_show_function = FALSE)
+ggplot(dat, aes(x=t, y=y, group=id)) +
+  geom_line() + scale_y_log10() +
+  facet_wrap(~comp, scales="free")
+
+
 system.time({
   dat2 <- sim_ode (ode = "pk_1cmt_oral",
                    step_size = 1,
@@ -40,6 +52,10 @@ system.time({
                 regimen = r1,
                 cpp = TRUE, cpp_recompile=TRUE)
 })
+ggplot(dat2, aes(x=t, y=y, group=id)) +
+  geom_line() +
+  facet_wrap(~comp, scales="free")
+
 
 system.time({
   for(i in 1:100) {
