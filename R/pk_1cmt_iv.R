@@ -1,3 +1,4 @@
+## R version #################################################################
 #' ODE system for PK - 1 compartment IV
 #'
 #' @export
@@ -15,3 +16,13 @@ pk_1cmt_iv <- function (t, A, p) {
 }
 ## Indicate observation compartment and scaling:
 attributes(pk_1cmt_iv) <- list(obs = list (cmt = 1, scale = "V"))
+
+
+## C++ version ##############################################################
+#' @export
+pk_1cmt_iv_cpp <- "
+  dAdt[0] = -(CL/V)*A[0] + rate;
+"
+
+## Indicate observation compartment and scaling (don't forget "size" argument here!):
+attributes(pk_1cmt_iv_cpp) <- list(size = 1, obs = list (cmt = 1, scale = "V"))
