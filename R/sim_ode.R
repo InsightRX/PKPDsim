@@ -73,9 +73,6 @@ sim_ode <- function (ode = NULL,
                      t_tte = NULL,
                      rtte = FALSE,
                      output_cmt = NULL,
-                     cpp = FALSE,
-                     cpp_recompile = TRUE,
-                     cpp_show_function = FALSE,
                      verbose = FALSE
                      ) {
   if (!is.null(covariate_model) && !is.null(covariates)) {
@@ -96,20 +93,25 @@ sim_ode <- function (ode = NULL,
   if(!is.null(dde)) {
     ode <- dde
   }
-  if(cpp) {
-    if(cpp_recompile) {
-      if (class(ode) != "character") {
-        stop("The 'ode' argument has to be a character string referencing the function.")
-      } else {
-        message("Compiling simulation function...")
-        compile_sim_cpp(ode, parameters, cpp_show_function, verbose)
-      }
-    }
-  }
+#   if(cpp) {
+#     if(cpp_recompile) {
+#       if (class(ode) != "character") {
+#         stop("The 'ode' argument has to be a character string referencing the function.")
+#       } else {
+#         message("Compiling simulation function...")
+#         compile_sim_cpp(get(paste0(ode, "_cpp")), parameters, cpp_show_code, verbose)
+#       }
+#     }
+#   }
   if (class(ode) == "character") {
     ode <- get(ode)
   } else {
-    warning("The preferred input to the 'ode' argument is a character string referencing the function, not the function itself.")
+    stop("Error: the 'ode' argument to this function should be a character string referencing the function, not the function itself.")
+  }
+  if(!is.null(attr(ode, "cpp")) && attr(ode, "cpp")) {
+    cpp <- TRUE
+  } else {
+    cpp <- FALSE
   }
   if(is.null(ode) | is.null(parameters)) {
     stop("Please specify at least the required arguments 'ode' and 'parameters'.")
@@ -120,9 +122,11 @@ sim_ode <- function (ode = NULL,
 #   if(!is.null(t_tte)) {
 #     stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
 #   }
-  # get the ODE size
-  size <- get_size_ode(ode, parameters)
-
+  if(!cpp) {
+    size <- get_size_ode(ode, parameters)
+  } else {
+    size <- attr(ode, "size")
+  }
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)
     etas   <- MASS::mvrnorm(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat)

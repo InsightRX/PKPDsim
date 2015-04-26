@@ -2,34 +2,26 @@ install_github("ronkeizer/PKPDsim")
 library(PKPDsim)
 library(ggplot2)
 library(Rcpp)
-library(inline)
-settings <- getPlugin("Rcpp")
-settings$env$CC <- "g++"
 
 p <- list(CL = 5,
           V  = 50,
           KA = .2)
 
 r1 <- new_regimen(amt = 100,
-                  type = "infusion",
-                  t_inf = 12,
                   interval = 24,
                   n = 2)
 
-# cov_model <- new_covariate_model(list("CL" = f_cov( par * (WT/70)^0.75 ),
-#                                       "V"  = f_cov( par * (WT/70)      )))
-# covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
+pk_oral <- new_ode_model(code = "
+  dAdt[1] = -KA*A[1];
+  dAdt[2] = KA*A[1] - (CL/V)*A[2];
+", parameters = p)
 
-
-#for(i in 1:10) {
-system.time({
-  dat <- sim_ode (ode = "pk_1cmt_iv",
-                  n_ind = 1,
+dat <- sim_ode (ode = "pk_oral",
+                  n_ind = 100,
                   omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1), p),
                   par = p,
                   regimen = r1,
-                  cpp = TRUE, cpp_recompile = TRUE, cpp_show_function = FALSE, verbose = FALSE)
-})
+                  verbose = FALSE)
 ggplot(dat, aes(x=t, y=y, group=id)) +
   geom_line() +
   facet_wrap(~comp, scales="free")
@@ -148,3 +140,8 @@ sim_ode_shiny(ode = "pk_3cmt_iv",
               parameters = p,
               #              regimen = new_regimen (amt=600),
               omega = cv_to_omega (list(CL=0.2, V=0.1, KA=0.1), p_efv))
+
+# cov_model <- new_covariate_model(list("CL" = f_cov( par * (WT/70)^0.75 ),
+#                                       "V"  = f_cov( par * (WT/70)      )))
+# covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
+
