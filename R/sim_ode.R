@@ -230,6 +230,7 @@ sim_ode <- function (ode = NULL,
     tmp <- c()
     prv_cumhaz <- 0
     if(cpp) {
+      p_i$rate <- 0
       tmp <- sim_wrapper_cpp(A_init, design_i$t, design_i$dose, length(design$t), p_i, 1)
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
       dat_ind <- c()

@@ -14,10 +14,10 @@ r1 <- new_regimen(amt = 100,
 pk_oral <- new_ode_model(code = "
   dAdt[1] = -KA*A[1];
   dAdt[2] = KA*A[1] - (CL/V)*A[2];
-", parameters = p)
+")
 
 dat <- sim_ode (ode = "pk_oral",
-                  n_ind = 100,
+                  n_ind = 1000,
                   omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1), p),
                   par = p,
                   regimen = r1,

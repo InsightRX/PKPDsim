@@ -1,7 +1,7 @@
 #' @export
 new_ode_model <- function (code = NULL,
                            file = NULL,
-                           parameters = list(),
+                           parameters = NULL,
                            size = NULL,
                            obs = list("cmt" = 1, scale = 1),
                            dose = list("cmt" = 1),
@@ -10,11 +10,8 @@ new_ode_model <- function (code = NULL,
   if (is.null(code) & is.null(file)) {
     stop("Either code or a file containing code for the ODE system have to be supplied to this function.")
   }
-  if (is.null(parameters)) {
-    stop("A list with parameters has to be supplied to this function.")
-  }
-  if (is.null(names(parameters))) {
-    stop("A list with parameters has to be supplied to this function.")
+  if(is.null(parameters)) {
+    parameters <- get_parameters_from_code(code)
   }
   if(exists("sim_wrapper_cpp", envir = globalenv())) {
     rm("sim_wrapper_cpp", envir=globalenv())

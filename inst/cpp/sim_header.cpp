@@ -11,5 +11,3 @@ using namespace std;
 using namespace boost::numeric::odeint;
 using namespace Rcpp;
 
-double rate; // infusion rate
-
