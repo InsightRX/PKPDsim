@@ -1,5 +1,5 @@
 #' @export
-compile_sim_cpp <- function(func, p, cpp_show_function) {
+compile_sim_cpp <- function(func, p, cpp_show_function, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   test <- "\n  dAdt[0] = -VMAX1 * (A[0]/V) / (A[0]/V + KM) + rate ;\n"
   ode_def <- get(paste0(func, "_cpp"))
@@ -28,5 +28,14 @@ compile_sim_cpp <- function(func, p, cpp_show_function) {
   if(cpp_show_function) {
     cat(sim_func)
   }
-  sourceCpp(code=sim_func)
+  if (verbose) {
+    sourceCpp(code=sim_func, rebuild = TRUE)
+  } else {
+    flg <- Sys.getenv("PKG_CXXFLAGS")
+    if(length(grep("-w", flg)) == 0) {
+      Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
+    }
+    sourceCpp(code=sim_func, rebuild = TRUE, verbose = verbose, showOutput = verbose)
+    Sys.setenv("PKG_CXXFLAGS" = flg)
+  }
 }

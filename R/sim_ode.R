@@ -75,7 +75,8 @@ sim_ode <- function (ode = NULL,
                      output_cmt = NULL,
                      cpp = FALSE,
                      cpp_recompile = TRUE,
-                     cpp_show_function = FALSE
+                     cpp_show_function = FALSE,
+                     verbose = FALSE
                      ) {
   if (!is.null(covariate_model) && !is.null(covariates)) {
     n_ind <- length(t(covariates[,1]))
@@ -101,7 +102,7 @@ sim_ode <- function (ode = NULL,
         stop("The 'ode' argument has to be a character string referencing the function.")
       } else {
         message("Compiling simulation function...")
-        compile_sim_cpp(ode, parameters, cpp_show_function)
+        compile_sim_cpp(ode, parameters, cpp_show_function, verbose)
       }
     }
   }

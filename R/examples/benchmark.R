@@ -26,7 +26,7 @@ sim_ode (ode = "pk_1cmt_oral",
          regimen = r1,
          step_size = 1,
          t_max = 72,
-         cpp = TRUE)
+         cpp = TRUE, cpp_recompile=TRUE)
 
 sim_ode_1000 <- function() {
   sim_ode (ode = "pk_1cmt_oral",

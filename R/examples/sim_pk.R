@@ -20,6 +20,7 @@ r1 <- new_regimen(amt = 100,
 #                                       "V"  = f_cov( par * (WT/70)      )))
 # covariates <- data_frame("WT" = seq(from=40, to=120, by=5))
 
+
 #for(i in 1:10) {
 system.time({
   dat <- sim_ode (ode = "pk_1cmt_iv",
@@ -27,7 +28,7 @@ system.time({
                   omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1), p),
                   par = p,
                   regimen = r1,
-                  cpp = TRUE, cpp_recompile = TRUE, cpp_show_function = FALSE)
+                  cpp = TRUE, cpp_recompile = TRUE, cpp_show_function = FALSE, verbose = FALSE)
 })
 ggplot(dat, aes(x=t, y=y, group=id)) +
   geom_line() +
