@@ -19,13 +19,13 @@ Recently, Inria (through the DDMoRe consortium) released a similar library for R
 - [+] does not use a proprietary and closed-source simulation engine
 - [+/-] does not require/support models written in PharmML
 - [+] offers functionality to dynamically generate Shiny apps
-- [-] is currently slower (support for Rcpp will soon be added)
-- [-] currently does not allow delay differential equations for multidose regimens
+- [+] allows specification of PK-PD models by combining separate PK and PD models
+- [-] currently does not allow simulation of count data (will follow soon)
+- [-] currently does not allow delay differential equations for multidose regimens (will follow)
 
 ## Future plans
 - release to CRAN
-- implement models as compiled C code (Rcpp)
-- add more example models
+- add more example models / tutorials
 
 ## Installation
 
