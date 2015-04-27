@@ -67,7 +67,8 @@ sim_ode <- function (ode = NULL,
                      covariates = NULL,
                      covariate_model = NULL,
                      A_init = NULL,
-                     step_size = .5,
+                     obs_step_size = NULL,
+                     int_step_size = .5,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
@@ -168,7 +169,7 @@ sim_ode <- function (ode = NULL,
   design <- rbind(design %>%
                     dplyr::filter(t < t_max), tail(design,1))
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
-  times <- seq(from=0, to=tail(design$t,1), by=step_size)
+  times <- seq(from=0, to=tail(design$t,1), by=int_step_size)
   if (is.null(A_init)) {
     A_init <- rep(0, size)
   }
@@ -185,9 +186,18 @@ sim_ode <- function (ode = NULL,
   comb <- c()
   if(cpp) { # check parameters specified
     pars_ode <- attr(ode, "parameters")
-    if(!all(pars_ode %in% parameters)) {
+    if(!all(pars_ode %in% names(parameters))) {
       stop("Not all parameters for this model have been specified. Required parameters are: \n  ", paste(pars_ode, collapse=", "))
     }
+  }
+  if(is.null(t_obs)) { # find reasonable default to output
+    if(is.null(obs_step_size)) {
+      obs_step_size <- 100
+      if(max(design$t) < 10000) { obs_step_size <- 10 }
+      if(max(design$t) < 1000) { obs_step_size <- 1 }
+      if(max(design$t) < 10) { obs_step_size <- .1 }
+    }
+    t_obs <- seq(from=0, to=max(design$t), by=obs_step_size)
   }
   message("Simulating...")
   for (i in 1:n_ind) {
@@ -227,7 +237,7 @@ sim_ode <- function (ode = NULL,
     prv_cumhaz <- 0
     if(cpp) {
       p_i$rate <- 0
-      tmp <- sim_wrapper_cpp(A_init, design_i$t, design_i$dose, length(design$t), p_i, 1)
+      tmp <- sim_wrapper_cpp(A_init, design_i$t, design_i$dose, length(design$t), p_i, int_step_size)
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
       dat_ind <- c()
       for (j in 1:length(A_init)) {
@@ -258,7 +268,7 @@ sim_ode <- function (ode = NULL,
           }
         }
         time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
-        dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func, cpp, step_size))
+        dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func, int_step_size))
         if(!is.null(attr(ode, "cumhaz"))) {
           event_occurred <- FALSE
           dat <- rbind (dat, dat %>%

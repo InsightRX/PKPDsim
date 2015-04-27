@@ -10,14 +10,17 @@ p <- list(CL = 5,
 r1 <- new_regimen(amt = 100,
                   interval = 24,
                   n = 2)
-pk_oral <- new_ode_model(model = "pk_1cmt_iv_mm")
 
-dat <- sim_ode (ode = "pk_oral",
-                  n_ind = 1000,
+pk_oral <- new_ode_model(model = "pk_1cmt_oral")
+
+system.time({
+  dat <- sim_ode (ode = "pk_oral",
+                  n_ind = 10000,
                   omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1), p),
                   par = p,
                   regimen = r1,
                   verbose = FALSE)
+})
 
 ggplot(dat, aes(x=t, y=y, group=id)) +
   geom_line() +
