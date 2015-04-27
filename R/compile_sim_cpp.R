@@ -1,20 +1,25 @@
 #' @export
-compile_sim_cpp <- function(code, size, p, cpp_show_code, verbose = FALSE) {
+compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
-  ode_def_cpp <- reduce_state_numbers(ode_def)
-  p <- unique(c(p, "rate"))
+  ode_def_cpp <- shift_state_indices(ode_def, -1)
+  p_def <- unique(p) # add rate and conc as explicitly declared variables
+  p <- unique(c(p, "rate", "conc", declare_variables)) # add rate and conc as explicitly declared variables
   pars <- "\n"
   par_def <- ""
-  for(i in seq(p)) {
+  for(i in seq(p)) { # parameters and auxiliary variables
     pars <- paste0(pars, "double ", p[i], ";\n")
-    par_def <- paste0(par_def, '  ', p[i], ' = par["', p[i], '"];\n')
+  }
+  for(i in seq(p_def)) { # actual parameters for model
+    par_def <- paste0(par_def, '  ', p_def[i], ' = par["', p_def[i], '"];\n')
   }
   comp_def <- paste0("const double n_comp = ", size, ";\n",
                      "typedef boost::array < double , ", size, " > state_type; \n");
   cpp_code <- readLines(paste0(folder, "/cpp/sim.cpp"))
   idx <- grep("insert_parameter_definitions", cpp_code)
   cpp_code[idx] <- par_def
+  idx2 <- grep("insert_state_init", cpp_code)
+  cpp_code[idx2] <- paste("   ", code_init)
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),
            pars,

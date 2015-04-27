@@ -39,14 +39,14 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
 }
 
 // [[Rcpp::export]]
-List sim_wrapper_cpp (const NumericVector Ainit, NumericVector times, NumericVector doses, int len, List par, double step_size) {
+List sim_wrapper_cpp (NumericVector A, NumericVector times, NumericVector doses, int len, List par, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
   double t_start, t_end;
-  NumericVector Aupd = clone(Ainit);
+  // insert_state_init
+  NumericVector Aupd = clone(A);
 
   // insert_parameter_definitions
-
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];

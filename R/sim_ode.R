@@ -211,7 +211,7 @@ sim_ode <- function (ode = NULL,
       }
     }
     design_i <- design
-    A_init_i = A_init
+    A_init_i <- A_init
     if (!is.null(adherence)) {
       if(adherence$type == "markov") {
         adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
@@ -229,18 +229,15 @@ sim_ode <- function (ode = NULL,
         p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])
       }
     }
-    if(class(A_init) == "function") {
-      A_init_i = A_init(p_i)
-    }
     event_occurred <- FALSE
     tmp <- c()
     prv_cumhaz <- 0
     if(cpp) {
       p_i$rate <- 0
-      tmp <- sim_wrapper_cpp(A_init, design_i$t, design_i$dose, length(design$t), p_i, int_step_size)
+      tmp <- sim_wrapper_cpp(A_init_i, design_i$t, design_i$dose, length(design$t), p_i, int_step_size)
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
       dat_ind <- c()
-      for (j in 1:length(A_init)) {
+      for (j in 1:length(A_init_i)) {
         dat_ind <- rbind (dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
       }
       if(i == 1) {
@@ -250,6 +247,9 @@ sim_ode <- function (ode = NULL,
       comb[((i-1)*l_mat)+(1:l_mat),] <- dat_ind
 #      comb <- data.frame(dat_ind)
     } else {
+      if(class(A_init) == "function") {
+        A_init_i = A_init(p_i)
+      }
       for (k in 1:(length(design$t)-1)) {
         if (k > 1) {
           A_upd <- dat[dat$comp!="cumhaz" & dat$t==tail(time_window,1),][,]$y

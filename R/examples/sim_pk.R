@@ -5,7 +5,7 @@ library(Rcpp)
 
 p <- list(CL = 5,
           V  = 50,
-          KA = .2)
+          KIN = .02, KOUT=.5, EFF = 0.2)
 
 r1 <- new_regimen(amt = 100,
                   interval = 24,
@@ -13,10 +13,21 @@ r1 <- new_regimen(amt = 100,
 
 pk_oral <- new_ode_model(model = "pk_1cmt_oral")
 
+pkpd <- new_ode_model(code = list(pk = "
+                                    dAdt[1] = -(CL/V) * A[1]
+                                    conc = A[1]/V;
+                                  ",
+                                  pd = "
+                                    dAdt[1] = KIN * 1/(1+EFF*conc) - KOUT*A[1];
+                                  "),
+                      state_init = "A[1] = KIN/KOUT",
+#                      state_init = list(pd = "A[1] = KIN/KOUT"),
+                      cpp_show_code = TRUE)
+
 system.time({
-  dat <- sim_ode (ode = "pk_oral",
-                  n_ind = 10000,
-                  omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1), p),
+  dat <- sim_ode (ode = "pkpd",
+                  n_ind = 100,
+                  omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KIN" = .05), p),
                   par = p,
                   regimen = r1,
                   verbose = FALSE)
