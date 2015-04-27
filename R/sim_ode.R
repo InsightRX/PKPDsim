@@ -93,16 +93,6 @@ sim_ode <- function (ode = NULL,
   if(!is.null(dde)) {
     ode <- dde
   }
-#   if(cpp) {
-#     if(cpp_recompile) {
-#       if (class(ode) != "character") {
-#         stop("The 'ode' argument has to be a character string referencing the function.")
-#       } else {
-#         message("Compiling simulation function...")
-#         compile_sim_cpp(get(paste0(ode, "_cpp")), parameters, cpp_show_code, verbose)
-#       }
-#     }
-#   }
   if (class(ode) == "character") {
     ode <- get(ode)
   } else {
@@ -193,6 +183,12 @@ sim_ode <- function (ode = NULL,
     scale <- attr(ode, "obs")[["scale"]]
   }
   comb <- c()
+  if(cpp) { # check parameters specified
+    pars_ode <- attr(ode, "parameters")
+    if(!all(pars_ode %in% parameters)) {
+      stop("Not all parameters for this model have been specified. Required parameters are: \n  ", paste(pars_ode, collapse=", "))
+    }
+  }
   message("Simulating...")
   for (i in 1:n_ind) {
     p_i <- p

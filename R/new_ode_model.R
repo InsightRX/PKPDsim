@@ -1,5 +1,6 @@
 #' @export
-new_ode_model <- function (code = NULL,
+new_ode_model <- function (model = NULL,
+                           code = NULL,
                            file = NULL,
                            parameters = NULL,
                            size = NULL,
@@ -7,8 +8,14 @@ new_ode_model <- function (code = NULL,
                            dose = list("cmt" = 1),
                            cpp_show_code = FALSE,
                            verbose = FALSE) {
-  if (is.null(code) & is.null(file)) {
-    stop("Either code or a file containing code for the ODE system have to be supplied to this function.")
+  if (is.null(model) & is.null(code) & is.null(file)) {
+    stop(paste0("Either a model name, ODE code, or a file containing code for the ODE system have to be supplied to this function. The following models are availabler in the default library:\n  ", model_library()))
+  }
+  if (!is.null(model)) {
+    mod_def <- model_library(model)
+    code <- mod_def$code
+    obs <- mod_def$obs
+    dose <- mod_def$dose
   }
   if(is.null(parameters)) {
     parameters <- get_parameters_from_code(code)
@@ -26,6 +33,7 @@ new_ode_model <- function (code = NULL,
   attr(sim_wrapper_cpp, "size")  <- size
   attr(sim_wrapper_cpp, "obs")  <- obs
   attr(sim_wrapper_cpp, "dose") <- dose
+  attr(sim_wrapper_cpp, "parameters") <- parameters
   attr(sim_wrapper_cpp, "cpp")  <- TRUE
   attr(sim_wrapper_cpp, "code") <- code_orig
   if(exists("sim_wrapper_cpp", envir = globalenv())) {

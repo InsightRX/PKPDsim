@@ -10,11 +10,7 @@ p <- list(CL = 5,
 r1 <- new_regimen(amt = 100,
                   interval = 24,
                   n = 2)
-
-pk_oral <- new_ode_model(code = "
-  dAdt[1] = -KA*A[1];
-  dAdt[2] = KA*A[1] - (CL/V)*A[2];
-")
+pk_oral <- new_ode_model(model = "pk_1cmt_iv_mm")
 
 dat <- sim_ode (ode = "pk_oral",
                   n_ind = 1000,
@@ -22,6 +18,7 @@ dat <- sim_ode (ode = "pk_oral",
                   par = p,
                   regimen = r1,
                   verbose = FALSE)
+
 ggplot(dat, aes(x=t, y=y, group=id)) +
   geom_line() +
   facet_wrap(~comp, scales="free")
