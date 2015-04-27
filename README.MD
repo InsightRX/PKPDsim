@@ -35,103 +35,10 @@ install_github("ronkeizer/PKPDsim")
 library(PKPDsim)
 ```
 
-## Example single subject
+## How to use
 
-```
-# Single subject simulation (population values)
-p <- list(CL = 38.48, V  = 7.4,
-          Q2 = 7.844, V2 = 5.19,
-          Q3 = 9.324, V3 = 111)
+See [vignette](http://ronkeizer.github.io/PKPDsim/)
 
-r1 <- new_regimen(amt = 100,
-              times = c(0, 24, 36),
-              type = "infusion")
+## License
 
-dat <- sim_ode (ode = "pk_3cmt_iv",
-                par = p,
-                regimen = r1)
-
-ggplot(dat, aes(x=t, y=y)) +
-  geom_line() +
-  scale_y_log10() +
-  facet_wrap(~comp)
-```
-
-## Example custom ODE
-
-```
-pk_1cmt_iv <- function (t, A, p) {
-  with(p, {
-    KEL <-  CL/V
-    dAdt_1 <- -KEL*A[1] + rate
-    return ( list ( c (  dAdt_1 ) ) )
-  })
-}
-attributes(pk_1cmt_iv) <- list(obs = list (cmt = 1, scale = "V"))
-p <- list(CL = 38.48, V  = 7.4)
-
-dat <- sim_ode (ode = "pk_1cmt_iv",
-                par = p,
-                regimen = r1)
-
-ggplot(dat, aes(x=t, y=y)) +
-  geom_line() +
-  scale_y_log10() +
-  facet_wrap(~comp)
-```
-
-
-## Example between-subject variability
-```
-# specify BSV as lower-triangle of matrix
-omega <- c(0.3,       # BSV CL
-           0.1, 0.3)  # BSV V
-
-# or as list of CV (assuming no correlation between parameters):
-omega <- cv_to_omega (list(CL=0.3, V=0.3), p)
-
-dat <- sim_ode (ode = "pk_3cmt_iv",
-                par = p,
-                omega = omega,
-                n_ind = 20,
-                regimen = r1)
-
-ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) +
-  geom_line() +
-  scale_y_log10() +
-  facet_wrap(~comp)
-```
-
-## Example Shiny
-```
-library(PKPDsim)
-
-p <- list(CL = 38.48,
-          V  = 7.4,
-          Q2 = 7.844,
-          V2 = 5.19,
-          Q3 = 9.324,
-          V3 = 111)
-
-omega <- c(0.3,       # IIV CL
-           0.1, 0.3)  # IIV V
-
-sim_ode_shiny(ode = "pk_3cmt_iv",
-              par = p,
-              omega = omega)
-```
-
-## Troubleshooting
-
-If you encounter the following message when trying to run a Shiny app:
-
-```
-Error in handler(req) : 
-   argument "metaHandler" is missing, with no default 
-```      
-
-you should update the Shiny library:
-
-```
-install.packages("shiny")
-```
+[MIT license](http://opensource.org/licenses/MIT)
