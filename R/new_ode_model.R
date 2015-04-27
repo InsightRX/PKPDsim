@@ -21,7 +21,7 @@ new_ode_model <- function (model = NULL,
   }
   code_init_text <- ""
   if(class(state_init) == "character") {
-    code_init_text <- paste0(state_init, ";")
+    code_init_text <- paste0(state_init, ";\n")
   }
   if(class(code) == "list") {
     code_tmp <- code
@@ -32,14 +32,15 @@ new_ode_model <- function (model = NULL,
       tmp <- code_tmp[[idx]]
       if (i > 1) {
         code_tmp[[idx]] <- shift_state_indices(code_tmp[[idx]], n)
+        if(class(state_init) == "list" && !is.null(state_init[[idx]])) {
+          code_init_text <- paste(code_init_text, shift_state_indices(unlist(state_init[[idx]]), n), ";\n");
+        }
       }
       code <- paste(code, code_tmp[[idx]], sep = "\n")
-      if(class(state_init) == "list" && !is.null(state_init[[idx]])) {
-        code_init_text <- paste(state_init[[idx]], ";\n");
-      }
       n <- n + get_ode_model_size(tmp)
     }
   }
+  code_init_text <- shift_state_indices(code_init_text, -1)
   if(is.null(parameters)) {
     parameters <- get_parameters_from_code(code, declare_variables)
   }

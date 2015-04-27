@@ -26,9 +26,10 @@ pkpd <- new_ode_model(code = list(pk = "
 
 system.time({
   dat <- sim_ode (ode = "pkpd",
-                  n_ind = 100,
+                  n_ind = 25,
                   omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KIN" = .05), p),
                   par = p,
+                  obs_step_size = 4,
                   regimen = r1,
                   verbose = FALSE)
 })
@@ -36,6 +37,8 @@ system.time({
 ggplot(dat, aes(x=t, y=y, group=id)) +
   geom_line() +
   facet_wrap(~comp, scales="free")
+
+vpc(obs = dat[dat$comp == "obs",])
 
 dat <- sim_ode (ode = "pk_1cmt_iv_mm",
                   n_ind = 10000,
