@@ -6,9 +6,14 @@
 #' @export
 #' @seealso \link{sim_ode}
 
-cv_to_omega <- function(par_cv = list(), par = list()) {
-  nam_cv <- names(par)
-  nam <- names(par)
+cv_to_omega <- function(par_cv = NULL, parameters = NULL) {
+  if (is.null(par_cv)) {
+    stop("List of coefficients of variation required as argument to cv_to_omega().")
+  }
+  if (is.null(parameters)) {
+    stop("Parameter list required as argument to cv_to_omega().")
+  }
+  nam <- names(parameters)
   omega <- c()
   for (i in 1:length(nam)) {
     if (nam[i] %in% names(par_cv)) {
