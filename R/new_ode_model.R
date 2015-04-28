@@ -63,7 +63,11 @@ new_ode_model <- function (model = NULL,
     code <- gsub("\\n", ";\n", code)
     code <- gsub("^;", "", code)
     compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, verbose = verbose)
-    sim_out <- sim_wrapper_cpp
+    if(exists("sim_wrapper_cpp", envir = globalenv())) {
+      sim_out <- sim_wrapper_cpp
+    } else {
+      message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
+    }
     attr(sim_out, "code") <- code_orig
     attr(sim_out, "parameters") <- parameters
     attr(sim_out, "cpp")  <- TRUE
@@ -71,13 +75,5 @@ new_ode_model <- function (model = NULL,
   }
   attr(sim_out, "obs")  <- obs
   attr(sim_out, "dose") <- dose
-  if(attr(sim_out, "cpp")) {
-    if(exists("sim_out", envir = globalenv())) {
-      return(sim_out)
-    } else {
-      message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
-    }
-  } else {
-    return(sim_out)
-  }
+  return(sim_out)
 }
