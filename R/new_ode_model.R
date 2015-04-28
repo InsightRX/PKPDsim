@@ -68,7 +68,7 @@ new_ode_model <- function (model = NULL,
   }
   attr(sim_out, "obs")  <- obs
   attr(sim_out, "dose") <- dose
-  if(exists("sim_wrapper_cpp", envir = globalenv())) {
+  if(exists("sim_out", envir = globalenv())) {
     return(sim_out)
   } else {
     message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
