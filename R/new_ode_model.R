@@ -15,6 +15,9 @@ new_ode_model <- function (model = NULL,
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are availabler in the default library:\n  ", model_library()))
   }
   if (!is.null(func)) { # R function supplied, use deSolve approach
+    if(class(func) != "function") {
+      stop("The object specified in 'func' is not a valid R function.")
+    }
     sim_out <- func
     attr(sim_out, "cpp") <- FALSE
   } else {
@@ -68,9 +71,13 @@ new_ode_model <- function (model = NULL,
   }
   attr(sim_out, "obs")  <- obs
   attr(sim_out, "dose") <- dose
-  if(exists("sim_out", envir = globalenv())) {
-    return(sim_out)
+  if(attr(sim_out, "cpp")) {
+    if(exists("sim_out", envir = globalenv())) {
+      return(sim_out)
+    } else {
+      message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
+    }
   } else {
-    message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
+    return(sim_out)
   }
 }
