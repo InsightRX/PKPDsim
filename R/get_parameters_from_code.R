@@ -5,9 +5,7 @@ get_parameters_from_code <- function (code, declare_variables = NULL) {
   def <- gregexpr("double (.*?)=", code)
   def1 <- unlist(regmatches(code, def))
   defined <- gsub("(double|=|\\s)", "", def1)
-  print(defined)
   code <- gsub("double (.*?)=", "", code) # parameter delcarations in code
-  print(code)
   code <- gsub("double (.*?)=", "", code) # parameter delcarations in code
   code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<]", " ", code)
   code <- gsub("\\-", " ", code)
