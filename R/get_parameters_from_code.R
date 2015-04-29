@@ -1,7 +1,9 @@
 #' @export
 get_parameters_from_code <- function (code, declare_variables = NULL) {
   code <- gsub("\\n", "", code)
-  code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-]", " ", code)
+  code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<]", " ", code)
+  code <- gsub("\\-", " ", code)
+  code <- gsub("(if|then|else|double)", " ", code)
   A <- gregexpr("A\\[([0-9])\\]", code)
   m1 <- paste0(unlist(regmatches(code, A, invert = TRUE)), collapse="")
   dAdt <- gregexpr("dAdt\\[([0-9])\\]", m1)
@@ -15,6 +17,11 @@ get_parameters_from_code <- function (code, declare_variables = NULL) {
     }
   }
   pars <- c(unique(spl2))
-  return(pars)
+  reserved_words <- c("beta", "gamma") # add more later
+  if (any(reserved_words %in% pars)) {
+    stop("The following variable names are reserved words and cannot be used in your code, please rename:\n   ", paste(pars[match(reserved_words, pars)], collapse=" "))
+  } else {
+    return(pars)
+  }
 }
 
