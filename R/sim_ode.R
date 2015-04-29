@@ -73,7 +73,6 @@ sim_ode <- function (ode = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
                      rtte = FALSE,
-                     output_cmt = NULL,
                      verbose = FALSE
                      ) {
   if (!is.null(covariate_model) && !is.null(covariates)) {
@@ -179,10 +178,6 @@ sim_ode <- function (ode = NULL,
     design$dose <- design$dose * F
   }
   events <- c() # only for tte
-  scale <- 1
-  if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
-    scale <- attr(ode, "obs")[["scale"]]
-  }
   comb <- c()
   if(cpp) { # check parameters specified
     pars_ode <- attr(ode, "parameters")
@@ -294,26 +289,41 @@ sim_ode <- function (ode = NULL,
   comb <- data.frame(comb)
   colnames(comb) <- c("id", "t", "comp", "y")
   if(!is.null(attr(ode, "obs"))) {
-    scale <- 1
-    if(class(attr(ode, "obs")[["scale"]]) == "character") {
-      scale <- p[[attr(ode, "obs")[["scale"]]]]
+    scale <- rep(1, length(attr(ode, "obs")[["scale"]]))
+    if(!is.null(attr(ode, "obs")[["labels"]])) {
+      labels <- attr(ode, "obs")[["labels"]]
+    } else {
+      if (length(scale) == 1) {
+        labels <- "obs"
+      } else {
+        labels <- paste0("obs_", attr(ode, "obs")[["labels"]],
+                         seq(from=1, to=length(attr(ode, "obs")[["scale"]])))
+      }
     }
-    if(class(attr(ode, "obs")[["scale"]]) == "numeric") {
-      scale <- attr(ode, "obs")[["scale"]]
+    if (!is.null(attr(ode, "obs")[["scale"]])) {
+      suppressWarnings({
+        for (i in seq(attr(ode, "obs")[["scale"]])) {
+          if(!is.na(as.numeric(attr(ode, "obs")[["scale"]][i]))) {
+            scale[i] <- as.numeric(attr(ode, "obs")[["scale"]][i])
+          } else {
+            scale[i] <- as.numeric(p[[attr(ode, "obs")[["scale"]][i]]])
+          }
+        }
+      })
     }
-    comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]]) %>% dplyr::mutate(comp = "obs", y = y/scale))
-    if(!is.null(attr(ode, "obs")[["trans"]])) {
-      if(class(attr(ode, "obs")[["trans"]]) == "character") {
-        trans_func <- get(attr(ode, "obs")[["trans"]])
-        comb[comb$comp == "obs",]$y <- trans_func(comb[comb$comp == "obs",]$y)
+    for (i in seq(labels)) {
+      comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]][i]) %>% dplyr::mutate(comp = labels[i], y = y/scale[i]))
+      if(!is.null(attr(ode, "obs")[["trans"]][i])) {
+        if(class(attr(ode, "obs")[["trans"]][i]) == "character") {
+          trans_func <- get(attr(ode, "obs")[["trans"]][i])
+          comb[comb$comp == labels[i],]$y <- trans_func(comb[comb$comp == labels[i],]$y)
+        }
       }
     }
   }
+  comb <- comb %>% dplyr::filter(comp %in% labels)
   if(!is.null(t_obs)) {
     comb <- comb %>% dplyr::filter(t %in% t_obs)
-  }
-  if(!is.null(output_cmt)) {
-    comb <- comb %>% dplyr::filter(comp %in% output_cmt)
   }
   if(length(events)>0) {
     events <- data.frame(events)
@@ -331,6 +341,7 @@ sim_ode <- function (ode = NULL,
       comb <- rbind(comb, cbind(id = cens, t = max(comb$t), comp="event", y=0))
     }
   }
+  comb <- data.frame(comb)
   comb$id <- as.numeric(comb$id)
   comb$t <- as.numeric(comb$t)
   comb$y <- as.numeric(comb$y)
