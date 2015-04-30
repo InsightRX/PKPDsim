@@ -67,7 +67,8 @@ sim_ode <- function (ode = NULL,
                      covariates = NULL,
                      covariate_model = NULL,
                      A_init = NULL,
-                     obs_step_size = NULL,
+                     obs = NULL,
+                     obs_step_size = 1,
                      int_step_size = .5,
                      t_max = NULL,
                      t_obs = NULL,
@@ -210,6 +211,7 @@ sim_ode <- function (ode = NULL,
     }
     t_obs <- seq(from=0, to=max(design$t), by=obs_step_size)
   }
+
   message("Simulating...")
   for (i in 1:n_ind) {
     p_i <- p

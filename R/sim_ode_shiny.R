@@ -35,12 +35,14 @@ sim_ode_shiny <- function(name = "",
                           code = NULL,
                           dde = NULL,
                           parameters = list(),
+                          obs = NULL,
                           omega = NULL,
                           omega_type = "exponential",
                           n_ind = 1,
                           regimen = NULL,
                           A_init = NULL,
-                          step_size = 1,
+                          obs_step_size = 1,
+                          int_step_size = 0.5,
                           t_max = NULL,
                           shiny_folder = "~/shiny-pkpd") {
   if(!file.exists(shiny_folder)) {
@@ -56,7 +58,17 @@ sim_ode_shiny <- function(name = "",
   file.copy(system.file("style.css", package = "PKPDsim"), paste0(shiny_folder, "/www/style.css"))
   saveRDS(parameters, file=paste0(shiny_folder, "/parameters.rds"))
   saveRDS(regimen, file=paste0(shiny_folder, "/regimen.rds"))
-  saveRDS(list(ode=ode, code=code, dde = dde, omega = omega, omega_type = omega_type, n_ind = n_ind, A_init = A_init, step_size = step_size, t_max = t_max),
+  saveRDS(list(ode=ode,
+               code=code,
+               obs = obs,
+               dde = dde,
+               obs_step_size = obs_step_size,
+               int_step_size = int_step_size,
+               omega = omega,
+               omega_type = omega_type,
+               n_ind = n_ind,
+               A_init = A_init,
+               t_max = t_max),
           paste0(shiny_folder, "/misc.rds"))
   runApp(shiny_folder)
 }
