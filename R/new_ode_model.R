@@ -49,27 +49,27 @@ new_ode_model <- function (model = NULL,
       }
     }
     code_init_text <- shift_state_indices(code_init_text, -1)
-    if(is.null(parameters)) {
-      parameters <- get_parameters_from_code(code, declare_variables)
-    }
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
       rm("sim_wrapper_cpp", envir=globalenv())
     }
     if(is.null(size)) {
       size <- get_ode_model_size(code)
     }
+    if(is.null(parameters)) {
+      parameters <- get_parameters_from_code(code)
+    }
     code_orig <- code
     code <- gsub("\\r\\n", "\n", code)
     code <- gsub("\\n", ";\n", code)
     code <- gsub("^;", "", code)
-    compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, verbose = verbose)
+    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, verbose = verbose)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
       sim_out <- sim_wrapper_cpp
     } else {
       message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
     }
     attr(sim_out, "code") <- code_orig
-    attr(sim_out, "parameters") <- parameters
+    attr(sim_out, "parameters") <- cmp$parameters
     attr(sim_out, "cpp")  <- TRUE
     attr(sim_out, "size")  <- size
   }

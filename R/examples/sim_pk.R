@@ -12,9 +12,9 @@ r1 <- new_regimen(amt = 100,
                   interval = 24,
                   n = 2)
 get_parameters_from_code(code = "dAdt[1] = -(CL/V) * A[1]
-                         conc = A[1]/V;")
+                         double conc = A[1]/V;")
 
-pk_oral <- new_ode_model(model = "pk_1cmt_oral")
+pk_oral <- new_ode_model(model = "pk_1cmt_oral",cpp_show_code = TRUE)
 
 pkpd <- new_ode_model(code = list(pk = "
                                     dAdt[1] = -(CL/V) * A[1]
