@@ -28,7 +28,7 @@ get_parameters_from_code <- function (code, declare_variables = NULL) {
   } else {
     defined <- c(defined, "t")
     match_def <- match(defined, pars)
-    if (!is.na(match_def) && length(match_def) > 0) {
+    if (length(match_def[!is.na(match_def)]) > 0) {
       pars <- pars[-match_def[!is.na(match_def)]]
     }
     return(pars)
