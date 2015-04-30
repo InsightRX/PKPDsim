@@ -1,3 +1,4 @@
+library(devtools)
 install_github("ronkeizer/PKPDsim")
 library(PKPDsim)
 library(ggplot2)
@@ -10,6 +11,8 @@ p <- list(CL = 5,
 r1 <- new_regimen(amt = 100,
                   interval = 24,
                   n = 2)
+get_parameters_from_code(code = "dAdt[1] = -(CL/V) * A[1]
+                         conc = A[1]/V;")
 
 pk_oral <- new_ode_model(model = "pk_1cmt_oral")
 

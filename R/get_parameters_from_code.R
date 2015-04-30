@@ -1,7 +1,6 @@
 #' @export
 get_parameters_from_code <- function (code, declare_variables = NULL) {
   code <- gsub("\\n", "", code)
-
   def <- gregexpr("double (.*?)=", code)
   def1 <- unlist(regmatches(code, def))
   defined <- gsub("(double|=|\\s)", "", def1)
@@ -23,14 +22,13 @@ get_parameters_from_code <- function (code, declare_variables = NULL) {
     }
   }
   pars <- c(unique(spl2))
-
   reserved_words <- c("beta", "gamma") # add more later
   if (any(reserved_words %in% pars)) {
     stop("The following variable names are reserved words and cannot be used in your code, please rename:\n   ", paste(pars[match(reserved_words, pars)], collapse=" "))
   } else {
     defined <- c(defined, "t")
     match_def <- match(defined, pars)
-    if (length(match_def) > 0) {
+    if (!is.na(match_def) && length(match_def) > 0) {
       pars <- pars[-match_def[!is.na(match_def)]]
     }
     return(pars)
