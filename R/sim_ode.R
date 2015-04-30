@@ -106,7 +106,7 @@ sim_ode <- function (ode = NULL,
   }
   if (!is.null(attr(ode, "obs")[["scale"]])) {
     suppressWarnings({
-      scale_par <- attr(mod1, "obs")$scale[is.na(as.numeric(attr(mod1, "obs")$scale))]
+      scale_par <- attr(ode, "obs")$scale[is.na(as.numeric(attr(ode, "obs")$scale))]
       if(length(scale_par) > 0) {
         if(!all(scale_par %in% names(parameters))) {
           stop("One of the scale parameters for the output data (defined using new_ode_model(obs = list(scale = ...))) was not found in the parameter list passed to sim_ode().")
@@ -123,10 +123,14 @@ sim_ode <- function (ode = NULL,
 #   if(!is.null(t_tte)) {
 #     stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
 #   }
-  if(!cpp) {
+  if(class(ode) == "function" && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
     size <- get_size_ode(ode, parameters)
   } else {
-    size <- attr(ode, "size")
+    if(class(ode) == "function") {
+      size <- attr(ode,  "size")
+    } else {
+      size <- attr(get(ode),  "size")
+    }
   }
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)

@@ -203,24 +203,25 @@ ggplot(dat, aes(x=t, y=y)) +
 
 ## Example Shiny
 
-The code below will create a Shiny app on-the-fly:
+The code below will create a Shiny app on-the-fly. The model can either be passed using the `code` argument (fast C++ approach), or using the `ode` argument (R::deSolve approach). 
 
 ```{r, warning=F, eval=FALSE, message=F, message=F}
-p <- list(CL = 38.48,
-          V  = 7.4,
-          Q2 = 7.844,
-          V2 = 5.19,
-          Q3 = 9.324,
-          V3 = 111)
+p <- list(CL = 1, V  = 10)
+
+pk_1cmt_iv <- function (t, A, p) {
+  with(p, {
+    KEL <-  CL/V
+    dAdt_1 <- -KEL*A[1] + rate
+    return ( list ( c (  dAdt_1 ) ) )
+  })
+}
 
 omega <- c(0.3,       # IIV CL
            0.1, 0.3)  # IIV V
 
-pk3cmt <- new_ode_model(func = "pk_3cmt_iv")
-
-sim_ode_shiny(ode = "pk_3cmt",
+sim_ode_shiny(code = "dAdt[1] = -(CL/V)*A[1] ; ",
               par = p,
-              regimene = r1,
+              regimen = r3,
               omega = omega)
 ```
 

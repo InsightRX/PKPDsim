@@ -8,6 +8,12 @@ len     <- ceiling(length(names(p))/2)
 regimen <- readRDS("regimen.rds")
 misc    <- readRDS("misc.rds")
 
+if(!is.null(misc$code)) {
+  model <- new_ode_model (code = misc$code)
+} else {
+  model <- misc$ode
+}
+
 if(is.null(misc$tmax)) {
   if(!is.null(regimen$interval)) {
     misc$tmax <- (regimen$interval * (regimen$n+1))
@@ -67,6 +73,13 @@ shinyServer(function(input, output) {
       adh <- paste0('      adherence = list(type = "markov", markov = list(p01 = ', input$adh_p01, ', p11 = ', input$adh_p11,')),\n')
     }
     code <- "library(PKPDsim)\nlibrary(ggplot2)\n\n"
+    if(!is.null(misc$code)) {
+      code <- paste0(code, "\ncode <- '", misc$code, "'\n")
+      code <- paste0(code, "model <- new_ode_model(code = code)\n\n")
+    } else {
+      model <- misc$ode
+    }
+
     pars_code <- 'pars <- list(\n'
     for(i in 1:length(names(p))) {
       if (!is.null(input[[names(p)[i]]])) {
@@ -97,19 +110,19 @@ shinyServer(function(input, output) {
           omega <- paste0(" c(", paste0(round(misc$omega,4), collapse=", "), ")")
         }
     }
-    ode <- paste0('ode = "', misc$ode, '",\n')
-    if (is.null(misc$ode)) { ode <- NULL }
-    dde <- paste0('dde = "', misc$dde, '",\n')
-    if (is.null(misc$dde)) { dde <- NULL }
+    ode_txt <- paste0('ode = "', misc$ode, '",\n')
+    if (is.null(misc$ode)) { ode_txt <- NULL }
+    dde_txt <- paste0('dde = "', misc$dde, '",\n')
+    if (is.null(misc$dde)) { dde_txt <- NULL }
     code <- paste0(code, '\n',
       'dat <- sim_ode (
-  ', ode, dde, '  parameters = pars,
+  ', ode_txt, dde_txt, '  parameters = pars,
   omega = ', omega, ',
   n_ind = ', input$n_ind, ',
   regimen = regimen,\n',
          init,
          adh,
-  '  tmax = NULL\n)\n\n')
+  '  t_max = NULL\n)\n\n')
   if (length(grep("CI", input$plot_type))>0 & input$n_ind >= 10) {
     ci <- c(0.05, 0.95) # 90%
     if (input$plot_type == "80% CI") {
@@ -157,15 +170,14 @@ shinyServer(function(input, output) {
         pars[[names(p)[i]]] <- input[[names(p)[i]]]
       }
     }
-    dat <- sim_ode (ode = misc$ode,
-                    dde = misc$dde,
+    dat <- sim_ode (ode = model,
                     parameters = pars,
                     omega = misc$omega,
                     n_ind = input$n_ind,
                     regimen = regimen,
                     A_init = misc$A_init,
                     adherence = list(type = "markov", markov = list(p01 = input$adh_p01, p11 = input$adh_p11)),
-                    tmax = NULL)
+                    t_max = NULL)
     if (input$plot_show != "all") {
       dat <- dat %>% filter(comp == "obs")
     }
