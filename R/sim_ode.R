@@ -103,6 +103,16 @@ sim_ode <- function (ode = NULL,
   } else {
     cpp <- FALSE
   }
+  if (!is.null(attr(ode, "obs")[["scale"]])) {
+    suppressWarnings({
+      scale_par <- attr(mod1, "obs")$scale[is.na(as.numeric(attr(mod1, "obs")$scale))]
+      if(length(scale_par) > 0) {
+        if(!all(scale_par %in% parameters)) {
+          stop("One of the scale parameters for the output data (defined using new_ode_model(obs = list(scale = ...))) was not found in the parameter list passed to sim_ode().")
+        }
+      }
+    })
+  }
   if(is.null(ode) | is.null(parameters)) {
     stop("Please specify at least the required arguments 'ode' and 'parameters'.")
   }
