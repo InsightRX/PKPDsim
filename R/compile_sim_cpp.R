@@ -41,6 +41,5 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
     sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
     Sys.setenv("PKG_CXXFLAGS" = flg)
   }
-  browser()
   return(list(parameters = get_parameters_from_code(ode_def_cpp)))
 }
