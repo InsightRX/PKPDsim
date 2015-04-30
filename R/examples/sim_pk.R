@@ -5,7 +5,7 @@ library(ggplot2)
 library(Rcpp)
 
 p <- list(CL = 5,
-          V  = 50,
+          V1 = 50,
           KIN = .02, KOUT=.5, EFF = 0.2)
 
 r1 <- new_regimen(amt = 100,
@@ -28,7 +28,7 @@ pkpd <- new_ode_model(code = list(pk = "
                       cpp_show_code = TRUE)
 
 system.time({
-  dat <- sim_ode (ode = "pkpd",
+  dat <- sim_ode (ode = "pk_oral",
                   n_ind = 25,
                   omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KIN" = .05), p),
                   par = p,
