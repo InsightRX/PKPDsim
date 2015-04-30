@@ -95,9 +95,10 @@ sim_ode <- function (ode = NULL,
   }
   if (class(ode) == "character") {
     ode <- get(ode)
-  } else {
-    stop("Error: the 'ode' argument to this function should be a character string referencing the function, not the function itself.")
-  }
+  }# else {
+  #  stop("Error: the 'ode' argument to this function should be a character string referencing the function, not the function itself.")
+  #}
+  test_pointer(ode)
   if(!is.null(attr(ode, "cpp")) && attr(ode, "cpp")) {
     cpp <- TRUE
   } else {
@@ -107,7 +108,7 @@ sim_ode <- function (ode = NULL,
     suppressWarnings({
       scale_par <- attr(mod1, "obs")$scale[is.na(as.numeric(attr(mod1, "obs")$scale))]
       if(length(scale_par) > 0) {
-        if(!all(scale_par %in% parameters)) {
+        if(!all(scale_par %in% names(parameters))) {
           stop("One of the scale parameters for the output data (defined using new_ode_model(obs = list(scale = ...))) was not found in the parameter list passed to sim_ode().")
         }
       }
