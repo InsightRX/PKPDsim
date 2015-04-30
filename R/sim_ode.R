@@ -182,7 +182,8 @@ sim_ode <- function (ode = NULL,
   if(cpp) { # check parameters specified
     pars_ode <- attr(ode, "parameters")
     if(!all(pars_ode %in% names(parameters))) {
-      stop("Not all parameters for this model have been specified. Required parameters are: \n  ", paste(pars_ode, collapse=", "))
+      m <- match(parameters, pars_ode)
+      stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
     }
   }
   if(is.null(t_obs)) { # find reasonable default to output
