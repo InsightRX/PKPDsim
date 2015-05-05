@@ -1,5 +1,5 @@
 #' @export
-num_int_wrapper <- function (times, A_init, des, p_ind, lsoda_func, step_size) {
+num_int_wrapper <- function (times, A_init, des, p_ind, lsoda_func) {
   des_out <- lsoda_func(A_init, times, des, p_ind)
   dat_ind <- c()
   for (j in 1:length(A_init)) {

@@ -9,7 +9,8 @@
 #' @param regimen a regimen object created using the regimen() function
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
-#' @param step_size the step size between the observations (NOT the step size of the differential equation solver)
+#' @param obs_step_size the step size between the observations
+#' @param int_step_size the step size for the numerical integrator
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
 #' @param t_obs vector of observation times, only output these values
 #' @param t_tte vector of observation times for time-to-event simulation
@@ -69,7 +70,7 @@ sim_ode <- function (ode = NULL,
                      A_init = NULL,
                      obs = NULL,
                      obs_step_size = 1,
-                     int_step_size = .5,
+                     int_step_size = 1e-3,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
@@ -281,7 +282,7 @@ sim_ode <- function (ode = NULL,
           }
         }
         time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
-        dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func, int_step_size))
+        dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func))
         if(!is.null(attr(ode, "cumhaz"))) {
           event_occurred <- FALSE
           dat <- rbind (dat, dat %>%
