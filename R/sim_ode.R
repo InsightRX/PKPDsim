@@ -70,7 +70,7 @@ sim_ode <- function (ode = NULL,
                      A_init = NULL,
                      obs = NULL,
                      obs_step_size = 1,
-                     int_step_size = 1e-3,
+                     int_step_size = 0.01,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
@@ -163,10 +163,10 @@ sim_ode <- function (ode = NULL,
     p$dose_type <- "bolus"
     design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0)))
   }
-  if(!is.null(t_obs)) { # make sure observation times are in dataset
+  if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
     design <- data.frame(rbind(design, cbind(t = setdiff(t_obs, design$t), dose = 0, dum = 0))) %>% arrange(t)
   }
-  if(!is.null(t_tte)) { # make sure tte times are in dataset
+  if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
     design <- data.frame(rbind(design, cbind(t = setdiff(t_tte, design$t), dose = 0, dum = 0))) %>% arrange(t)
   }
   if (is.null(t_max)) {
@@ -175,10 +175,10 @@ sim_ode <- function (ode = NULL,
     } else {
       t_max <- tail(design$t,1) + 24 # guess timeframe, user should use tmax argument
     }
-    if(!is.null(t_obs)) {
+    if(!is.null(t_obs) && length(t_obs) > 0) {
       if(is.null(t_max) || t_max < max(t_obs)) { t_max <- max(t_obs) }
     }
-    if(!is.null(t_tte)) {
+    if(!is.null(t_tte) && length(t_tte) > 0) {
       if(is.null(t_tte) || t_max < max(t_tte)) { t_max <- max(t_tte) }
     }
   }
@@ -248,7 +248,7 @@ sim_ode <- function (ode = NULL,
     prv_cumhaz <- 0
     if(cpp) {
       p_i$rate <- 0
-      tmp <- sim_wrapper_cpp(A_init_i, design_i$t, design_i$dose, length(design$t), p_i, int_step_size)
+      tmp <- ode (A_init_i, design_i$t, design_i$dose, length(design$t), p_i, int_step_size)
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
       dat_ind <- c()
       for (j in 1:length(A_init_i)) {
