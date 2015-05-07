@@ -183,7 +183,7 @@ sim_ode <- function (ode = NULL,
     }
   }
   design <- rbind(design %>%
-                    dplyr::filter(t < t_max), tail(design,1))
+                      dplyr::filter(t < t_max), tail(design,1))
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
   times <- seq(from=0, to=tail(design$t,1), by=int_step_size)
   if (is.null(A_init)) {
@@ -191,8 +191,8 @@ sim_ode <- function (ode = NULL,
   }
   p$dose_times <- regimen$dose_times
   p$dose_amts <- regimen$dose_amts
-  if(!is.null(p$F)) {
-    design$dose <- design$dose * F
+  if(!is.null(p$F) && class(p$F) == "numeric") {
+    design$dose <- design$dose * p$F
   }
   events <- c() # only for tte
   comb <- c()

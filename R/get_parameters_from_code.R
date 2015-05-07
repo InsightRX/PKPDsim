@@ -1,14 +1,11 @@
 #' @export
 get_parameters_from_code <- function (code, declare_variables = NULL) {
-  code <- gsub("\\n", "", code)
-  def <- gregexpr("double (.*?)=", code)
-  def1 <- unlist(regmatches(code, def))
-  defined <- gsub("(double|=|\\s)", "", def1)
+  ## find newly defined parameters in code
+  code <- gsub("\\n", " ", code)
   code <- gsub("double (.*?)=", "", code) # parameter delcarations in code
-  code <- gsub("double (.*?)=", "", code) # parameter delcarations in code
-  code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<]", " ", code)
+  code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<\\,]", " ", code)
   code <- gsub("\\-", " ", code)
-  code <- gsub("(if|then|else)", " ", code)
+  code <- gsub("(if|then|else|pow|sqrt|exp|log)", " ", code)
   A <- gregexpr("A\\[([0-9])\\]", code)
   m1 <- paste0(unlist(regmatches(code, A, invert = TRUE)), collapse="")
   dAdt <- gregexpr("dAdt\\[([0-9])\\]", m1)

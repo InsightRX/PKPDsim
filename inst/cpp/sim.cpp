@@ -54,7 +54,6 @@ List sim_wrapper_cpp (NumericVector A, NumericVector times, NumericVector doses,
       Aupd[0] = Aupd[0] + doses[i];
     } else {
       if(doses[i] > 0.0) {
-//        rate = doses[i] / atof(par["t_inf"]);
         NumericVector t_inf = par["t_inf"];
         rate = doses[i] / t_inf(0) ;
       } else {
