@@ -23,7 +23,7 @@ get_parameters_from_code <- function (code, declare_variables = NULL) {
   if (any(reserved_words %in% pars)) {
     stop("The following variable names are reserved words and cannot be used in your code, please rename:\n   ", paste(pars[match(reserved_words, pars)], collapse=" "))
   } else {
-    defined <- c(defined, "t")
+    defined <- c(declare_variables, "t")
     match_def <- match(defined, pars)
     if (length(match_def[!is.na(match_def)]) > 0) {
       pars <- pars[-match_def[!is.na(match_def)]]
