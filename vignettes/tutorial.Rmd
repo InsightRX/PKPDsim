@@ -199,7 +199,12 @@ ggplot(dat, aes(x=t, y=y)) +
   theme_empty()
 ```
 
+## Example using NONMEM dataset as design input
 
+```{r, warning=F, message=F}
+data(pkdata)
+r4 <- new_regimen_from_nm_dataset (pkdata)
+```
 
 ## Example Shiny
 

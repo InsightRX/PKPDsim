@@ -4,6 +4,6 @@
 #'
 #' @docType package
 #' @name vpc-package
-#' @import deSolve MASS dplyr ggplot2 shiny Rcpp inline
+#' @import deSolve dplyr shiny Rcpp
 #' @author Ron Keizer \email{ronkeizer@@gmail.com}
 NULL

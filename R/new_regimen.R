@@ -43,9 +43,6 @@ new_regimen <- function(amt = 100,
   } else {
     reg$dose_times <- times
   }
-  if (is.null(reg$cmt) || length(reg$cmt) == 0) {
-    reg$cmt <- 1
-  }
   if(is.null(t_inf)) {
     reg$t_inf = 1
   }

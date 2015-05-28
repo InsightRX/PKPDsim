@@ -150,49 +150,19 @@ sim_ode <- function (ode = NULL,
   }
   comb <- list()
   p <- parameters
-  if(class(regimen) != "regimen") {
+  if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
     stop("Please create a regimen using the new_regimen() function!")
   }
-  if(regimen$type == "infusion") {
-    p$t_inf <- regimen$t_inf
-    p$dose_type <- "infusion"
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0),
-                               cbind(t=regimen$dose_times + regimen$t_inf, dose=0, dum = 1))) %>%
-      dplyr::arrange(t)
+  if("regimen_multiple" %in% class(regimen)) {
+    n_ind <- length(regimen)
   } else {
-    p$dose_type <- "bolus"
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0)))
+    design <- parse_regimen(regimen, t_max, t_obs, t_tte, p)
+    design_i <- design
+    p$dose_times <- regimen$dose_times
+    p$dose_amts <- regimen$dose_amts
   }
-  if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
-    design <- data.frame(rbind(design, cbind(t = setdiff(t_obs, design$t), dose = 0, dum = 0))) %>% arrange(t)
-  }
-  if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
-    design <- data.frame(rbind(design, cbind(t = setdiff(t_tte, design$t), dose = 0, dum = 0))) %>% arrange(t)
-  }
-  if (is.null(t_max)) {
-    if (length(design$t) > 1) {
-      t_max <- tail(design$t,1) + max(diff(regimen$dose_times))
-    } else {
-      t_max <- tail(design$t,1) + 24 # guess timeframe, user should use tmax argument
-    }
-    if(!is.null(t_obs) && length(t_obs) > 0) {
-      if(is.null(t_max) || t_max < max(t_obs)) { t_max <- max(t_obs) }
-    }
-    if(!is.null(t_tte) && length(t_tte) > 0) {
-      if(is.null(t_tte) || t_max < max(t_tte)) { t_max <- max(t_tte) }
-    }
-  }
-  design <- rbind(design %>%
-                      dplyr::filter(t < t_max), tail(design,1))
-  design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
-  times <- seq(from=0, to=tail(design$t,1), by=int_step_size)
   if (is.null(A_init)) {
     A_init <- rep(0, size)
-  }
-  p$dose_times <- regimen$dose_times
-  p$dose_amts <- regimen$dose_amts
-  if(!is.null(p$F) && class(p$F) == "numeric") {
-    design$dose <- design$dose * p$F
   }
   events <- c() # only for tte
   comb <- c()
@@ -206,16 +176,47 @@ sim_ode <- function (ode = NULL,
   if(is.null(t_obs)) { # find reasonable default to output
     if(is.null(obs_step_size)) {
       obs_step_size <- 100
-      if(max(design$t) < 10000) { obs_step_size <- 10 }
-      if(max(design$t) < 1000) { obs_step_size <- 1 }
+      if(max(design$t) < 10000) { obs_step_size <- 100 }
+      if(max(design$t) < 1000) { obs_step_size <- 10 }
+      if(max(design$t) < 100) { obs_step_size <- 1 }
       if(max(design$t) < 10) { obs_step_size <- .1 }
     }
-    t_obs <- seq(from=0, to=max(design$t), by=obs_step_size)
+    if("regimen" %in% class(regimen)) {
+      t_obs <- seq(from=0, to=max(design$t), by=obs_step_size)
+    }
   }
-
   message("Simulating...")
   for (i in 1:n_ind) {
     p_i <- p
+    if("regimen_multiple" %in% class(regimen)) {
+      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i)
+      if(regimen[[i]]$type == "infusion") {
+        p_i$t_inf <- regimen$t_inf
+        p_i$dose_type <- "infusion"
+      } else {
+        p_i$dose_type <- "bolus"
+      }
+      p_i$dose_times <- regimen[[i]]$dose_times
+      p_i$dose_amts <- regimen[[i]]$dose_amts
+      if(i == 1 && is.null(t_obs)) { # find reasonable default to output
+        if(is.null(obs_step_size)) {
+          obs_step_size <- 100
+          if(max(design_i$t) < 10000) { obs_step_size <- 100 }
+          if(max(design_i$t) < 1000) { obs_step_size <- 10 }
+          if(max(design_i$t) < 100) { obs_step_size <- 1 }
+          if(max(design_i$t) < 10) { obs_step_size <- .1 }
+        }
+      }
+      t_obs <- seq(from=0, to=max(design_i$t), by=obs_step_size)
+    } else {
+      if(regimen$type == "infusion") {
+        p_i$t_inf <- regimen$t_inf
+        p_i$dose_type <- "infusion"
+      } else {
+        p_i$dose_type <- "bolus"
+      }
+    }
+    times <- seq(from=0, to=tail(design_i$t,1), by=int_step_size)
     if (!is.null(covariates) && !is.null(covariate_model)) {
       keys <- names(p_i)[names(p_i) %in% names(covariate_model)]
       if (length(keys) > 0) {
@@ -224,7 +225,6 @@ sim_ode <- function (ode = NULL,
         }
       }
     }
-    design_i <- design
     A_init_i <- A_init
     if (!is.null(adherence)) {
       if(adherence$type == "markov") {
@@ -248,7 +248,7 @@ sim_ode <- function (ode = NULL,
     prv_cumhaz <- 0
     if(cpp) {
       p_i$rate <- 0
-      tmp <- ode (A_init_i, design_i$t, design_i$dose, length(design$t), p_i, int_step_size)
+      tmp <- ode (A_init_i, design_i$t, design_i$dose, length(design_i$t), p_i, int_step_size)
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
       dat_ind <- c()
       for (j in 1:length(A_init_i)) {
@@ -258,13 +258,17 @@ sim_ode <- function (ode = NULL,
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
       }
-      comb[((i-1)*l_mat)+(1:l_mat),] <- dat_ind
+      if("regimen_multiple" %in% class(regimen)) {
+        comb <- rbind(comb, dat_ind)
+      } else {
+        comb[((i-1)*l_mat)+(1:l_mat),] <- dat_ind
+      }
 #      comb <- data.frame(dat_ind)
     } else {
       if(class(A_init) == "function") {
         A_init_i = A_init(p_i)
       }
-      for (k in 1:(length(design$t)-1)) {
+      for (k in 1:(length(design_i$t)-1)) {
         if (k > 1) {
           A_upd <- dat[dat$comp!="cumhaz" & dat$t==tail(time_window,1),][,]$y
           if(event_occurred) {
