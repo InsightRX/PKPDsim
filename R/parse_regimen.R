@@ -5,33 +5,37 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
   if(!is.null(covariates)) {
     covt <- c()
     for (i in 1:length(covariates)) {
-      covt <- data.frame(rbind(covt, cbind(name = names(covariates)[i],
-                                time = covariates[[i]]$times,
-                                value = covariates[[i]]$value)))
+      covt <- data.frame(rbind(covt,
+                               cbind(name = names(covariates)[i],
+                                     time = covariates[[i]]$times,
+                                     value = covariates[[i]]$value)))
       covt$time <- as.numeric(as.character(covt$time))
       covt$value <- as.numeric(as.character(covt$value))
     }
     # add covariate update times as dummy dose
     regimen$dose_times <- c(regimen$dose_times, covt$time)
     regimen$dose_amts <- c(regimen$dose_amts, rep(0, length(covt$time)))
+    regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
     ord <- order(regimen$dose_times)
     regimen$dose_times <- regimen$dose_times[ord]
     regimen$dose_amts  <- regimen$dose_amts[ord]
+    regimen$t_inf  <- regimen$t_inf[ord]
   }
 
   # parse list to a design (data.frame)
   if(regimen$type == "infusion") {
     design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0),
                                cbind(t=regimen$dose_times + regimen$t_inf, dose=0, dum = 1))) %>%
-      dplyr::arrange(t)
+      dplyr::arrange(t, -dose)
   } else {
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0)))
+    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0))) %>%
+      dplyr::arrange(t, -dose)
   }
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
-    design <- data.frame(rbind(design, cbind(t = setdiff(t_obs, design$t), dose = 0, dum = 0))) %>% arrange(t)
+    design <- data.frame(rbind(design, cbind(t = setdiff(t_obs, design$t), dose = 0, dum = 0))) %>% arrange(t, -dose)
   }
   if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
-    design <- data.frame(rbind(design, cbind(t = setdiff(t_tte, design$t), dose = 0, dum = 0))) %>% arrange(t)
+    design <- data.frame(rbind(design, cbind(t = setdiff(t_tte, design$t), dose = 0, dum = 0))) %>% arrange(t, -dose)
   }
   if (is.null(t_max)) {
     if (length(design$t) > 1) {
