@@ -106,16 +106,16 @@ sim_ode <- function (ode = NULL,
   } else {
     cpp <- FALSE
   }
-  if (!is.null(attr(ode, "obs")[["scale"]])) {
-    suppressWarnings({
-      scale_par <- attr(ode, "obs")$scale[is.na(as.numeric(attr(ode, "obs")$scale))]
-      if(length(scale_par) > 0) {
-        if(!all(scale_par %in% names(parameters))) {
-          stop("One of the scale parameters for the output data (defined using new_ode_model(obs = list(scale = ...))) was not found in the parameter list passed to sim_ode().")
-        }
-      }
-    })
-  }
+#   if (!is.null(attr(ode, "obs")[["scale"]])) {
+#     suppressWarnings({
+#       scale_par <- attr(ode, "obs")$scale[is.na(as.numeric(attr(ode, "obs")$scale))]
+#       if(length(scale_par) > 0) {
+#         if(!all(scale_par %in% names(parameters))) {
+#           stop("One of the scale parameters for the output data (defined using new_ode_model(obs = list(scale = ...))) was not found in the parameter list passed to sim_ode().")
+#         }
+#       }
+#     })
+#   }
   if(is.null(ode) | is.null(parameters)) {
     stop("Please specify at least the required arguments 'ode' and 'parameters'.")
   }
@@ -254,6 +254,7 @@ sim_ode <- function (ode = NULL,
       for (j in 1:length(A_init_i)) {
         dat_ind <- rbind (dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
       }
+      dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
       if(i == 1) {
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
@@ -311,40 +312,40 @@ sim_ode <- function (ode = NULL,
   # Add concentration to dataset, and perform scaling and/or transformation:
   comb <- data.frame(comb)
   colnames(comb) <- c("id", "t", "comp", "y")
-  if(!is.null(attr(ode, "obs"))) {
-    scale <- rep(1, length(attr(ode, "obs")[["scale"]]))
-    if(!is.null(attr(ode, "obs")[["labels"]])) {
-      labels <- attr(ode, "obs")[["labels"]]
-    } else {
-      if (length(scale) == 1) {
-        labels <- "obs"
-      } else {
-        labels <- paste0("obs_", attr(ode, "obs")[["labels"]],
-                         seq(from=1, to=length(attr(ode, "obs")[["scale"]])))
-      }
-    }
-    if (!is.null(attr(ode, "obs")[["scale"]])) {
-      suppressWarnings({
-        for (i in seq(attr(ode, "obs")[["scale"]])) {
-          if(!is.na(as.numeric(attr(ode, "obs")[["scale"]][i]))) {
-            scale[i] <- as.numeric(attr(ode, "obs")[["scale"]][i])
-          } else {
-            scale[i] <- as.numeric(p[[attr(ode, "obs")[["scale"]][i]]])
-          }
-        }
-      })
-    }
-    for (i in seq(labels)) {
-      comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]][i]) %>% dplyr::mutate(comp = labels[i], y = y/scale[i]))
-      if(!is.null(attr(ode, "obs")[["trans"]][i])) {
-        if(class(attr(ode, "obs")[["trans"]][i]) == "character") {
-          trans_func <- get(attr(ode, "obs")[["trans"]][i])
-          comb[comb$comp == labels[i],]$y <- trans_func(comb[comb$comp == labels[i],]$y)
-        }
-      }
-    }
-  }
-  comb <- comb %>% dplyr::filter(comp %in% labels)
+#   if(!is.null(attr(ode, "obs"))) {
+#     scale <- rep(1, length(attr(ode, "obs")[["scale"]]))
+#     if(!is.null(attr(ode, "obs")[["labels"]])) {
+#       labels <- attr(ode, "obs")[["labels"]]
+#     } else {
+#       if (length(scale) == 1) {
+#         labels <- "obs"
+#       } else {
+#         labels <- paste0("obs_", attr(ode, "obs")[["labels"]],
+#                          seq(from=1, to=length(attr(ode, "obs")[["scale"]])))
+#       }
+#     }
+#     if (!is.null(attr(ode, "obs")[["scale"]])) {
+#       suppressWarnings({
+#         for (i in seq(attr(ode, "obs")[["scale"]])) {
+#           if(!is.na(as.numeric(attr(ode, "obs")[["scale"]][i]))) {
+#             scale[i] <- as.numeric(attr(ode, "obs")[["scale"]][i])
+#           } else {
+#             scale[i] <- as.numeric(p[[attr(ode, "obs")[["scale"]][i]]])
+#           }
+#         }
+#       })
+#     }
+#     for (i in seq(labels)) {
+#       comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]][i]) %>% dplyr::mutate(comp = labels[i], y = y/scale[i]))
+#       if(!is.null(attr(ode, "obs")[["trans"]][i])) {
+#         if(class(attr(ode, "obs")[["trans"]][i]) == "character") {
+#           trans_func <- get(attr(ode, "obs")[["trans"]][i])
+#           comb[comb$comp == labels[i],]$y <- trans_func(comb[comb$comp == labels[i],]$y)
+#         }
+#       }
+#     }
+#   }
+  # comb <- comb %>% dplyr::filter(comp %in% labels)
   if(!is.null(t_obs)) {
     comb <- comb %>% dplyr::filter(t %in% t_obs)
   }
@@ -365,9 +366,10 @@ sim_ode <- function (ode = NULL,
     }
   }
   comb <- data.frame(comb)
-  comb$id <- as.numeric(comb$id)
-  comb$t <- as.numeric(comb$t)
-  comb$y <- as.numeric(comb$y)
+  as.num <- function(x) {as.numeric(as.character(x))}
+  comb$id <- as.num(comb$id)
+  comb$t <- as.num(comb$t)
+  comb$y <- as.num(comb$y)
   comb <- data.frame(comb %>% arrange(id, comp, t))
   class(comb) <- c(class(comb), "PKPDsim")
   return(comb)

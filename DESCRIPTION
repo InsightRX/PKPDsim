@@ -1,6 +1,6 @@
 Package: PKPDsim
 Type: Package
-Title: Simulate dose regimens for PKPD models described by ODE systems
+Title: get MAP estimates using PKPDsim to simulate ODE models
 Version: 0.1
 Date: 2015-03-07
 Author: Ron Keizer

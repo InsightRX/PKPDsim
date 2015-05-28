@@ -33,7 +33,7 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
   }
   ode_out tmp;
   integrate_const (stepr , ode, A, t_start, t_end_new, step_size, push_back_solution (x_vec, tim));
-  tmp.y = x_vec;
+  tmp.y    = x_vec;
   tmp.time = tim;
   return(tmp);
 }
@@ -42,11 +42,13 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
 List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
+  std::vector<double> obs;
   double t_start, t_end;
   std::vector<double> times, doses;
   times = design["t"];
   doses = design["dose"];
   int len = times.size();
+  // insert observation compartment
 
   // insert covariate definitions
 
@@ -59,6 +61,9 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     t_end = times[(i+1)];
 
     // insert covariates for integration period
+
+    // insert scale definition for integration period
+
     if(strcmp(par["dose_type"], "infusion") != 0) {
       Aupd[0] = Aupd[0] + doses[i];
     } else {
@@ -76,11 +81,15 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     for (int k = 0; k < n_comp; k++) {
       Aupd[k] = tail[k];
     }
+    for( int k = 0; k < tmp.y.size(); k++) {
+       obs.insert(obs.end(), tmp.y[k][cmt] / scale);
+    }
   }
 
   List comb;
   comb["time"] = t;
   comb["y"] = y;
+  comb["obs"] = obs;
   return(comb);
 }
 

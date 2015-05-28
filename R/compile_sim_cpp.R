@@ -1,5 +1,5 @@
 #' @export
-compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, covariates = NULL, verbose = FALSE) {
+compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -24,7 +24,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
     m <- p_def %in% declare_variables # remove covariates and other declared variables
     p_def <- p_def[!m]
   }
-  p <- unique(c(p, "rate", "conc", declare_variables)) # add rate and conc as explicitly declared variables
+  p <- unique(c(p, "rate", "conc", "scale", declare_variables)) # add rate and conc as explicitly declared variables
   pars <- "\n"
   par_def <- ""
   for(i in seq(p)) { # parameters and auxiliary variables
@@ -51,6 +51,15 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
     cpp_code[idx3] <- cov_def
     idx4 <- grep("insert covariates for integration period", cpp_code)
     cpp_code[idx4] <- cov_tmp
+  }
+  idx5 <- grep("insert scale definition for integration period", cpp_code)
+  idx6 <- grep("observation compartment", cpp_code)
+  if(is.null(obs)) {
+    cpp_code[idx5] = "    double scale = 1;"
+    cpp_code[idx6] = "  int cmt = 0;"
+  } else {
+    cpp_code[idx5] = paste0("    scale = ", obs$scale, ";")
+    cpp_code[idx6] = paste0("  int cmt = ", (obs$cmt-1), ";")
   }
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),

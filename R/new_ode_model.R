@@ -1,3 +1,4 @@
+#' @param obs list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,
@@ -64,7 +65,7 @@ new_ode_model <- function (model = NULL,
     code <- gsub("\\r\\n", "\n", code)
     code <- gsub("\\n", ";\n", code)
     code <- gsub("^;", "", code)
-    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, covariates = covariates, verbose = verbose)
+    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, covariates = covariates, obs = obs, verbose = verbose)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
       sim_out <- sim_wrapper_cpp
     } else {
