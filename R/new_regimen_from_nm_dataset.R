@@ -51,7 +51,7 @@ new_regimen_from_nm_dataset <- function(data,
       reg[[i]] <- new_regimen(amt = tmp$amt, times = tmp$time, type = "bolus")
     }
   }
-  if(first_only) {
+  if(length(ids) == 1) {
     return(reg[[1]])
   } else {
     class(reg) <- c(class(reg), "regimen_multiple")
