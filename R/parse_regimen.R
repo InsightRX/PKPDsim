@@ -16,6 +16,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
     regimen$dose_times <- c(regimen$dose_times, covt$time)
     regimen$dose_amts <- c(regimen$dose_amts, rep(0, length(covt$time)))
     regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
+    regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
     ord <- order(regimen$dose_times)
     regimen$dose_times <- regimen$dose_times[ord]
     regimen$dose_amts  <- regimen$dose_amts[ord]
@@ -67,5 +68,8 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
       design[design$t >= covt[i,]$time, c(paste0("cov_", covt[i,]$name))] <- covt[i,]$value
     }
   }
+  design <- design[!duplicated(paste0(design$t,design$dose,design$dum)),]
+  # remove covariate points where there is also a dose
+  design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0),]
   return(design)
 }
