@@ -1,5 +1,5 @@
 #' @export
-compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, verbose = FALSE) {
+compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, covariates = NULL, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -19,7 +19,11 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   if(any(p %in% defined)) {
     p <- p[!p %in% defined]
   }
-  p_def <- unique(p) # add rate and conc as explicitly declared variables
+  p_def <- unique(p)
+  if (!is.null(declare_variables)) {
+    m <- p_def %in% declare_variables # remove covariates and other declared variables
+    p_def <- p_def[!m]
+  }
   p <- unique(c(p, "rate", "conc", declare_variables)) # add rate and conc as explicitly declared variables
   pars <- "\n"
   par_def <- ""
@@ -36,6 +40,18 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   cpp_code[idx] <- par_def
   idx2 <- grep("insert_state_init", cpp_code)
   cpp_code[idx2] <- paste("   ", code_init)
+  if(!is.null(covariates)) {
+    cov_def <- "  // covariate definitions\n"
+    cov_tmp <- "    // covariates during integration period\n"
+    for(i in seq(names(covariates))) {
+      cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_', names(covariates)[i], ' = design["cov_', names(covariates)[i],'"];\n'))
+      cov_tmp <- paste0(cov_tmp, paste0('    ', names(covariates)[i], ' = cov_', names(covariates)[i],'[i];\n'))
+    }
+    idx3 <- grep("insert covariate definitions", cpp_code)
+    cpp_code[idx3] <- cov_def
+    idx4 <- grep("insert covariates for integration period", cpp_code)
+    cpp_code[idx4] <- cov_tmp
+  }
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),
            pars,

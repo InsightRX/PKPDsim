@@ -8,8 +8,6 @@
 #' @param first_only use only design from first individual in dataset
 #' @export
 new_regimen_from_nm_dataset <- function(data,
-                                        covariates = NULL,
-                                        implement_dummy_points = TRUE,
                                         reset_time = TRUE,
                                         first_only = FALSE) {
   colnames(data) <- tolower(colnames(data))
@@ -22,12 +20,8 @@ new_regimen_from_nm_dataset <- function(data,
   if(! "time" %in% colnames(data)) {
     stop("TIME column is required in source dataset!")
   }
-  m1 <- match(c("id", "mdv", "evid", "amt", "time", "rate"), colnames(data), 0)
-  if (!is.null(covariates)) {
-    m2 <- match(tolower(covariates), colnames(data), 0)
-    m1 <- c(m1,m2)
-  }
-  m <- m1[m1>0]
+  m <- match(c("id", "mdv", "evid", "amt", "time", "rate"), colnames(data), 0)
+  m <- m[m>0]
   data <- data[,m]
   doses <- data[data$evid == 1,]
   dum <- data[data$evid == 2,]

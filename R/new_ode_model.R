@@ -8,6 +8,7 @@ new_ode_model <- function (model = NULL,
                            size = NULL,
                            obs = list("cmt" = 1, scale = 1),
                            dose = list("cmt" = 1),
+                           covariates = NULL,
                            declare_variables = NULL,
                            cpp_show_code = FALSE,
                            verbose = FALSE) {
@@ -58,11 +59,12 @@ new_ode_model <- function (model = NULL,
     if(is.null(parameters)) {
       parameters <- get_parameters_from_code(code)
     }
+    declare_variables <- c(declare_variables, names(covariates))
     code_orig <- code
     code <- gsub("\\r\\n", "\n", code)
     code <- gsub("\\n", ";\n", code)
     code <- gsub("^;", "", code)
-    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, verbose = verbose)
+    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, covariates = covariates, verbose = verbose)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
       sim_out <- sim_wrapper_cpp
     } else {

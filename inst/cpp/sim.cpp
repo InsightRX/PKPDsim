@@ -39,10 +39,17 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
 }
 
 // [[Rcpp::export]]
-List sim_wrapper_cpp (NumericVector A, NumericVector times, NumericVector doses, int len, List par, double step_size) {
+List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
   double t_start, t_end;
+  std::vector<double> times, doses;
+  times = design["t"];
+  doses = design["dose"];
+  int len = times.size();
+
+  // insert covariate definitions
+
   // insert_state_init
   NumericVector Aupd = clone(A);
 
@@ -50,6 +57,8 @@ List sim_wrapper_cpp (NumericVector A, NumericVector times, NumericVector doses,
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];
+
+    // insert covariates for integration period
     if(strcmp(par["dose_type"], "infusion") != 0) {
       Aupd[0] = Aupd[0] + doses[i];
     } else {

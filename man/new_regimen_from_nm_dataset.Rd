@@ -4,17 +4,16 @@
 \alias{new_regimen_from_nm_dataset}
 \title{Create a regimen from NM data}
 \usage{
-new_regimen_from_nm_dataset(data, covariates = NULL,
-  implement_dummy_points = TRUE, reset_time = TRUE, first_only = FALSE)
+new_regimen_from_nm_dataset(data, reset_time = TRUE, first_only = FALSE)
 }
 \arguments{
 \item{data}{NONMEM-type dataset}
 
-\item{covariates}{character vector of columns to add as covariate}
-
 \item{reset_time}{start time for each simulated patient at 0, irrespective of design in dataset}
 
 \item{first_only}{use only design from first individual in dataset}
+
+\item{covariates}{character vector of columns to add as covariate}
 
 \item{implement_dummy}{points add EVID=2 records as doses with zero amount}
 }

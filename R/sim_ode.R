@@ -77,16 +77,16 @@ sim_ode <- function (ode = NULL,
                      rtte = FALSE,
                      verbose = FALSE
                      ) {
-  if (!is.null(covariate_model) && !is.null(covariates)) {
-    n_ind <- length(t(covariates[,1]))
-    message(paste0("Simulating ", n_ind, " individuals with covariates...\n"))
-    if (sum("tbl_df" %in% class(covariates))==0) {
-      covariates <- data_frame(covariates)
-    }
-  }
-  if ((!is.null(covariate_model) && is.null(covariates)) | (is.null(covariate_model) && !is.null(covariates))) {
-    stop("For models with covariates, specify both the 'covariate_model' and the 'covariates' arguments. See help for more information.")
-  }
+#   if (!is.null(covariate_model) && !is.null(covariates)) {
+#     n_ind <- length(t(covariates[,1]))
+#     message(paste0("Simulating ", n_ind, " individuals with covariates...\n"))
+#     if (sum("tbl_df" %in% class(covariates))==0) {
+#       covariates <- data_frame(covariates)
+#     }
+#   }
+#   if ((!is.null(covariate_model) && is.null(covariates)) | (is.null(covariate_model) && !is.null(covariates))) {
+#     stop("For models with covariates, specify both the 'covariate_model' and the 'covariates' arguments. See help for more information.")
+#   }
   if (!is.null(dde)) {
     lsoda_func <- deSolve::dede
   } else {
@@ -156,7 +156,7 @@ sim_ode <- function (ode = NULL,
   if("regimen_multiple" %in% class(regimen)) {
     n_ind <- length(regimen)
   } else {
-    design <- parse_regimen(regimen, t_max, t_obs, t_tte, p)
+    design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates)
     design_i <- design
     p$dose_times <- regimen$dose_times
     p$dose_amts <- regimen$dose_amts
@@ -168,8 +168,8 @@ sim_ode <- function (ode = NULL,
   comb <- c()
   if(cpp) { # check parameters specified
     pars_ode <- attr(ode, "parameters")
-    if(!all(pars_ode %in% names(parameters))) {
-      m <- match(names(parameters), pars_ode)
+    if(!all(pars_ode %in% c(names(parameters), names(covariates)))) {
+      m <- match(c(names(parameters), names(covariates)), pars_ode)
       stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
     }
   }
@@ -189,7 +189,7 @@ sim_ode <- function (ode = NULL,
   for (i in 1:n_ind) {
     p_i <- p
     if("regimen_multiple" %in% class(regimen)) {
-      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i)
+      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates)
       if(regimen[[i]]$type == "infusion") {
         p_i$t_inf <- regimen$t_inf
         p_i$dose_type <- "infusion"
@@ -217,14 +217,14 @@ sim_ode <- function (ode = NULL,
       }
     }
     times <- seq(from=0, to=tail(design_i$t,1), by=int_step_size)
-    if (!is.null(covariates) && !is.null(covariate_model)) {
-      keys <- names(p_i)[names(p_i) %in% names(covariate_model)]
-      if (length(keys) > 0) {
-        for (j in seq(keys)) {
-          p_i[[keys[j]]] <- covariate_model[[keys[j]]](par = p_i[[keys[j]]], cov = covariates[i,])
-        }
-      }
-    }
+#     if (!is.null(covariates) && !is.null(covariate_model)) {
+#       keys <- names(p_i)[names(p_i) %in% names(covariate_model)]
+#       if (length(keys) > 0) {
+#         for (j in seq(keys)) {
+#           p_i[[keys[j]]] <- covariate_model[[keys[j]]](par = p_i[[keys[j]]], cov = covariates[i,])
+#         }
+#       }
+#     }
     A_init_i <- A_init
     if (!is.null(adherence)) {
       if(adherence$type == "markov") {
@@ -248,7 +248,7 @@ sim_ode <- function (ode = NULL,
     prv_cumhaz <- 0
     if(cpp) {
       p_i$rate <- 0
-      tmp <- ode (A_init_i, design_i$t, design_i$dose, length(design_i$t), p_i, int_step_size)
+      tmp <- ode (A_init_i, design_i, p_i, int_step_size)
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
       dat_ind <- c()
       for (j in 1:length(A_init_i)) {
