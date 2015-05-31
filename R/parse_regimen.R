@@ -70,6 +70,8 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
   }
   design <- design[!duplicated(paste0(design$t,design$dose,design$dum)),]
   # remove covariate points where there is also a dose
-  design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0),]
+  if(!is.null(covariates)) {
+    design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0),]
+  }
   return(design)
 }
