@@ -33,10 +33,16 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
       dplyr::arrange(t, -dose)
   }
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
-    design <- data.frame(rbind(design, cbind(t = setdiff(t_obs, design$t), dose = 0, dum = 0))) %>% arrange(t, -dose)
+    t_diff <- setdiff(t_obs, design$t)
+    if(length(t_diff) > 0) {
+      design <- data.frame(rbind(design, cbind(t = t_diff, dose = 0, dum = 0))) %>% arrange(t, -dose)
+    }
   }
   if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
-    design <- data.frame(rbind(design, cbind(t = setdiff(t_tte, design$t), dose = 0, dum = 0))) %>% arrange(t, -dose)
+    t_diff <- setdiff(t_tte, design$t)
+    if(length(t_diff) > 0) {
+      design <- data.frame(rbind(design, cbind(t = t_diff, dose = 0, dum = 0))) %>% arrange(t, -dose)
+    }
   }
   if (is.null(t_max)) {
     if (length(design$t) > 1) {
