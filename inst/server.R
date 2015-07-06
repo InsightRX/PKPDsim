@@ -60,6 +60,21 @@ shinyServer(function(input, output) {
       }
       HTML(w)
     })
+  print(input)
+  output$simSetup <- renderUI({
+    list(h4("Regimen"),
+    fluidRow(
+      column(12, sliderInput("n_ind", "Number of individuals:", min = 1, max = 100, value = 1))),
+    fluidRow(
+      column(6, textInput("amt", "Amount:", value = regimen$amt)),
+      column(6, textInput("interval", "Interval:", value = regimen$interval))),
+    fluidRow(
+      column(12, sliderInput("n", "Number of doses:", min = 1, max = 20, value = length(regimen$dose_times)),
+             selectInput("type", "Dose type", c("Bolus", "Infusion"), selected="Bolus"),
+             sliderInput("t_inf", "Infusion length:", min = 1, max = 12, value = regimen$t_inf)
+      ))
+    )
+  })
   output$warning_text <- renderPrint({
     warning_text <- ""
     if (length(grep("CI", input$plot_type))>0 & input$n_ind < 10) {
