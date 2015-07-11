@@ -1,6 +1,10 @@
 #' @export
 parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
 
+  if(length(regimen$t_inf) < length(regimen$dose_times)) {
+    regimen$t_inf <- c(regimen$tinf, rep(tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
+  }
+
   ## first, add covariates to regiment to be incorproated in design
   if(!is.null(covariates)) {
     covt <- c()
@@ -35,13 +39,13 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
     t_diff <- setdiff(t_obs, design$t)
     if(length(t_diff) > 0) {
-      design <- data.frame(rbind(design, cbind(t = t_diff, dose = 0, dum = 0))) %>% arrange(t, -dose)
+      design <- data.frame(rbind(design, cbind(t = t_diff, dose = 0, dum = 0, t_inf = 0, rate = 0))) %>% arrange(t, -dose)
     }
   }
   if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
     t_diff <- setdiff(t_tte, design$t)
     if(length(t_diff) > 0) {
-      design <- data.frame(rbind(design, cbind(t = t_diff, dose = 0, dum = 0))) %>% arrange(t, -dose)
+      design <- data.frame(rbind(design, cbind(t = t_diff, dose = 0, dum = 0, t_inf = 0, rate = 0))) %>% arrange(t, -dose)
     }
   }
   if (is.null(t_max)) {
