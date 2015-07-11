@@ -44,9 +44,10 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   std::vector<state_type> y;
   std::vector<double> obs;
   double t_start, t_end;
-  std::vector<double> times, doses;
+  std::vector<double> times, doses, rates;
   times = design["t"];
   doses = design["dose"];
+  rates = design["rate"];
   int len = times.size();
   // insert observation compartment
 
@@ -68,8 +69,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
       Aupd[0] = Aupd[0] + doses[i];
     } else {
       if(doses[i] > 0.0) {
-        NumericVector t_inf = par["t_inf"];
-        rate = doses[i] / t_inf(0) ;
+        rate = rates[i] ;
       } else {
         rate = 0;
       }

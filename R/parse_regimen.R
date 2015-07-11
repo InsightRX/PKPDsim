@@ -25,11 +25,11 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
 
   # parse list to a design (data.frame)
   if(regimen$type == "infusion") {
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0),
-                               cbind(t=regimen$dose_times + regimen$t_inf, dose=0, dum = 1))) %>%
+    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0, t_inf = regimen$t_inf, rate = regimen$dose_amts / regimen$t_inf),
+                               cbind(t=regimen$dose_times + regimen$t_inf, dose=0, dum = 1, t_inf = 0, rate = 0 ))) %>%
       dplyr::arrange(t, -dose)
   } else {
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0))) %>%
+    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0, t_inf = 0, rate = 0))) %>%
       dplyr::arrange(t, -dose)
   }
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
