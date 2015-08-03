@@ -60,7 +60,6 @@ shinyServer(function(input, output) {
       }
       HTML(w)
     })
-  print(input)
   output$simSetup <- renderUI({
     list(h4("Regimen"),
     fluidRow(

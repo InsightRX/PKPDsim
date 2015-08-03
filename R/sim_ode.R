@@ -185,7 +185,9 @@ sim_ode <- function (ode = NULL,
       t_obs <- seq(from=0, to=max(design$t), by=obs_step_size)
     }
   }
-  message("Simulating...")
+  if(verbose) {
+    message("Simulating...")
+  }
   for (i in 1:n_ind) {
     p_i <- p
     if("regimen_multiple" %in% class(regimen)) {
@@ -247,6 +249,9 @@ sim_ode <- function (ode = NULL,
     tmp <- c()
     prv_cumhaz <- 0
     if(cpp) {
+      for(k in seq(p_i$dose_times)) {
+        design_i[design_i$t >= p_i$dose_times[k] & design_i$t < (p_i$dose_times[k] + p_i$t_inf[k]),]$rate <- (p_i$dose_amts[k] / p_i$t_inf[k])
+      }
       p_i$rate <- 0
       tmp <- ode (A_init_i, design_i, p_i, int_step_size)
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
