@@ -60,6 +60,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];
+    rate = rates[i];
 
     // insert covariates for integration period
 
@@ -67,12 +68,6 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
 
     if(strcmp(par["dose_type"], "infusion") != 0) {
       Aupd[0] = Aupd[0] + doses[i];
-    } else {
-      if(doses[i] > 0.0) {
-        rate = rates[i] ;
-      } else {
-        rate = 0;
-      }
     }
     ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
     t.insert(t.end(), tmp.time.begin(), tmp.time.end());
