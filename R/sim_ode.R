@@ -249,6 +249,9 @@ sim_ode <- function (ode = NULL,
     tmp <- c()
     prv_cumhaz <- 0
     if(cpp) {
+      if(length(p_i$t_inf) < length(p_i$dose_times)) {
+        p_i$t_inf <- rep(p_i$t_inf[1], length(p_i$dose_times))
+      }
       for(k in seq(p_i$dose_times)) {
         design_i[design_i$t >= p_i$dose_times[k] & design_i$t < (p_i$dose_times[k] + p_i$t_inf[k]),]$rate <- (p_i$dose_amts[k] / p_i$t_inf[k])
       }
