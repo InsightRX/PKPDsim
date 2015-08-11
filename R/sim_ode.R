@@ -249,6 +249,7 @@ sim_ode <- function (ode = NULL,
     tmp <- c()
     prv_cumhaz <- 0
     if(cpp) {
+      p_i$dose_times <- p_i$dose_times[p_i$dose_times <= t_max]
       if(length(p_i$t_inf) < length(p_i$dose_times)) {
         p_i$t_inf <- rep(p_i$t_inf[1], length(p_i$dose_times))
       }
