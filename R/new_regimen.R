@@ -16,7 +16,8 @@
 #'r2 <- new_regimen(amt=50, times=c(0:19)*12)  # same, but using explicit times
 #'r3 <- new_regimen(amt=c(rep(100,4), rep(50,16)), times=c(0:19)*12)  # first 4 doses higher dose
 
-new_regimen <- function(amt = 100,
+new_regimen <- function(
+                    amt = 100,
                     interval = 12,
                     n = 3,
                     times = NULL,
@@ -43,14 +44,17 @@ new_regimen <- function(amt = 100,
   } else {
     reg$dose_times <- times
   }
-  if(is.null(t_inf)) {
-    reg$t_inf = 1
-  }
   reg$n <- length(reg$dose_times)
   if (length(reg$amt) != length(reg$dose_times)) {
     reg$dose_amts <- rep(reg$amt[1], length(reg$dose_times))
   } else {
     reg$dose_amts <- reg$amt
+  }
+  if(is.null(t_inf)) {
+    reg$t_inf = 1
+  }
+  if(length(reg$t_inf) != length(reg$dose_times)) {
+    reg$t_inf <- rep(reg$t_inf[1], length(reg$dose_times))
   }
   return(reg)
 }
