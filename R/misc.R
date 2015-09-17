@@ -5,6 +5,17 @@ f_cov <- function (...) {
   substitute( with(cov, { ... } ) )
 }
 
+min_decimal_places <- function(x) {
+  max(vapply(x, function(x) {
+    if ((x %% 1) != 0) {
+      nchar(strsplit(sub('0+$', '', as.character(x)), ".", fixed=TRUE)[[1]][[2]])
+    } else {
+      return(0)
+    }
+  }, sum()))
+}
+
+
 cumhaz_to_surv <- function(cumhaz) {
   exp(-cumhaz)
 }

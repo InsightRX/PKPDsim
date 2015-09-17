@@ -71,7 +71,7 @@ sim_ode <- function (ode = NULL,
                      A_init = NULL,
                      only_obs = FALSE,
                      obs_step_size = 1,
-                     int_step_size = 0.01,
+                     int_step_size = 0.001,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
@@ -88,6 +88,13 @@ sim_ode <- function (ode = NULL,
 #   if ((!is.null(covariate_model) && is.null(covariates)) | (is.null(covariate_model) && !is.null(covariates))) {
 #     stop("For models with covariates, specify both the 'covariate_model' and the 'covariates' arguments. See help for more information.")
 #   }
+
+  if(!is.null(t_obs)) {
+    dec <- min_decimal_places(t_obs)
+    if(dec > -log10(int_step_size) ) {
+      stop(paste0("The specified observation vector requires higher precision. Please increase the precision of the integrator ('int_step_size') to < ", 10^(-dec), "."))
+    }
+  }
   if (!is.null(dde)) {
     lsoda_func <- deSolve::dede
   } else {
@@ -209,15 +216,7 @@ sim_ode <- function (ode = NULL,
         p_i$dose_type <- "bolus"
       }
     }
-    times <- seq(from=0, to=tail(design_i$t,1), by=int_step_size)
-#     if (!is.null(covariates) && !is.null(covariate_model)) {
-#       keys <- names(p_i)[names(p_i) %in% names(covariate_model)]
-#       if (length(keys) > 0) {
-#         for (j in seq(keys)) {
-#           p_i[[keys[j]]] <- covariate_model[[keys[j]]](par = p_i[[keys[j]]], cov = covariates[i,])
-#         }
-#       }
-#     }
+    times <- unique(c(seq(from=0, to=tail(design_i$t,1), by=int_step_size), t_obs))
     A_init_i <- A_init
     if (!is.null(adherence)) {
       if(adherence$type == "markov") {

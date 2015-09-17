@@ -1,3 +1,5 @@
+#' Create new ODE model
+#'
 #' @param obs list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment
 #' @export
 new_ode_model <- function (model = NULL,

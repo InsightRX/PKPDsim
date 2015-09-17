@@ -67,18 +67,22 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
 
     // insert scale definition for integration period
 
+    start = 0;
+    if(i > 0) {
+      start = 1;
+    }
     if(strcmp(par["dose_type"], "infusion") != 0) {
       Aupd[0] = Aupd[0] + doses[i];
+      if(doses[i] > 0) {
+        start = 0;
+      }
     }
     ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
     state_type tail = tmp.y.back();
-    start = 0;
-    if(i == 0) {
-      start = 0;
+    if(start == 0) {
       t.insert(t.end(), tmp.time.begin(), tmp.time.end());
       y.insert(y.end(), tmp.y.begin(), tmp.y.end());
     } else {
-      start = 1;
       t.insert(t.end(), boost::next(tmp.time.begin()), tmp.time.end());
       y.insert(y.end(), boost::next(tmp.y.begin()), tmp.y.end());
     }
