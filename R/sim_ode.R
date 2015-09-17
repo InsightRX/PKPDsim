@@ -9,6 +9,7 @@
 #' @param regimen a regimen object created using the regimen() function
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
+#' @param obs_only only return the observations
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
@@ -68,7 +69,7 @@ sim_ode <- function (ode = NULL,
                      covariates = NULL,
                      covariate_model = NULL,
                      A_init = NULL,
-                     obs = NULL,
+                     only_obs = FALSE,
                      obs_step_size = 1,
                      int_step_size = 0.01,
                      t_max = NULL,
@@ -106,16 +107,6 @@ sim_ode <- function (ode = NULL,
   } else {
     cpp <- FALSE
   }
-#   if (!is.null(attr(ode, "obs")[["scale"]])) {
-#     suppressWarnings({
-#       scale_par <- attr(ode, "obs")$scale[is.na(as.numeric(attr(ode, "obs")$scale))]
-#       if(length(scale_par) > 0) {
-#         if(!all(scale_par %in% names(parameters))) {
-#           stop("One of the scale parameters for the output data (defined using new_ode_model(obs = list(scale = ...))) was not found in the parameter list passed to sim_ode().")
-#         }
-#       }
-#     })
-#   }
   if(is.null(ode) | is.null(parameters)) {
     stop("Please specify at least the required arguments 'ode' and 'parameters'.")
   }
@@ -263,7 +254,11 @@ sim_ode <- function (ode = NULL,
       for (j in 1:length(A_init_i)) {
         dat_ind <- rbind (dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
       }
-      dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
+      if(only_obs) {
+        dat_ind <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs))
+      } else {
+        dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
+      }
       if(i == 1) {
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront

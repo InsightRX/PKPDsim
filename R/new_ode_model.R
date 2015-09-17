@@ -29,6 +29,8 @@ new_ode_model <- function (model = NULL,
       obs <- mod_def$obs
       dose <- mod_def$dose
     }
+    code <- gsub("dadt", "dAdt", code)
+    code <- gsub("DADT", "dAdt", code)
     code_init_text <- ""
     if(class(state_init) == "character") {
       code_init_text <- paste0(state_init, ";\n")
@@ -64,6 +66,7 @@ new_ode_model <- function (model = NULL,
     code_orig <- code
     code <- gsub("\\r\\n", "\n", code)
     code <- gsub("\\n", ";\n", code)
+    code <- gsub("$", ";\n", code)
     code <- gsub("^;", "", code)
     cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, covariates = covariates, obs = obs, verbose = verbose)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {

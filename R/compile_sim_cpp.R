@@ -16,6 +16,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   defined <- par1[-grep("dadt\\[", tolower(par1))]
 
   ode_def_cpp <- shift_state_indices(ode_def, -1)
+  ode_def_cpp <- gsub("\\n *", "\\\n  ", ode_def_cpp)
   if(any(p %in% defined)) {
     p <- p[!p %in% defined]
   }

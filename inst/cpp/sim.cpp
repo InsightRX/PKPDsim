@@ -49,6 +49,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   doses = design["dose"];
   rates = design["rate"];
   int len = times.size();
+  int start;
   // insert observation compartment
 
   // insert covariate definitions
@@ -70,13 +71,21 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
       Aupd[0] = Aupd[0] + doses[i];
     }
     ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
-    t.insert(t.end(), tmp.time.begin(), tmp.time.end());
-    y.insert(y.end(), tmp.y.begin(), tmp.y.end());
     state_type tail = tmp.y.back();
-    for (int k = 0; k < n_comp; k++) {
+    start = 0;
+    if(i == 0) {
+      start = 0;
+      t.insert(t.end(), tmp.time.begin(), tmp.time.end());
+      y.insert(y.end(), tmp.y.begin(), tmp.y.end());
+    } else {
+      start = 1;
+      t.insert(t.end(), boost::next(tmp.time.begin()), tmp.time.end());
+      y.insert(y.end(), boost::next(tmp.y.begin()), tmp.y.end());
+    }
+    for (int k = start; k < n_comp; k++) {
       Aupd[k] = tail[k];
     }
-    for( int k = 0; k < tmp.y.size(); k++) {
+    for( int k = start; k < tmp.y.size(); k++) {
        obs.insert(obs.end(), tmp.y[k][cmt] / scale);
     }
   }
