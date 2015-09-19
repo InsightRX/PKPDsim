@@ -67,10 +67,10 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
 
     // insert scale definition for integration period
 
-      start = 0;
-      if(i > 0) {
-        start = 1;
-      }
+    start = 0;
+    if(i > 0) {
+      start = 1;
+    }
     if(strcmp(par["dose_type"], "infusion") != 0) {
       Aupd[0] = Aupd[0] + doses[i];
       if(doses[i] > 0) {
@@ -86,7 +86,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
       t.insert(t.end(), boost::next(tmp.time.begin()), tmp.time.end());
       y.insert(y.end(), boost::next(tmp.y.begin()), tmp.y.end());
     }
-    for (int k = start; k < n_comp; k++) {
+    for (int k = 0; k < n_comp; k++) {
       Aupd[k] = tail[k];
     }
     for( int k = start; k < tmp.y.size(); k++) {

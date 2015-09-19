@@ -6,13 +6,13 @@ f_cov <- function (...) {
 }
 
 min_decimal_places <- function(x) {
-  max(vapply(x, function(x) {
-    if ((x %% 1) != 0) {
-      nchar(strsplit(sub('0+$', '', as.character(x)), ".", fixed=TRUE)[[1]][[2]])
-    } else {
-      return(0)
-    }
-  }, sum()))
+  tmp <- str_split(sub('0+$', '', as.character(x)), "\\.")
+  len <- unlist(lapply (tmp, function(y) { str_length(y[2]) }))
+  if(all(is.na(len))) {
+    return(0)
+  } else {
+    return(max(len[!na], na.rm = TRUE))
+  }
 }
 
 
