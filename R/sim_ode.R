@@ -88,13 +88,6 @@ sim_ode <- function (ode = NULL,
 #   if ((!is.null(covariate_model) && is.null(covariates)) | (is.null(covariate_model) && !is.null(covariates))) {
 #     stop("For models with covariates, specify both the 'covariate_model' and the 'covariates' arguments. See help for more information.")
 #   }
-
-  if(!is.null(t_obs)) {
-    dec <- min_decimal_places(t_obs)
-    if(dec > -log10(int_step_size) ) {
-      stop(paste0("The specified observation vector requires higher precision. Please increase the precision of the integrator ('int_step_size') to < ", 10^(-dec), "."))
-    }
-  }
   if (!is.null(dde)) {
     lsoda_func <- deSolve::dede
   } else {
