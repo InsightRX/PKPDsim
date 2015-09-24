@@ -1,6 +1,18 @@
 #' Create new ODE model
 #'
+#' @param model model name from model library
+#' @param code C++ code for model
+#' @param file file containing C++ code
+#' @param func R function to be used with deSolve library
+#' @param state_init vector of state init
+#' @param parameters list of parameter values
+#' @param size size of state vector for model
 #' @param obs list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment
+#' @param dose specify default dose compartment, e.g. list(cmt = 1)
+#' @param covariates specify covariate values
+#' @param declare_variables declare variables
+#' @param cpp_show_code show generated C++ code
+#' @param verbose show more output
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,

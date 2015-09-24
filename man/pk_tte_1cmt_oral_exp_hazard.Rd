@@ -6,6 +6,13 @@
 \usage{
 pk_tte_1cmt_oral_exp_hazard(t, A, p)
 }
+\arguments{
+\item{t}{time vector}
+
+\item{A}{initial state vector}
+
+\item{p}{parameters (list)}
+}
 \description{
 ODE system for PK-TTE - 1 compartment oral + hazard
 }

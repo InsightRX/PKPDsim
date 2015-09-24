@@ -1,5 +1,9 @@
 #' ODE system for PKPD - 2 compartment IV, neutropenia model (Friberg et al. JCO 2002)
 #'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 pkpd_hemtox <- function (t, A, p) {  # ODE system
   with(p, {

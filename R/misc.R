@@ -1,5 +1,7 @@
 #' covariate function builder
 #'
+#' @param ... parameters to pass to cov
+#'
 #' @export
 f_cov <- function (...) {
   substitute( with(cov, { ... } ) )

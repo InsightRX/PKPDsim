@@ -6,6 +6,9 @@
 \usage{
 new_covariate_model(model = list())
 }
+\arguments{
+\item{model}{covariate model specified as list}
+}
 \description{
 covariate model function
 }

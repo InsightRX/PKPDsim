@@ -4,16 +4,21 @@
 \alias{sim_ode_shiny}
 \title{Simulate ODE and create a Shiny app}
 \usage{
-sim_ode_shiny(name = "", ode = NULL, code = NULL, dde = NULL,
-  parameters = list(), obs = NULL, omega = NULL,
-  omega_type = "exponential", n_ind = 1, regimen = NULL, A_init = NULL,
-  obs_step_size = 1, int_step_size = 0.5, t_max = NULL,
-  shiny_folder = "~/shiny-pkpd")
+sim_ode_shiny(name = "", ode = NULL, dde = NULL, parameters = list(),
+  t_obs = NULL, omega = NULL, omega_type = "exponential", n_ind = 1,
+  regimen = NULL, A_init = NULL, obs_step_size = 1, int_step_size = 0.5,
+  t_max = NULL, shiny_folder = "~/shiny-pkpd")
 }
 \arguments{
 \item{name}{of function describing the ODE system (as string)}
 
-\item{parameters}{}
+\item{ode}{function describing the ODE system}
+
+\item{dde}{function describing the DDE system (not implemented yet)}
+
+\item{parameters}{model parameters}
+
+\item{t_obs}{vector of observation times, only output these values}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
@@ -25,32 +30,19 @@ sim_ode_shiny(name = "", ode = NULL, code = NULL, dde = NULL,
 
 \item{A_init}{vector with the initial state of the ODE system}
 
+\item{obs_step_size}{the step size between the observations}
+
+\item{int_step_size}{the step size for the numerical integrator}
+
 \item{t_max}{maximum simulation time, if not specified will pick the end of the regimen as maximum}
 
-\item{step_size}{the step size between the observations (NOT the step size of the differential equation solver)}
-
-\item{output}{vector specifying which compartment numbers to output}
+\item{shiny_folder}{folder in which to run Shiny app}
 }
 \value{
 a list containing calculated VPC information, and a ggplot2 object
 }
 \description{
 Creates a VPC plot from observed and simulation data
-}
-\examples{
-p <- list(CL = 38.48,
-         V  = 7.4,
-         Q2 = 7.844,
-         V2 = 5.19,
-         Q3 = 9.324,
-         V3 = 111)
-
-omega <- c(0.3,       # IIV CL
-          0.1, 0.3)  # IIV V
-
-sim_ode_shiny(ode = "pk_3cmt_iv",
-             omega = omega,
-             par = p)
 }
 \seealso{
 \link{sim_ode}

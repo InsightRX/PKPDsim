@@ -10,7 +10,31 @@ new_ode_model(model = NULL, code = NULL, file = NULL, func = NULL,
   declare_variables = NULL, cpp_show_code = FALSE, verbose = FALSE)
 }
 \arguments{
+\item{model}{model name from model library}
+
+\item{code}{C++ code for model}
+
+\item{file}{file containing C++ code}
+
+\item{func}{R function to be used with deSolve library}
+
+\item{state_init}{vector of state init}
+
+\item{parameters}{list of parameter values}
+
+\item{size}{size of state vector for model}
+
 \item{obs}{list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment}
+
+\item{dose}{specify default dose compartment, e.g. list(cmt = 1)}
+
+\item{covariates}{specify covariate values}
+
+\item{declare_variables}{declare variables}
+
+\item{cpp_show_code}{show generated C++ code}
+
+\item{verbose}{show more output}
 }
 \description{
 Create new ODE model

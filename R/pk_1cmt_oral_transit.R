@@ -1,7 +1,12 @@
 #' ODE system for PK - 1 compartment oral administration using transit model
 #'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 #' @examples
+#' \dontrun{
 #' library(PKPDsim)
 #'
 #'p_tr <- list(CL = 17.2,
@@ -21,7 +26,7 @@
 #'              par = p_tr,
 #'              regimen = new_regimen(amt=100, interval=24, n = 1),
 #'              omega = omega)
-#'
+#' }
 
 pk_1cmt_oral_transit <- function (t, A, p) {
   with(p, {

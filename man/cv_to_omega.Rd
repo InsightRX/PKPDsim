@@ -9,7 +9,7 @@ cv_to_omega(par_cv = NULL, parameters = NULL)
 \arguments{
 \item{par_cv}{list of parameter CVs}
 
-\item{par}{list of parameters}
+\item{parameters}{list of parameters}
 }
 \value{
 a vector describing the lower triangle of the omega (between-subject variability) matrix

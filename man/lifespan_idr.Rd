@@ -6,6 +6,13 @@
 \usage{
 lifespan_idr(t, A, p)
 }
+\arguments{
+\item{t}{time vector}
+
+\item{A}{initial state vector}
+
+\item{p}{parameters (list)}
+}
 \description{
 DDE system for basic lifespan IDR model
 }

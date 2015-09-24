@@ -2,14 +2,16 @@
 #'
 #' Simulates a specified ODE system and regimen
 #' @param ode function describing the ODE system
-#' @param parameters
+#' @param dde function describing the DDE system (not implemented yet)
+#' @param parameters model parameters
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
-#' @param obs_only only return the observations
+#' @param covariates list of covariate values to be passed to ODE function
+#' @param only_obs only return the observations
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
@@ -17,11 +19,13 @@
 #' @param t_tte vector of observation times for time-to-event simulation
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default will be to output both the trough and the peak at t=24. For oral doses this might not always be desirable, and this can be switched off by setting duplicate_t_obs=FALSE.
 #' @param rtte should repeated events be allowed (FALSE by default)
-#' @param output vector specifying which compartment numbers to output
+#' @param covariate_model feature not implemented yet.
+#' @param verbose show more output
 #' @return a data frame of compartments with associated concentrations at requested times
 #' @export
 #' @seealso \link{sim_ode_shiny}
 #' @examples
+#' \dontrun{
 #'library(ggplot2)
 #'library(PKPDsim)
 #'p <- list(CL = 38.48,
@@ -58,7 +62,7 @@
 #'  geom_line() +
 #'  scale_y_log10() +
 #'  facet_wrap(~comp)
-
+#'}
 sim_ode <- function (ode = NULL,
                      dde = NULL,
                      parameters = list(),

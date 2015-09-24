@@ -12,10 +12,6 @@ new_regimen_from_nm_dataset(data, reset_time = TRUE, first_only = FALSE)
 \item{reset_time}{start time for each simulated patient at 0, irrespective of design in dataset}
 
 \item{first_only}{use only design from first individual in dataset}
-
-\item{covariates}{character vector of columns to add as covariate}
-
-\item{implement_dummy}{points add EVID=2 records as doses with zero amount}
 }
 \description{
 Create a regimen based on a NONMEM, or NONMEM-like dataset

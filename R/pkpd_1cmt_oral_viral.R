@@ -1,5 +1,9 @@
 #' ODE system for PKPD - 1 compartment IV, HIV viral dynamics model (Perelson)
 #'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 pk_1cmt_oral_pd_viral <- function (t, A, p) {
   with(p, {

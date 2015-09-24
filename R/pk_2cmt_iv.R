@@ -1,5 +1,9 @@
 #' ODE system for PK - 2 compartment IV
 #'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 pk_2cmt_iv <- function (t, A, p) {
   with(p, {

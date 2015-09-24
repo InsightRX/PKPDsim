@@ -6,6 +6,13 @@
 \usage{
 pk_1cmt_oral_pd_viral(t, A, p)
 }
+\arguments{
+\item{t}{time vector}
+
+\item{A}{initial state vector}
+
+\item{p}{parameters (list)}
+}
 \description{
 ODE system for PKPD - 1 compartment IV, HIV viral dynamics model (Perelson)
 }

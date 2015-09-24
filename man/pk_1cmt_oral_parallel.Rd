@@ -6,10 +6,18 @@
 \usage{
 pk_1cmt_oral_parallel(t, A, p)
 }
+\arguments{
+\item{t}{time vector}
+
+\item{A}{initial state vector}
+
+\item{p}{parameters (list)}
+}
 \description{
 ODE system for PK - 1 compartment oral administration with parallel zero and 1st order absorption
 }
 \examples{
+\dontrun{
 library(PKPDsim)
 
 p <- list(CL = 38.48,
@@ -33,5 +41,6 @@ sim_ode_shiny(ode = "pk_1cmt_oral_sequential",
               par = p,
               regimen = new_regimen(amt=30),
               omega = omega)
+}
 }
 

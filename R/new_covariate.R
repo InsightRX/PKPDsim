@@ -1,7 +1,6 @@
 #' New covariate
 #'
 #' Describe data for a covariate, either fixed or time-variant
-#' @param name
 #' @param value a numeric vector
 #' @param times NULL for time-invariant covariate or a numeric vector specifying the update times for the covariate
 #' @param implementation for time-varying covariates either LOCF or interpolate

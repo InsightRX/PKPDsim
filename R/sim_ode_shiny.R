@@ -1,41 +1,29 @@
 #' Simulate ODE and create a Shiny app
 #'
 #' Creates a VPC plot from observed and simulation data
+#' @param ode function describing the ODE system
+#' @param dde function describing the DDE system (not implemented yet)
 #' @param name of function describing the ODE system (as string)
-#' @param parameters
+#' @param parameters model parameters
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
 #' @param A_init vector with the initial state of the ODE system
-#' @param step_size the step size between the observations (NOT the step size of the differential equation solver)
+#' @param t_obs vector of observation times, only output these values
+#' @param obs_step_size the step size between the observations
+#' @param int_step_size the step size for the numerical integrator
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
-#' @param output vector specifying which compartment numbers to output
+#' @param shiny_folder folder in which to run Shiny app
 #' @return a list containing calculated VPC information, and a ggplot2 object
 #' @export
 #' @seealso \link{sim_ode}
-#' @examples
-#'
-#'p <- list(CL = 38.48,
-#'          V  = 7.4,
-#'          Q2 = 7.844,
-#'          V2 = 5.19,
-#'          Q3 = 9.324,
-#'          V3 = 111)
-#'
-#'omega <- c(0.3,       # IIV CL
-#'           0.1, 0.3)  # IIV V
-#'
-#'sim_ode_shiny(ode = "pk_3cmt_iv",
-#'              omega = omega,
-#'              par = p)
 
 sim_ode_shiny <- function(name = "",
                           ode = NULL,
-                          code = NULL,
                           dde = NULL,
                           parameters = list(),
-                          obs = NULL,
+                          t_obs = NULL,
                           omega = NULL,
                           omega_type = "exponential",
                           n_ind = 1,
@@ -59,9 +47,8 @@ sim_ode_shiny <- function(name = "",
   saveRDS(parameters, file=paste0(shiny_folder, "/parameters.rds"))
   saveRDS(regimen, file=paste0(shiny_folder, "/regimen.rds"))
   saveRDS(list(ode=ode,
-               code=code,
-               obs = obs,
                dde = dde,
+               t_obs = t_obs,
                obs_step_size = obs_step_size,
                int_step_size = int_step_size,
                omega = omega,

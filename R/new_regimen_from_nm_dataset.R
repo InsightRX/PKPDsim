@@ -2,8 +2,6 @@
 #'
 #' Create a regimen based on a NONMEM, or NONMEM-like dataset
 #' @param data NONMEM-type dataset
-#' @param covariates character vector of columns to add as covariate
-#' @param implement_dummy points add EVID=2 records as doses with zero amount
 #' @param reset_time start time for each simulated patient at 0, irrespective of design in dataset
 #' @param first_only use only design from first individual in dataset
 #' @export

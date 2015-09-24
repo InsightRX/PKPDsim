@@ -1,5 +1,9 @@
 #' ODE system for PK-TTE - 1 compartment oral + hazard
 #'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 pk_tte_1cmt_oral_exp_hazard <- function (t, A, p) {
   with(p, {

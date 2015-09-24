@@ -1,5 +1,9 @@
 #' ODE system for PK - 2 compartment IV Michaelis-Menten (non-linear)
 #'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 pk_3cmt_iv_mm <- function (t, A, p) {
   with(p, {

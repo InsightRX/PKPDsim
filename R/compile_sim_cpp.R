@@ -73,15 +73,11 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   if(cpp_show_code) {
     cat(sim_func)
   }
-  if (verbose) {
-    sourceCpp(code=sim_func, rebuild = TRUE)
-  } else {
-    flg <- Sys.getenv("PKG_CXXFLAGS")
-    if(length(grep("-w", flg)) == 0) {
-      Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
-    }
-    sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
-    Sys.setenv("PKG_CXXFLAGS" = flg)
+  flg <- Sys.getenv("PKG_CXXFLAGS")
+  if(length(grep("-w", flg)) == 0) {
+    Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
   }
+  sourceCpp(code=sim_func, verbose = verbose, showOutput = verbose)
+  Sys.setenv("PKG_CXXFLAGS" = flg)
   return(list(parameters = get_parameters_from_code(ode_def_cpp, unique(c(defined, declare_variables)))))
 }

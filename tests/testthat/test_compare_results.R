@@ -2,6 +2,7 @@
 # compare with analytic equations
 
 library(PKPDsim)
+library(testthat)
 
 ## parameters
 t_obs   <- c(0:24)

@@ -6,6 +6,9 @@
 \usage{
 f_cov(...)
 }
+\arguments{
+\item{...}{parameters to pass to cov}
+}
 \description{
 covariate function builder
 }

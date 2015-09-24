@@ -6,6 +6,13 @@
 \usage{
 pkpd_hemtox(t, A, p)
 }
+\arguments{
+\item{t}{time vector}
+
+\item{A}{initial state vector}
+
+\item{p}{parameters (list)}
+}
 \description{
 ODE system for PKPD - 2 compartment IV, neutropenia model (Friberg et al. JCO 2002)
 }

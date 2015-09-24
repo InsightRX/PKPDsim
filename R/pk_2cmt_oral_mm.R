@@ -1,5 +1,9 @@
 #' ODE system for PK - 2 compartment oral with Michaelis-Menten elimination
 #'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 pk_2cmt_oral_mm <- function (t, A, p) {
   with(p, {

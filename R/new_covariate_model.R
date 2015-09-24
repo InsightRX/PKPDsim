@@ -1,5 +1,7 @@
 #' covariate model function
 #'
+#' @param model covariate model specified as list
+#'
 #' @export
 new_covariate_model <- function(model = list()) {
   new_model <- list()
@@ -12,4 +14,3 @@ new_covariate_model <- function(model = list()) {
   }
   new_model
 }
-

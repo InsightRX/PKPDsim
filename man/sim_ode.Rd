@@ -8,13 +8,15 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
   omega_type = "exponential", n_ind = 1, regimen = NULL,
   adherence = NULL, covariates = NULL, covariate_model = NULL,
   A_init = NULL, only_obs = FALSE, obs_step_size = 1,
-  int_step_size = 0.001, t_max = NULL, t_obs = NULL, t_tte = NULL,
-  rtte = FALSE, verbose = FALSE)
+  int_step_size = 0.01, t_max = NULL, t_obs = NULL, t_tte = NULL,
+  duplicate_t_obs = TRUE, rtte = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
 
-\item{parameters}{}
+\item{dde}{function describing the DDE system (not implemented yet)}
+
+\item{parameters}{model parameters}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
@@ -26,7 +28,13 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
 
 \item{adherence}{List specifying adherence. Simulates adherence using either markov model or binomial sampling.}
 
+\item{covariates}{list of covariate values to be passed to ODE function}
+
+\item{covariate_model}{feature not implemented yet.}
+
 \item{A_init}{vector with the initial state of the ODE system}
+
+\item{only_obs}{only return the observations}
 
 \item{obs_step_size}{the step size between the observations}
 
@@ -38,11 +46,11 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
 
 \item{t_tte}{vector of observation times for time-to-event simulation}
 
+\item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default will be to output both the trough and the peak at t=24. For oral doses this might not always be desirable, and this can be switched off by setting duplicate_t_obs=FALSE.}
+
 \item{rtte}{should repeated events be allowed (FALSE by default)}
 
-\item{obs_only}{only return the observations}
-
-\item{output}{vector specifying which compartment numbers to output}
+\item{verbose}{show more output}
 }
 \value{
 a data frame of compartments with associated concentrations at requested times
@@ -51,6 +59,7 @@ a data frame of compartments with associated concentrations at requested times
 Simulates a specified ODE system and regimen
 }
 \examples{
+\dontrun{
 library(ggplot2)
 library(PKPDsim)
 p <- list(CL = 38.48,
@@ -87,6 +96,7 @@ ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) +
  geom_line() +
  scale_y_log10() +
  facet_wrap(~comp)
+}
 }
 \seealso{
 \link{sim_ode_shiny}

@@ -1,5 +1,9 @@
 #' DDE system for basic lifespan IDR model
 #'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 lifespan_idr <- function(t, A, p) {
   kin <- p$R0/p$TR
@@ -15,4 +19,3 @@ lifespan_idr <- function(t, A, p) {
   )))
 }
 attributes(lifespan_idr) <- list("dde" = TRUE, "obs" = list("cmt" = 2, scale = 1))
-

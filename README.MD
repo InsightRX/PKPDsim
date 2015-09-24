@@ -1,5 +1,6 @@
-# Description
+[![Build Status](https://travis-ci.org/ronkeizer/PKPDsim.svg?branch=master)](https://travis-ci.org/ronkeizer/PKPDsim)
 
+# Description
 
 `PKPDsim` is a library for numerical integration of ODE systems, in particular pharmacokinetic-pharmacodynamic (PK-PD) mixed-effects models. 
 

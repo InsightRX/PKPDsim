@@ -6,10 +6,18 @@
 \usage{
 pk_1cmt_oral_transit(t, A, p)
 }
+\arguments{
+\item{t}{time vector}
+
+\item{A}{initial state vector}
+
+\item{p}{parameters (list)}
+}
 \description{
 ODE system for PK - 1 compartment oral administration using transit model
 }
 \examples{
+\dontrun{
 library(PKPDsim)
 
 p_tr <- list(CL = 17.2,
@@ -29,5 +37,6 @@ sim_ode_shiny(ode = "pk_1cmt_oral_transit",
              par = p_tr,
              regimen = new_regimen(amt=100, interval=24, n = 1),
              omega = omega)
+}
 }
 

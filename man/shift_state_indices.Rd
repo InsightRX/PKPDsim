@@ -7,6 +7,11 @@ so reduce all state numbers in the Cpp function definition by 1}
 \usage{
 shift_state_indices(ode_def, n = -1)
 }
+\arguments{
+\item{ode_def}{ODE definition}
+
+\item{n}{add/substract what number, default = -1}
+}
 \description{
 R starts counting vector indices at 1, c++ starts at 0,
 so reduce all state numbers in the Cpp function definition by 1

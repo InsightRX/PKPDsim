@@ -1,4 +1,8 @@
 #' Adherence function
+#' @param n number of days to simulate
+#' @param type type of adherence simulation, either "markov" or "binomial"
+#' @param markov if markov-type, specify a list with markov transition probabilities
+#' @param p_binom binomial probability of being adherent
 #' @export
 new_adherence <- function(n = 100,
                           type = "markov",
@@ -31,4 +35,3 @@ adherence_markov <- function (n = 100, p11 = 0.9, p01 = 0.7) {
 adherence_binomial <- function (n = 100, p = 0.5) {
   return(rbinom (n, 1, prob=p))
 }
-

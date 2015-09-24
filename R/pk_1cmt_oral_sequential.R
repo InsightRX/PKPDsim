@@ -1,6 +1,12 @@
 #' ODE system for PK - 1 compartment oral administration with sequential zero and 1st order absorption
+#'
+#' @param t time vector
+#' @param A initial state vector
+#' @param p parameters (list)
+#'
 #' @export
 #' @examples
+#' \dontrun{
 #' library(PKPDsim)
 #'
 #' p <- list(CL = 38.48,
@@ -24,6 +30,7 @@
 #'               par = p,
 #'               regimen = new_regimen(amt=30),
 #'               omega = omega)
+#' }
 
 pk_1cmt_oral_sequential <- function (t, A, p) {
   with(p, {
