@@ -15,6 +15,7 @@
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
 #' @param t_obs vector of observation times, only output these values
 #' @param t_tte vector of observation times for time-to-event simulation
+#' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default will be to output both the trough and the peak at t=24. For oral doses this might not always be desirable, and this can be switched off by setting duplicate_t_obs=FALSE.
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param output vector specifying which compartment numbers to output
 #' @return a data frame of compartments with associated concentrations at requested times
@@ -75,6 +76,7 @@ sim_ode <- function (ode = NULL,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
+                     duplicate_t_obs = TRUE,
                      rtte = FALSE,
                      verbose = FALSE
                      ) {
@@ -369,6 +371,9 @@ sim_ode <- function (ode = NULL,
   comb$t <- as.num(comb$t)
   comb$y <- as.num(comb$y)
   comb <- data.frame(comb %>% arrange(id, comp, t))
+  if(!duplicate_t_obs) {
+    comb <- data.frame(comb %>% dplyr::group_by(comp) %>% dplyr::distinct(t))
+  }
   class(comb) <- c(class(comb), "PKPDsim")
   return(comb)
 }
