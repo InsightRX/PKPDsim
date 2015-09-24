@@ -1,3 +1,9 @@
+#' Wrapper for deSolve
+#' @param times time vector
+#' @param A_init vector of initial state
+#' @param des ODE function
+#' @param p_ind parameters
+#' @param lsoda_func LSODA function
 #' @export
 num_int_wrapper <- function (times, A_init, des, p_ind, lsoda_func) {
   des_out <- lsoda_func(A_init, times, des, p_ind)

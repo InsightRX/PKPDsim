@@ -1,3 +1,5 @@
+#' Model library
+#' @param name name of model in library. If none specified, will show list of available models.
 #' @export
 model_library <- function(name = NULL) {
   lib <- list(

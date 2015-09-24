@@ -14,8 +14,9 @@ Imports:
     magrittr,
     shiny,
     deSolve,
-    dplyr
+    dplyr,
+    MASS
 Description: Simulate dose regimens for PKPD models described by ODE systems
 License: MIT
 LazyData: TRUE
-Suggests: testthat
+Suggests: testit

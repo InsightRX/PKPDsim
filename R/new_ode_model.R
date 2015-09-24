@@ -68,7 +68,7 @@ new_ode_model <- function (model = NULL,
     }
     code_init_text <- shift_state_indices(code_init_text, -1)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
-      rm("sim_wrapper_cpp", envir=globalenv())
+      rm("sim_wrapper_cpp", envir = globalenv())
     }
     if(is.null(size)) {
       size <- get_ode_model_size(code)

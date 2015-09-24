@@ -15,6 +15,10 @@ new_adherence <- function(n = 100,
   }
 }
 
+#' Markov adherence'
+#' @param n number of days
+#' @param p11 probability of staying adherent
+#' @param p01 probability of going from non-adherent to adherent state
 #' @export
 adherence_markov <- function (n = 100, p11 = 0.9, p01 = 0.7) {
   adh <- c(1) # all patients adherent for first dose
@@ -31,6 +35,9 @@ adherence_markov <- function (n = 100, p11 = 0.9, p01 = 0.7) {
   return(adh)
 }
 
+#' Binomial adherence'
+#' @param n number of days
+#' @param p binomial probability
 #' @export
 adherence_binomial <- function (n = 100, p = 0.5) {
   return(rbinom (n, 1, prob=p))

@@ -3,4 +3,4 @@ sudo: required
 warnings_are_errors: false
 
 r_binary_packages:
- - testthat
+ - testit

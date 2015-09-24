@@ -1,3 +1,5 @@
+#' Test if model still in memory
+#' @param model pointer to model
 #' @export
 test_pointer <- function(model) {
   tmp <- capture.output(model)

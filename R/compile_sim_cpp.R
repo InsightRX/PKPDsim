@@ -1,3 +1,13 @@
+#' Compile ODE model to c++ function
+#' @param code C++ code
+#' @param size size of ODE system
+#' @param p parameters (list)
+#' @param cpp_show_code show output c++ function?
+#' @param code_init code for initialization of state
+#' @param declare_variables variable declaration
+#' @param covariates covariates specification
+#' @param obs observation specification
+#' @param verbose show more output
 #' @export
 compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
@@ -77,7 +87,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   if(length(grep("-w", flg)) == 0) {
     Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
   }
-  sourceCpp(code=sim_func, verbose = verbose, showOutput = verbose)
+  sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
   Sys.setenv("PKG_CXXFLAGS" = flg)
   return(list(parameters = get_parameters_from_code(ode_def_cpp, unique(c(defined, declare_variables)))))
 }

@@ -1,3 +1,10 @@
+#' Parse regimen
+#' @param regimen regimen
+#' @param t_max t_max
+#' @param t_obs t_obs
+#' @param t_tte t_tte
+#' @param p parameters
+#' @param covariates covariates
 #' @export
 parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
 
