@@ -55,7 +55,7 @@ xtim<-c(0,2,4,8,12,24)
 sujdos<-320
 param<-list(KA=1.8, V=30, CL=1.7)
 pk1 <- new_ode_model("pk_1cmt_oral")
-regim<-new_regimen(amt=sujdos, times=c(0))
-out<-sim_ode(ode="pk1", par=param, regimen=regim, t_obs=xtim, only_obs = TRUE)
+regim<-new_regimen(amt=sujdos, times=c(0,12))
+out<-sim_ode(ode="pk1", par=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
 assert("all requested observations in ouput",
        out$t == xtim)

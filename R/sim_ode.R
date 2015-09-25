@@ -17,7 +17,7 @@
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
-#' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default will be to output both the trough and the peak at t=24. For oral doses this might not always be desirable, and this can be switched off by setting duplicate_t_obs=FALSE.
+#' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param covariate_model feature not implemented yet.
 #' @param verbose show more output
@@ -80,7 +80,7 @@ sim_ode <- function (ode = NULL,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
-                     duplicate_t_obs = TRUE,
+                     duplicate_t_obs = FALSE,
                      rtte = FALSE,
                      verbose = FALSE
                      ) {
@@ -147,6 +147,26 @@ sim_ode <- function (ode = NULL,
   }
   comb <- list()
   p <- parameters
+  if(is.null(t_obs)) { # find reasonable default to output
+    if(is.null(obs_step_size)) {
+      if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
+        obs_step_size <- 1
+      } else {
+        obs_step_size <- 100
+        if(max(regimen$dose_times) < 10000) { obs_step_size <- 100 }
+        if(max(regimen$dose_times) < 1000) { obs_step_size <- 10 }
+        if(max(regimen$dose_times) < 100) { obs_step_size <- 1 }
+        if(max(regimen$dose_times) < 10) { obs_step_size <- .1 }
+      }
+    }
+    if("regimen" %in% class(regimen)) {
+      if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
+        t_obs <- seq(from=regimen$dose_times[1], to=24, by=obs_step_size)
+      } else {
+        t_obs <- seq(from=0, to=max(regimen$dose_times)*1.2, by=obs_step_size)
+      }
+    }
+  }
   if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
     stop("Please create a regimen using the new_regimen() function!")
   }
@@ -168,18 +188,6 @@ sim_ode <- function (ode = NULL,
     if(!all(pars_ode %in% c(names(parameters), names(covariates)))) {
       m <- match(c(names(parameters), names(covariates)), pars_ode)
       stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
-    }
-  }
-  if(is.null(t_obs)) { # find reasonable default to output
-    if(is.null(obs_step_size)) {
-      obs_step_size <- 100
-      if(max(design$t) < 10000) { obs_step_size <- 100 }
-      if(max(design$t) < 1000) { obs_step_size <- 10 }
-      if(max(design$t) < 100) { obs_step_size <- 1 }
-      if(max(design$t) < 10) { obs_step_size <- .1 }
-    }
-    if("regimen" %in% class(regimen)) {
-      t_obs <- seq(from=0, to=max(design$t), by=obs_step_size)
     }
   }
   if(verbose) {
