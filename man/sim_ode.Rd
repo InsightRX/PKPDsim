@@ -8,7 +8,7 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
   omega_type = "exponential", n_ind = 1, regimen = NULL,
   adherence = NULL, covariates = NULL, covariate_model = NULL,
   A_init = NULL, only_obs = FALSE, obs_step_size = 1, int_step_size = 1,
-  t_max = NULL, t_obs = NULL, t_tte = NULL, duplicate_t_obs = TRUE,
+  t_max = NULL, t_obs = NULL, t_tte = NULL, duplicate_t_obs = FALSE,
   rtte = FALSE, verbose = FALSE)
 }
 \arguments{
@@ -46,7 +46,7 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
 
 \item{t_tte}{vector of observation times for time-to-event simulation}
 
-\item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default will be to output both the trough and the peak at t=24. For oral doses this might not always be desirable, and this can be switched off by setting duplicate_t_obs=FALSE.}
+\item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).}
 
 \item{rtte}{should repeated events be allowed (FALSE by default)}
 
