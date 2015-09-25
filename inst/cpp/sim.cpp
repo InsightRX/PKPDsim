@@ -1,4 +1,4 @@
-runge_kutta4 < state_type > stepr;
+runge_kutta_cash_karp54 < state_type > stepr;
 
 struct push_back_solution
 {
@@ -21,8 +21,7 @@ struct ode_out {
 };
 
 ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double step_size) {
-  int n_steps = (int) ceil((t_end-t_start)/step_size)+1;
-  double t_end_new = t_start + ((n_steps-1) * step_size);
+  int n_steps = (int) ceil((t_end-t_start)/step_size);
   vector<state_type> x_vec;
   vector<double> tim;
   NumericMatrix A_ret (n_steps, n_comp+2);
@@ -32,7 +31,10 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
     A[j] = Ainit(j);
   }
   ode_out tmp;
-  integrate_const (stepr , ode, A, t_start, t_end_new, step_size, push_back_solution (x_vec, tim));
+  std::vector<double> times( 2 );
+  times[0] = t_start;
+  times[1] = t_end;
+  integrate_times (stepr , ode, A, times, step_size, push_back_solution (x_vec, tim));
   tmp.y    = x_vec;
   tmp.time = tim;
   return(tmp);

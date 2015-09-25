@@ -5,14 +5,14 @@ model_library <- function(name = NULL) {
   lib <- list(
     "pk_1cmt_iv" = list(
       code = "
-        dAdt[1] = -(CL/V)*A[1];
+        dAdt[1] = -(CL/V)*A[1] + rate;
       ",
       obs=list(cmt = 1, scale = "V"),
       dose = list(cmt = 1)
     ),
     "pk_1cmt_iv_mm" = list(
       code = "
-        dAdt[1] = -(VMAX*(A[1]/V)) / (KM+A[1]/V);
+        dAdt[1] = -(VMAX*(A[1]/V)) / (KM+A[1]/V)  + rate;
       ",
       obs=list(cmt = 1, scale = "V"),
       dose = list(cmt = 1)

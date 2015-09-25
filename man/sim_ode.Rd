@@ -7,9 +7,9 @@
 sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
   omega_type = "exponential", n_ind = 1, regimen = NULL,
   adherence = NULL, covariates = NULL, covariate_model = NULL,
-  A_init = NULL, only_obs = FALSE, obs_step_size = 1,
-  int_step_size = 0.01, t_max = NULL, t_obs = NULL, t_tte = NULL,
-  duplicate_t_obs = TRUE, rtte = FALSE, verbose = FALSE)
+  A_init = NULL, only_obs = FALSE, obs_step_size = 1, int_step_size = 1,
+  t_max = NULL, t_obs = NULL, t_tte = NULL, duplicate_t_obs = TRUE,
+  rtte = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
@@ -42,7 +42,7 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
 
 \item{t_max}{maximum simulation time, if not specified will pick the end of the regimen as maximum}
 
-\item{t_obs}{vector of observation times, only output these values}
+\item{t_obs}{vector of observation times, only output these values (only used when t_obs==NULL)}
 
 \item{t_tte}{vector of observation times for time-to-event simulation}
 

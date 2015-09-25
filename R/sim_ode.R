@@ -15,7 +15,7 @@
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
-#' @param t_obs vector of observation times, only output these values
+#' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default will be to output both the trough and the peak at t=24. For oral doses this might not always be desirable, and this can be switched off by setting duplicate_t_obs=FALSE.
 #' @param rtte should repeated events be allowed (FALSE by default)
@@ -76,7 +76,7 @@ sim_ode <- function (ode = NULL,
                      A_init = NULL,
                      only_obs = FALSE,
                      obs_step_size = 1,
-                     int_step_size = 0.01,
+                     int_step_size = 1,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
@@ -238,7 +238,9 @@ sim_ode <- function (ode = NULL,
     tmp <- c()
     prv_cumhaz <- 0
     if(cpp) {
-      p_i$dose_times <- p_i$dose_times[p_i$dose_times <= t_max]
+      if(!is.null(t_max)) {
+        p_i$dose_times <- p_i$dose_times[p_i$dose_times <= t_max]
+      }
       if(length(p_i$t_inf) < length(p_i$dose_times)) {
         p_i$t_inf <- rep(p_i$t_inf[1], length(p_i$dose_times))
       }
@@ -350,8 +352,17 @@ sim_ode <- function (ode = NULL,
       }
       # comb <- comb %>% dplyr::filter(comp %in% labels)
   }
+  # filter out observations
+  comb$t <- as.numeric(as.character(comb$t))
   if(!is.null(t_obs)) {
-    comb <- comb %>% dplyr::filter(t %in% t_obs)
+    pick_closest_vec <- function(x, vec) { # pick closests time points. If _times integrator is used this is not necessary, but leaving in just to make sure
+      pick_closest <- function(x) {
+        which(abs(vec-x) == min(abs(vec-x)))
+      }
+      unlist(lapply(x, pick_closest))
+    }
+    idx <- pick_closest_vec(t_obs, comb$t)
+    comb <- comb[idx,]
   }
   if(length(events)>0) {
     events <- data.frame(events)
