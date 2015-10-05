@@ -42,6 +42,11 @@ new_ode_model <- function (model = NULL,
       code <- mod_def$code
       obs <- mod_def$obs
       dose <- mod_def$dose
+      if(!is.null(mod_def$size)) {
+        size <- mod_def$size
+      } else {
+        size <- get_ode_model_size(mod_def$code)
+      }
     }
     code <- gsub("dadt", "dAdt", code)
     code <- gsub("DADT", "dAdt", code)
@@ -65,6 +70,9 @@ new_ode_model <- function (model = NULL,
         code <- paste(code, code_tmp[[idx]], sep = "\n")
         n <- n + get_ode_model_size(tmp)
       }
+    }
+    if(is.null(size) && !is.null(code)) {
+      size <- get_ode_model_size(code)
     }
     code_init_text <- shift_state_indices(code_init_text, -1)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
