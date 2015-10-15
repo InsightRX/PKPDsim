@@ -73,6 +73,9 @@ new_ode_model <- function (model = NULL,
     }
     if(is.null(size) && !is.null(code)) {
       size <- get_ode_model_size(code)
+      if(size == 0) {
+        stop("Sorry, no ODE system detected. Please specify ODEs using 'dAdt[...] = ...'")
+      }
     }
     code_init_text <- shift_state_indices(code_init_text, -1)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
