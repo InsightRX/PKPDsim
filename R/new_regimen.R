@@ -56,5 +56,11 @@ new_regimen <- function(
   if(length(reg$t_inf) != length(reg$dose_times)) {
     reg$t_inf <- rep(reg$t_inf[1], length(reg$dose_times))
   }
+  ## check that all amounts are available, otherwise remove
+  if(!is.null(reg$t_inf)) {
+    reg$t_inf <- reg$t_inf[!is.na(reg$dose_amts)]
+  }
+  reg$dose_times <- reg$dose_times[!is.na(reg$dose_amts)]
+  reg$dose_amts <- reg$dose_amts[!is.na(reg$dose_amts)]
   return(reg)
 }

@@ -62,10 +62,10 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
       t_max <- tail(design$t,1) + 24 # guess timeframe, user should use tmax argument
     }
     if(!is.null(t_obs) && length(t_obs) > 0) {
-      if(is.null(t_max) || t_max < max(t_obs)) { t_max <- max(t_obs) }
+      if(is.null(t_max) || is.na(t_max) || t_max < max(t_obs)) { t_max <- max(t_obs) }
     }
     if(!is.null(t_tte) && length(t_tte) > 0) {
-      if(is.null(t_tte) || t_max < max(t_tte)) { t_max <- max(t_tte) }
+      if(is.null(t_tte) || is.na(t_max) || t_max < max(t_tte)) { t_max <- max(t_tte) }
     }
   }
   design <- rbind(design %>%
