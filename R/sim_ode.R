@@ -395,7 +395,7 @@ sim_ode <- function (ode = NULL,
   comb$y <- as.num(comb$y)
   comb <- data.frame(comb %>% arrange(id, comp, t))
   if(!duplicate_t_obs) {
-    comb <- data.frame(comb %>% dplyr::group_by(comp) %>% dplyr::distinct(t))
+    comb <- data.frame(comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t))
   }
   class(comb) <- c(class(comb), "PKPDsim")
   return(comb)
