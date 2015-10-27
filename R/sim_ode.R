@@ -76,7 +76,7 @@ sim_ode <- function (ode = NULL,
                      A_init = NULL,
                      only_obs = FALSE,
                      obs_step_size = 1,
-                     int_step_size = 1,
+                     int_step_size = .1,
                      t_max = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
@@ -123,7 +123,7 @@ sim_ode <- function (ode = NULL,
 #     stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
 #   }
   if(class(ode) == "function" && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
-    size <- get_size_ode(ode, parameters)
+    stop("Sorry. Non-C++ functions are deprecated.")
   } else {
     if(class(ode) == "function") {
       size <- attr(ode,  "size")
