@@ -106,5 +106,6 @@ new_ode_model <- function (model = NULL,
   }
   attr(sim_out, "obs")  <- obs
   attr(sim_out, "dose") <- dose
+  class(sim_out) <- c("PKPDsim", class(sim_out))
   return(sim_out)
 }

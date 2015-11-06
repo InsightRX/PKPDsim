@@ -102,7 +102,7 @@ sim_ode <- function (ode = NULL,
   if(!is.null(dde)) {
     ode <- dde
   }
-  if (class(ode) == "character") {
+  if ("character" %in% class(ode)) {
     ode <- get(ode)
   }# else {
   #  stop("Error: the 'ode' argument to this function should be a character string referencing the function, not the function itself.")
@@ -122,10 +122,10 @@ sim_ode <- function (ode = NULL,
 #   if(!is.null(t_tte)) {
 #     stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
 #   }
-  if(class(ode) == "function" && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
+  if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
     stop("Sorry. Non-C++ functions are deprecated.")
   } else {
-    if(class(ode) == "function") {
+    if("function" %in% class(ode)) {
       size <- attr(ode,  "size")
     } else {
       size <- attr(get(ode),  "size")
