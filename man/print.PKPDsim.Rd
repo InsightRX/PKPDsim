@@ -4,10 +4,12 @@
 \alias{print.PKPDsim}
 \title{Print function for PKPDsim simulation function}
 \usage{
-\method{print}{PKPDsim}(x)
+\method{print}{PKPDsim}(x, ...)
 }
 \arguments{
 \item{x}{function}
+
+\item{...}{additional arguments}
 }
 \description{
 Print function for PKPDsim simulation function

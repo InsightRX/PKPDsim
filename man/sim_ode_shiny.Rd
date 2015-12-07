@@ -4,45 +4,13 @@
 \alias{sim_ode_shiny}
 \title{Simulate ODE and create a Shiny app}
 \usage{
-sim_ode_shiny(name = "", ode = NULL, dde = NULL, parameters = list(),
-  t_obs = NULL, omega = NULL, omega_type = "exponential", n_ind = 1,
-  regimen = NULL, A_init = NULL, obs_step_size = 1, int_step_size = 0.5,
-  t_max = NULL, shiny_folder = "~/shiny-pkpd")
+sim_ode_shiny(...)
 }
 \arguments{
-\item{name}{of function describing the ODE system (as string)}
-
-\item{ode}{function describing the ODE system}
-
-\item{dde}{function describing the DDE system (not implemented yet)}
-
-\item{parameters}{model parameters}
-
-\item{t_obs}{vector of observation times, only output these values}
-
-\item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
-
-\item{omega_type}{exponential or normal}
-
-\item{n_ind}{number of individuals to simulate}
-
-\item{regimen}{a regimen object created using the regimen() function}
-
-\item{A_init}{vector with the initial state of the ODE system}
-
-\item{obs_step_size}{the step size between the observations}
-
-\item{int_step_size}{the step size for the numerical integrator}
-
-\item{t_max}{maximum simulation time, if not specified will pick the end of the regimen as maximum}
-
-\item{shiny_folder}{folder in which to run Shiny app}
-}
-\value{
-a list containing calculated VPC information, and a ggplot2 object
+\item{...}{arguments passed to PKPDsimShiny::sim_ode_shiny()}
 }
 \description{
-Creates a VPC plot from observed and simulation data
+Simulate ODE and create a Shiny app
 }
 \seealso{
 \link{sim_ode}
