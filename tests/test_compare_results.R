@@ -56,7 +56,7 @@ tmp <- sim_ode(ode = pk1cmt_iv,
 assert('correct number of observations returned (bug precision time-axis)',
        tmp$t == t_obs)
 
-## test for bug Emmanuelle Comets 20150925
+## test bug EmCo 20150925
 xtim<-c(0,2,4,8,12,24)
 sujdos<-320
 param<-list(KA=1.8, V=30, CL=1.7)
@@ -65,3 +65,11 @@ regim<-new_regimen(amt=sujdos, times=c(0,12))
 out<-sim_ode(ode="pk1", par=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
 assert("all requested observations in ouput",
        out$t == xtim)
+
+## tests for bug wrong model size (JeHi 20151204)
+pk3cmt <- new_ode_model(code = "
+                     dAdt[1] = -KA*A[1] + rate;
+                     dAdt[2] = KA*A[1] -(Q/V)*A[2] + (Q/V2)*A[3] -(CL/V)*A[2];
+                     dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2];
+                     ", obs = list (cmt = 2, scale = "V"))
+assert("3cmt model has state vector of 3", attr(pk3cmt, "size") == 3)
