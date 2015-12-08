@@ -1,5 +1,5 @@
 library(PKPDsim)
-library(deSolve)
+# library(deSolve)
 
 p <- list(
   kel = 0.1,

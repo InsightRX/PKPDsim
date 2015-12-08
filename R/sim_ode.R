@@ -94,11 +94,6 @@ sim_ode <- function (ode = NULL,
 #   if ((!is.null(covariate_model) && is.null(covariates)) | (is.null(covariate_model) && !is.null(covariates))) {
 #     stop("For models with covariates, specify both the 'covariate_model' and the 'covariates' arguments. See help for more information.")
 #   }
-  if (!is.null(dde)) {
-    lsoda_func <- deSolve::dede
-  } else {
-    lsoda_func <- deSolve::lsoda
-  }
   if(!is.null(dde)) {
     ode <- dde
   }
@@ -278,46 +273,7 @@ sim_ode <- function (ode = NULL,
       }
 #      comb <- data.frame(dat_ind)
     } else {
-      if(class(A_init) == "function") {
-        A_init_i = A_init(p_i)
-      }
-      for (k in 1:(length(design_i$t)-1)) {
-        if (k > 1) {
-          A_upd <- dat[dat$comp!="cumhaz" & dat$t==tail(time_window,1),][,]$y
-          if(event_occurred) {
-            A_upd[attr(ode, "cumhaz")[["cmt"]]] <- 0 # reset cumulative hazard
-          }
-        } else {
-          A_upd <- A_init_i
-        }
-        p_i$rate <- 0
-        if(p_i$dose_type != "infusion") {
-          A_upd[regimen$cmt] <- A_upd[regimen$cmt] + design_i[design_i$dum == 0,]$dose[k]
-        } else {
-          if(design_i$dose[k] > 0) {
-            p_i$rate <- design_i$dose[k] / p_i$t_inf
-          }
-        }
-        time_window <- times[(times >= design_i$t[k]) & (times <= design_i$t[k+1])]
-        dat <- cbind(id = i, num_int_wrapper (time_window, A_upd, ode, p_i, lsoda_func))
-        if(!is.null(attr(ode, "cumhaz"))) {
-          event_occurred <- FALSE
-          dat <- rbind (dat, dat %>%
-                          dplyr::filter(comp == attr(ode, "cumhaz")[["cmt"]]) %>%
-                          dplyr::mutate(comp = "cumhaz", y = y-prv_cumhaz))
-          tmp <- dat %>% dplyr::filter(comp == "cumhaz") %>% dplyr::filter(t %in% t_tte) %>% tail(1)
-          if(length(tmp[,1])>0) {
-            prv_cumhaz <- tmp$y
-            if(runif(1) > cumhaz_to_surv(tmp$y)) {
-              events <- rbind(events, cbind(id = i, t = tmp$t[1]))
-              event_occurred <- TRUE
-            } else {
-              event_occurred <- FALSE
-            }
-          }
-        }
-        comb <- rbind(comb, dat)
-      }
+      stop("Sorry, deSolve support is deprecated.")
     }
   }
 
@@ -325,40 +281,7 @@ sim_ode <- function (ode = NULL,
   comb <- data.frame(comb)
   colnames(comb) <- c("id", "t", "comp", "y")
   if(!cpp) { # For simulations with Cpp code this part is already done, for deSolve this still needs to be done.
-      if(!is.null(attr(ode, "obs"))) {
-        scale <- rep(1, length(attr(ode, "obs")[["scale"]]))
-        if(!is.null(attr(ode, "obs")[["labels"]])) {
-          labels <- attr(ode, "obs")[["labels"]]
-        } else {
-          if (length(scale) == 1) {
-            labels <- "obs"
-          } else {
-            labels <- paste0("obs_", attr(ode, "obs")[["labels"]],
-                             seq(from=1, to=length(attr(ode, "obs")[["scale"]])))
-          }
-        }
-        if (!is.null(attr(ode, "obs")[["scale"]])) {
-          suppressWarnings({
-            for (i in seq(attr(ode, "obs")[["scale"]])) {
-              if(!is.na(as.numeric(attr(ode, "obs")[["scale"]][i]))) {
-                scale[i] <- as.numeric(attr(ode, "obs")[["scale"]][i])
-              } else {
-                scale[i] <- as.numeric(p[[attr(ode, "obs")[["scale"]][i]]])
-              }
-            }
-          })
-        }
-        for (i in seq(labels)) {
-          comb <- rbind (comb, comb %>% dplyr::filter(comp == attr(ode, "obs")[["cmt"]][i]) %>% dplyr::mutate(comp = labels[i], y = y/scale[i]))
-          if(!is.null(attr(ode, "obs")[["trans"]][i])) {
-            if(class(attr(ode, "obs")[["trans"]][i]) == "character") {
-              trans_func <- get(attr(ode, "obs")[["trans"]][i])
-              comb[comb$comp == labels[i],]$y <- trans_func(comb[comb$comp == labels[i],]$y)
-            }
-          }
-        }
-      }
-      # comb <- comb %>% dplyr::filter(comp %in% labels)
+    stop("Sorry, deSolve support is deprecated.")
   }
   # filter out observations
   comb$t <- as.numeric(as.character(comb$t))

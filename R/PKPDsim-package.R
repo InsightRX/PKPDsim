@@ -4,6 +4,6 @@
 #'
 #' @docType package
 #' @name PKPDsim-package
-#' @import deSolve dplyr Rcpp
+#' @import dplyr Rcpp
 #' @author Ron Keizer \email{ronkeizer@@gmail.com}
 NULL

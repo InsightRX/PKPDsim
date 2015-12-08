@@ -10,7 +10,6 @@ Depends:
     R (>= 3.0.2)
 Imports:
     Rcpp,
-    deSolve,
     dplyr,
     MASS
 Description: Simulate dose regimens for PKPD models described by ODE systems
