@@ -5,10 +5,6 @@
 get_parameters_from_code <- function (code, declare_variables = NULL) {
   ## find newly defined parameters in code
   code <- gsub("\\n", " ", code)
-  decl <- gregexpr("double (.*?)=", code)
-  decl_m <- regmatches(code, decl)[[1]]
-  decl_m <- gsub("double ", "", decl_m)
-  decl_m <- gsub("[ =]", "", decl_m)
   code <- gsub("double (.*?)=", "", code) # parameter declarations in code
   code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<\\,]", " ", code)
   code <- gsub("\\-", " ", code)
@@ -21,7 +17,7 @@ get_parameters_from_code <- function (code, declare_variables = NULL) {
   spl <- spl[spl!=""]
   spl2 <- c()
   for (i in seq(spl)) {
-    if (gsub("[0-9\\.]", "", spl[i]) != "" &! spl[i] %in% c("conc", "rate", declare_variables, decl_m)) {
+    if (gsub("[0-9\\.]", "", spl[i]) != "" &! spl[i] %in% c("conc", "rate", declare_variables)) {
       spl2 <- c(spl2, spl[i])
     }
   }
