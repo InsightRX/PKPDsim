@@ -23,20 +23,20 @@ Many modelers currently resort to Berkeley Madonna (BM) to perform exploratory s
 
 In essence, the `PKPDsim` tool is an attempt to take the best features of BM, and offer them whithin the R environment and within the context of dosing regimens so that the PKPD modeler can take advantage of e.g. the plotting and visualization tools in R. 
 
-Other R modules with similar aims have recently been released, such as `mlxR` (Inria) and `RxODE` (University of Georgia). While many of the functionality in these packages overlaps with that in `PKPDsim`, some differences are summarized in the table below:
+Other R modules with similar aims have recently been released, such as `mlxR` (Inria) and `RxODE` (University of Georgia). While many of the functionality in these packages overlaps with that in `PKPDsim`, some differences are summarized in the table below (as of Jan 2016):
 
-Functionality                         | PKPDsim     | mlxR            | RxODE   |
---------------------------------------------------------------------------------|
-Simulation engine                     | C++ odeint  | C++ proprietary | Fortran | 
-Open source simulation engine         | +           | -               | +       |
-Functionality to generate Shiny apps  | +           | +               | +       |
-Simulation of BSV                     | +           | +               | +/-     |
-Covariates                            | +           | +               | -       |
-Interpolation of timevar. covariates  | +           | -               | -       |
-Simulate adherence                    | +           | -               | -       |
-Delay differential equations          | -           | +               | -       |
-Simulation of count data              | -           | +               | -       |
-Available on CRAN                     | -           | -               | +       |
+| Functionality                         | PKPDsim     | mlxR            | RxODE   |
+|-------------------------------------- | ----------- | --------------- | ------- |
+| Simulation engine                     | C++ odeint  | C++ proprietary | Fortran | 
+| Open source simulation engine         | +           | -               | +       |
+| Functionality to generate Shiny apps  | +           | +               | +       |
+| Simulation of BSV                     | +           | +               | +/-     |
+| Covariates                            | +           | +               | -       |
+| Interpolation of timevar. covariates  | +           | -               | -       |
+| Simulate adherence                    | +           | -               | -       |
+| Delay differential equations          | -           | +               | -       |
+| Simulation of count data              | -           | +               | -       |
+| Available on CRAN                     | -           | +               | +       |
 
 
 ## Future plans
