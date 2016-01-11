@@ -87,7 +87,11 @@ new_ode_model <- function (model = NULL,
     if(is.null(parameters)) {
       parameters <- get_parameters_from_code(code)
     }
-    declare_variables <- c(declare_variables, names(covariates))
+    declare_variables <- c(declare_variables,
+                           names(covariates),
+                           paste0(names(covariates), "_0"),
+                           paste0("gr_", names(covariates)),
+                           paste0("t_prv_", names(covariates)))
     code_orig <- code
     code <- gsub("\\r\\n", "\n", code)
     code <- gsub("\\n", ";\n", code)

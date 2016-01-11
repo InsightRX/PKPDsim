@@ -12,14 +12,15 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
     regimen$t_inf <- c(regimen$tinf, rep(tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
   }
 
-  ## first, add covariates to regiment to be incorproated in design
+  ## first, add covariates to regimen to be incorproated in design
   if(!is.null(covariates)) {
     covt <- c()
     for (i in 1:length(covariates)) {
       covt <- data.frame(rbind(covt,
                                cbind(name = names(covariates)[i],
                                      time = covariates[[i]]$times,
-                                     value = covariates[[i]]$value)))
+                                     value = covariates[[i]]$value,
+                                     implementation = covariates[[i]]$implementation)))
       covt$time <- as.numeric(as.character(covt$time))
       covt$value <- as.numeric(as.character(covt$value))
     }
@@ -79,10 +80,21 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
   if(!is.null(covariates)) {
     for(i in length(covariates)) {
       design[[paste0("cov_", names(covariates)[i])]] <- 0
+      design[[paste0("cov_t_", names(covariates)[i])]] <- 0
+      design[[paste0("gradients_", names(covariates)[i])]] <- 0
     }
     for(i in 1:length(covt[,1])) {
-      ## using LOCF
       design[design$t >= covt[i,]$time, c(paste0("cov_", covt[i,]$name))] <- covt[i,]$value
+      design[design$t >= covt[i,]$time, c(paste0("cov_t_", covt[i,]$name))] <- covt[i,]$time
+      if(tolower(covt[i,]$implementation) != "locf") {
+        if(i < length(covt[,1])) {
+          if((covt[i+1,]$time - covt[i,]$time) > 0) {
+            design[design$t >= covt[i,]$time & design$t < covt[i+1,]$time, c(paste0("gradients_", covt[i,]$name))] <- (covt[i+1,]$value - covt[i,]$value)  / (covt[i+1,]$time - covt[i,]$time)
+          }
+        }
+      } else {
+        design[,c(paste0("gradients_", covt[i,]$name))] <- 0
+      }
     }
   }
   design <- design[!duplicated(paste0(design$t,design$dose,design$dum)),]

@@ -14,7 +14,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   ode_def <- code
 
   ## find newly declared variables and make sure they are defined as double
-  ode_def <- paste0("\n", gsub("[\n^]( *?)double ", "", ode_def))
+  ode_def <- paste0(gsub("[\n^]( *?)double ", "", ode_def))
   newpar <- gregexpr("[\n^](.*?)=", ode_def)
   par1 <- regmatches(ode_def, newpar)[[1]]
   def1 <- par1[-grep("dadt\\[", tolower(par1))]
@@ -24,7 +24,6 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   par1 <- gsub("[\n\\= ]", "", par1)
   par1 <- gsub("double ", "", par1)
   defined <- par1[-grep("dadt\\[", tolower(par1))]
-
   ode_def_cpp <- shift_state_indices(ode_def, -1)
   ode_def_cpp <- gsub("\\n *", "\\\n  ", ode_def_cpp)
   if(any(p %in% defined)) {
@@ -55,8 +54,21 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
     cov_def <- "  // covariate definitions\n"
     cov_tmp <- "    // covariates during integration period\n"
     for(i in seq(names(covariates))) {
-      cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_', names(covariates)[i], ' = design["cov_', names(covariates)[i],'"];\n'))
-      cov_tmp <- paste0(cov_tmp, paste0('    ', names(covariates)[i], ' = cov_', names(covariates)[i],'[i];\n'))
+      nam <- names(covariates)[i]
+      ode_def_cpp <- paste0(
+        paste0('  double ', nam, ' = ', nam, '_0 + gr_', nam, ' * (t - t_prv_', nam, ');\n'),
+        ode_def_cpp)
+      cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_', nam, ' = design["cov_', nam,'"];\n'))
+      cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_t_', nam, ' = design["cov_t_', nam,'"];\n'))
+      cov_def <- paste0(cov_def, paste0('  std::vector<double> gradients_', nam, ' = design["gradients_', nam,'"];\n'))
+      cov_tmp <- paste0(cov_tmp, paste0('    ', nam, '_0 = cov_', nam,'[i];\n'))
+      if(tolower(covariates[[nam]]$implementation) != "locf") {
+        cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = gradients_',nam,'[i] ;\n'))
+        cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = cov_t_', nam, '[i] ;\n'))
+      } else {
+        cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = 0 ;\n'))
+        cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = 0 ;\n'))
+      }
     }
     idx3 <- grep("insert covariate definitions", cpp_code)
     cpp_code[idx3] <- cov_def

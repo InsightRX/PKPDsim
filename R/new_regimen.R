@@ -28,8 +28,9 @@ new_regimen <- function(
                         n = n,
                         type = type,
                         t_inf = t_inf), class = "regimen")
-  if (!(type %in% c("bolus", "oral", "infusion"))) {
-    stop("Type argument should be 'bolus', 'oral', or 'infusion'.")
+  if (is.null(type) || length(type) == 0 || !(type %in% c("bolus", "oral", "infusion"))) {
+    message("Type argument should be 'bolus', 'oral', or 'infusion'. Assuming bolus for all doses.")
+    type <- "bolus"
   }
   if (is.null(times)) {
     if(is.null(interval)) {
