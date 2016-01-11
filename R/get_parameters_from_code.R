@@ -5,7 +5,7 @@
 get_parameters_from_code <- function (code, declare_variables = NULL) {
   ## find newly defined parameters in code
   code <- gsub("\\n", " ", code)
-  code <- gsub("double (.*?)=", "", code) # parameter delcarations in code
+  code <- gsub("double (.*?)=", "", code) # parameter declarations in code
   code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<\\,]", " ", code)
   code <- gsub("\\-", " ", code)
   code <- gsub("(if|then|else|pow|sqrt|exp|log)", " ", code)

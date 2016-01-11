@@ -22,7 +22,7 @@ new_ode_model(model = NULL, code = NULL, file = NULL, func = NULL,
 
 \item{parameters}{list of parameter values}
 
-\item{size}{size of state vector for model}
+\item{size}{size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.}
 
 \item{obs}{list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment}
 

@@ -18,7 +18,7 @@ In pharmacometrics, models are often defined as systems of ordinary differential
 
 - facilitates simulation of dosing regimens for PKPD mixed-effects models
 - for numerical integration, the module uses the fast Boost C++ library. Alternatively, the `deSolve` library can be used too (see examples below), although simulation will be much slower.
-- the PKPDsim library can be used from the R command line, but can also dynamically generate Shiny frontends to allow interactive use for model exploration and teaching purposes.
+- the PKPDsim library can be used from the R command line, but can also dynamically generate Shiny frontends to allow interactive use for model exploration and teaching purposes. For this, you will need the accompanying library `PKPDsimShiny`.
 - the model library in PKPDsim contains a considerable selection of PK and PD models, of which only a few examples are be shown below. But custom models can easily be implemented too, by specifying the differential equations. 
 
 # Installation
@@ -226,47 +226,3 @@ dat <- sim_ode (ode = "pk4",
                 covariates = list("WT" = wt, "CRCL" = crcl),
                 regimen = r1 )
 ```
-
-## Example Shiny
-
-The code below will create a Shiny app on-the-fly. The model can either be passed using the `code` argument (fast C++ approach), or using the `ode` argument (R::deSolve approach). 
-
-```{r, warning=F, eval=FALSE, message=F, message=F}
-p <- list(CL = 1, V  = 10)
-
-pk_1cmt_iv <- function (t, A, p) {
-  with(p, {
-    KEL <-  CL/V
-    dAdt_1 <- -KEL*A[1] + rate
-    return ( list ( c (  dAdt_1 ) ) )
-  })
-}
-
-omega <- c(0.3,       # IIV CL
-           0.1, 0.3)  # IIV V
-
-sim_ode_shiny(code = "dAdt[1] = -(CL/V)*A[1] ; ",
-              par = p,
-              regimen = r3,
-              omega = omega)
-```
-
-
-![Shiny](tutorial_files/shiny.png "Shiny example")
-
-
-## Troubleshooting
-
-If you encounter the following message when trying to run a Shiny app:
-
-```
-Error in handler(req) : 
-   argument "metaHandler" is missing, with no default 
-```      
-
-you should update the Shiny library:
-
-```
-install.packages("shiny")
-```
-
