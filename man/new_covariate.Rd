@@ -4,14 +4,14 @@
 \alias{new_covariate}
 \title{New covariate}
 \usage{
-new_covariate(value = 70, times = NULL, implementation = "LOCF")
+new_covariate(value = 70, times = NULL, implementation = "interpolate")
 }
 \arguments{
 \item{value}{a numeric vector}
 
 \item{times}{NULL for time-invariant covariate or a numeric vector specifying the update times for the covariate}
 
-\item{implementation}{for time-varying covariates either LOCF or interpolate}
+\item{implementation}{for time-varying covariates either 'LOCF' (last observation carried forward) or 'interpolate' (default)}
 }
 \description{
 Describe data for a covariate, either fixed or time-variant
