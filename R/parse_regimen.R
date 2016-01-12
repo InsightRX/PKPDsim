@@ -78,22 +78,28 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
 
   # now add the covariate values to the design dataset
   if(!is.null(covariates)) {
-    for(i in length(covariates)) {
+    for(i in seq(names(covariates))) {
       design[[paste0("cov_", names(covariates)[i])]] <- 0
       design[[paste0("cov_t_", names(covariates)[i])]] <- 0
       design[[paste0("gradients_", names(covariates)[i])]] <- 0
     }
-    for(i in 1:length(covt[,1])) {
-      design[design$t >= covt[i,]$time, c(paste0("cov_", covt[i,]$name))] <- covt[i,]$value
-      design[design$t >= covt[i,]$time, c(paste0("cov_t_", covt[i,]$name))] <- covt[i,]$time
-      if(tolower(covt[i,]$implementation) != "locf") {
-        if(i < length(covt[,1])) {
-          if((covt[i+1,]$time - covt[i,]$time) > 0) {
-            design[design$t >= covt[i,]$time & design$t < covt[i+1,]$time, c(paste0("gradients_", covt[i,]$name))] <- (covt[i+1,]$value - covt[i,]$value)  / (covt[i+1,]$time - covt[i,]$time)
+    for(j in seq(names(covariates))) {
+      nam <- names(covariates)[j]
+      tmp <- covt[covt$name == nam,]
+      for(i in 1:length(tmp[,1])) {
+        design[design$t >= tmp[i,]$time, c(paste0("cov_", nam))] <- tmp[i,]$value
+        design[design$t >= tmp[i,]$time, c(paste0("cov_t_", nam))] <- tmp[i,]$time
+        if(tolower(tmp[i,]$implementation) != "locf") {
+          if(i < length(tmp[,1])) {
+            if((tmp[i+1,]$time - tmp[i,]$time) > 0) {
+              design[design$t >= tmp[i,]$time, c(paste0("gradients_", nam))] <- (tmp[i+1,]$value - tmp[i,]$value)  / (tmp[i+1,]$time - tmp[i,]$time)
+            }
+          } else {
+            design[design$t >= tmp[i,]$time, c(paste0("gradients_", nam))] <- 0
           }
+        } else {
+          design[,c(paste0("gradients_", nam))] <- 0
         }
-      } else {
-        design[,c(paste0("gradients_", covt[i,]$name))] <- 0
       }
     }
   }

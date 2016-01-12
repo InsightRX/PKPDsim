@@ -50,6 +50,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   cpp_code[idx] <- par_def
   idx2 <- grep("insert_state_init", cpp_code)
   cpp_code[idx2] <- paste("   ", code_init)
+  cov_scale <- ""
   if(!is.null(covariates)) {
     cov_def <- "  // covariate definitions\n"
     cov_tmp <- "    // covariates during integration period\n"
@@ -69,6 +70,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = 0 ;\n'))
         cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = 0 ;\n'))
       }
+      cov_scale <- paste0(cov_scale, paste0('      ', nam, ' = ', nam, '_0 + gr_', nam, ' * (tmp.time[k] - t_prv_', nam), ');\n')
     }
     idx3 <- grep("insert covariate definitions", cpp_code)
     cpp_code[idx3] <- cov_def
@@ -77,12 +79,18 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   }
   idx5 <- grep("insert scale definition for integration period", cpp_code)
   idx6 <- grep("observation compartment", cpp_code)
+  idx7 <- grep("insert scale definition for observation", cpp_code)
+  idx8 <- grep("insert time-dependent covariates scale", cpp_code)
   if(is.null(obs)) {
     cpp_code[idx5] = "    double scale = 1;"
     cpp_code[idx6] = "  int cmt = 0;"
+    cpp_code[idx7] = "  scale = 1;"
+    cpp_code[idx8] = paste0("    scale = ", obs$scale, ";")
   } else {
     cpp_code[idx5] = paste0("    scale = ", obs$scale, ";")
     cpp_code[idx6] = paste0("  int cmt = ", (obs$cmt-1), ";")
+    cpp_code[idx7] = paste0("      scale = ", obs$scale, ";")
+    cpp_code[idx8] = cov_scale
   }
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),

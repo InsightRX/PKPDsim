@@ -66,7 +66,6 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     rate = rates[i];
 
     // insert covariates for integration period
-
     // insert scale definition for integration period
 
     start = 0;
@@ -92,7 +91,9 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
       Aupd[k] = tail[k];
     }
     for( int k = start; k < tmp.y.size(); k++) {
-       obs.insert(obs.end(), tmp.y[k][cmt] / scale);
+      // insert time-dependent covariates scale
+      // insert scale definition for observation
+      obs.insert(obs.end(), tmp.y[k][cmt] / scale);
     }
   }
 
