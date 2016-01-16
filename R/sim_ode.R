@@ -321,5 +321,8 @@ sim_ode <- function (ode = NULL,
     comb <- data.frame(comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t))
   }
   class(comb) <- c("PKPDsim_data", class(comb))
+  attr(comb, "regimen") <- regimen
+  attr(comb, "ode_code") <- attr(ode, "code")
+  attr(comb, "parameters") <- attr(ode, "parameters")
   return(comb)
 }
