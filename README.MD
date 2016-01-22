@@ -26,7 +26,7 @@ In essence, the `PKPDsim` tool is an attempt to take the best features of BM, an
 
 Other R modules with similar aims have recently been released. While there is a great deal of overlap between the functionality in these packages, some differences are summarized in the table below (as of Jan 2016):
 
-| Functionality                         | PKPDsim     | mlxR            | RxODE   | mgrsolve    |
+| Functionality                         | PKPDsim     | mlxR            | RxODE   | mrgsolve    |
 |-------------------------------------- | ----------- | --------------- | ------- | ----------- |
 | Simulation engine                     | C++ odeint  | C++ proprietary | Fortran | C++         |
 | Open source                           | +           | +/- (1)         | +       | +/-  (2)    |
