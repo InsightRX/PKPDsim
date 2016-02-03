@@ -21,6 +21,7 @@
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param covariate_model feature not implemented yet.
 #' @param verbose show more output
+#' @param ... extra parameters
 #' @return a data frame of compartments with associated concentrations at requested times
 #' @export
 #' @seealso \link{sim_ode_shiny}
@@ -82,7 +83,8 @@ sim_ode <- function (ode = NULL,
                      t_tte = NULL,
                      duplicate_t_obs = FALSE,
                      rtte = FALSE,
-                     verbose = FALSE
+                     verbose = FALSE,
+                     ...
                      ) {
 #   if (!is.null(covariate_model) && !is.null(covariates)) {
 #     n_ind <- length(t(covariates[,1]))

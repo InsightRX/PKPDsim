@@ -70,7 +70,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
     }
   }
   design <- rbind(design %>%
-                    dplyr::filter(t < t_max), tail(design,1))
+                    dplyr::filter(t <= t_max), tail(design,1))
   if(!is.null(p$F) && class(p$F) == "numeric") {
     design$dose <- design$dose * p$F
   }
@@ -103,10 +103,10 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
       }
     }
   }
-  design <- design[!duplicated(paste0(design$t,design$dose,design$dum)),]
   # remove covariate points where there is also a dose
+  design <- design[!duplicated(paste0(design$t,design$dose,design$dum)),]
   if(!is.null(covariates)) {
-    design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0),]
+    design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0) | design$t %in% t_obs,]
   }
   return(design)
 }

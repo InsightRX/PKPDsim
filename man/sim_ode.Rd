@@ -9,7 +9,7 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
   adherence = NULL, covariates = NULL, covariate_model = NULL,
   A_init = NULL, only_obs = FALSE, obs_step_size = 1,
   int_step_size = 0.1, t_max = NULL, t_obs = NULL, t_tte = NULL,
-  duplicate_t_obs = FALSE, rtte = FALSE, verbose = FALSE)
+  duplicate_t_obs = FALSE, rtte = FALSE, verbose = FALSE, ...)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
@@ -51,6 +51,8 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
 \item{rtte}{should repeated events be allowed (FALSE by default)}
 
 \item{verbose}{show more output}
+
+\item{...}{extra parameters}
 }
 \value{
 a data frame of compartments with associated concentrations at requested times
