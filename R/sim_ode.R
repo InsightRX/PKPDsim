@@ -167,6 +167,14 @@ sim_ode <- function (ode = NULL,
   if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
     stop("Please create a regimen using the new_regimen() function!")
   }
+  if (!is.null(adherence)) { ## varying regimen due to adherence
+    tmp <- list()
+    for(i in 1:n_ind) {
+      tmp[[i]] <- regimen
+    }
+    regimen <- tmp
+    class(regimen) <- c(class(regimen), "regimen_multiple")
+  }
   if("regimen_multiple" %in% class(regimen)) {
     n_ind <- length(regimen)
   } else {
@@ -194,14 +202,16 @@ sim_ode <- function (ode = NULL,
     p_i <- p
     if("regimen_multiple" %in% class(regimen)) {
       design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates)
-      if(regimen[[i]]$type == "infusion") {
-        p_i$t_inf <- regimen$t_inf
-        p_i$dose_type <- "infusion"
-      } else {
-        p_i$dose_type <- "bolus"
+      if("regimen_multiple" %in% class(regimen)) {
+        if(regimen[[i]]$type == "infusion") {
+          p_i$t_inf <- regimen$t_inf
+          p_i$dose_type <- "infusion"
+        } else {
+          p_i$dose_type <- "bolus"
+        }
+        p_i$dose_times <- regimen[[i]]$dose_times
+        p_i$dose_amts <- regimen[[i]]$dose_amts
       }
-      p_i$dose_times <- regimen[[i]]$dose_times
-      p_i$dose_amts <- regimen[[i]]$dose_amts
       if(i == 1 && is.null(t_obs)) { # find reasonable default to output
         if(is.null(obs_step_size)) {
           obs_step_size <- 100
@@ -223,14 +233,15 @@ sim_ode <- function (ode = NULL,
     times <- unique(c(seq(from=0, to=tail(design_i$t,1), by=int_step_size), t_obs))
     A_init_i <- A_init
     if (!is.null(adherence)) {
+      l <- length(design_i[design_i$dose != 0,]$dose)
       if(adherence$type == "markov") {
-        adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
+        adh_i <- new_adherence(n = l,
                                markov = list(p01 = adherence$markov$p01, p11 = adherence$markov$p11))
       } else {
-        adh_i <- new_adherence(n = length(design_i[design_i$dum == 0,]$dose),
+        adh_i <- new_adherence(n = l,
                                p_binom = adherence$p_bionm)
       }
-      design_i[design_i$dum == 0,]$dose <- design_i[design_i$dum == 0,]$dose * adh_i
+      design_i[design_i$dose != 0,]$dose <- design_i[design_i$dose != 0,]$dose * adh_i
     }
     if (!is.null(omega)) {
       if (omega_type=="exponential") {
@@ -264,16 +275,15 @@ sim_ode <- function (ode = NULL,
       } else {
         dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
       }
-      if(i == 1) {
-        l_mat <- length(dat_ind[,1])
-        comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
-      }
-      if("regimen_multiple" %in% class(regimen)) {
+      if("regimen_multiple" %in% class(regimen) || !is.null(adherence)) {
         comb <- rbind(comb, dat_ind)
       } else {
+        if(i == 1) {
+          l_mat <- length(dat_ind[,1])
+          comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
+        }
         comb[((i-1)*l_mat)+(1:l_mat),] <- dat_ind
       }
-#      comb <- data.frame(dat_ind)
     } else {
       stop("Sorry, deSolve support is deprecated.")
     }
@@ -297,7 +307,7 @@ sim_ode <- function (ode = NULL,
     idx <- pick_closest_vec(t_obs, comb$t)
     comb <- comb[idx,]
   }
-  if(length(events)>0) {
+  if(length(events) > 0) {
     events <- data.frame(events)
     events <- events[!duplicated(paste0(events$id, "_", events$t)),]
     ids <- unique(comb$id)

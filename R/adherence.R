@@ -23,14 +23,18 @@ new_adherence <- function(n = 100,
 adherence_markov <- function (n = 100, p11 = 0.9, p01 = 0.7) {
   adh <- c(1) # all patients adherent for first dose
   dos <- 1
-  for (i in 2:n) {
-    if (dos == 1) {
-      prob <- p11
-    } else {
-      prob <- p01
+  if(n > 1) {
+    for (i in 2:n) {
+      if (dos == 1) {
+        prob <- p11
+      } else {
+        prob <- p01
+      }
+      dos <- rbinom(1, 1, prob)
+      adh <- c(adh,dos)
     }
-    dos <- rbinom(1, 1, prob)
-    adh <- c(adh,dos)
+  } else {
+    adh <- 1
   }
   return(adh)
 }
