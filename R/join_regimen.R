@@ -20,10 +20,10 @@ join_regimen <- function(
     if(is.null(interval) && is.null(dose_update)) {
       stop("either interval or dose_update have to be specified as arguments")
     }
+    if(dose_update < 1) {
+      dose_update <- NULL
+    }
     if(!is.null(dose_update)) {
-      if(dose_update < 1) {
-        stop("dose_update argument should be >= 1.")
-      }
       if(dose_update > 1) {
         t <- c(regimen1$dose_times[1:(dose_update-1)], regimen2$dose_times + regimen1$dose_times[dose_update])
         amt <- c(regimen1$dose_amts[1:(dose_update-1)], regimen2$dose_amts)
@@ -44,6 +44,8 @@ join_regimen <- function(
         t_inf = c(regimen1$t_inf, regimen2$t_inf)
       )
       return(joint)
+    } else {
+      stop("Please provide the interval between the two dose regimens (`interval`), or else the dose number from which to update (`dose_update`)")
     }
   }
 }
