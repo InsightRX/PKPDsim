@@ -65,5 +65,6 @@ new_regimen <- function(
   }
   reg$dose_times <- reg$dose_times[!is.na(reg$dose_amts)]
   reg$dose_amts <- reg$dose_amts[!is.na(reg$dose_amts)]
+  reg$first_dose_time <- first_dose_time
   return(reg)
 }
