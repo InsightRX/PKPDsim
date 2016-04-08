@@ -7,6 +7,7 @@
 #' @param times vector describing dosing times. Overrides specified times using interval and n arguments
 #' @param type either "infusion" or "bolus" (default)
 #' @param t_inf infusion time (if type==infusion)
+#' @param first_dose_time datetime stamp of first dose (of class `POSIXct`). Default is current date time.
 #' @return a list containing calculated VPC information, and a ggplot2 object
 #' @export
 #' @seealso \link{sim_ode}
@@ -22,7 +23,8 @@ new_regimen <- function(
                     n = 3,
                     times = NULL,
                     type = "bolus",
-                    t_inf = NULL) {
+                    t_inf = NULL,
+                    first_dose_time = lubridate::now()) {
   reg <- structure(list(amt = amt,
                         interval = interval,
                         n = n,

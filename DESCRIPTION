@@ -11,8 +11,11 @@ Depends:
 Imports:
     Rcpp,
     dplyr,
-    MASS
+    MASS,
+    lubridate
 Description: Simulate dose regimens for PKPD models described by ODE systems
 License: MIT
 LazyData: TRUE
-Suggests: testit
+Suggests:
+    testit
+RoxygenNote: 5.0.1
