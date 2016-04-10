@@ -5,7 +5,7 @@
 \title{Compile ODE model to c++ function}
 \usage{
 compile_sim_cpp(code, size, p, cpp_show_code, code_init = NULL,
-  declare_variables = NULL, covariates = NULL, obs = NULL,
+  declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL,
   verbose = FALSE)
 }
 \arguments{
@@ -24,6 +24,8 @@ compile_sim_cpp(code, size, p, cpp_show_code, code_init = NULL,
 \item{covariates}{covariates specification}
 
 \item{obs}{observation specification}
+
+\item{dose}{dose specification}
 
 \item{verbose}{show more output}
 }

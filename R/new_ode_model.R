@@ -97,13 +97,13 @@ new_ode_model <- function (model = NULL,
     code <- gsub("\\n", ";\n", code)
     code <- gsub("$", ";\n", code)
     code <- gsub("^;", "", code)
-    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, covariates = covariates, obs = obs, verbose = verbose)
+    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, covariates = covariates, obs = obs, dose = dose, verbose = verbose)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
       sim_out <- sim_wrapper_cpp
     } else {
       message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
     }
-    attr(sim_out, "code") <- code_orig
+    attr(sim_out, "code") <- cmp$ode
     attr(sim_out, "parameters") <- cmp$parameters
     attr(sim_out, "cpp")  <- TRUE
     attr(sim_out, "size")  <- size

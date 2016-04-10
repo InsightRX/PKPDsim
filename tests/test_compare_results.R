@@ -73,3 +73,28 @@ pk3cmt <- new_ode_model(code = "
                      dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2];
                      ", obs = list (cmt = 2, scale = "V"))
 assert("3cmt model has state vector of 3", attr(pk3cmt, "size") == 3)
+
+## test if rate added automatically
+pk3cmt2 <- new_ode_model(code = "
+                     dAdt[1] = -KA*A[1];
+                     dAdt[2] = KA*A[1] -(Q/V)*A[2] + (Q/V2)*A[3] -(CL/V)*A[2];
+                     dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2];
+                     ", obs = list (cmt = 2, scale = "V"), cpp_show_code = TRUE)
+assert("+ rate added automatically", gregexpr("\\+ rate", attr(pk3cmt2, "code")[[1]]) > 0)
+
+
+## dose in  cmt <> 1
+p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
+pk  <- new_ode_model(code = "
+                     dAdt[1] = -KA * A[1]
+                     dAdt[2] = KA*A[1] -(CL/V) * A[2]
+                     dAdt[3] = S2*(A[2]-A[3])
+                     ",
+                     obs = list(cmt=2,scale="V"),
+                     dose = list(cmt = 2))
+r <- new_regimen(amt = 100, times = c(0), type = "infusion")
+dat <- sim_ode (ode = "pk", n_ind = 1,
+                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+                par = p, regimen = r,
+                verbose = FALSE, t_max=48)
+assert("dose in comp 2", sum(dat[dat$comp == 1,]$y) == 0 && sum(dat[dat$comp == 2,]$y) > 0)

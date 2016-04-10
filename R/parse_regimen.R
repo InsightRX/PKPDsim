@@ -5,11 +5,19 @@
 #' @param t_tte t_tte
 #' @param p parameters
 #' @param covariates covariates
+#' @param model model
 #' @export
-parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
+parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = NULL) {
 
   if(length(regimen$t_inf) < length(regimen$dose_times)) {
     regimen$t_inf <- c(regimen$tinf, rep(tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
+  }
+
+  dose_cmt <- 1
+  if(!is.null(model)) {
+    if(!is.null(attr(model, "dose")$cmt)) {
+      dose_cmt <- attr(model, "dose")$cmt - 1
+    }
   }
 
   ## first, add covariates to regimen to be incorproated in design
@@ -109,5 +117,9 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates) {
   if(!is.null(covariates)) {
     design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0) | design$t %in% t_obs,]
   }
+
+  # set dose compartment
+  design$dose_cmt <- dose_cmt
+
   return(design)
 }

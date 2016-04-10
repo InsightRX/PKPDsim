@@ -178,7 +178,7 @@ sim_ode <- function (ode = NULL,
   if("regimen_multiple" %in% class(regimen)) {
     n_ind <- length(regimen)
   } else {
-    design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates)
+    design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates, ode)
     design_i <- design
     p$dose_times <- regimen$dose_times
     p$dose_amts <- regimen$dose_amts

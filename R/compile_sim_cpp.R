@@ -7,9 +7,10 @@
 #' @param declare_variables variable declaration
 #' @param covariates covariates specification
 #' @param obs observation specification
+#' @param dose dose specification
 #' @param verbose show more output
 #' @export
-compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, verbose = FALSE) {
+compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -26,6 +27,26 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   defined <- par1[-grep("dadt\\[", tolower(par1))]
   ode_def_cpp <- shift_state_indices(ode_def, -1)
   ode_def_cpp <- gsub("\\n *", "\\\n  ", ode_def_cpp)
+
+  # add 'rate' for dose compartment to allow infusions, if not already specified by user
+  if(is.null(dose)) {
+    dose <- list(cmt = 1)
+  }
+  line_end <- gregexpr(";", ode_def_cpp)[[1]]
+  match_rate <- gregexpr(paste0("\\+(.)*rate"), tolower(ode_def_cpp))[[1]]
+  if(match_rate == -1) {
+    match_cmt <- gregexpr(paste0("dadt\\[", dose$cmt - 1,"\\]"), tolower(ode_def_cpp))[[1]]
+    if(match_cmt[1] > 0) {
+      pos <- line_end[line_end > match_cmt][1]
+      if(!is.na(pos)) { # insert 'rate'
+        ode_def_cpp <- paste0(
+          substr(ode_def_cpp, 1, pos - 1),
+          ' + rate',
+          substr(ode_def_cpp, pos, nchar(ode_def_cpp)))
+      }
+    }
+  }
+
   if(any(p %in% defined)) {
     p <- p[!p %in% defined]
   }
@@ -109,5 +130,8 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   }
   sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
   Sys.setenv("PKG_CXXFLAGS" = flg)
-  return(list(parameters = get_parameters_from_code(ode_def_cpp, unique(c(defined, declare_variables)))))
+  return(list(
+    parameters = get_parameters_from_code(ode_def_cpp, unique(c(defined, declare_variables))),
+    ode = ode_def_cpp
+  ))
 }
