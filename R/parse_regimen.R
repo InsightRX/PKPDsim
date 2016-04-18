@@ -53,22 +53,26 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
 
   # parse list to a design (data.frame)
   type <- (regimen$type == "infusion") * 1
-  dos <- cbind(t = regimen$dose_times,
+  regimen$t_inf[type == 0] <- 0 # make sure inf_time is 0 for boluses
+  dos <- data.frame(cbind(t = regimen$dose_times,
                   dose = regimen$dose_amts,
                   type = type,
                   dum = 0,
                   dose_cmt = regimen$dose_cmt,
                   t_inf = regimen$t_inf,
-                  rate = regimen$dose_amts / regimen$t_inf)
+                  rate = 0))
+  if(sum(regimen$t_inf > 0) > 0) {
+    dos$rate[regimen$t_inf > 0] <- regimen$dose_amts[regimen$t_inf > 0] / regimen$t_inf[regimen$t_inf > 0]
+  }
   if(any(regimen$type == "infusion")) {
-    dos_t2 <- cbind(t = regimen[regimen$type == "infusion"]$dose_times + regimen[regimen$type == "infusion"]$t_inf,
+    dos_t2 <- data.frame(cbind(t = regimen$dose_times[regimen$type == "infusion"] + regimen$t_inf[regimen$type == "infusion"],
                           dose = 0,
                           type = 0,
                           dum = 1,
                           dose_cmt = 0,
                           t_inf = 0,
-                          rate = 0 )
-    dos <- rbind(dos, dos_t2)
+                          rate = 0))
+    dos <- data.frame(rbind(dos, dos_t2))
   }
   design <- data.frame(dos) %>% dplyr::arrange(t, -dose)
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset

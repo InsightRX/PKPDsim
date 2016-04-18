@@ -82,8 +82,7 @@ pk3cmt2 <- new_ode_model(code = "
                      ", obs = list (cmt = 2, scale = "V"), cpp_show_code = TRUE)
 assert("+ rate added automatically", gregexpr("\\+ rate", attr(pk3cmt2, "code")[[1]]) > 0)
 
-
-## dose in  cmt <> 1
+## dose in  cmt <> 1, set using model
 p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
 pk  <- new_ode_model(code = "
                      dAdt[1] = -KA * A[1]
@@ -98,3 +97,16 @@ dat <- sim_ode (ode = "pk", n_ind = 1,
                 par = p, regimen = r,
                 verbose = FALSE, t_max=48)
 assert("dose in comp 2", sum(dat[dat$comp == 1,]$y) == 0 && sum(dat[dat$comp == 2,]$y) > 0)
+
+## dose in  cmt <> 1, set using regimen
+r <- new_regimen(amt = c(100, 100, 100),
+                 times = c(0, 6, 12),
+                 cmt = c(1,2,3),
+                 type = "bolus")
+dat2 <- sim_ode (ode = "pk", n_ind = 1,
+                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+                par = p, regimen = r,
+                t_obs = seq(from=0, to=20, by = .1),
+                verbose = FALSE, t_max=48)
+assert("dose in comp 2 and 3 as well", max(diff(dat2[dat2$comp == 2,]$y)) > 95 && max(diff(dat2[dat2$comp == 2,]$y)) > 95)
+

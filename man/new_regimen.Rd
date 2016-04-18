@@ -5,7 +5,8 @@
 \title{Dose regimen for sim_ode}
 \usage{
 new_regimen(amt = 100, interval = 12, n = 3, times = NULL,
-  type = "bolus", t_inf = NULL, first_dose_time = lubridate::now())
+  type = "bolus", t_inf = NULL, cmt = NULL,
+  first_dose_time = lubridate::now())
 }
 \arguments{
 \item{amt}{dosing amount, either a single value (which will repeated for multiple doses), or a vector with doses for each administration}
@@ -19,6 +20,8 @@ new_regimen(amt = 100, interval = 12, n = 3, times = NULL,
 \item{type}{either "infusion" or "bolus" (default)}
 
 \item{t_inf}{infusion time (if type==infusion)}
+
+\item{cmt}{vector of dosing compartments (optional, if NULL will dosing compartment defined in model will be used)}
 
 \item{first_dose_time}{datetime stamp of first dose (of class `POSIXct`). Default is current date time.}
 }
