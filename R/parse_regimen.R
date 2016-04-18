@@ -13,14 +13,19 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     regimen$t_inf <- c(regimen$tinf, rep(tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
   }
 
-  dose_cmt <- 1
-  if(!is.null(model)) {
-    if(!is.null(attr(model, "dose")$cmt)) {
-      dose_cmt <- attr(model, "dose")$cmt - 1
+  if(!is.null(regimen$cmt)) {
+    regimen$dose_cmt <- regimen$cmt - 1
+  } else {
+    dose_cmt <- 1
+    if(!is.null(model)) {
+      if(!is.null(attr(model, "dose")$cmt)) {
+        dose_cmt <- attr(model, "dose")$cmt - 1
+      }
     }
+    regimen$dose_cmt <- rep(dose_cmt, length(regimen$dose_times))
   }
 
-  ## first, add covariates to regimen to be incorproated in design
+  ## first, add covariates to regimen to be incorporated in design
   if(!is.null(covariates)) {
     covt <- c()
     for (i in 1:length(covariates)) {
@@ -35,33 +40,59 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     # add covariate update times as dummy dose
     regimen$dose_times <- c(regimen$dose_times, covt$time)
     regimen$dose_amts <- c(regimen$dose_amts, rep(0, length(covt$time)))
-    regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
+    regimen$type <- c(regimen$type, rep(0, length(covt$time)))
+    regimen$dose_cmt <- c(dose_cmt, rep(0, length(covt$time)))
     regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
     ord <- order(regimen$dose_times)
     regimen$dose_times <- regimen$dose_times[ord]
     regimen$dose_amts  <- regimen$dose_amts[ord]
+    regimen$type <- regimen$type[ord]
+    regimen$dose_cmt  <- regimen$dose_cmt[ord]
     regimen$t_inf  <- regimen$t_inf[ord]
   }
 
   # parse list to a design (data.frame)
-  if(regimen$type == "infusion") {
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0, t_inf = regimen$t_inf, rate = regimen$dose_amts / regimen$t_inf),
-                               cbind(t=regimen$dose_times + regimen$t_inf, dose=0, dum = 1, t_inf = 0, rate = 0 ))) %>%
-      dplyr::arrange(t, -dose)
-  } else {
-    design <- data.frame(rbind(cbind(t=regimen$dose_times, dose = regimen$dose_amts, dum = 0, t_inf = 0, rate = 0))) %>%
-      dplyr::arrange(t, -dose)
+  type <- (regimen$type == "infusion") * 1
+  dos <- cbind(t = regimen$dose_times,
+                  dose = regimen$dose_amts,
+                  type = type,
+                  dum = 0,
+                  dose_cmt = regimen$dose_cmt,
+                  t_inf = regimen$t_inf,
+                  rate = regimen$dose_amts / regimen$t_inf)
+  if(any(regimen$type == "infusion")) {
+    dos_t2 <- cbind(t = regimen[regimen$type == "infusion"]$dose_times + regimen[regimen$type == "infusion"]$t_inf,
+                          dose = 0,
+                          type = 0,
+                          dum = 1,
+                          dose_cmt = 0,
+                          t_inf = 0,
+                          rate = 0 )
+    dos <- rbind(dos, dos_t2)
   }
+  design <- data.frame(dos) %>% dplyr::arrange(t, -dose)
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
     t_diff <- setdiff(t_obs, design$t)
     if(length(t_diff) > 0) {
-      design <- data.frame(rbind(design, cbind(t = t_diff, dose = 0, dum = 0, t_inf = 0, rate = 0))) %>% arrange(t, -dose)
+      design <- data.frame(rbind(design, cbind(t = t_diff,
+                                               dose = 0,
+                                               type = 0,
+                                               dum = 0,
+                                               dose_cmt = 0,
+                                               t_inf = 0,
+                                               rate = 0))) %>% arrange(t, -dose)
     }
   }
   if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
     t_diff <- setdiff(t_tte, design$t)
     if(length(t_diff) > 0) {
-      design <- data.frame(rbind(design, cbind(t = t_diff, dose = 0, dum = 0, t_inf = 0, rate = 0))) %>% arrange(t, -dose)
+      design <- data.frame(rbind(design, cbind(t = t_diff,
+                                               dose = 0,
+                                               type = 0,
+                                               dum = 0,
+                                               dose_cmt = 0,
+                                               t_inf = 0,
+                                               rate = 0))) %>% arrange(t, -dose)
     }
   }
   if (is.null(t_max)) {
@@ -117,9 +148,6 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
   if(!is.null(covariates)) {
     design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0) | design$t %in% t_obs,]
   }
-
-  # set dose compartment
-  design$dose_cmt <- dose_cmt
 
   return(design)
 }

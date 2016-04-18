@@ -203,12 +203,6 @@ sim_ode <- function (ode = NULL,
     if("regimen_multiple" %in% class(regimen)) {
       design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates)
       if("regimen_multiple" %in% class(regimen)) {
-        if(regimen[[i]]$type == "infusion") {
-          p_i$t_inf <- regimen$t_inf
-          p_i$dose_type <- "infusion"
-        } else {
-          p_i$dose_type <- "bolus"
-        }
         p_i$dose_times <- regimen[[i]]$dose_times
         p_i$dose_amts <- regimen[[i]]$dose_amts
       }
@@ -223,12 +217,9 @@ sim_ode <- function (ode = NULL,
       }
       t_obs <- seq(from=0, to=max(design_i$t), by=obs_step_size)
     } else {
-      if(regimen$type == "infusion") {
-        p_i$t_inf <- regimen$t_inf
-        p_i$dose_type <- "infusion"
-      } else {
-        p_i$dose_type <- "bolus"
-      }
+      # if(regimen$type == "infusion") {
+      #   p_i$t_inf <- regimen$t_inf
+      # }
     }
     times <- unique(c(seq(from=0, to=tail(design_i$t,1), by=int_step_size), t_obs))
     A_init_i <- A_init
@@ -244,7 +235,7 @@ sim_ode <- function (ode = NULL,
       design_i[design_i$dose != 0,]$dose <- design_i[design_i$dose != 0,]$dose * adh_i
     }
     if (!is.null(omega)) {
-      if (omega_type=="exponential") {
+      if (omega_type == "exponential") {
         p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
       } else {
         p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])
@@ -264,7 +255,11 @@ sim_ode <- function (ode = NULL,
         design_i[design_i$t >= p_i$dose_times[k] & design_i$t < (p_i$dose_times[k] + p_i$t_inf[k]),]$rate <- (p_i$dose_amts[k] / p_i$t_inf[k])
       }
       p_i$rate <- 0
+
+      #################### Main call to ODE solver: #######################
       tmp <- ode (A_init_i, design_i, p_i, int_step_size)
+      #####################################################################
+
       des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
       dat_ind <- c()
       for (j in 1:length(A_init_i)) {

@@ -7,6 +7,7 @@
 #' @param times vector describing dosing times. Overrides specified times using interval and n arguments
 #' @param type either "infusion" or "bolus" (default)
 #' @param t_inf infusion time (if type==infusion)
+#' @param cmt vector of dosing compartments (optional, if NULL will dosing compartment defined in model will be used)
 #' @param first_dose_time datetime stamp of first dose (of class `POSIXct`). Default is current date time.
 #' @return a list containing calculated VPC information, and a ggplot2 object
 #' @export
@@ -24,6 +25,7 @@ new_regimen <- function(
                     times = NULL,
                     type = "bolus",
                     t_inf = NULL,
+                    cmt = NULL,
                     first_dose_time = lubridate::now()) {
   reg <- structure(list(amt = amt,
                         interval = interval,
@@ -58,6 +60,17 @@ new_regimen <- function(
   }
   if(length(reg$t_inf) != length(reg$dose_times)) {
     reg$t_inf <- rep(reg$t_inf[1], length(reg$dose_times))
+  }
+  if(length(reg$type) != length(reg$dose_times)) {
+    reg$type <- rep(type[1], length(reg$dose_times))
+  } else {
+    reg$type <- type
+  }
+  if(!is.null(cmt)) {
+    if(length(cmt) != length(reg$dose_times)) {
+      cmt <- rep(cmt[1], length(reg$dose_times))
+    }
+    reg$cmt <- cmt
   }
   ## check that all amounts are available, otherwise remove
   if(!is.null(reg$t_inf)) {
