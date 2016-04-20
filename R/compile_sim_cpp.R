@@ -28,24 +28,28 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   ode_def_cpp <- shift_state_indices(ode_def, -1)
   ode_def_cpp <- gsub("\\n *", "\\\n  ", ode_def_cpp)
 
-  # add 'rate' for dose compartment to allow infusions, if not already specified by user
+  # add 'rate' for dose compartments to allow infusions, remove if already specified by user (previous versions req'd this)
   if(is.null(dose)) {
     dose <- list(cmt = 1)
   }
   line_end <- gregexpr(";", ode_def_cpp)[[1]]
   match_rate <- gregexpr(paste0("\\+(.)*rate"), tolower(ode_def_cpp))[[1]]
-  if(match_rate == -1) {
-    match_cmt <- gregexpr(paste0("dadt\\[", dose$cmt - 1,"\\]"), tolower(ode_def_cpp))[[1]]
-    if(match_cmt[1] > 0) {
-      pos <- line_end[line_end > match_cmt][1]
-      if(!is.na(pos)) { # insert 'rate'
-        ode_def_cpp <- paste0(
-          substr(ode_def_cpp, 1, pos - 1),
-          ' + rate',
-          substr(ode_def_cpp, pos, nchar(ode_def_cpp)))
-      }
+  if(match_rate[1] >= 0) {
+    stop("Sorry, the manual specification of `rate` in the ODE definition is deprecated. Please use the `dose` argument in `new_ode_model()`, or the `cmt` argument in `new_regimen()` instead.")
+  }
+  lines <- strsplit(ode_def_cpp, ";")[[1]]
+  new_ode <- c()
+  j <- 0
+  for(i in seq(lines)) {
+    if(length(grep("dAdt", lines[i])) > 0) {
+      lines[i] <- paste0(lines[i], " + rate[", j, "]")
+      j <- j+1
+    }
+    if(nchar(lines[i]) > 0) {
+      new_ode <- c(new_ode, lines[i])
     }
   }
+  ode_def_cpp <- paste(new_ode, collapse=";")
 
   if(any(p %in% defined)) {
     p <- p[!p %in% defined]
@@ -55,16 +59,17 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
     m <- p_def %in% declare_variables # remove covariates and other declared variables
     p_def <- p_def[!m]
   }
-  p <- unique(c(p, "rate", "conc", "scale", declare_variables)) # add rate and conc as explicitly declared variables
+  p <- unique(c(p, "conc", "scale", declare_variables)) # add rate and conc as explicitly declared variables
   pars <- "\n"
   par_def <- ""
   for(i in seq(p)) { # parameters and auxiliary variables
     pars <- paste0(pars, "double ", p[i], ";\n")
   }
+  pars <- paste0(pars, paste0("double rate[] = { ", paste(rep(0, size), collapse=", "), " };\n"))
   for(i in seq(p_def)) { # actual parameters for model
     par_def <- paste0(par_def, '  ', p_def[i], ' = par["', p_def[i], '"];\n')
   }
-  comp_def <- paste0("const double n_comp = ", size, ";\n",
+  comp_def <- paste0("const int n_comp = ", size, ";\n",
                      "typedef boost::array < double , ", size, " > state_type; \n");
   cpp_code <- readLines(paste0(folder, "/cpp/sim.cpp"))
   idx <- grep("insert_parameter_definitions", cpp_code)
@@ -81,7 +86,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
       cov_names <- names(covariates)
     }
   }
-  if(!is.null(cov_names)) {
+  if(!is.null(cov_names) && length(cov_names) > 0) {
     cov_def <- "  // covariate definitions\n"
     cov_tmp <- "    // covariates during integration period\n"
     for(i in seq(cov_names)) {

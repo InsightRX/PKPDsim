@@ -68,29 +68,21 @@ assert("all requested observations in ouput",
 
 ## tests for bug wrong model size (JeHi 20151204)
 pk3cmt <- new_ode_model(code = "
-                     dAdt[1] = -KA*A[1] + rate;
+                     dAdt[1] = -KA*A[1];
                      dAdt[2] = KA*A[1] -(Q/V)*A[2] + (Q/V2)*A[3] -(CL/V)*A[2];
                      dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2];
                      ", obs = list (cmt = 2, scale = "V"))
 assert("3cmt model has state vector of 3", attr(pk3cmt, "size") == 3)
 
-## test if rate added automatically
-pk3cmt2 <- new_ode_model(code = "
-                     dAdt[1] = -KA*A[1];
-                     dAdt[2] = KA*A[1] -(Q/V)*A[2] + (Q/V2)*A[3] -(CL/V)*A[2];
-                     dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2];
-                     ", obs = list (cmt = 2, scale = "V"), cpp_show_code = TRUE)
-assert("+ rate added automatically", gregexpr("\\+ rate", attr(pk3cmt2, "code")[[1]]) > 0)
-
 ## dose in  cmt <> 1, set using model
 p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
 pk  <- new_ode_model(code = "
-                     dAdt[1] = -KA * A[1]
+                     dAdt[1] = -KA * A[1];
                      dAdt[2] = KA*A[1] -(CL/V) * A[2]
                      dAdt[3] = S2*(A[2]-A[3])
                      ",
-                     obs = list(cmt=2,scale="V"),
-                     dose = list(cmt = 2))
+                     obs = list(cmt=2, scale="V"),
+                     dose = list(cmt = 2), cpp_show_code = FALSE)
 r <- new_regimen(amt = 100, times = c(0), type = "infusion")
 dat <- sim_ode (ode = "pk", n_ind = 1,
                 omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
@@ -104,9 +96,20 @@ r <- new_regimen(amt = c(100, 100, 100),
                  cmt = c(1,2,3),
                  type = "bolus")
 dat2 <- sim_ode (ode = "pk", n_ind = 1,
-                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
                 par = p, regimen = r,
                 t_obs = seq(from=0, to=20, by = .1),
                 verbose = FALSE, t_max=48)
 assert("dose in comp 2 and 3 as well", max(diff(dat2[dat2$comp == 2,]$y)) > 95 && max(diff(dat2[dat2$comp == 2,]$y)) > 95)
+
+
+## allow infusions from all compartemnts too
+r <- new_regimen(amt = c(100, 100, 100),
+                 times = c(0, 6, 12),
+                 cmt = c(1,2,3), t_inf = 3,
+                 type = "infusion")
+dat3 <- sim_ode (ode = "pk", n_ind = 1,
+                 par = p, regimen = r,
+                 t_obs = seq(from=0, to=20, by = .1),
+                 verbose = FALSE, t_max=48)
+assert("dose in comp 2 and 3 as well", ((max(dat3[dat3$comp == 2,]$y)-142.4)/142.4 < 0.01) && ((max(dat3[dat3$comp == 3,]$y)-157.2)/157.2) < 0.01)
 

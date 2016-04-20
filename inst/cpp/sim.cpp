@@ -46,7 +46,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   std::vector<state_type> y;
   std::vector<double> obs;
   double t_start, t_end;
-  std::vector<double> times, doses, dummy, rates, dose_cmt, dose_type;
+  std::vector<double> times, doses, dummy, rates;
+  std::vector<int> dose_cmt, dose_type;
   times = design["t"];
   doses = design["dose"];
   dummy = design["dum"];
@@ -67,7 +68,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     t_start = times[i];
     t_end = times[(i+1)];
     if(dummy[i] == 1 || doses[i] > 0) { // change rate if start of dose, or if end of infusion
-      rate = rates[i];
+      memset(rate, 0, sizeof(rate));
+      rate[dose_cmt[i]] = rates[i];
     }
 
     // insert covariates for integration period

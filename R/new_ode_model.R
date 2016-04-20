@@ -96,11 +96,13 @@ new_ode_model <- function (model = NULL,
         cov_names <- names(covariates)
       }
     }
-    declare_variables <- c(declare_variables,
-                           cov_names,
-                           paste0(cov_names, "_0"),
-                           paste0("gr_", cov_names),
-                           paste0("t_prv_", cov_names))
+    if(!is.null(cov_names)) {
+      declare_variables <- c(declare_variables,
+                             cov_names,
+                             paste0(cov_names, "_0"),
+                             paste0("gr_", cov_names),
+                             paste0("t_prv_", cov_names))
+    }
     code_orig <- code
     code <- gsub("\\r\\n", "\n", code)
     code <- gsub("\\n", ";\n", code)
