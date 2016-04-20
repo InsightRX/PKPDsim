@@ -13,10 +13,10 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     regimen$t_inf <- c(regimen$tinf, rep(tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
   }
 
+  dose_cmt <- 1
   if(!is.null(regimen$cmt)) {
     regimen$dose_cmt <- regimen$cmt - 1
   } else {
-    dose_cmt <- 1
     if(!is.null(model)) {
       if(!is.null(attr(model, "dose")$cmt)) {
         dose_cmt <- attr(model, "dose")$cmt - 1

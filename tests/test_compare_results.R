@@ -82,7 +82,7 @@ pk  <- new_ode_model(code = "
                      dAdt[3] = S2*(A[2]-A[3])
                      ",
                      obs = list(cmt=2, scale="V"),
-                     dose = list(cmt = 2), cpp_show_code = FALSE)
+                     dose = list(cmt = 2), cpp_show_code = TRUE)
 r <- new_regimen(amt = 100, times = c(0), type = "infusion")
 dat <- sim_ode (ode = "pk", n_ind = 1,
                 omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),

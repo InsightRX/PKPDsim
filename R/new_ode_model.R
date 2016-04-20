@@ -96,6 +96,7 @@ new_ode_model <- function (model = NULL,
         cov_names <- names(covariates)
       }
     }
+    variables <- declare_variables
     if(!is.null(cov_names)) {
       declare_variables <- c(declare_variables,
                              cov_names,
@@ -114,8 +115,17 @@ new_ode_model <- function (model = NULL,
     } else {
       message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
     }
-    attr(sim_out, "code") <- cmp$ode
-    attr(sim_out, "parameters") <- cmp$parameters
+    reqd <- parameters
+    if(!is.null(declare_variables)) {
+      reqd <- reqd[!reqd %in% declare_variables]
+    }
+    if(!is.null(cov_names)) {
+      reqd <- reqd[!reqd %in% cov_names]
+    }
+    attr(sim_out, "code") <- code
+    attr(sim_out, "parameters") <- reqd
+    attr(sim_out, "covariates") <- cov_names
+    attr(sim_out, "variables") <- variables
     attr(sim_out, "cpp")  <- TRUE
     attr(sim_out, "size")  <- size
   }
