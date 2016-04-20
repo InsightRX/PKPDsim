@@ -15,11 +15,11 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
 
   dose_cmt <- 1
   if(!is.null(regimen$cmt)) {
-    regimen$dose_cmt <- regimen$cmt - 1
+    regimen$dose_cmt <- regimen$cmt
   } else {
     if(!is.null(model)) {
       if(!is.null(attr(model, "dose")$cmt)) {
-        dose_cmt <- attr(model, "dose")$cmt - 1
+        dose_cmt <- attr(model, "dose")$cmt
       }
     }
     regimen$dose_cmt <- rep(dose_cmt, length(regimen$dose_times))
@@ -41,7 +41,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     regimen$dose_times <- c(regimen$dose_times, covt$time)
     regimen$dose_amts <- c(regimen$dose_amts, rep(0, length(covt$time)))
     regimen$type <- c(regimen$type, rep(0, length(covt$time)))
-    regimen$dose_cmt <- c(dose_cmt, rep(0, length(covt$time)))
+    regimen$dose_cmt <- c(regimen$dose_cmt, rep(0, length(covt$time)))
     regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
     ord <- order(regimen$dose_times)
     regimen$dose_times <- regimen$dose_times[ord]
@@ -69,7 +69,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                           dose = 0,
                           type = 0,
                           dum = 1,
-                          dose_cmt = 0,
+                          dose_cmt = regimen$dose_cmt[regimen$type == "infusion"],
                           t_inf = 0,
                           rate = 0))
     dos <- data.frame(rbind(dos, dos_t2))

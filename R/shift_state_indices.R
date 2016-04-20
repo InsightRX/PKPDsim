@@ -7,7 +7,7 @@
 shift_state_indices <- function (ode_def, n = -1) {
   m <- gregexpr("\\[([0-9])\\]", ode_def)
   m1 <- unlist(regmatches(ode_def, m))
-  if(length(m1) > 0) {
+  if(length(m1) > 0 && min(m1) > 0) {
     m2 <- unlist(regmatches(ode_def, m, invert = TRUE))
     for (i in seq(m1)) {
       tmp <- as.numeric(gsub("[^0-9]", "", m1[i]))

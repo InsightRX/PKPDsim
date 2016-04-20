@@ -67,9 +67,9 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];
-    if(dummy[i] == 1 || doses[i] > 0) { // change rate if start of dose, or if end of infusion
+    if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
       memset(rate, 0, sizeof(rate));
-      rate[dose_cmt[i]] = rates[i];
+      rate[dose_cmt[i]-1] = rates[i];
     }
 
     // insert covariates for integration period
@@ -81,7 +81,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     }
     if(doses[i] > 0) {
       if(dose_type[i] == 0) { // bolus
-        Aupd[dose_cmt[i]] = Aupd[dose_cmt[i]] + doses[i];
+        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i];
         start = 0;
       }
     }
