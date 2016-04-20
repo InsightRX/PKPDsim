@@ -72,11 +72,20 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   idx2 <- grep("insert_state_init", cpp_code)
   cpp_code[idx2] <- paste("   ", code_init)
   cov_scale <- ""
+  cov_names <- NULL
   if(!is.null(covariates)) {
+    if(class(covariates) == "character") {
+      cov_names <- covariates
+    }
+    if(class(covariates) == "list") {
+      cov_names <- names(covariates)
+    }
+  }
+  if(!is.null(cov_names)) {
     cov_def <- "  // covariate definitions\n"
     cov_tmp <- "    // covariates during integration period\n"
-    for(i in seq(names(covariates))) {
-      nam <- names(covariates)[i]
+    for(i in seq(cov_names)) {
+      nam <- cov_names[i]
       ode_def_cpp <- paste0(
         paste0('  double ', nam, ' = ', nam, '_0 + gr_', nam, ' * (t - t_prv_', nam, ');\n'),
         ode_def_cpp)
@@ -84,10 +93,10 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
       cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_t_', nam, ' = design["cov_t_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  std::vector<double> gradients_', nam, ' = design["gradients_', nam,'"];\n'))
       cov_tmp <- paste0(cov_tmp, paste0('    ', nam, '_0 = cov_', nam,'[i];\n'))
-      if(tolower(covariates[[nam]]$implementation) != "locf") {
+      if(class(covariates) == "list" && tolower(covariates[[nam]]$implementation) != "locf") {
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = gradients_',nam,'[i] ;\n'))
         cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = cov_t_', nam, '[i] ;\n'))
-      } else {
+      } else { ## if covariates specified as character vector, also assume non-timevarying
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = 0 ;\n'))
         cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = 0 ;\n'))
       }

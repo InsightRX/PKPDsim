@@ -9,7 +9,7 @@
 #' @param size size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.
 #' @param obs list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment
 #' @param dose specify default dose compartment, e.g. list(cmt = 1)
-#' @param covariates specify covariate values
+#' @param covariates specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)
 #' @param declare_variables declare variables
 #' @param cpp_show_code show generated C++ code
 #' @param verbose show more output
@@ -87,11 +87,20 @@ new_ode_model <- function (model = NULL,
     if(is.null(parameters)) {
       parameters <- get_parameters_from_code(code)
     }
+    cov_names <- NULL
+    if(!is.null(covariates)) {
+      if(class(covariates) == "character") {
+        cov_names <- covariates
+      }
+      if(class(covariates) == "list") {
+        cov_names <- names(covariates)
+      }
+    }
     declare_variables <- c(declare_variables,
-                           names(covariates),
-                           paste0(names(covariates), "_0"),
-                           paste0("gr_", names(covariates)),
-                           paste0("t_prv_", names(covariates)))
+                           cov_names,
+                           paste0(cov_names, "_0"),
+                           paste0("gr_", cov_names),
+                           paste0("t_prv_", cov_names))
     code_orig <- code
     code <- gsub("\\r\\n", "\n", code)
     code <- gsub("\\n", ";\n", code)
