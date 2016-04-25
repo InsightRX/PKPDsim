@@ -25,9 +25,15 @@ join_regimen <- function(
     }
     if(!is.null(dose_update)) {
       if(dose_update > 1) {
-        t <- c(regimen1$dose_times[1:(dose_update-1)], regimen2$dose_times + regimen1$dose_times[dose_update])
-        amt <- c(regimen1$dose_amts[1:(dose_update-1)], regimen2$dose_amts)
-        t_inf <- c(regimen1$t_inf[1:(dose_update-1)], regimen2$t_inf)
+        if(dose_update <= length(regimen1$dose_times)) {
+          t <- c(regimen1$dose_times[1:(dose_update-1)], regimen2$dose_times + regimen1$dose_times[dose_update])
+          amt <- c(regimen1$dose_amts[1:(dose_update-1)], regimen2$dose_amts)
+          t_inf <- c(regimen1$t_inf[1:(dose_update-1)], regimen2$t_inf)
+        } else { # just add to regimen
+          t <- c(regimen1$dose_times, regimen2$dose_times + tail(regimen1$dose_times,1) + interval)
+          amt <- c(regimen1$dose_amts, regimen2$dose_amts)
+          t_inf <- c(regimen1$t_inf, regimen2$t_inf)
+        }
       } else {
         t <- c(regimen2$dose_times + regimen1$dose_times[dose_update])
         amt <- c(regimen2$dose_amts)
