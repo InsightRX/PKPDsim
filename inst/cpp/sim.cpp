@@ -46,11 +46,12 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   std::vector<state_type> y;
   std::vector<double> obs;
   double t_start, t_end;
-  std::vector<double> times, doses, dummy, rates;
+  std::vector<double> times, doses, dummy, rates, bioav;
   std::vector<int> dose_cmt, dose_type, evid;
   times = design["t"];
   doses = design["dose"];
   evid = design["evid"];
+  bioav = design["bioav"];
   dummy = design["dum"];
   rates = design["rate"];
   dose_cmt = design["dose_cmt"];
@@ -82,8 +83,9 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     }
     if(evid[i] == 1) {
       t_prv_dose = times[i];
+      prv_dose = doses[i];
       if(dose_type[i] == 0) { // bolus
-        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i];
+        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav[i];
         start = 0;
       }
     }

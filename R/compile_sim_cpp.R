@@ -65,7 +65,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   for(i in seq(p)) { # parameters and auxiliary variables
     pars <- paste0(pars, "double ", p[i], ";\n")
   }
-  pars <- paste0(pars, "double t_prv_dose = 0;\n")
+  pars <- paste0(pars, "double prv_dose, t_prv_dose = 0;\n")
   pars <- paste0(pars, paste0("double rate[] = { ", paste(rep(0, size), collapse=", "), " };\n"))
   for(i in seq(p_def)) { # actual parameters for model
     par_def <- paste0(par_def, '  ', p_def[i], ' = par["', p_def[i], '"];\n')
