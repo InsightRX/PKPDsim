@@ -5,7 +5,7 @@
 #' @param file file containing C++ code
 #' @param func R function to be used with deSolve library
 #' @param state_init vector of state init
-#' @param parameters list of parameter values
+#' @param parameters list or vector of parameter values
 #' @param size size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.
 #' @param obs list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment
 #' @param dose specify default dose compartment, e.g. list(cmt = 1)
@@ -86,6 +86,10 @@ new_ode_model <- function (model = NULL,
     }
     if(is.null(parameters)) {
       parameters <- get_parameters_from_code(code)
+    } else {
+      if(class(parameters) == "list") {
+        parameters <- names(parameters)
+      }
     }
     cov_names <- NULL
     if(!is.null(covariates)) {

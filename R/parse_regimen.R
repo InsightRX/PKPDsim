@@ -43,12 +43,14 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     regimen$type <- c(regimen$type, rep(0, length(covt$time)))
     regimen$dose_cmt <- c(regimen$dose_cmt, rep(0, length(covt$time)))
     regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
+    regimen$evid <- 2
     ord <- order(regimen$dose_times)
     regimen$dose_times <- regimen$dose_times[ord]
     regimen$dose_amts  <- regimen$dose_amts[ord]
     regimen$type <- regimen$type[ord]
     regimen$dose_cmt  <- regimen$dose_cmt[ord]
     regimen$t_inf  <- regimen$t_inf[ord]
+    regimen$evid <- 2
   }
 
   # parse list to a design (data.frame)
@@ -60,6 +62,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                   dum = 0,
                   dose_cmt = regimen$dose_cmt,
                   t_inf = regimen$t_inf,
+                  evid = 1,
                   rate = 0))
   if(sum(regimen$t_inf > 0) > 0) {
     dos$rate[regimen$t_inf > 0] <- regimen$dose_amts[regimen$t_inf > 0] / regimen$t_inf[regimen$t_inf > 0]
@@ -71,6 +74,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                           dum = 1,
                           dose_cmt = regimen$dose_cmt[regimen$type == "infusion"],
                           t_inf = 0,
+                          evid = 2,
                           rate = 0))
     dos <- data.frame(rbind(dos, dos_t2))
   }
@@ -84,6 +88,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                                                dum = 0,
                                                dose_cmt = 0,
                                                t_inf = 0,
+                                               evid = 0,
                                                rate = 0))) %>% arrange(t, -dose)
     }
   }
@@ -96,6 +101,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                                                dum = 0,
                                                dose_cmt = 0,
                                                t_inf = 0,
+                                               evid = 2,
                                                rate = 0))) %>% arrange(t, -dose)
     }
   }
