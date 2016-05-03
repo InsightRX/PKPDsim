@@ -4,7 +4,7 @@
 \alias{get_parameters_from_code}
 \title{Get model parameters from code}
 \usage{
-get_parameters_from_code(code, declare_variables = NULL)
+get_parameters_from_code(code, state_init, declare_variables = NULL)
 }
 \arguments{
 \item{code}{code}
