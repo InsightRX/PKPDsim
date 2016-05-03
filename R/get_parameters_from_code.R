@@ -9,9 +9,9 @@ get_parameters_from_code <- function (code, declare_variables = NULL) {
   code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<\\,]", " ", code)
   code <- gsub("\\-", " ", code)
   code <- gsub("(if|then|else|pow|sqrt|exp|log)", " ", code)
-  A <- gregexpr("A\\[([0-9])\\]", code)
+  A <- gregexpr("A\\[([0-9]*)\\]", code)
   m1 <- paste0(unlist(regmatches(code, A, invert = TRUE)), collapse="")
-  dAdt <- gregexpr("dAdt\\[([0-9])\\]", m1)
+  dAdt <- gregexpr("dAdt\\[([0-9]*)\\]", m1)
   m2 <- paste0(unlist(regmatches(m1, dAdt, invert = TRUE)), collapse="")
   spl <- strsplit(m2, " ")[[1]]
   spl <- spl[spl!=""]

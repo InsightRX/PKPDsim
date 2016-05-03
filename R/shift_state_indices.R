@@ -5,16 +5,16 @@
 #' @param n add/substract what number, default = -1
 #'
 shift_state_indices <- function (ode_def, n = -1) {
-  m <- gregexpr("\\[([0-9])\\]", ode_def)
+  m <- gregexpr("\\[([0-9]*)\\]", ode_def)
   m1 <- unlist(regmatches(ode_def, m))
   if(length(m1) > 0) {
     for (i in seq(m1)) {
-      m1[i] <- as.numeric(gsub("[^0-9]", "", m1[i]))
+      m1[i] <- as.numeric(gsub("[^(0-9)*]", "", m1[i]))
     }
     m2 <- unlist(regmatches(ode_def, m, invert = TRUE))
     if(min(m1) > 0) {
       for (i in seq(m1)) {
-        tmp <- as.numeric(gsub("[^0-9]", "", m1[i]))
+        tmp <- as.numeric(gsub("[^(0-9)*]", "", m1[i]))
         m1[i] <- paste0("[", tmp + n, "]")
       }
     }
