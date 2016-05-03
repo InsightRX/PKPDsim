@@ -52,6 +52,8 @@ new_ode_model <- function (model = NULL,
     code <- gsub("DADT", "dAdt", code)
     code_init_text <- ""
     if(class(state_init) == "character") {
+      state_init <- gsub("(#).*?\\n", "\n", state_init) # remove comments
+      state_init <- gsub("\\n", ";\n", state_init) # make sure each line has a line ending
       code_init_text <- paste0(state_init, ";\n")
     }
     if(class(code) == "list") {
@@ -85,7 +87,7 @@ new_ode_model <- function (model = NULL,
       size <- get_ode_model_size(code)
     }
     if(is.null(parameters)) {
-      parameters <- get_parameters_from_code(code)
+      parameters <- get_parameters_from_code(code, state_init, declare_variables)
     } else {
       if(class(parameters) == "list") {
         parameters <- names(parameters)
@@ -113,7 +115,7 @@ new_ode_model <- function (model = NULL,
     code <- gsub("\\n", ";\n", code)
     code <- gsub("$", ";\n", code)
     code <- gsub("^;", "", code)
-    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, declare_variables = declare_variables, covariates = covariates, obs = obs, dose = dose, verbose = verbose)
+    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, state_init = state_init, declare_variables = declare_variables, covariates = covariates, obs = obs, dose = dose, verbose = verbose)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
       sim_out <- sim_wrapper_cpp
     } else {

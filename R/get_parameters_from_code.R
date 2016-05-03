@@ -2,8 +2,11 @@
 #' @param code code
 #' @param declare_variables declared variables
 #' @export
-get_parameters_from_code <- function (code, declare_variables = NULL) {
+get_parameters_from_code <- function (code, state_init, declare_variables = NULL) {
   ## find newly defined parameters in code
+  if(!is.null(state_init)) {
+    code <- paste0(code, state_init)
+  }
   code <- gsub("\\n", " ", code)
   code <- gsub("double (.*?)=", "", code) # parameter declarations in code
   code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<\\,]", " ", code)

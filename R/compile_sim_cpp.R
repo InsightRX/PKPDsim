@@ -10,7 +10,7 @@
 #' @param dose dose specification
 #' @param verbose show more output
 #' @export
-compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
+compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, state_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -146,7 +146,7 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, decl
   sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
   Sys.setenv("PKG_CXXFLAGS" = flg)
   return(list(
-    parameters = get_parameters_from_code(ode_def_cpp, unique(c(defined, declare_variables))),
+    parameters = get_parameters_from_code(ode_def_cpp, state_init, unique(c(defined, declare_variables))),
     ode = ode_def_cpp
   ))
 }

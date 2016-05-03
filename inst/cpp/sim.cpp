@@ -62,10 +62,11 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
 
   // insert covariate definitions
 
+  // insert_parameter_definitions
+
   // insert_state_init
   NumericVector Aupd = clone(A);
 
-  // insert_parameter_definitions
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];

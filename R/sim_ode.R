@@ -114,7 +114,7 @@ sim_ode <- function (ode = NULL,
     stop("Please specify at least the required arguments 'ode' and 'parameters'.")
   }
   if(is.null(regimen)) {
-    regimen <- new_regimen()
+    stop("Please specify a regimen created using the `new_regimen()` function.")
   }
 #   if(!is.null(t_tte)) {
 #     stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
