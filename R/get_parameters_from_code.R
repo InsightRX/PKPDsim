@@ -1,5 +1,6 @@
 #' Get model parameters from code
 #' @param code code
+#' @param state_init state init vector
 #' @param declare_variables declared variables
 #' @export
 get_parameters_from_code <- function (code, state_init, declare_variables = NULL) {

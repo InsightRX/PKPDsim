@@ -9,6 +9,7 @@
 #' @param size size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.
 #' @param obs list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment
 #' @param dose specify default dose compartment, e.g. list(cmt = 1)
+#' @param lagtime either a single number or vector of lagtimes for each compartment. If specified as single number, will apply to default dose compartment. Lagtime can be specified both as number or as parameters, e.g. "ALAG".
 #' @param covariates specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)
 #' @param declare_variables declare variables
 #' @param cpp_show_code show generated C++ code
@@ -23,6 +24,7 @@ new_ode_model <- function (model = NULL,
                            size = NULL,
                            obs = list("cmt" = 1, scale = 1),
                            dose = list("cmt" = 1),
+                           lagtime = NULL,
                            covariates = NULL,
                            declare_variables = NULL,
                            cpp_show_code = FALSE,
@@ -121,6 +123,20 @@ new_ode_model <- function (model = NULL,
     } else {
       message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
     }
+    ## handle lag time
+    lagtimes <- NULL
+    if(!is.null(lagtime)) {
+      lagtimes <- rep(0, size)
+      dose$cmt
+      if(length(lagtime) == 1 && !is.null(dose$cmt)) {
+        lagtimes[dose$cmt] <- lagtime
+      }
+      if(length(lagtime) == size) {
+        lagtimes <- lagtime
+      }
+      parameters <- c(parameters, lagtime[class(lagtime) == "character"]) # if lagtime specified as parameter
+    }
+    ## add attributes
     reqd <- parameters
     if(!is.null(declare_variables)) {
       reqd <- reqd[!reqd %in% declare_variables]
@@ -137,6 +153,7 @@ new_ode_model <- function (model = NULL,
   }
   attr(sim_out, "obs")  <- obs
   attr(sim_out, "dose") <- dose
+  attr(sim_out, "lagtime") <- lagtimes
   class(sim_out) <- c("PKPDsim", class(sim_out))
   return(sim_out)
 }

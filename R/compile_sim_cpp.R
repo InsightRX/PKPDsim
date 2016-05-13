@@ -4,6 +4,7 @@
 #' @param p parameters (list)
 #' @param cpp_show_code show output c++ function?
 #' @param code_init code for initialization of state
+#' @param state_init state init vector
 #' @param declare_variables variable declaration
 #' @param covariates covariates specification
 #' @param obs observation specification

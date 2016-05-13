@@ -12,10 +12,10 @@
 #' @param A_init vector with the initial state of the ODE system
 #' @param covariates list of covariate values to be passed to ODE function
 #' @param only_obs only return the observations
-#' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
+#' @param t_obs_step the step size between the observations
 #' @param t_tte vector of observation times for time-to-event simulation
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).
 #' @param rtte should repeated events be allowed (FALSE by default)
@@ -76,10 +76,10 @@ sim_ode <- function (ode = NULL,
                      covariate_model = NULL,
                      A_init = NULL,
                      only_obs = FALSE,
-                     obs_step_size = 1,
                      int_step_size = .1,
                      t_max = NULL,
                      t_obs = NULL,
+                     t_obs_step = .25,
                      t_tte = NULL,
                      duplicate_t_obs = FALSE,
                      rtte = FALSE,
@@ -145,22 +145,22 @@ sim_ode <- function (ode = NULL,
   comb <- list()
   p <- parameters
   if(is.null(t_obs)) { # find reasonable default to output
-    if(is.null(obs_step_size)) {
+    if(is.null(t_obs_step)) {
       if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
-        obs_step_size <- 1
+        t_obs_step <- 1
       } else {
-        obs_step_size <- 100
-        if(max(regimen$dose_times) < 10000) { obs_step_size <- 100 }
-        if(max(regimen$dose_times) < 1000) { obs_step_size <- 10 }
-        if(max(regimen$dose_times) < 100) { obs_step_size <- 1 }
-        if(max(regimen$dose_times) < 10) { obs_step_size <- .1 }
+        t_obs_step <- 100
+        if(max(regimen$dose_times) < 10000) { t_obs_step <- 100 }
+        if(max(regimen$dose_times) < 1000) { t_obs_step <- 10 }
+        if(max(regimen$dose_times) < 100) { t_obs_step <- 1 }
+        if(max(regimen$dose_times) < 10) { t_obs_step <- .1 }
       }
     }
     if("regimen" %in% class(regimen)) {
       if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
-        t_obs <- seq(from=regimen$dose_times[1], to=24, by=obs_step_size)
+        t_obs <- seq(from=regimen$dose_times[1], to=24, by=t_obs_step)
       } else {
-        t_obs <- seq(from=0, to=max(regimen$dose_times)*1.2, by=obs_step_size)
+        t_obs <- seq(from=0, to=max(regimen$dose_times)*1.2, by=t_obs_step)
       }
     }
   }
@@ -180,8 +180,8 @@ sim_ode <- function (ode = NULL,
   } else {
     design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates, ode)
     design_i <- design
-    p$dose_times <- regimen$dose_times
-    p$dose_amts <- regimen$dose_amts
+    # p$dose_times <- regimen$dose_times
+    # p$dose_amts <- regimen$dose_amts
   }
   if (is.null(A_init)) {
     A_init <- rep(0, size)
@@ -199,31 +199,62 @@ sim_ode <- function (ode = NULL,
     m <- match(names(covariates), covs_ode)
     stop("Not all covariates for this model have been specified. Missing covariates are: \n  ", paste(covs_ode[-m[!is.na(m)]], collapse=", "))
   }
+  lag <- attr(ode, "lagtime")
+
   if(verbose) {
     message("Simulating...")
   }
   for (i in 1:n_ind) {
     p_i <- p
+
     if("regimen_multiple" %in% class(regimen)) {
-      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates)
-      if("regimen_multiple" %in% class(regimen)) {
-        p_i$dose_times <- regimen[[i]]$dose_times
-        p_i$dose_amts <- regimen[[i]]$dose_amts
-      }
+      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates, ode)
+      # if("regimen_multiple" %in% class(regimen)) {
+      #   p_i$dose_times <- regimen[[i]]$dose_times
+      #   p_i$dose_amts <- regimen[[i]]$dose_amts
+      # }
       if(i == 1 && is.null(t_obs)) { # find reasonable default to output
-        if(is.null(obs_step_size)) {
-          obs_step_size <- 100
-          if(max(design_i$t) < 10000) { obs_step_size <- 100 }
-          if(max(design_i$t) < 1000) { obs_step_size <- 10 }
-          if(max(design_i$t) < 100) { obs_step_size <- 1 }
-          if(max(design_i$t) < 10) { obs_step_size <- .1 }
+        if(is.null(t_obs_step)) {
+          t_obs_step <- 100
+          if(max(design_i$t) < 10000) { t_obs_step <- 100 }
+          if(max(design_i$t) < 1000) { t_obs_step <- 10 }
+          if(max(design_i$t) < 100) { t_obs_step <- 1 }
+          if(max(design_i$t) < 10) { t_obs_step <- .1 }
         }
       }
-      t_obs <- seq(from=0, to=max(design_i$t), by=obs_step_size)
+      t_obs <- seq(from=0, to=max(design_i$t), by=t_obs_step)
     } else {
-      # if(regimen$type == "infusion") {
-      #   p_i$t_inf <- regimen$t_inf
-      # }
+      if(i == 1) { ## design_i will be changed by lagtime
+        design_i_base <- design_i
+      } else {
+        design_i <- design_i_base
+      }
+    }
+
+    ## get new parameters for individual
+    if (!is.null(omega)) {
+      if (omega_type == "exponential") {
+        p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
+      } else {
+        p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])
+      }
+    }
+
+    ## update regimen with lag times
+    if(!is.null(lag)) {
+      for(j in 1:length(lag)) {
+        if(length(design_i[design_i$evid == 1 & design_i$dose_cmt == j,]$t) > 0) {
+          if(class(lag[j]) == "numeric" && lag[j] > 0) {
+            design_i[design_i$evid == 1 & design_i$dose_cmt == j,]$t <- design_i[design_i$evid == 1 & design_i$dose_cmt == j,]$t + lag[j]
+          }
+          if(class(lag[j]) == "character") {
+            if(!is.null(p_i[[lag[j]]]) && p_i[[lag[j]]] > 0) {
+              design_i[design_i$evid == 1 & design_i$dose_cmt == j,]$t <- design_i[design_i$evid == 1 & design_i$dose_cmt == j,]$t + p_i[[lag[j]]]
+            }
+          }
+        }
+      }
+      design_i <- design_i[order(design_i$t, -design_i$evid, design_i$dose_cmt),]
     }
     times <- unique(c(seq(from=0, to=tail(design_i$t,1), by=int_step_size), t_obs))
     A_init_i <- A_init
@@ -237,13 +268,6 @@ sim_ode <- function (ode = NULL,
                                p_binom = adherence$p_bionm)
       }
       design_i[design_i$dose != 0,]$dose <- design_i[design_i$dose != 0,]$dose * adh_i
-    }
-    if (!is.null(omega)) {
-      if (omega_type == "exponential") {
-        p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
-      } else {
-        p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])
-      }
     }
     event_occurred <- FALSE
     tmp <- c()
@@ -274,7 +298,7 @@ sim_ode <- function (ode = NULL,
       } else {
         dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
       }
-      if("regimen_multiple" %in% class(regimen) || !is.null(adherence)) {
+      if("regimen_multiple" %in% class(regimen) || !is.null(adherence) || !is.null(lag)) {
         comb <- rbind(comb, dat_ind)
       } else {
         if(i == 1) {
