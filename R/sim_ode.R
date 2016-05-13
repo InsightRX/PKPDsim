@@ -188,13 +188,16 @@ sim_ode <- function (ode = NULL,
   }
   events <- c() # only for tte
   comb <- c()
-  if(cpp) { # check parameters specified
-    pars_ode <- attr(ode, "parameters")
-    rates <- paste0("rate[", 0:(size-1), "]")
-    if(!all(pars_ode %in% c(names(parameters), names(covariates), rates))) {
-      m <- match(c(names(parameters), names(covariates)), pars_ode)
-      stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
-    }
+  pars_ode <- attr(ode, "parameters")
+  rates <- paste0("rate[", 0:(size-1), "]")
+  if(!all(pars_ode %in% c(names(parameters), names(covariates), rates))) {
+    m <- match(c(names(parameters), names(covariates)), pars_ode)
+    stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
+  }
+  covs_ode <- attr(ode, "covariates")
+  if(!all(covs_ode %in% names(covariates))) {
+    m <- match(names(covariates), covs_ode)
+    stop("Not all covariates for this model have been specified. Missing covariates are: \n  ", paste(covs_ode[-m[!is.na(m)]], collapse=", "))
   }
   if(verbose) {
     message("Simulating...")

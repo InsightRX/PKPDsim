@@ -26,6 +26,7 @@ new_regimen <- function(
                     type = "bolus",
                     t_inf = NULL,
                     cmt = NULL,
+                    lagtime = NULL,
                     first_dose_time = lubridate::now()) {
   reg <- structure(list(amt = amt,
                         interval = interval,
@@ -61,6 +62,12 @@ new_regimen <- function(
   if(length(reg$t_inf) != length(reg$dose_times)) {
     reg$t_inf <- rep(reg$t_inf[1], length(reg$dose_times))
   }
+  if(is.null(lagtime)) {
+    reg$lagtime = 0
+  }
+  if(length(reg$lagtime) != length(reg$lagtime)) {
+    reg$lagtime <- rep(reg$lagtime[1], length(reg$dose_times))
+  }
   if(length(reg$type) != length(reg$dose_times)) {
     reg$type <- rep(type[1], length(reg$dose_times))
   } else {
@@ -78,6 +85,7 @@ new_regimen <- function(
   }
   reg$dose_times <- reg$dose_times[!is.na(reg$dose_amts)]
   reg$dose_amts <- reg$dose_amts[!is.na(reg$dose_amts)]
+  reg$amt <- NULL
   reg$first_dose_time <- first_dose_time
   return(reg)
 }
