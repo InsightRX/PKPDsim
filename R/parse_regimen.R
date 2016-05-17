@@ -130,9 +130,6 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
   }
   design <- rbind(design %>%
                     dplyr::filter(t <= t_max), tail(design,1))
-  if(!is.null(p$F) && class(p$F) == "numeric") {
-    design$dose <- design$dose * p$F
-  }
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
 
   # now add the covariate values to the design dataset

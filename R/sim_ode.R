@@ -143,7 +143,7 @@ sim_ode <- function (ode = NULL,
     }
   }
   comb <- list()
-  p <- parameters
+  p <- as.list(parameters)
   if(is.null(t_obs)) { # find reasonable default to output
     if(is.null(obs_step_size)) {
       if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
@@ -188,14 +188,15 @@ sim_ode <- function (ode = NULL,
   }
   events <- c() # only for tte
   comb <- c()
-  if(cpp) { # check parameters specified
-    pars_ode <- attr(ode, "parameters")
-    rates <- paste0("rate[", 0:(size-1), "]")
-    if(!all(pars_ode %in% c(names(parameters), names(covariates), rates))) {
-      m <- match(c(names(parameters), names(covariates)), pars_ode)
-      stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
-    }
+
+  ## check parameters specified
+  pars_ode <- attr(ode, "parameters")
+  rates <- paste0("rate[", 0:(size-1), "]")
+  if(!all(pars_ode %in% c(names(parameters), names(covariates), rates))) {
+    m <- match(c(names(parameters), names(covariates)), pars_ode)
+    stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
   }
+
   if(verbose) {
     message("Simulating...")
   }
