@@ -35,11 +35,11 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
   if(!is.null(covariates)) {
     covt <- c()
     for (i in 1:length(covariates)) {
-      covt <- data.frame(rbind(covt,
-                               cbind(name = names(covariates)[i],
-                                     time = covariates[[i]]$times,
-                                     value = covariates[[i]]$value,
-                                     implementation = covariates[[i]]$implementation)))
+      covt <- rbind(covt,
+                    cbind(name = names(covariates)[i],
+                          time = covariates[[i]]$times,
+                          value = covariates[[i]]$value,
+                          implementation = covariates[[i]]$implementation))
       covt$time <- as.numeric(as.character(covt$time))
       covt$value <- as.numeric(as.character(covt$value))
     }
@@ -75,7 +75,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     dos$rate[regimen$t_inf > 0] <- regimen$dose_amts[regimen$t_inf > 0] / regimen$t_inf[regimen$t_inf > 0]
   }
   if(any(regimen$type == "infusion")) {
-    dos_t2 <- data.frame(cbind(t = regimen$dose_times[regimen$type == "infusion"] + regimen$t_inf[regimen$type == "infusion"],
+    dos_t2 <- cbind(t = regimen$dose_times[regimen$type == "infusion"] + regimen$t_inf[regimen$type == "infusion"],
                           dose = 0,
                           type = 0,
                           dum = 1,
@@ -83,10 +83,10 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                           t_inf = 0,
                           evid = 2,
                           bioav = 0,
-                          rate = 0))
+                          rate = 0)
     dos <- data.frame(rbind(dos, dos_t2))
   }
-  design <- data.frame(dos) %>% dplyr::arrange(t, -dose)
+  design <- data.frame(dos[order(dos$t, -dos$dose),])
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
     t_diff <- setdiff(t_obs, design$t)
     if(length(t_diff) > 0) {
@@ -98,7 +98,8 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                                                t_inf = 0,
                                                evid = 0,
                                                bioav = 0,
-                                               rate = 0))) %>% arrange(t, -dose)
+                                               rate = 0)))
+      design <- design[order(design$t, -design$dose),]
     }
   }
   if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
@@ -128,8 +129,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
       if(is.null(t_tte) || is.na(t_max) || t_max < max(t_tte)) { t_max <- max(t_tte) }
     }
   }
-  design <- rbind(design %>%
-                    dplyr::filter(t <= t_max), tail(design,1))
+  design <- rbind(design[design$t <= t_max,], tail(design,1))
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
 
   # now add the covariate values to the design dataset

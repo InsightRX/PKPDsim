@@ -328,11 +328,12 @@ sim_ode <- function (ode = NULL,
   comb$id <- as.num(comb$id)
   comb$t <- as.num(comb$t)
   comb$y <- as.num(comb$y)
-  comb <- data.frame(comb %>% arrange(id, comp, t))
+  comb <- comb[order(comb$id, comb$comp, comb$t),]
   if(extra_t_obs_bolus) { ## include the observations at which a bolus dose is added into the output object too
     comb <- data.frame(comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t))
   }
-  comb <- data.frame(comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
+#  comb <- comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
+  comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
   if(duplicate_t_obs) {
     grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
     colnames(grid) <- c("t", "id", "comp")
