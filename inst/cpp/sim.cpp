@@ -1,4 +1,6 @@
-runge_kutta_cash_karp54 < state_type > stepr;
+// euler < state_type > stepr;
+runge_kutta4 < state_type > stepr;
+// runge_kutta_cash_karp54 < state_type > stepr;
 
 struct push_back_solution
 {

@@ -29,10 +29,17 @@ res$pk1cmt_oral_lib <- sim_ode(
   ode=pk1cmt_oral_lib,
   par=p,
   regimen=regimen,
-  t_obs=t_obs,
-  int_step_size = 1,
+  t_obs = t_obs,
+  int_step_size = 0.1,
+  duplicate_t_obs = TRUE,
   only_obs=TRUE)
-res$pk1cmt_oral_code <- sim_ode(ode=pk1cmt_oral_code, par=p, regimen=regimen, t_obs=t_obs, only_obs=TRUE)
+res$pk1cmt_oral_code <- sim_ode(ode = pk1cmt_oral_code,
+                                par=p,
+                                duplicate_t_obs = TRUE,
+                                regimen=regimen,
+                                t_obs=t_obs,
+                                int_step_size = 0.1,
+                                only_obs=TRUE)
 res$pk1cmt_oral_anal <- pk1cmt_oral_anal(t_obs, dose, p$KA, p$V, p$CL)
 
 ## basic testing

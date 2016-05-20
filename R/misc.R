@@ -18,3 +18,7 @@ get_size_ode <- function(ode, p) {
   dum <- ode(1, rep(1, 1000), p)
   length(dum[[1]])
 }
+
+as.num <- function(x) {
+  as.numeric(as.character(x))
+}

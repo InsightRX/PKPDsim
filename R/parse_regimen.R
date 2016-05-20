@@ -49,6 +49,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     regimen$type <- c(regimen$type, rep(0, length(covt$time)))
     regimen$dose_cmt <- c(regimen$dose_cmt, rep(0, length(covt$time)))
     regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
+
     ord <- order(regimen$dose_times)
     regimen$dose_times <- regimen$dose_times[ord]
     regimen$dose_amts  <- regimen$dose_amts[ord]
@@ -84,36 +85,42 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                           evid = 2,
                           bioav = 0,
                           rate = 0)
-    dos <- data.frame(rbind(dos, dos_t2))
+    dos[(length(dos[,1])+1) : (length(dos[,1])+length(dos_t2[,1])),] <- dos_t2
+    dos <- data.frame(dos)
+#    dos <- data.frame(rbind(dos, dos_t2))
   }
-  design <- data.frame(dos[order(dos$t, -dos$dose),])
+  design <- dos[order(dos$t, -dos$dose),]
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
     t_diff <- setdiff(t_obs, design$t)
     if(length(t_diff) > 0) {
-      design <- data.frame(rbind(design, cbind(t = t_diff,
-                                               dose = 0,
-                                               type = 0,
-                                               dum = 0,
-                                               dose_cmt = 0,
-                                               t_inf = 0,
-                                               evid = 0,
-                                               bioav = 0,
-                                               rate = 0)))
+      design[(length(design[,1])+1) : (length(design[,1])+length(t_diff)),] <- cbind(
+         t = t_diff,
+         dose = 0,
+         type = 0,
+         dum = 0,
+         dose_cmt = 0,
+         t_inf = 0,
+         evid = 0,
+         bioav = 0,
+         rate = 0)
+#      design <- data.frame(design)
       design <- design[order(design$t, -design$dose),]
     }
   }
   if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
     t_diff <- setdiff(t_tte, design$t)
     if(length(t_diff) > 0) {
-      design <- data.frame(rbind(design, cbind(t = t_diff,
-                                               dose = 0,
-                                               type = 0,
-                                               dum = 0,
-                                               dose_cmt = 0,
-                                               t_inf = 0,
-                                               evid = 2,
-                                               bioav = 0,
-                                               rate = 0))) %>% arrange(t, -dose)
+      tmp <- cbind(
+         t = t_diff,
+         dose = 0,
+         type = 0,
+         dum = 0,
+         dose_cmt = 0,
+         t_inf = 0,
+         evid = 2,
+         bioav = 0,
+         rate = 0)
+      design[(length(design[,1])+1) : (length(design[,1])+length(t_diff)),] <- tmp[order(tmp$t, -tmp$dose),]
     }
   }
   if (is.null(t_max)) {
@@ -129,7 +136,9 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
       if(is.null(t_tte) || is.na(t_max) || t_max < max(t_tte)) { t_max <- max(t_tte) }
     }
   }
-  design <- rbind(design[design$t <= t_max,], tail(design,1))
+  #  design <- rbind(design[design$t <= t_max,], tail(design,1))
+  design <- design[design$t <= t_max,]
+  design[length(design[,1])+1,] <- tail(design,1)
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
 
   # now add the covariate values to the design dataset
@@ -158,11 +167,8 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
         }
       }
     }
-  }
-
-  # remove covariate points where there is also a dose
-  design <- design[!duplicated(paste0(design$t, "_", design$dose, "_", design$dum)),]
-  if(!is.null(covariates)) {
+    # remove covariate points where there is also a dose
+    design <- design[!duplicated(paste0(design$t, "_", design$dose, "_", design$dum)),]
     design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0) | design$t %in% t_obs,]
   }
 

@@ -133,7 +133,7 @@ sim_ode <- function (ode = NULL,
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)
     etas   <- MASS::mvrnorm(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat)
-    if(n_ind == 1) {
+    if( n_ind == 1) {
       etas <- t(matrix(etas))
     }
   }
@@ -246,101 +246,98 @@ sim_ode <- function (ode = NULL,
         p_i[1:nrow(omega_mat)] <- relist(unlist(as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])
       }
     }
-    event_occurred <- FALSE
     tmp <- c()
-    prv_cumhaz <- 0
-    if(cpp) {
-      if(!is.null(t_max)) {
-        p_i$dose_times <- p_i$dose_times[p_i$dose_times <= t_max]
-      }
-      if(length(p_i$t_inf) < length(p_i$dose_times)) {
-        p_i$t_inf <- rep(p_i$t_inf[1], length(p_i$dose_times))
-      }
-      for(k in seq(p_i$dose_times)) {
-        design_i[design_i$t >= p_i$dose_times[k] & design_i$t < (p_i$dose_times[k] + p_i$t_inf[k]),]$rate <- (p_i$dose_amts[k] / p_i$t_inf[k])
-      }
-      p_i$rate <- 0
+#    event_occurred <- FALSE
+#    prv_cumhaz <- 0
+    if(!is.null(t_max)) {
+      p_i$dose_times <- p_i$dose_times[p_i$dose_times <= t_max]
+    }
+    if(length(p_i$t_inf) < length(p_i$dose_times)) {
+      p_i$t_inf <- rep(p_i$t_inf[1], length(p_i$dose_times))
+    }
+    for(k in seq(p_i$dose_times)) {
+      design_i[design_i$t >= p_i$dose_times[k] & design_i$t < (p_i$dose_times[k] + p_i$t_inf[k]),]$rate <- (p_i$dose_amts[k] / p_i$t_inf[k])
+    }
+    p_i$rate <- 0
 
-      #################### Main call to ODE solver: #######################
-      tmp <- ode (A_init_i, design_i, p_i, int_step_size)
-      #####################################################################
+    #################### Main call to ODE solver: #######################
+    tmp <- ode (A_init_i, design_i, p_i, int_step_size)
+    #####################################################################
 
-      des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
-      dat_ind <- c()
+    des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
+    dat_ind <- c()
+    if(only_obs) {
+      dat_ind <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs))
+    } else {
       for (j in 1:length(A_init_i)) {
         dat_ind <- rbind (dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
       }
-      if(only_obs) {
-        dat_ind <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs))
-      } else {
-        dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
-      }
-      if("regimen_multiple" %in% class(regimen) || !is.null(adherence)) {
-        comb <- rbind(comb, dat_ind)
-      } else {
-        if(i == 1) {
-          l_mat <- length(dat_ind[,1])
-          comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
-        }
-        comb[((i-1)*l_mat)+(1:l_mat),] <- dat_ind
-      }
+      dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
+    }
+    if("regimen_multiple" %in% class(regimen) || !is.null(adherence)) {
+      comb <- rbind(comb, dat_ind)
     } else {
-      stop("Sorry, deSolve support is deprecated.")
+      if(i == 1) {
+        l_mat <- length(dat_ind[,1])
+        comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
+      }
+      comb[((i-1)*l_mat)+(1:l_mat),] <- dat_ind
     }
   }
 
   # Add concentration to dataset, and perform scaling and/or transformation:
   comb <- data.frame(comb)
   colnames(comb) <- c("id", "t", "comp", "y")
-  if(!cpp) { # For simulations with Cpp code this part is already done, for deSolve this still needs to be done.
-    stop("Sorry, deSolve support is deprecated.")
-  }
+
   # filter out observations
   comb$t <- as.numeric(as.character(comb$t))
-  if(!is.null(t_obs)) {
-    pick_closest_vec <- function(x, vec) { # pick closests time points. If _times integrator is used this is not necessary, but leaving in just to make sure
-      pick_closest <- function(x) {
-        which(abs(vec-x) == min(abs(vec-x)))
-      }
-      unlist(lapply(x, pick_closest))
-    }
-    idx <- pick_closest_vec(t_obs, comb$t)
-    comb <- comb[idx,]
-  }
-  if(length(events) > 0) {
-    events <- data.frame(events)
-    events <- events[!duplicated(paste0(events$id, "_", events$t)),]
-    ids <- unique(comb$id)
-    if(!rtte) { # no repeated TTE
-      events <- events[!duplicated(events$id),]
-      ids_ev <- unique(events[,1])
-    } else {
-      ids_ev <- unique(events[events[,2] == max(t_tte),1])
-    }
-    cens <- setdiff(ids, ids_ev) # censor individuals who didn't have event on last obs day
-    comb <- rbind(comb, cbind(events, comp="event", y = 1))
-    if(length(cens)>0) {
-      comb <- rbind(comb, cbind(id = cens, t = max(comb$t), comp="event", y=0))
-    }
-  }
+
+  ## following code disactivated for now, using _times integrator
+  # if(!is.null(t_obs)) {
+  #   pick_closest_vec <- function(x, vec) { # pick closests time points. If _times integrator is used this is not necessary, but leaving in just to make sure
+  #     pick_closest <- function(x) {
+  #       which(abs(vec-x) == min(abs(vec-x)))
+  #     }
+  #     unlist(lapply(x, pick_closest))
+  #   }
+  #   idx <- pick_closest_vec(t_obs, comb$t)
+  #   comb <- comb[idx,]
+  # }
+
+  ## following code disactivated for now, no tte functionality
+  # if(length(events) > 0) {
+  #   events <- data.frame(events)
+  #   events <- events[!duplicated(paste0(events$id, "_", events$t)),]
+  #   ids <- unique(comb$id)
+  #   if(!rtte) { # no repeated TTE
+  #     events <- events[!duplicated(events$id),]
+  #     ids_ev <- unique(events[,1])
+  #   } else {
+  #     ids_ev <- unique(events[events[,2] == max(t_tte),1])
+  #   }
+  #   cens <- setdiff(ids, ids_ev) # censor individuals who didn't have event on last obs day
+  #   comb <- rbind(comb, cbind(events, comp="event", y = 1))
+  #   if(length(cens)>0) {
+  #     comb <- rbind(comb, cbind(id = cens, t = max(comb$t), comp="event", y=0))
+  #   }
+  # }
   comb <- data.frame(comb)
-  as.num <- function(x) {as.numeric(as.character(x))}
   comb$id <- as.num(comb$id)
-  comb$t <- as.num(comb$t)
-  comb$y <- as.num(comb$y)
-  comb <- comb[order(comb$id, comb$comp, comb$t),]
-  if(extra_t_obs_bolus) { ## include the observations at which a bolus dose is added into the output object too
-    comb <- data.frame(comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t))
+  comb$t  <- as.num(comb$t)
+  comb$y  <- as.num(comb$y)
+  if(!extra_t_obs_bolus) { ## include the observations at which a bolus dose is added into the output object too
+    # comb <- comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
+    comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
   }
-#  comb <- comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
-  comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
-  if(duplicate_t_obs) {
+#  if(duplicate_t_obs) {
     grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
     colnames(grid) <- c("t", "id", "comp")
     suppressMessages({
       comb <- left_join(grid, comb, copy=TRUE)[,c(2,1,3,4)]
     })
-  }
+  # } else {
+  #   comb <- comb[order(comb$id, comb$comp, comb$t),]
+  # }
   class(comb) <- c("PKPDsim_data", class(comb))
   attr(comb, "regimen") <- regimen
   attr(comb, "ode_code") <- attr(ode, "code")
