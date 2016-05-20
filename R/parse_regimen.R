@@ -35,11 +35,11 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
   if(!is.null(covariates)) {
     covt <- c()
     for (i in 1:length(covariates)) {
-      covt <- rbind(covt,
+      covt <- data.frame(rbind(covt,
                     cbind(name = names(covariates)[i],
                           time = covariates[[i]]$times,
                           value = covariates[[i]]$value,
-                          implementation = covariates[[i]]$implementation))
+                          implementation = covariates[[i]]$implementation)))
       covt$time <- as.numeric(as.character(covt$time))
       covt$value <- as.numeric(as.character(covt$value))
     }
@@ -87,7 +87,6 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                           rate = 0)
     dos[(length(dos[,1])+1) : (length(dos[,1])+length(dos_t2[,1])),] <- dos_t2
     dos <- data.frame(dos)
-#    dos <- data.frame(rbind(dos, dos_t2))
   }
   design <- dos[order(dos$t, -dos$dose),]
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
@@ -103,7 +102,6 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
          evid = 0,
          bioav = 0,
          rate = 0)
-#      design <- data.frame(design)
       design <- design[order(design$t, -design$dose),]
     }
   }
@@ -136,7 +134,6 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
       if(is.null(t_tte) || is.na(t_max) || t_max < max(t_tte)) { t_max <- max(t_tte) }
     }
   }
-  #  design <- rbind(design[design$t <= t_max,], tail(design,1))
   design <- design[design$t <= t_max,]
   design[length(design[,1])+1,] <- tail(design,1)
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)

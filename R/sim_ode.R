@@ -21,6 +21,7 @@
 #' @param extra_t_obs_bolus include extra t_obs in output for bolus doses? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param covariate_model feature not implemented yet.
+#' @param checks perform input checks? Default is TRUE. For calculations where sim_ode is invoked many times (e.g. population estimation, optimal design) it makes sense to switch this to FALSE (after confirming the input is correct) to improve speed.
 #' @param verbose show more output
 #' @param ... extra parameters
 #' @return a data frame of compartments with associated concentrations at requested times
@@ -85,6 +86,7 @@ sim_ode <- function (ode = NULL,
                      duplicate_t_obs = FALSE,
                      extra_t_obs_bolus = FALSE,
                      rtte = FALSE,
+                     checks = TRUE,
                      verbose = FALSE,
                      ...
                      ) {
@@ -98,50 +100,11 @@ sim_ode <- function (ode = NULL,
 #   if ((!is.null(covariate_model) && is.null(covariates)) | (is.null(covariate_model) && !is.null(covariates))) {
 #     stop("For models with covariates, specify both the 'covariate_model' and the 'covariates' arguments. See help for more information.")
 #   }
-  if(!is.null(dde)) {
-    ode <- dde
-  }
-  if ("character" %in% class(ode)) {
-    ode <- get(ode)
-  }# else {
-  #  stop("Error: the 'ode' argument to this function should be a character string referencing the function, not the function itself.")
-  #}
-  test_pointer(ode)
-  if(!is.null(attr(ode, "cpp")) && attr(ode, "cpp")) {
-    cpp <- TRUE
-  } else {
-    cpp <- FALSE
-  }
-  if(is.null(ode) | is.null(parameters)) {
-    stop("Please specify at least the required arguments 'ode' and 'parameters'.")
-  }
-  if(is.null(regimen)) {
-    stop("Please specify a regimen created using the `new_regimen()` function.")
-  }
-#   if(!is.null(t_tte)) {
-#     stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
-#   }
-  if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
-    stop("Sorry. Non-C++ functions are deprecated.")
-  } else {
-    if("function" %in% class(ode)) {
-      size <- attr(ode,  "size")
-    } else {
-      size <- attr(get(ode),  "size")
-    }
-  }
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)
     etas   <- MASS::mvrnorm(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat)
     if( n_ind == 1) {
       etas <- t(matrix(etas))
-    }
-  }
-  if(!is.null(adherence)) {
-    if(adherence$type == "markov") {
-      if(!all(c("p01", "p11") %in% names(adherence$markov))) {
-        stop("Adherence simulation using Markov model requires specification of p01 and p11!")
-      }
     }
   }
   comb <- list()
@@ -167,8 +130,63 @@ sim_ode <- function (ode = NULL,
     }
   }
   t_obs <- round(t_obs, 8) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
-  if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
-    stop("Please create a regimen using the new_regimen() function!")
+  if ("character" %in% class(ode)) {
+    ode <- get(ode)
+  }
+  if(checks) {
+    if(!is.null(dde)) {
+      ode <- dde
+    }
+    ## test_pointer looks if the model is in memory, will throw error if needs to be recompiled.
+    test_pointer(ode)
+    if(!is.null(attr(ode, "cpp")) && attr(ode, "cpp")) {
+      cpp <- TRUE
+    } else {
+      cpp <- FALSE
+    }
+    if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
+      stop("Sorry. Non-C++ functions are deprecated.")
+    } else {
+      if("function" %in% class(ode)) {
+        size <- attr(ode,  "size")
+      } else {
+        size <- attr(get(ode),  "size")
+      }
+    }
+    if(is.null(ode) | is.null(parameters)) {
+      stop("Please specify at least the required arguments 'ode' and 'parameters'.")
+    }
+    if(is.null(regimen)) {
+      stop("Please specify a regimen created using the `new_regimen()` function.")
+    }
+    #  if(!is.null(t_tte)) {
+    #    stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
+    #  }
+    if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
+      stop("Sorry. Non-C++ functions are deprecated.")
+    }
+    if(!is.null(adherence)) {
+      if(adherence$type == "markov") {
+        if(!all(c("p01", "p11") %in% names(adherence$markov))) {
+          stop("Adherence simulation using Markov model requires specification of p01 and p11!")
+        }
+      }
+    }
+    ## check parameters specified
+    pars_ode <- attr(ode, "parameters")
+    rates <- paste0("rate[", 0:(size-1), "]")
+    if(!all(pars_ode %in% c(names(parameters), names(covariates), rates))) {
+      m <- match(c(names(parameters), names(covariates)), pars_ode)
+      stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
+    }
+    if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
+      stop("Please create a regimen using the new_regimen() function!")
+    }
+    if(verbose) {
+      message("Simulating...")
+    }
+  } else {
+    size <- attr(ode, "size")
   }
   if (!is.null(adherence)) { ## varying regimen due to adherence
     tmp <- list()
@@ -192,17 +210,6 @@ sim_ode <- function (ode = NULL,
   events <- c() # only for tte
   comb <- c()
 
-  ## check parameters specified
-  pars_ode <- attr(ode, "parameters")
-  rates <- paste0("rate[", 0:(size-1), "]")
-  if(!all(pars_ode %in% c(names(parameters), names(covariates), rates))) {
-    m <- match(c(names(parameters), names(covariates)), pars_ode)
-    stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
-  }
-
-  if(verbose) {
-    message("Simulating...")
-  }
   for (i in 1:n_ind) {
     p_i <- p
     if("regimen_multiple" %in% class(regimen)) {
@@ -226,8 +233,6 @@ sim_ode <- function (ode = NULL,
       #   p_i$t_inf <- regimen$t_inf
       # }
     }
-    times <- unique(c(seq(from=0, to=tail(design_i$t,1), by=int_step_size), t_obs))
-    A_init_i <- A_init
     if (!is.null(adherence)) {
       l <- length(design_i[design_i$dose != 0,]$dose)
       if(adherence$type == "markov") {
@@ -247,8 +252,6 @@ sim_ode <- function (ode = NULL,
       }
     }
     tmp <- c()
-#    event_occurred <- FALSE
-#    prv_cumhaz <- 0
     if(!is.null(t_max)) {
       p_i$dose_times <- p_i$dose_times[p_i$dose_times <= t_max]
     }
@@ -261,15 +264,15 @@ sim_ode <- function (ode = NULL,
     p_i$rate <- 0
 
     #################### Main call to ODE solver: #######################
-    tmp <- ode (A_init_i, design_i, p_i, int_step_size)
+    tmp <- ode (A_init, design_i, p_i, int_step_size)
     #####################################################################
 
-    des_out <- cbind(matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE))
+    des_out <- matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE)
     dat_ind <- c()
     if(only_obs) {
       dat_ind <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs))
     } else {
-      for (j in 1:length(A_init_i)) {
+      for (j in 1:length(A_init)) {
         dat_ind <- rbind (dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
       }
       dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
@@ -292,18 +295,6 @@ sim_ode <- function (ode = NULL,
   # filter out observations
   comb$t <- as.numeric(as.character(comb$t))
 
-  ## following code disactivated for now, using _times integrator
-  # if(!is.null(t_obs)) {
-  #   pick_closest_vec <- function(x, vec) { # pick closests time points. If _times integrator is used this is not necessary, but leaving in just to make sure
-  #     pick_closest <- function(x) {
-  #       which(abs(vec-x) == min(abs(vec-x)))
-  #     }
-  #     unlist(lapply(x, pick_closest))
-  #   }
-  #   idx <- pick_closest_vec(t_obs, comb$t)
-  #   comb <- comb[idx,]
-  # }
-
   ## following code disactivated for now, no tte functionality
   # if(length(events) > 0) {
   #   events <- data.frame(events)
@@ -321,6 +312,7 @@ sim_ode <- function (ode = NULL,
   #     comb <- rbind(comb, cbind(id = cens, t = max(comb$t), comp="event", y=0))
   #   }
   # }
+
   comb <- data.frame(comb)
   comb$id <- as.num(comb$id)
   comb$t  <- as.num(comb$t)
@@ -329,15 +321,12 @@ sim_ode <- function (ode = NULL,
     # comb <- comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
   }
-#  if(duplicate_t_obs) {
-    grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
-    colnames(grid) <- c("t", "id", "comp")
-    suppressMessages({
-      comb <- left_join(grid, comb, copy=TRUE)[,c(2,1,3,4)]
-    })
-  # } else {
-  #   comb <- comb[order(comb$id, comb$comp, comb$t),]
-  # }
+  grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
+  colnames(grid) <- c("t", "id", "comp")
+  suppressMessages({
+    comb <- left_join(grid, comb, copy=TRUE)[,c(2,1,3,4)]
+  })
+
   class(comb) <- c("PKPDsim_data", class(comb))
   attr(comb, "regimen") <- regimen
   attr(comb, "ode_code") <- attr(ode, "code")

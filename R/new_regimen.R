@@ -9,6 +9,7 @@
 #' @param t_inf infusion time (if type==infusion)
 #' @param cmt vector of dosing compartments (optional, if NULL will dosing compartment defined in model will be used)
 #' @param first_dose_time datetime stamp of first dose (of class `POSIXct`). Default is current date time.
+#' @param checks input checks. Remove to increase speed (e.g. for population-level estimation or optimal design)
 #' @return a list containing calculated VPC information, and a ggplot2 object
 #' @export
 #' @seealso \link{sim_ode}
@@ -26,26 +27,30 @@ new_regimen <- function(
                     type = "bolus",
                     t_inf = NULL,
                     cmt = NULL,
+                    checks = TRUE,
                     first_dose_time = lubridate::now()) {
   reg <- structure(list(amt = amt,
                         interval = interval,
                         n = n,
                         type = type,
                         t_inf = t_inf), class = "regimen")
-  if (is.null(type) || length(type) == 0 || !(type %in% c("bolus", "oral", "infusion"))) {
-    message("Type argument should be 'bolus', 'oral', or 'infusion'. Assuming bolus for all doses.")
-    type <- "bolus"
-  }
-  if (is.null(times)) {
-    if(is.null(interval)) {
-      stop("Dose times or dosing interval has to be specified.")
-    } else {
-      if (is.null(n)) {
-        stop("The number of doses (n) must be specified in the regimen object.")
-      } else {
-        reg$dose_times <- c(0:(n-1)) * interval
-      }
+  if(checks) {
+    if (is.null(type) || length(type) == 0 || !(type %in% c("bolus", "oral", "infusion"))) {
+      message("Type argument should be 'bolus', 'oral', or 'infusion'. Assuming bolus for all doses.")
+      type <- "bolus"
     }
+    if (is.null(times) && is.null(interval)) {
+      stop("Dose times or dosing interval has to be specified.")
+    }
+    if (is.null(times) && !is.null(interval) && is.null(n)) {
+      stop("The number of doses (n) must be specified in the regimen object.")
+    }
+    if(is.null(t_inf)) {
+      reg$t_inf = 1
+    }
+  }
+  if(is.null(times)) {
+    reg$dose_times <- c(0:(n-1)) * interval
   } else {
     reg$dose_times <- times
   }
@@ -54,9 +59,6 @@ new_regimen <- function(
     reg$dose_amts <- rep(reg$amt[1], length(reg$dose_times))
   } else {
     reg$dose_amts <- reg$amt
-  }
-  if(is.null(t_inf)) {
-    reg$t_inf = 1
   }
   if(length(reg$t_inf) != length(reg$dose_times)) {
     reg$t_inf <- rep(reg$t_inf[1], length(reg$dose_times))
