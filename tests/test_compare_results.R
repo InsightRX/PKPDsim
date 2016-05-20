@@ -113,3 +113,20 @@ dat3 <- sim_ode (ode = "pk", n_ind = 1,
                  verbose = FALSE, t_max=48)
 assert("dose in comp 2 and 3 as well", ((max(dat3[dat3$comp == 2,]$y)-142.4)/142.4 < 0.01) && ((max(dat3[dat3$comp == 3,]$y)-157.2)/157.2) < 0.01)
 
+
+## test duplicate obs (e.g. for optimal design purposes)
+p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
+r <- new_regimen(amt = c(100, 100, 100, 100),
+                 times = c(0, 6, 12, 18),
+                 cmt = c(2, 2, 1, 1),
+                 t_inf = c(1, 1, 1, 1), # for first 2 doses, infusion time will just be ignored, but a value has to be specified in the vector
+                 type = c("bolus", "bolus", "infusion", "infusion"))
+dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
+                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+                par = p, regimen = r,
+                t_obs = c(1,2,3,4,4,4,6),
+                duplicate_t_obs = T,
+                only_obs = F)
+assert("some observations duplicated", length(dat[dat$t == 4,]$y) == 9)
+assert("all observations included", length(dat$y) == 21)
+assert("no NA", any(is.na(dat$y)) == FALSE)

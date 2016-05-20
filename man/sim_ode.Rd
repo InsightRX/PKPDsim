@@ -9,7 +9,8 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
   adherence = NULL, covariates = NULL, covariate_model = NULL,
   A_init = NULL, only_obs = FALSE, obs_step_size = 1,
   int_step_size = 0.1, t_max = NULL, t_obs = NULL, t_tte = NULL,
-  duplicate_t_obs = FALSE, rtte = FALSE, verbose = FALSE, ...)
+  duplicate_t_obs = FALSE, extra_t_obs_bolus = FALSE, rtte = FALSE,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
@@ -46,7 +47,9 @@ sim_ode(ode = NULL, dde = NULL, parameters = list(), omega = NULL,
 
 \item{t_tte}{vector of observation times for time-to-event simulation}
 
-\item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).}
+\item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
+
+\item{extra_t_obs_bolus}{include extra t_obs in output for bolus doses? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).}
 
 \item{rtte}{should repeated events be allowed (FALSE by default)}
 

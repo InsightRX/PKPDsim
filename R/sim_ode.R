@@ -17,7 +17,8 @@
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
-#' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).
+#' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
+#' @param extra_t_obs_bolus include extra t_obs in output for bolus doses? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param covariate_model feature not implemented yet.
 #' @param verbose show more output
@@ -82,6 +83,7 @@ sim_ode <- function (ode = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
                      duplicate_t_obs = FALSE,
+                     extra_t_obs_bolus = FALSE,
                      rtte = FALSE,
                      verbose = FALSE,
                      ...
@@ -164,6 +166,7 @@ sim_ode <- function (ode = NULL,
       }
     }
   }
+  t_obs <- round(t_obs, 8) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
   if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
     stop("Please create a regimen using the new_regimen() function!")
   }
@@ -326,8 +329,16 @@ sim_ode <- function (ode = NULL,
   comb$t <- as.num(comb$t)
   comb$y <- as.num(comb$y)
   comb <- data.frame(comb %>% arrange(id, comp, t))
-  if(!duplicate_t_obs) {
+  if(extra_t_obs_bolus) { ## include the observations at which a bolus dose is added into the output object too
     comb <- data.frame(comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t))
+  }
+  comb <- data.frame(comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
+  if(duplicate_t_obs) {
+    grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
+    colnames(grid) <- c("t", "id", "comp")
+    suppressMessages({
+      comb <- left_join(grid, comb, copy=TRUE)[,c(2,1,3,4)]
+    })
   }
   class(comb) <- c("PKPDsim_data", class(comb))
   attr(comb, "regimen") <- regimen
