@@ -20,7 +20,7 @@ join_regimen <- function(
     if(is.null(interval) && is.null(dose_update)) {
       stop("either interval or dose_update have to be specified as arguments")
     }
-    if(dose_update < 1) {
+    if(!is.null(dose_update) && dose_update < 1) {
       dose_update <- NULL
     }
     if(!is.null(dose_update)) {
