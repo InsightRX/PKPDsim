@@ -87,6 +87,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     if(evid[i] == 1) {
       t_prv_dose = times[i];
       prv_dose = doses[i];
+      // insert custom dosing code
       if(dose_type[i] == 0) { // bolus
         Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav[i];
         start = 0;

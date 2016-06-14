@@ -1,7 +1,8 @@
 #' Create new ODE model
 #'
 #' @param model model name from model library
-#' @param code C++ code for model
+#' @param code C++ code specifying ODE system
+#' @param dose_code C++ code called at dose event
 #' @param file file containing C++ code
 #' @param func R function to be used with deSolve library
 #' @param state_init vector of state init
@@ -16,6 +17,7 @@
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,
+                           dose_code = NULL,
                            file = NULL,
                            func = NULL,
                            state_init = NULL,
@@ -87,7 +89,11 @@ new_ode_model <- function (model = NULL,
       size <- get_ode_model_size(code)
     }
     if(is.null(parameters)) {
-      parameters <- get_parameters_from_code(code, state_init, declare_variables)
+      comb_code <- code
+      if(!is.null(dose_code)) {
+        comb_code <- paste(code, dose_code, sep = "\n")
+      }
+      parameters <- get_parameters_from_code(comb_code, state_init, declare_variables)
     } else {
       if(class(parameters) == "list") {
         parameters <- names(parameters)
@@ -115,7 +121,24 @@ new_ode_model <- function (model = NULL,
     code <- gsub("\\n", ";\n", code)
     code <- gsub("$", ";\n", code)
     code <- gsub("^;", "", code)
-    cmp <- compile_sim_cpp(code, size, parameters, cpp_show_code = cpp_show_code, code_init = code_init_text, state_init = state_init, declare_variables = declare_variables, covariates = covariates, obs = obs, dose = dose, verbose = verbose)
+    if(!is.null(dose_code)) {
+      dose_code <- gsub("\\r\\n", "\n", dose_code)
+      dose_code <- gsub("\\n", ";\n", dose_code)
+      dose_code <- gsub("$", ";\n", dose_code)
+      dose_code <- gsub("^;", "", dose_code)
+    }
+    cmp <- compile_sim_cpp(code,
+                           dose_code,
+                           size,
+                           parameters,
+                           cpp_show_code = cpp_show_code,
+                           code_init = code_init_text,
+                           state_init = state_init,
+                           declare_variables = declare_variables,
+                           covariates = covariates,
+                           obs = obs,
+                           dose = dose,
+                           verbose = verbose)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
       sim_out <- sim_wrapper_cpp
     } else {
@@ -129,6 +152,9 @@ new_ode_model <- function (model = NULL,
       reqd <- reqd[!reqd %in% cov_names]
     }
     attr(sim_out, "code") <- code
+    if(!is.null(dose_code)) {
+      attr(sim_out, "dose_code") <- dose_code
+    }
     attr(sim_out, "parameters") <- reqd
     attr(sim_out, "covariates") <- cov_names
     attr(sim_out, "variables") <- variables

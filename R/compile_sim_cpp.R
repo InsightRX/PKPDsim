@@ -1,5 +1,6 @@
 #' Compile ODE model to c++ function
-#' @param code C++ code
+#' @param code C++ code ODE system
+#' @param dose_code C++ code per event ($PK)
 #' @param size size of ODE system
 #' @param p parameters (list)
 #' @param cpp_show_code show output c++ function?
@@ -8,9 +9,10 @@
 #' @param covariates covariates specification
 #' @param obs observation specification
 #' @param dose dose specification
+#' @param state_init state init vector
 #' @param verbose show more output
 #' @export
-compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, state_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
+compile_sim_cpp <- function(code, dose_code, size, p, cpp_show_code, code_init = NULL, state_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -117,16 +119,20 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, stat
   idx6 <- grep("observation compartment", cpp_code)
   idx7 <- grep("insert scale definition for observation", cpp_code)
   idx8 <- grep("insert time-dependent covariates scale", cpp_code)
+  idx9 <- grep("insert custom dosing code", cpp_code)
   if(is.null(obs)) {
-    cpp_code[idx5] = "    double scale = 1;"
-    cpp_code[idx6] = "  int cmt = 0;"
-    cpp_code[idx7] = "  scale = 1;"
-    cpp_code[idx8] = paste0("    scale = ", obs$scale, ";")
+    cpp_code[idx5] <- "    double scale = 1;"
+    cpp_code[idx6] <- "  int cmt = 0;"
+    cpp_code[idx7] <- "  scale = 1;"
+    cpp_code[idx8] <- paste0("    scale = ", obs$scale, ";")
   } else {
-    cpp_code[idx5] = paste0("    scale = ", obs$scale, ";")
-    cpp_code[idx6] = paste0("  int cmt = ", (obs$cmt-1), ";")
-    cpp_code[idx7] = paste0("      scale = ", obs$scale, ";")
-    cpp_code[idx8] = cov_scale
+    cpp_code[idx5] <- paste0("    scale = ", obs$scale, ";")
+    cpp_code[idx6] <- paste0("  int cmt = ", (obs$cmt-1), ";")
+    cpp_code[idx7] <- paste0("      scale = ", obs$scale, ";")
+    cpp_code[idx8] <- cov_scale
+  }
+  if(!is.null(dose_code)) {
+    cpp_code[idx9] <- dose_code
   }
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),
@@ -146,7 +152,6 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, stat
   sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
   Sys.setenv("PKG_CXXFLAGS" = flg)
   return(list(
-    parameters = get_parameters_from_code(ode_def_cpp, state_init, unique(c(defined, declare_variables))),
     ode = ode_def_cpp
   ))
 }
