@@ -8,14 +8,25 @@ model_library <- function(name = NULL) {
         dAdt[1] = -(CL/V)*A[1];
       ",
       obs=list(cmt = 1, scale = "V"),
-      dose = list(cmt = 1)
+      dose = list(cmt = 1),
+      size = 1
+    ),
+    "pk_1cmt_iv_auc" = list(
+      code = "
+        dAdt[1] = -(CL/V)*A[1];
+        dAdt[2] = A[1]/V;
+      ",
+      obs = list(cmt = 1, scale = "V"),
+      dose = list(cmt = 1),
+      size = 2
     ),
     "pk_1cmt_iv_mm" = list(
       code = "
         dAdt[1] = -(VMAX*(A[1]/V)) / (KM+A[1]/V);
       ",
       obs=list(cmt = 1, scale = "V"),
-      dose = list(cmt = 1)
+      dose = list(cmt = 1),
+      size = 1
     ),
     "pk_2cmt_iv" = list(
       code = "
@@ -25,6 +36,16 @@ model_library <- function(name = NULL) {
       obs = list(cmt = 1, scale = "V"),
       dose = list(cmt = 1),
       size = 2
+    ),
+    "pk_2cmt_iv_auc" = list(
+      code = "
+        dAdt[1] = -(CL/V)*A[1] - (Q/V)*A[1] + (Q/V2)*A[2]
+        dAdt[2] = -(Q/V2)*A[2] + (Q/V)*A[1]
+        dAdt[3] = A[1]/V
+      ",
+      obs = list(cmt = 1, scale = "V"),
+      dose = list(cmt = 1),
+      size = 3
     ),
     "pk_1cmt_oral" = list(
       code = "
