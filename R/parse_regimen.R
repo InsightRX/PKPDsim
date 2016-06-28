@@ -10,7 +10,7 @@
 parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = NULL) {
 
   if(length(regimen$t_inf) < length(regimen$dose_times)) {
-    regimen$t_inf <- c(regimen$tinf, rep(tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
+    regimen$t_inf <- c(regimen$tinf, rep(utils::tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
   }
 
   dose_cmt <- 1
@@ -123,9 +123,9 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
   }
   if (is.null(t_max)) {
     if (length(design$t) > 1) {
-      t_max <- tail(design$t,1) + max(diff(design$t))
+      t_max <- utils::tail(design$t,1) + max(diff(design$t))
     } else {
-      t_max <- tail(design$t,1) + 24 # guess timeframe, user should use tmax argument
+      t_max <- utils::tail(design$t,1) + 24 # guess timeframe, user should use tmax argument
     }
     if(!is.null(t_obs) && length(t_obs) > 0) {
       if(is.null(t_max) || is.na(t_max) || t_max < max(t_obs)) { t_max <- max(t_obs) }
@@ -135,7 +135,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     }
   }
   design <- design[design$t <= t_max,]
-  design[length(design[,1])+1,] <- tail(design,1)
+  design[length(design[,1])+1,] <- utils::tail(design,1)
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
 
   # now add the covariate values to the design dataset

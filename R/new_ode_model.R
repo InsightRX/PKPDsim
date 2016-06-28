@@ -140,7 +140,7 @@ new_ode_model <- function (model = NULL,
                            dose = dose,
                            verbose = verbose)
     if(exists("sim_wrapper_cpp", envir = globalenv())) {
-      sim_out <- sim_wrapper_cpp
+      sim_out <- get("sim_wrapper_cpp")
     } else {
       message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
     }
