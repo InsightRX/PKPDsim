@@ -172,6 +172,19 @@ sim_ode <- function (ode = NULL,
         }
       }
     }
+    if(!is.null(covariates)) {
+      if(class(covariates) != "list") {
+        stop("Covariates need to be specified as a list!")
+      } else {
+        for(key in names(covariates)) {
+          if(!"covariate" %in% class(covariates[[key]])) {
+            if(class(covariates[[key]]) == "numeric") { # auto-conversion for convenience
+              covariates[[key]] <- new_covariate(covariates[[key]])
+            }
+          }
+        }
+      }
+    }
     ## check parameters specified
     pars_ode <- attr(ode, "parameters")
     rates <- paste0("rate[", 0:(size-1), "]")
