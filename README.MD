@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/ronkeizer/PKPDsim.svg?branch=master)](https://travis-ci.org/ronkeizer/PKPDsim)
-[![codecov](https://codecov.io/gh/ronkeizer/PKmisc/branch/master/graph/badge.svg)](https://codecov.io/gh/ronkeizer/PKPDsim)
+[![codecov](https://codecov.io/gh/ronkeizer/PKPKDsim/branch/master/graph/badge.svg)](https://codecov.io/gh/ronkeizer/PKPDsim)
 
 # Description
 
