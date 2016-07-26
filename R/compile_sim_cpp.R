@@ -108,6 +108,7 @@ compile_sim_cpp <- function(code, dose_code, size, p, cpp_show_code, code_init =
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = 0 ;\n'))
         cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = 0 ;\n'))
       }
+      cov_tmp <- paste0(cov_tmp, paste0('    ', nam, ' = ', nam,'_0;\n'))
       cov_scale <- paste0(cov_scale, paste0('      ', nam, ' = ', nam, '_0 + gr_', nam, ' * (tmp.time[k] - t_prv_', nam), ');\n')
     }
     idx3 <- grep("insert covariate definitions", cpp_code)
