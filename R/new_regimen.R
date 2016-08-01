@@ -24,7 +24,7 @@ new_regimen <- function(
                     interval = 12,
                     n = 3,
                     times = NULL,
-                    type = "bolus",
+                    type = NULL,
                     t_inf = NULL,
                     cmt = NULL,
                     checks = TRUE,
@@ -36,8 +36,12 @@ new_regimen <- function(
                         t_inf = t_inf), class = "regimen")
   if(checks) {
     if (is.null(type) || length(type) == 0 || !(type %in% c("bolus", "oral", "infusion"))) {
-      message("Type argument should be 'bolus', 'oral', or 'infusion'. Assuming bolus for all doses.")
-      type <- "bolus"
+      if(!is.null(t_inf)) {
+        type <- "infusion"
+      } else {
+        message("Type argument should be one of 'bolus', 'oral', or 'infusion'. Assuming bolus for all doses.")
+        type <- "bolus"
+      }
     }
     if (is.null(times) && is.null(interval)) {
       stop("Dose times or dosing interval has to be specified.")
