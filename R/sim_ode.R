@@ -188,9 +188,26 @@ sim_ode <- function (ode = NULL,
     ## check parameters specified
     pars_ode <- attr(ode, "parameters")
     rates <- paste0("rate[", 0:(size-1), "]")
-    if(!all(pars_ode %in% c(names(parameters), names(covariates), rates))) {
+    if(!all(pars_ode %in% c(names(parameters), rates))) {
       m <- match(c(names(parameters), names(covariates)), pars_ode)
-      stop("Not all parameters for this model have been specified. Missing parameters are: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
+      if(length(m) == 0) {
+        missing <- pars_ode
+      } else {
+        missing <- pars_ode[-m[!is.na(m)]]
+      }
+      stop("Not all parameters for this model have been specified. Missing: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
+    }
+    covs_ode <- attr(ode, "covariates")
+    if(!is.null(covs_ode)) {
+      if(!all(covs_ode %in% c(names(covariates)))) {
+        m <- match(names(covariates), covs_ode)
+        if(length(m) == 0) {
+          missing <- covs_ode
+        } else {
+          missing <- covs_ode[-m[!is.na(m)]]
+        }
+        stop("Not all covariates for this model have been specified. Missing: \n  ", paste(missing, collapse=", "))
+      }
     }
     if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
       stop("Please create a regimen using the new_regimen() function!")
