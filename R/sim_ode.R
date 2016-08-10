@@ -18,7 +18,7 @@
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
-#' @param extra_t_obs_bolus include extra t_obs in output for bolus doses? E.g. for a bolus dose at t=24, the default (FALSE) will be to output only the trough, so for bolus doses you might want to switch this setting to TRUE (when used for plotting).
+#' @param extra_t_obs_bolus include extra t_obs in output for bolus doses? E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param covariate_model feature not implemented yet.
 #' @param checks perform input checks? Default is TRUE. For calculations where sim_ode is invoked many times (e.g. population estimation, optimal design) it makes sense to switch this to FALSE (after confirming the input is correct) to improve speed.
@@ -84,22 +84,19 @@ sim_ode <- function (ode = NULL,
                      t_obs = NULL,
                      t_tte = NULL,
                      duplicate_t_obs = FALSE,
-                     extra_t_obs_bolus = FALSE,
+                     extra_t_obs_bolus = "auto",
                      rtte = FALSE,
                      checks = TRUE,
                      verbose = FALSE,
                      ...
                      ) {
-#   if (!is.null(covariate_model) && !is.null(covariates)) {
-#     n_ind <- length(t(covariates[,1]))
-#     message(paste0("Simulating ", n_ind, " individuals with covariates...\n"))
-#     if (sum("tbl_df" %in% class(covariates))==0) {
-#       covariates <- data_frame(covariates)
-#     }
-#   }
-#   if ((!is.null(covariate_model) && is.null(covariates)) | (is.null(covariate_model) && !is.null(covariates))) {
-#     stop("For models with covariates, specify both the 'covariate_model' and the 'covariates' arguments. See help for more information.")
-#   }
+  if(extra_t_obs_bolus == "auto") {
+    if(is.null(t_obs)) {
+      extra_t_obs_bolus <- TRUE
+    } else {
+      extra_t_obs_bolus <- FALSE
+    }
+  }
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)
     etas   <- MASS::mvrnorm(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat)
