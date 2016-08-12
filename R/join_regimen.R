@@ -48,7 +48,8 @@ join_regimen <- function(
       joint <- new_regimen(
         amt = c(regimen1$dose_amts, regimen2$dose_amts),
         times = c(regimen1$dose_times, regimen2$dose_times + utils::tail(regimen1$dose_times,1) + interval),
-        type = "infusion",
+        cmt = c(regimen1$cmt, regimen2$cmt),
+        type = c(regimen1$type, regimen2$type),
         t_inf = c(regimen1$t_inf, regimen2$t_inf)
       )
       return(joint)
