@@ -52,6 +52,10 @@ new_regimen <- function(
     if(is.null(t_inf)) {
       reg$t_inf = 1
     }
+    if(any(reg$t_inf == 0)) {
+      message("Infusion time cannot be zero, changing to 1 minute instead.")
+      reg$t_inf[reg$t_inf == 0] <- 1/60
+    }
   }
   if(is.null(times)) {
     reg$dose_times <- c(0:(n-1)) * interval
