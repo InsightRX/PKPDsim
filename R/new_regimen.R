@@ -10,6 +10,8 @@
 #' @param cmt vector of dosing compartments (optional, if NULL will dosing compartment defined in model will be used)
 #' @param first_dose_time datetime stamp of first dose (of class `POSIXct`). Default is current date time.
 #' @param checks input checks. Remove to increase speed (e.g. for population-level estimation or optimal design)
+#' @param ss steady state? boolean value whether to simulate out to steady state first (steady state will be based on specified `amt` and `interval`, `times` will be ignored).
+#' @param n_ss how many doses to simulate before assumed steady state. Default is 4 * 24 / `interval`.
 #' @return a list containing calculated VPC information, and a ggplot2 object
 #' @export
 #' @seealso \link{sim_ode}
@@ -28,6 +30,8 @@ new_regimen <- function(
                     t_inf = NULL,
                     cmt = NULL,
                     checks = TRUE,
+                    ss = FALSE,
+                    n_ss = NULL,
                     first_dose_time = lubridate::now()) {
   reg <- structure(list(amt = amt,
                         interval = interval,
@@ -56,6 +60,24 @@ new_regimen <- function(
       message("Infusion time cannot be zero, changing to 1 minute instead.")
       reg$t_inf[reg$t_inf == 0] <- 1/60
     }
+  }
+  if(ss) {
+    if(is.null(amt) || is.null(interval)) {
+      stop("'amt' and 'interval' are required when steady state is requested.")
+    }
+    if(is.null(n_ss) || n_ss <= 0) {
+      n_ss <- 5 * 24/interval
+    }
+    pre_reg <- new_regimen(
+      amt = amt,
+      interval = interval,
+      n = n_ss,
+      cmt = cmt,
+      t_inf = t_inf,
+      type = type,
+      checks = FALSE,
+      ss = FALSE)
+    reg$ss_regimen <- pre_reg
   }
   if(is.null(times)) {
     reg$dose_times <- c(0:(n-1)) * interval

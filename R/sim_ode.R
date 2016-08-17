@@ -104,6 +104,12 @@ sim_ode <- function (ode = NULL,
       etas <- t(matrix(etas))
     }
   }
+  if(!is.null(regimen$ss_regimen)) { ## prepend the doses to get to steady state
+    regimen_orig <- regimen
+    regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
+  } else {
+    regimen_orig <- regimen
+  }
   comb <- list()
   p <- as.list(parameters)
   if(is.null(t_obs)) { # find reasonable default to output
@@ -122,7 +128,7 @@ sim_ode <- function (ode = NULL,
       if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
         t_obs <- seq(from=regimen$dose_times[1], to=24, by=obs_step_size)
       } else {
-        t_obs <- seq(from=0, to=max(regimen$dose_times)*1.2, by=obs_step_size)
+        t_obs <- seq(from=0, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
       }
     }
   }
@@ -354,8 +360,14 @@ sim_ode <- function (ode = NULL,
     comb <- left_join(grid, comb, copy=TRUE)[,c(2,1,3,4)]
   })
 
+  if(!is.null(regimen_orig$ss_regimen)) {
+    t_ss <- tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
+    comb$t <- as.num(comb$t) - t_ss
+    comb <- comb[comb$t >= 0,]
+  }
+
   class(comb) <- c("PKPDsim_data", class(comb))
-  attr(comb, "regimen") <- regimen
+  attr(comb, "regimen") <- regimen_orig
   attr(comb, "ode_code") <- attr(ode, "code")
   attr(comb, "parameters") <- attr(ode, "parameters")
   return(comb)
