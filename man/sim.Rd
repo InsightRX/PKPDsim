@@ -4,8 +4,8 @@
 \alias{sim}
 \title{Simulate ODE or analytical equation}
 \usage{
-sim(ode = NULL, dde = NULL, analytical = NULL, parameters = list(),
-  omega = NULL, omega_type = "exponential", n_ind = 1, regimen = NULL,
+sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
+  omega_type = "exponential", n_ind = 1, regimen = NULL,
   adherence = NULL, covariates = NULL, covariate_model = NULL,
   A_init = NULL, only_obs = FALSE, obs_step_size = 1,
   int_step_size = 0.1, t_max = NULL, t_obs = NULL, t_tte = NULL,
@@ -15,7 +15,7 @@ sim(ode = NULL, dde = NULL, analytical = NULL, parameters = list(),
 \arguments{
 \item{ode}{function describing the ODE system}
 
-\item{dde}{function describing the DDE system (not implemented yet)}
+\item{analytical}{analytical equation (function)}
 
 \item{parameters}{model parameters}
 

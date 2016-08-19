@@ -1,6 +1,7 @@
 #' Print function for PKPDsim regimen
 #'
 #' @param x regimen
+#' @param ... arguments to pass
 #' @export
 print.regimen <- function(x, ...) {
   tmp <- data.frame(cbind(t = x$dose_times, type = x$type, amt = x$amt, cmt = x$cmt))

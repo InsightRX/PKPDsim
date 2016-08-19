@@ -2,7 +2,7 @@
 #'
 #' Simulates a specified regimen using ODE system or analytical equation
 #' @param ode function describing the ODE system
-#' @param dde function describing the DDE system (not implemented yet)
+#' @param analytical analytical equation (function)
 #' @param parameters model parameters
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal
@@ -67,7 +67,6 @@
 #'  facet_wrap(~comp)
 #'}
 sim <- function (ode = NULL,
-                 dde = NULL,
                  analytical = NULL,
                  parameters = list(),
                  omega = NULL,
@@ -140,11 +139,11 @@ sim <- function (ode = NULL,
     }
   }
   if(checks) {
-    if(!is.null(dde)) {
-      ode <- dde
-    }
     ## test_pointer looks if the model is in memory, will throw error if needs to be recompiled.
     test_pointer(ode)
+    if(is.null(ode) && is.null(analytical)) {
+      stop("Either an ODE system (`ode`) or an analytical equation (`analytical`) should be provided to `sim()`")
+    }
     if(!is.null(attr(ode, "cpp")) && attr(ode, "cpp")) {
       cpp <- TRUE
     } else {
@@ -152,7 +151,7 @@ sim <- function (ode = NULL,
     }
     if(is.null(analytical)) {
       if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
-        stop("Sorry. Non-C++ functions are deprecated.")
+        stop("Sorry. Non-C++ functions are deprecated as input for ODE.")
       } else {
         if("function" %in% class(ode)) {
           size <- attr(ode,  "size")
@@ -299,7 +298,7 @@ sim <- function (ode = NULL,
 
     #################### Main call to ODE solver / analytical eq solver #######################
     if(!is.null(ode)) {
-      tmp <- model(A_init, design_i, p_i, int_step_size)
+      tmp <- ode(A_init, design_i, p_i, int_step_size)
     } else {
       tmp <- analytical_eqn_wrapper(analytical, design_i, p_i)
     }

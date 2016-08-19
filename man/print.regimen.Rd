@@ -8,6 +8,8 @@
 }
 \arguments{
 \item{x}{regimen}
+
+\item{...}{arguments to pass}
 }
 \description{
 Print function for PKPDsim regimen
