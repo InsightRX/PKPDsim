@@ -5,8 +5,8 @@
 \title{Dose regimen for sim_ode}
 \usage{
 new_regimen(amt = 100, interval = 12, n = 3, times = NULL,
-  type = NULL, t_inf = NULL, cmt = NULL, checks = TRUE,
-  steady_state = FALSE, first_dose_time = lubridate::now())
+  type = NULL, t_inf = NULL, cmt = NULL, checks = TRUE, ss = FALSE,
+  n_ss = NULL, first_dose_time = lubridate::now())
 }
 \arguments{
 \item{amt}{dosing amount, either a single value (which will repeated for multiple doses), or a vector with doses for each administration}
@@ -25,7 +25,9 @@ new_regimen(amt = 100, interval = 12, n = 3, times = NULL,
 
 \item{checks}{input checks. Remove to increase speed (e.g. for population-level estimation or optimal design)}
 
-\item{steady_state}{boolean value whether to simulate out to steady state first (steady state will be based on specified `amt` and `interval`, `times` will be ignored).}
+\item{ss}{steady state? boolean value whether to simulate out to steady state first (steady state will be based on specified `amt` and `interval`, `times` will be ignored).}
+
+\item{n_ss}{how many doses to simulate before assumed steady state. Default is 4 * 24 / `interval`.}
 
 \item{first_dose_time}{datetime stamp of first dose (of class `POSIXct`). Default is current date time.}
 }
