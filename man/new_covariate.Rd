@@ -4,7 +4,7 @@
 \alias{new_covariate}
 \title{New covariate}
 \usage{
-new_covariate(value = 70, times = NULL, implementation = "interpolate")
+new_covariate(value = NULL, times = NULL, implementation = "interpolate")
 }
 \arguments{
 \item{value}{a numeric vector}

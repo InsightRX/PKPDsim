@@ -361,11 +361,11 @@ sim <- function (ode = NULL,
   grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
   colnames(grid) <- c("t", "id", "comp")
   suppressMessages({
-    comb <- left_join(grid, comb, copy=TRUE)[,c(2,1,3,4)]
+    comb <- dplyr::left_join(grid, comb, copy=TRUE)[,c(2,1,3,4)]
   })
 
   if(!is.null(regimen_orig$ss_regimen)) {
-    t_ss <- tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
+    t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
     comb$t <- as.num(comb$t) - t_ss
     comb <- comb[comb$t >= 0,]
   }

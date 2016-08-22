@@ -150,7 +150,7 @@ compile_sim_cpp <- function(code, dose_code, size, p, cpp_show_code, code_init =
   if(length(grep("-w", flg)) == 0) {
     Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
   }
-  sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
+  Rcpp::sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
   Sys.setenv("PKG_CXXFLAGS" = flg)
   return(list(
     ode = ode_def_cpp

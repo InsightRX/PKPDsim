@@ -5,7 +5,10 @@
 #' @param times NULL for time-invariant covariate or a numeric vector specifying the update times for the covariate
 #' @param implementation for time-varying covariates either 'LOCF' (last observation carried forward) or 'interpolate' (default)
 #' @export
-new_covariate <- function(value=70, times=NULL, implementation = "interpolate") {
+new_covariate <- function(value=NULL, times=NULL, implementation = "interpolate") {
+  if(is.null(value)) {
+    stop("Covariate value required!")
+  }
   if(is.null(times)) { # time invariant
     times <- c(0)
     value <- value[1]

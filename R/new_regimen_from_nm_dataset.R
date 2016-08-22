@@ -33,7 +33,7 @@ new_regimen_from_nm_dataset <- function(data,
   }
   reg <- list()
   for(i in 1:length(ids)) {
-    tmp <- doses %>% dplyr::filter(id == ids[i])
+    tmp <- doses[doses$id == ids[i],]
     if(reset_time) {
       tmp$time <- tmp$time - min(tmp$time)
     }
