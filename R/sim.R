@@ -125,10 +125,14 @@ sim <- function (ode = NULL,
       }
     }
     if("regimen" %in% class(regimen)) {
-      if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
-        t_obs <- seq(from=regimen$dose_times[1], to=24, by=obs_step_size)
+      if(!is.null(t_max)) {
+        t_obs <- seq(from=0, to=t_max, by=obs_step_size)
       } else {
-        t_obs <- seq(from=0, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
+        if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
+          t_obs <- seq(from=regimen$dose_times[1], to=24, by=obs_step_size)
+        } else {
+          t_obs <- seq(from=0, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
+        }
       }
     }
   }
