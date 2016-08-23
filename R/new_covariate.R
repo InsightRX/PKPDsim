@@ -4,8 +4,9 @@
 #' @param value a numeric vector
 #' @param times NULL for time-invariant covariate or a numeric vector specifying the update times for the covariate
 #' @param implementation for time-varying covariates either 'LOCF' (last observation carried forward) or 'interpolate' (default)
+#' @param unit specify covariate unit (optional, for documentation purposes only)
 #' @export
-new_covariate <- function(value=NULL, times=NULL, implementation = "interpolate") {
+new_covariate <- function(value=NULL, times=NULL, implementation = "interpolate", unit = NULL) {
   if(is.null(value)) {
     stop("Covariate value required!")
   }
@@ -19,7 +20,8 @@ new_covariate <- function(value=NULL, times=NULL, implementation = "interpolate"
   }
   cov <- list(value = value,
               times = times,
-              implementation = implementation )
+              implementation = implementation,
+              unit = unit)
   class(cov) <- c(class(cov), "covariate")
   return(cov)
 }
