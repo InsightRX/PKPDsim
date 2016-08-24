@@ -18,8 +18,9 @@ new_covariate <- function(value=NULL, times=NULL, implementation = "interpolate"
     times <- c(0, times)
     value <- c(value[1], value)
   }
-  cov <- list(value = value,
-              times = times,
+  srt <- order(times)
+  cov <- list(value = value[srt],
+              times = times[srt],
               implementation = implementation,
               unit = unit)
   class(cov) <- c(class(cov), "covariate")
