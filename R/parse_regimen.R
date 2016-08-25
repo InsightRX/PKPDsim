@@ -27,9 +27,10 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
 
   ## bioavailability
   bioav <- 1
-  if(!is.null(attr(model, "dose")$bioav)) {
-    bioav <- attr(model, "dose")$bioav
-  }
+  # Handled now in Cpp file!
+  # if(!is.null(attr(model, "dose")$bioav)) {
+  #   bioav <- attr(model, "dose")$bioav
+  # }
 
   ## first, add covariates to regimen to be incorporated in design
   if(!is.null(covariates)) {

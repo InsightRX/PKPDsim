@@ -121,6 +121,7 @@ compile_sim_cpp <- function(code, dose_code, size, p, cpp_show_code, code_init =
   idx7 <- grep("insert scale definition for observation", cpp_code)
   idx8 <- grep("insert time-dependent covariates scale", cpp_code)
   idx9 <- grep("insert custom dosing code", cpp_code)
+  idx10 <- grep("insert bioav definition", cpp_code)
   if(is.null(obs)) {
     cpp_code[idx5] <- "    double scale = 1;"
     cpp_code[idx6] <- "  int cmt = 0;"
@@ -134,6 +135,9 @@ compile_sim_cpp <- function(code, dose_code, size, p, cpp_show_code, code_init =
   }
   if(!is.null(dose_code)) {
     cpp_code[idx9] <- dose_code
+  }
+  if(!is.null(dose$bioav)) {
+    cpp_code[idx10] <- paste0("      bioav[i] = ", dose$bioav, ";")
   }
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),

@@ -299,7 +299,6 @@ sim <- function (ode = NULL,
       design_i[design_i$t >= p_i$dose_times[k] & design_i$t < (p_i$dose_times[k] + p_i$t_inf[k]),]$rate <- (p_i$dose_amts[k] / p_i$t_inf[k])
     }
     p_i$rate <- 0
-
     #################### Main call to ODE solver / analytical eq solver #######################
     if(!is.null(ode)) {
       tmp <- ode(A_init, design_i, p_i, int_step_size)
