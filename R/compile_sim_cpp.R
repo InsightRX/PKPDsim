@@ -22,7 +22,7 @@ compile_sim_cpp <- function(code, dose_code, size, p, cpp_show_code, code_init =
   par1 <- regmatches(ode_def, newpar)[[1]]
   def1 <- par1[-grep("dadt\\[", tolower(par1))]
   for (i in seq(def1)) {
-    ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n","",def1[i])), ode_def)
+    ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n","",def1[i])), ode_def, perl=TRUE)
   }
   par1 <- gsub("[\n\\= ]", "", par1)
   par1 <- gsub("double ", "", par1)
