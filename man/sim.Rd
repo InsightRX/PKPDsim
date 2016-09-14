@@ -10,7 +10,8 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
   A_init = NULL, only_obs = FALSE, obs_step_size = 1,
   int_step_size = 0.1, t_max = NULL, t_obs = NULL, t_tte = NULL,
   duplicate_t_obs = FALSE, extra_t_obs_bolus = "auto", rtte = FALSE,
-  checks = TRUE, verbose = FALSE, ...)
+  checks = TRUE, verbose = FALSE, output_include = list(parameters =
+  FALSE, covariates = FALSE), ...)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
@@ -56,6 +57,8 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 \item{checks}{perform input checks? Default is TRUE. For calculations where sim_ode is invoked many times (e.g. population estimation, optimal design) it makes sense to switch this to FALSE (after confirming the input is correct) to improve speed.}
 
 \item{verbose}{show more output}
+
+\item{output_include}{list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.}
 
 \item{...}{extra parameters}
 }

@@ -21,6 +21,7 @@
 #' @param extra_t_obs_bolus include extra t_obs in output for bolus doses? E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param covariate_model feature not implemented yet.
+#' @param output_include list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.
 #' @param checks perform input checks? Default is TRUE. For calculations where sim_ode is invoked many times (e.g. population estimation, optimal design) it makes sense to switch this to FALSE (after confirming the input is correct) to improve speed.
 #' @param verbose show more output
 #' @param ... extra parameters
@@ -88,6 +89,7 @@ sim <- function (ode = NULL,
                  rtte = FALSE,
                  checks = TRUE,
                  verbose = FALSE,
+                 output_include = list(parameters = FALSE, covariates = FALSE),
                  ...
                  ) {
   if(extra_t_obs_bolus == "auto") {
@@ -317,6 +319,15 @@ sim <- function (ode = NULL,
       }
       dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
     }
+
+    ## Add parameters and covariates, if needed. Implementation is slow, can be improved.
+    if(!is.null(output_include$parameters) && output_include$parameters) {
+      dat_ind <- as.matrix(merge(dat_ind, p_i[1:nrow(omega_mat)]))
+    }
+    if(!is.null(output_include$covariates) && output_include$covariates) {
+      dat_ind <- as.matrix(merge(dat_ind, design_i[1,paste0("cov_", names(covariates))]))
+    }
+
     if("regimen_multiple" %in% class(regimen) || !is.null(adherence)) {
       comb <- rbind(comb, dat_ind)
     } else {
@@ -324,16 +335,22 @@ sim <- function (ode = NULL,
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
       }
-      comb[((i-1)*l_mat)+(1:l_mat),] <- dat_ind
+      comb[((i-1)*l_mat)+(1:l_mat),1:length(dat_ind[1,])] <- dat_ind
     }
+
   }
 
   # Add concentration to dataset, and perform scaling and/or transformation:
   comb <- data.frame(comb)
-  colnames(comb) <- c("id", "t", "comp", "y")
-
-  # filter out observations
-  comb$t <- as.numeric(as.character(comb$t))
+  par_names <- NULL
+  if(!is.null(output_include$parameters) && output_include$parameters) {
+    par_names <- names(p_i[1:nrow(omega_mat)])
+  }
+  cov_names <- NULL
+  if(!is.null(output_include$covariates) && output_include$covariates) {
+    cov_names <- names(covariates)
+  }
+  colnames(comb) <- c("id", "t", "comp", "y", par_names, cov_names)
 
   ## following code disactivated for now, no tte functionality
   # if(length(events) > 0) {
@@ -354,9 +371,10 @@ sim <- function (ode = NULL,
   # }
 
   comb <- data.frame(comb)
-  comb$id <- as.num(comb$id)
-  comb$t  <- as.num(comb$t)
-  comb$y  <- as.num(comb$y)
+  col_names <- c("id", "t", "y", par_names, cov_names)
+  for(key in col_names) {
+    comb[[key]] <- as.num(comb[[key]])
+  }
   if(!extra_t_obs_bolus) { ## include the observations at which a bolus dose is added into the output object too
     # comb <- comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
@@ -364,7 +382,7 @@ sim <- function (ode = NULL,
   grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
   colnames(grid) <- c("t", "id", "comp")
   suppressMessages({
-    comb <- dplyr::left_join(grid, comb, copy=TRUE)[,c(2,1,3,4)]
+    comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", par_names, cov_names)]
   })
 
   if(!is.null(regimen_orig$ss_regimen)) {
