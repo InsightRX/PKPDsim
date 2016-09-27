@@ -269,8 +269,8 @@ sim <- function (ode = NULL,
           if(max(design_i$t) < 100) { obs_step_size <- 1 }
           if(max(design_i$t) < 10) { obs_step_size <- .1 }
         }
+        t_obs <- seq(from=0, to=max(design_i$t), by=obs_step_size)
       }
-      t_obs <- seq(from=0, to=max(design_i$t), by=obs_step_size)
     }
     if (!is.null(adherence)) {
       l <- length(design_i[design_i$dose != 0,]$dose)
@@ -382,7 +382,9 @@ sim <- function (ode = NULL,
   grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
   colnames(grid) <- c("t", "id", "comp")
   suppressMessages({
-    comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", par_names, cov_names)]
+    if(!is.null(par_names) || !is.null(cov_names)) {
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", par_names, cov_names)]
+    }
   })
 
   if(!is.null(regimen_orig$ss_regimen)) {
