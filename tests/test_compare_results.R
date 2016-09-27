@@ -137,3 +137,12 @@ dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
 assert("some observations duplicated", length(dat[dat$t == 4,]$y) == 9)
 assert("all observations included", length(dat$y) == 21)
 assert("no NA", any(is.na(dat$y)) == FALSE)
+
+## Check custom t_obs
+t_obs <- seq(from=0, to = 24, by = .1)
+dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
+                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+                par = p, regimen = r,
+                t_obs = t_obs,
+                only_obs = T)
+assert("custom t_obs works", mean(diff(t_obs)) == mean(diff(dat$t)))
