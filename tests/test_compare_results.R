@@ -54,10 +54,11 @@ regimen_mult <- new_regimen(amt=rep(12.8, 3),
                             times = c(0, 6, 12), type="infusion", t_inf = 2)
 pk1cmt_iv <- new_ode_model("pk_1cmt_iv")
 t_obs <- c(11.916, 14.000, 16.000, 17.000, 30)
+parse_regimen(regimen, NULL, seq(from=0, to=72, by=.1), NULL, p, NULL, pk1cmt_oral_lib)
 tmp <- sim_ode(ode = pk1cmt_iv,
                           par = list(CL = 5, V = 50),
                           regimen = regimen_mult,
-                          int_step_size = 1,
+                          # int_step_size = 1,
                           t_obs = t_obs,
                           only_obs = TRUE)
 assert('correct number of observations returned (bug precision time-axis)',

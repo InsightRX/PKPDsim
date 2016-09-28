@@ -370,7 +370,6 @@ sim <- function (ode = NULL,
   #   }
   # }
 
-  comb <- data.frame(comb)
   col_names <- c("id", "t", "y", par_names, cov_names)
   for(key in col_names) {
     comb[[key]] <- as.num(comb[[key]])
