@@ -383,6 +383,8 @@ sim <- function (ode = NULL,
   suppressMessages({
     if(!is.null(par_names) || !is.null(cov_names)) {
       comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", par_names, cov_names)]
+    } else {
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y")]
     }
   })
 
