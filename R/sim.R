@@ -112,6 +112,14 @@ sim <- function (ode = NULL,
   } else {
     regimen_orig <- regimen
   }
+  if(!is.null(attr(ode, "lagtime"))) {
+    if(class(attr(ode, "lagtime")) %in% c("numeric", "integer")) {
+      regimen$dose_times <- regimen$dose_times + attr(ode, "lagtime")
+    }
+    if(class(attr(ode, "lagtime")) %in% c("character")) {
+      regimen$dose_times <- regimen$dose_times + parameters[[attr(ode, "lagtime")]]
+    }
+  }
   comb <- list()
   p <- as.list(parameters)
   if(is.null(t_obs)) { # find reasonable default to output

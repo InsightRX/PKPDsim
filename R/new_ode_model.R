@@ -23,6 +23,7 @@ new_ode_model <- function (model = NULL,
                            state_init = NULL,
                            parameters = NULL,
                            size = NULL,
+                           lagtime = NULL,
                            obs = list("cmt" = 1, scale = 1),
                            dose = list("cmt" = 1),
                            covariates = NULL,
@@ -163,6 +164,7 @@ new_ode_model <- function (model = NULL,
   }
   attr(sim_out, "obs")  <- obs
   attr(sim_out, "dose") <- dose
+  attr(sim_out, "lagtime") <- lagtime
   class(sim_out) <- c("PKPDsim", class(sim_out))
   return(sim_out)
 }

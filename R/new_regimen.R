@@ -7,6 +7,7 @@
 #' @param times vector describing dosing times. Overrides specified times using interval and n arguments
 #' @param type either "infusion" or "bolus" (default)
 #' @param t_inf infusion time (if type==infusion)
+#' @param t_lag lag time (can be applied to any dose type, not only oral). Will just be added to `times`
 #' @param cmt vector of dosing compartments (optional, if NULL will dosing compartment defined in model will be used)
 #' @param first_dose_time datetime stamp of first dose (of class `POSIXct`). Default is current date time.
 #' @param checks input checks. Remove to increase speed (e.g. for population-level estimation or optimal design)
@@ -28,6 +29,7 @@ new_regimen <- function(
                     times = NULL,
                     type = NULL,
                     t_inf = NULL,
+                    t_lag = NULL,
                     cmt = NULL,
                     checks = TRUE,
                     ss = FALSE,
