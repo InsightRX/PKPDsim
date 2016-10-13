@@ -6,6 +6,7 @@
 #' @param parameters model parameters
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal
+#' @param sequence for simulations, if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
@@ -72,6 +73,7 @@ sim <- function (ode = NULL,
                  parameters = list(),
                  omega = NULL,
                  omega_type = "exponential",
+                 sequence = NULL,
                  n_ind = 1,
                  regimen = NULL,
                  adherence = NULL,
@@ -101,7 +103,7 @@ sim <- function (ode = NULL,
   }
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)
-    etas   <- MASS::mvrnorm(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat)
+    etas   <- mvrnorm2(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat, sequence=sequence)
     if( n_ind == 1) {
       etas <- t(matrix(etas))
     }

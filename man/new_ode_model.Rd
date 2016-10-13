@@ -6,8 +6,9 @@
 \usage{
 new_ode_model(model = NULL, code = NULL, dose_code = NULL, file = NULL,
   func = NULL, state_init = NULL, parameters = NULL, size = NULL,
-  obs = list(cmt = 1, scale = 1), dose = list(cmt = 1), covariates = NULL,
-  declare_variables = NULL, cpp_show_code = FALSE, verbose = FALSE)
+  lagtime = NULL, obs = list(cmt = 1, scale = 1), dose = list(cmt = 1),
+  covariates = NULL, declare_variables = NULL, cpp_show_code = FALSE,
+  verbose = FALSE)
 }
 \arguments{
 \item{model}{model name from model library}

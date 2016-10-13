@@ -5,13 +5,13 @@
 \title{Simulate ODE or analytical equation}
 \usage{
 sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
-  omega_type = "exponential", n_ind = 1, regimen = NULL,
-  adherence = NULL, covariates = NULL, covariate_model = NULL,
-  A_init = NULL, only_obs = FALSE, obs_step_size = 1,
-  int_step_size = 0.1, t_max = NULL, t_obs = NULL, t_tte = NULL,
-  duplicate_t_obs = FALSE, extra_t_obs_bolus = "auto", rtte = FALSE,
-  checks = TRUE, verbose = FALSE, output_include = list(parameters =
-  FALSE, covariates = FALSE), ...)
+  omega_type = "exponential", sequence = NULL, n_ind = 1,
+  regimen = NULL, adherence = NULL, covariates = NULL,
+  covariate_model = NULL, A_init = NULL, only_obs = FALSE,
+  obs_step_size = 1, int_step_size = 0.1, t_max = NULL, t_obs = NULL,
+  t_tte = NULL, duplicate_t_obs = FALSE, extra_t_obs_bolus = "auto",
+  rtte = FALSE, checks = TRUE, verbose = FALSE,
+  output_include = list(parameters = FALSE, covariates = FALSE), ...)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
@@ -23,6 +23,8 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
 \item{omega_type}{exponential or normal}
+
+\item{sequence}{for simulations, if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.}
 
 \item{n_ind}{number of individuals to simulate}
 
