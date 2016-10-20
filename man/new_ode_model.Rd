@@ -4,7 +4,7 @@
 \alias{new_ode_model}
 \title{Create new ODE model}
 \usage{
-new_ode_model(model = NULL, code = NULL, dose_code = NULL, file = NULL,
+new_ode_model(model = NULL, code = NULL, pk_code = NULL, file = NULL,
   func = NULL, state_init = NULL, parameters = NULL, size = NULL,
   lagtime = NULL, obs = list(cmt = 1, scale = 1), dose = list(cmt = 1),
   covariates = NULL, declare_variables = NULL, cpp_show_code = FALSE,
@@ -15,7 +15,7 @@ new_ode_model(model = NULL, code = NULL, dose_code = NULL, file = NULL,
 
 \item{code}{C++ code specifying ODE system}
 
-\item{dose_code}{C++ code called at dose event}
+\item{pk_code}{C++ code called at dose event}
 
 \item{file}{file containing C++ code}
 

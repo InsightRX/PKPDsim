@@ -2,7 +2,7 @@
 #'
 #' @param model model name from model library
 #' @param code C++ code specifying ODE system
-#' @param dose_code C++ code called at dose event
+#' @param pk_code C++ code called at dose event
 #' @param file file containing C++ code
 #' @param func R function to be used with deSolve library
 #' @param state_init vector of state init
@@ -17,7 +17,7 @@
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,
-                           dose_code = NULL,
+                           pk_code = NULL,
                            file = NULL,
                            func = NULL,
                            state_init = NULL,
@@ -91,8 +91,8 @@ new_ode_model <- function (model = NULL,
     }
     if(is.null(parameters)) {
       comb_code <- code
-      if(!is.null(dose_code)) {
-        comb_code <- paste(code, dose_code, sep = "\n")
+      if(!is.null(pk_code)) {
+        comb_code <- paste(code, pk_code, sep = "\n")
       }
       parameters <- get_parameters_from_code(comb_code, state_init, declare_variables)
     } else {
@@ -122,14 +122,14 @@ new_ode_model <- function (model = NULL,
     code <- gsub("\\n", ";\n", code)
     code <- gsub("$", ";\n", code)
     code <- gsub("^;", "", code)
-    if(!is.null(dose_code)) {
-      dose_code <- gsub("\\r\\n", "\n", dose_code)
-      dose_code <- gsub("\\n", ";\n", dose_code)
-      dose_code <- gsub("$", ";\n", dose_code)
-      dose_code <- gsub("^;", "", dose_code)
+    if(!is.null(pk_code)) {
+      pk_code <- gsub("\\r\\n", "\n", pk_code)
+      pk_code <- gsub("\\n", ";\n", pk_code)
+      pk_code <- gsub("$", ";\n", pk_code)
+      pk_code <- gsub("^;", "", pk_code)
     }
     cmp <- compile_sim_cpp(code,
-                           dose_code,
+                           pk_code,
                            size,
                            parameters,
                            cpp_show_code = cpp_show_code,
@@ -153,8 +153,8 @@ new_ode_model <- function (model = NULL,
       reqd <- reqd[!reqd %in% cov_names]
     }
     attr(sim_out, "code") <- code
-    if(!is.null(dose_code)) {
-      attr(sim_out, "dose_code") <- dose_code
+    if(!is.null(pk_code)) {
+      attr(sim_out, "pk_code") <- pk_code
     }
     attr(sim_out, "parameters") <- reqd
     attr(sim_out, "covariates") <- cov_names

@@ -1,6 +1,6 @@
 #' Compile ODE model to c++ function
 #' @param code C++ code ODE system
-#' @param dose_code C++ code per event ($PK)
+#' @param pk_code C++ code per event ($PK)
 #' @param size size of ODE system
 #' @param p parameters (list)
 #' @param cpp_show_code show output c++ function?
@@ -12,7 +12,7 @@
 #' @param state_init state init vector
 #' @param verbose show more output
 #' @export
-compile_sim_cpp <- function(code, dose_code, size, p, cpp_show_code, code_init = NULL, state_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
+compile_sim_cpp <- function(code, pk_code, size, p, cpp_show_code, code_init = NULL, state_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -133,8 +133,8 @@ compile_sim_cpp <- function(code, dose_code, size, p, cpp_show_code, code_init =
     cpp_code[idx7] <- paste0("      scale = ", obs$scale, ";")
     cpp_code[idx8] <- cov_scale
   }
-  if(!is.null(dose_code)) {
-    cpp_code[idx9] <- dose_code
+  if(!is.null(pk_code)) {
+    cpp_code[idx9] <- pk_code
   }
   if(!is.null(dose$bioav)) {
     cpp_code[idx10] <- paste0("      bioav[i] = ", dose$bioav, ";")

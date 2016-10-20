@@ -4,14 +4,14 @@
 \alias{compile_sim_cpp}
 \title{Compile ODE model to c++ function}
 \usage{
-compile_sim_cpp(code, dose_code, size, p, cpp_show_code, code_init = NULL,
+compile_sim_cpp(code, pk_code, size, p, cpp_show_code, code_init = NULL,
   state_init = NULL, declare_variables = NULL, covariates = NULL,
   obs = NULL, dose = NULL, verbose = FALSE)
 }
 \arguments{
 \item{code}{C++ code ODE system}
 
-\item{dose_code}{C++ code per event ($PK)}
+\item{pk_code}{C++ code per event ($PK)}
 
 \item{size}{size of ODE system}
 

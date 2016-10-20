@@ -5,8 +5,8 @@
 #' @export
 print.PKPDsim <- function(x, ...) {
   cat(paste0("ODE definition: \n", attr(x, "code")), "\n")
-  if(!is.null(attr(x, "dose_code"))) {
-    cat(paste0("PK event code: \n", attr(x, "dose_code")), "\n")
+  if(!is.null(attr(x, "pk_code"))) {
+    cat(paste0("PK event code: \n", attr(x, "pk_code")), "\n")
   }
   cat(paste0("Required parameters: ", paste(attr(x, "parameters"), collapse=", ")), "\n")
   cat(paste0("Covariates: ", paste(attr(x, "covariates"), collapse=", ")), "\n")
