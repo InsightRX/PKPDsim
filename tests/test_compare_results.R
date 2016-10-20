@@ -6,7 +6,17 @@ library(testit) ## testthat doesn't play nice with sourceCpp
 
 Sys.setenv("R_TESTS" = "")
 
-## parameters:
+###########################################################################
+## Regimens
+###########################################################################
+
+tmp <- new_regimen(amt = c(-1,-2,3,4), times = c(0,24,48,72), type = "infusion")
+assert("Doses <0  set to 0", all(tmp$dose_amts >= 0))
+
+###########################################################################
+## Simulations
+###########################################################################
+
 p <- list(KA = 1, CL = 5, V = 50)
 t_obs <- c(0:72)
 t_obs2 <- t_obs + 0.1234 # also needs to be producing results with non-integer times
@@ -119,7 +129,6 @@ dat3 <- sim_ode (ode = "pk", n_ind = 1,
                  t_obs = seq(from=0, to=20, by = .1),
                  verbose = FALSE, t_max=48)
 assert("dose in comp 2 and 3 as well", ((max(dat3[dat3$comp == 2,]$y)-142.4)/142.4 < 0.01) && ((max(dat3[dat3$comp == 3,]$y)-157.2)/157.2) < 0.01)
-
 
 ## test duplicate obs (e.g. for optimal design purposes)
 p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)

@@ -41,6 +41,10 @@ new_regimen <- function(
                         type = type,
                         t_inf = t_inf), class = "regimen")
   if(checks) {
+    if(any(reg$amt < 0)) {
+      reg$amt[reg$amt < 0] <- 0
+      warning("Some doses were < 0, setting to 0.")
+    }
     if (is.null(type) || length(type) == 0 || !(type %in% c("bolus", "oral", "infusion"))) {
       if(!is.null(t_inf)) {
         type <- "infusion"
