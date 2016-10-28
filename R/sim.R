@@ -387,6 +387,8 @@ sim <- function (ode = NULL,
   if(!extra_t_obs_bolus) { ## include the observations at which a bolus dose is added into the output object too
     # comb <- comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
+  } else { # only remove duplicates at t=0
+    comb <- comb[!(duplicated(paste(comb$id, comb$comp, comb$t, sep="_")) & comb$t == 0),]
   }
   grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
   colnames(grid) <- c("t", "id", "comp")
