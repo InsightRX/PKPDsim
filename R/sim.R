@@ -6,6 +6,7 @@
 #' @param parameters model parameters
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal
+#' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
 #' @param sequence for simulations, if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
@@ -73,6 +74,7 @@ sim <- function (ode = NULL,
                  parameters = list(),
                  omega = NULL,
                  omega_type = "exponential",
+                 res_var = NULL,
                  sequence = NULL,
                  n_ind = 1,
                  regimen = NULL,
@@ -404,6 +406,11 @@ sim <- function (ode = NULL,
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
     comb$t <- as.num(comb$t) - t_ss
     comb <- comb[comb$t >= 0,]
+  }
+
+  ## add residual variability
+  if(!is.null(res_var)) {
+    comb[comb$comp == 'obs',]$y <- add_ruv(comb[comb$comp == 'obs',]$y, res_var)
   }
 
   class(comb) <- c("PKPDsim_data", class(comb))
