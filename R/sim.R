@@ -336,8 +336,16 @@ sim <- function (ode = NULL,
     if(!is.null(output_include$parameters) && output_include$parameters) {
       dat_ind <- as.matrix(merge(dat_ind, p_i[1:nrow(omega_mat)]))
     }
+
     if(!is.null(output_include$covariates) && output_include$covariates) {
       dat_ind <- as.matrix(merge(dat_ind, design_i[1,paste0("cov_", names(covariates))]))
+      for(key in names(covariates)) {
+        if(length(covariates[[key]]$value) > 1) { # timevarying covariates
+          for(s in 2:length(covariates[[key]]$times)) {
+            dat_ind[as.num(dat_ind[,2]) >= covariates[[key]]$times[s], paste0("cov_",key)] <- covariates[[key]]$value[s]
+          }
+        }
+      }
     }
 
     if("regimen_multiple" %in% class(regimen) || !is.null(adherence)) {
