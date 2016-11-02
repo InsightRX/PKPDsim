@@ -12,7 +12,20 @@
 #' @param state_init state init vector
 #' @param verbose show more output
 #' @export
-compile_sim_cpp <- function(code, pk_code, size, p, cpp_show_code, code_init = NULL, state_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
+compile_sim_cpp <- function(
+  code,
+  dose_code,
+  pk_code,
+  size,
+  p,
+  cpp_show_code,
+  code_init = NULL,
+  state_init = NULL,
+  declare_variables = NULL,
+  covariates = NULL,
+  obs = NULL,
+  dose = NULL,
+  verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -120,8 +133,9 @@ compile_sim_cpp <- function(code, pk_code, size, p, cpp_show_code, code_init = N
   idx6 <- grep("observation compartment", cpp_code)
   idx7 <- grep("insert scale definition for observation", cpp_code)
   idx8 <- grep("insert time-dependent covariates scale", cpp_code)
-  idx9 <- grep("insert custom dosing code", cpp_code)
+  idx9 <- grep("insert custom pk event code", cpp_code)
   idx10 <- grep("insert bioav definition", cpp_code)
+  idx11 <- grep("insert custom dosing event code", cpp_code)
   if(is.null(obs)) {
     cpp_code[idx5] <- "    double scale = 1;"
     cpp_code[idx6] <- "  int cmt = 0;"
@@ -134,10 +148,13 @@ compile_sim_cpp <- function(code, pk_code, size, p, cpp_show_code, code_init = N
     cpp_code[idx8] <- cov_scale
   }
   if(!is.null(pk_code)) {
-    cpp_code[idx9] <- pk_code
+    cpp_code[idx9] <- shift_state_indices(pk_code, -1)
   }
   if(!is.null(dose$bioav)) {
     cpp_code[idx10] <- paste0("      bioav[i] = ", dose$bioav, ";")
+  }
+  if(!is.null(dose_code)) {
+    cpp_code[idx11] <- shift_state_indices(dose_code, -1)
   }
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),

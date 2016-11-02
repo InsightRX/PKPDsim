@@ -22,3 +22,13 @@ get_size_ode <- function(ode, p) {
 as.num <- function(x) {
   as.numeric(as.character(x))
 }
+
+cleanup_code <- function(code) {
+  if(!is.null(code)) {
+    code <- gsub("\\r\\n", "\n", code)
+    code <- gsub("\\n", ";\n", code)
+    code <- gsub("$", ";\n", code)
+    code <- gsub("^;", "", code)
+  }
+  return(code)
+}

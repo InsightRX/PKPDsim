@@ -4,18 +4,20 @@
 \alias{new_ode_model}
 \title{Create new ODE model}
 \usage{
-new_ode_model(model = NULL, code = NULL, pk_code = NULL, file = NULL,
-  func = NULL, state_init = NULL, parameters = NULL, size = NULL,
-  lagtime = NULL, obs = list(cmt = 1, scale = 1), dose = list(cmt = 1),
-  covariates = NULL, declare_variables = NULL, cpp_show_code = FALSE,
-  verbose = FALSE)
+new_ode_model(model = NULL, code = NULL, pk_code = NULL,
+  dose_code = NULL, file = NULL, func = NULL, state_init = NULL,
+  parameters = NULL, size = NULL, lagtime = NULL, obs = list(cmt = 1,
+  scale = 1), dose = list(cmt = 1), covariates = NULL,
+  declare_variables = NULL, cpp_show_code = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{model}{model name from model library}
 
 \item{code}{C++ code specifying ODE system}
 
-\item{pk_code}{C++ code called at dose event}
+\item{pk_code}{C++ code called at any event}
+
+\item{dose_code}{C++ code called at dose event only}
 
 \item{file}{file containing C++ code}
 

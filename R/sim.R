@@ -12,7 +12,7 @@
 #' @param regimen a regimen object created using the regimen() function
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
-#' @param covariates list of covariate values to be passed to ODE function
+#' @param covariates list of covariate values (for single individual) to be passed to ODE function
 #' @param only_obs only return the observations
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator

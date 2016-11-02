@@ -34,7 +34,7 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{adherence}{List specifying adherence. Simulates adherence using either markov model or binomial sampling.}
 
-\item{covariates}{list of covariate values to be passed to ODE function}
+\item{covariates}{list of covariate values (for single individual) to be passed to ODE function}
 
 \item{covariate_model}{feature not implemented yet.}
 

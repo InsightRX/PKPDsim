@@ -75,10 +75,12 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
       memset(rate, 0, sizeof(rate));
       rate[dose_cmt[i]-1] = rates[i];
+      // insert custom dosing event code
     }
 
     // insert covariates for integration period
     // insert scale definition for integration period
+    // insert custom pk event code
 
     start = 0;
     if(i > 0) {
@@ -88,7 +90,6 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
       t_prv_dose = times[i];
       prv_dose = doses[i];
       // insert bioav definition
-      // insert custom dosing code
       if(dose_type[i] == 0) { // bolus
         Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav[i];
         start = 0;

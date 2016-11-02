@@ -2,7 +2,8 @@
 #'
 #' @param model model name from model library
 #' @param code C++ code specifying ODE system
-#' @param pk_code C++ code called at dose event
+#' @param pk_code C++ code called at any event
+#' @param dose_code C++ code called at dose event only
 #' @param file file containing C++ code
 #' @param func R function to be used with deSolve library
 #' @param state_init vector of state init
@@ -18,6 +19,7 @@
 new_ode_model <- function (model = NULL,
                            code = NULL,
                            pk_code = NULL,
+                           dose_code = NULL,
                            file = NULL,
                            func = NULL,
                            state_init = NULL,
@@ -118,20 +120,14 @@ new_ode_model <- function (model = NULL,
                              paste0("t_prv_", cov_names))
     }
     code_orig <- code
-    code <- gsub("\\r\\n", "\n", code)
-    code <- gsub("\\n", ";\n", code)
-    code <- gsub("$", ";\n", code)
-    code <- gsub("^;", "", code)
-    if(!is.null(pk_code)) {
-      pk_code <- gsub("\\r\\n", "\n", pk_code)
-      pk_code <- gsub("\\n", ";\n", pk_code)
-      pk_code <- gsub("$", ";\n", pk_code)
-      pk_code <- gsub("^;", "", pk_code)
-    }
-    cmp <- compile_sim_cpp(code,
-                           pk_code,
-                           size,
-                           parameters,
+    code <- cleanup_code(code)
+    pk_code <- cleanup_code(pk_code)
+    dose_code <- cleanup_code(dose_code)
+    cmp <- compile_sim_cpp(code = code,
+                           pk_code = pk_code,
+                           dose_code = dose_code,
+                           size = size,
+                           p = parameters,
                            cpp_show_code = cpp_show_code,
                            code_init = code_init_text,
                            state_init = state_init,
