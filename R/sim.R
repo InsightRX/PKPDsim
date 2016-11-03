@@ -13,6 +13,7 @@
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
 #' @param covariates list of covariate values (for single individual) to be passed to ODE function
+#' @param covariates_population unnamed list of named lists of covariate values to be passed to ODE function
 #' @param only_obs only return the observations
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
@@ -20,7 +21,7 @@
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
-#' @param extra_t_obs_bolus include extra t_obs in output for bolus doses? E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.
+#' @param extra_t_obs include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param covariate_model feature not implemented yet.
 #' @param output_include list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.
@@ -80,7 +81,7 @@ sim <- function (ode = NULL,
                  regimen = NULL,
                  adherence = NULL,
                  covariates = NULL,
-                 covariate_model = NULL,
+                 covariates_population = NULL,
                  A_init = NULL,
                  only_obs = FALSE,
                  obs_step_size = 1,
@@ -89,19 +90,15 @@ sim <- function (ode = NULL,
                  t_obs = NULL,
                  t_tte = NULL,
                  duplicate_t_obs = FALSE,
-                 extra_t_obs_bolus = "auto",
+                 extra_t_obs = TRUE,
                  rtte = FALSE,
                  checks = TRUE,
                  verbose = FALSE,
                  output_include = list(parameters = FALSE, covariates = FALSE),
                  ...
                  ) {
-  if(extra_t_obs_bolus == "auto") {
-    if(is.null(t_obs)) {
-      extra_t_obs_bolus <- TRUE
-    } else {
-      extra_t_obs_bolus <- FALSE
-    }
+  if(!is.null(t_obs)) {
+    extra_t_obs <- FALSE # when t_obs specified manually, we want to return the exact requested timepoints without any duplicates
   }
   if (!is.null(omega)) {
     omega_mat <- triangle_to_full(omega)
@@ -126,6 +123,7 @@ sim <- function (ode = NULL,
   }
   comb <- list()
   p <- as.list(parameters)
+  t_obs_orig <- t_obs
   if(is.null(t_obs)) { # find reasonable default to output
     if(is.null(obs_step_size)) {
       if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
@@ -147,6 +145,14 @@ sim <- function (ode = NULL,
         } else {
           t_obs <- seq(from=0, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
         }
+      }
+    }
+    ## add timepoints at which covariate is changing to t_obs:
+    if(extra_t_obs) {
+      func <- function(x) { return(x$times) }
+      if(!is.null(covariates)) {
+        t_obs <- unique(c(t_obs, unique(unlist(lapply(covariates, func )))))
+        t_obs <- t_obs[order(t_obs)]
       }
     }
   }
@@ -198,6 +204,9 @@ sim <- function (ode = NULL,
       }
     }
     if(!is.null(covariates)) {
+      if(!is.null(covariates_population)) {
+        stop("Both `covariates and `covariates_population` are specified!")
+      }
       if(class(covariates) != "list") {
         stop("Covariates need to be specified as a list!")
       } else {
@@ -209,6 +218,12 @@ sim <- function (ode = NULL,
           }
         }
       }
+    }
+    if(!is.null(covariates_population)) {
+      if(length(covariates_population) != n_ind) {
+        n_ind <- length(covariates_population)
+      }
+      message(paste0("Simulating ", n_ind, " individuals from covariate definitions."))
     }
     ## check parameters specified
     pars_ode <- attr(ode, "parameters")
@@ -224,8 +239,13 @@ sim <- function (ode = NULL,
     }
     covs_ode <- attr(ode, "covariates")
     if(!is.null(covs_ode)) {
-      if(!all(covs_ode %in% c(names(covariates)))) {
-        m <- match(names(covariates), covs_ode)
+      if(!is.null(covariates_population)) {
+        covariates_tmp <- covariates_population[[1]]
+      } else {
+        covariates_tmp <- covariates
+      }
+      if(!all(covs_ode %in% c(names(covariates_tmp)))) {
+        m <- match(names(covariates_tmp), covs_ode)
         if(length(m) == 0) {
           missing <- covs_ode
         } else {
@@ -254,7 +274,11 @@ sim <- function (ode = NULL,
   if("regimen_multiple" %in% class(regimen)) {
     n_ind <- length(regimen)
   } else {
-    design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates, ode)
+    if(is.null(covariates_population)) {
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates, ode)
+    } else {
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates[[1]], ode)
+    }
     design_i <- design
     p$dose_times <- regimen$dose_times
     p$dose_amts <- regimen$dose_amts
@@ -264,11 +288,19 @@ sim <- function (ode = NULL,
   }
   events <- c() # only for tte
   comb <- c()
-
+  if("regimen_multiple" %in% class(regimen) && !is.null(covariates_population)) {
+    stop("Sorry, can't simulate multiple regimens for a population in single call to PKPDsim. Use a loop instead.")
+  }
   for (i in 1:n_ind) {
     p_i <- p
+    if(!is.null(covariates_population)) {
+      covariates_tmp <- covariates_population[[1]]
+      design_i <- parse_regimen(regimen, t_max, t_obs, t_tte, p_i, covariates_population[[i]])
+    } else {
+      covariates_tmp <- covariates
+    }
     if("regimen_multiple" %in% class(regimen)) {
-      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates)
+      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates_tmp)
       if("regimen_multiple" %in% class(regimen)) {
         p_i$dose_times <- regimen[[i]]$dose_times
         p_i$dose_amts <- regimen[[i]]$dose_amts
@@ -334,15 +366,15 @@ sim <- function (ode = NULL,
 
     ## Add parameters and covariates, if needed. Implementation is slow, can be improved.
     if(!is.null(output_include$parameters) && output_include$parameters) {
-      dat_ind <- as.matrix(merge(dat_ind, p_i[1:nrow(omega_mat)]))
+      dat_ind <- as.matrix(merge(dat_ind, p_i[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]))
     }
 
     if(!is.null(output_include$covariates) && output_include$covariates) {
-      dat_ind <- as.matrix(merge(dat_ind, design_i[1,paste0("cov_", names(covariates))]))
-      for(key in names(covariates)) {
-        if(length(covariates[[key]]$value) > 1) { # timevarying covariates
-          for(s in 2:length(covariates[[key]]$times)) {
-            dat_ind[as.num(dat_ind[,2]) >= covariates[[key]]$times[s], paste0("cov_",key)] <- covariates[[key]]$value[s]
+      dat_ind <- as.matrix(merge(dat_ind, design_i[1,paste0("cov_", names(covariates_tmp))]))
+      for(key in names(covariates_tmp)) {
+        if(length(covariates_tmp[[key]]$value) > 1) { # timevarying covariates
+          for(s in 2:length(covariates_tmp[[key]]$times)) {
+            dat_ind[as.num(dat_ind[,2]) >= covariates_tmp[[key]]$times[s], paste0("cov_",key)] <- covariates_tmp[[key]]$value[s]
           }
         }
       }
@@ -354,6 +386,8 @@ sim <- function (ode = NULL,
       if(i == 1) {
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
+      } else {
+#        browser()
       }
       comb[((i-1)*l_mat)+(1:l_mat),1:length(dat_ind[1,])] <- dat_ind
     }
@@ -364,11 +398,11 @@ sim <- function (ode = NULL,
   comb <- data.frame(comb)
   par_names <- NULL
   if(!is.null(output_include$parameters) && output_include$parameters) {
-    par_names <- names(p_i[1:nrow(omega_mat)])
+    par_names <- names(p_i)[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]
   }
   cov_names <- NULL
   if(!is.null(output_include$covariates) && output_include$covariates) {
-    cov_names <- names(covariates)
+    cov_names <- names(covariates_tmp)
   }
   colnames(comb) <- c("id", "t", "comp", "y", par_names, cov_names)
 
@@ -394,8 +428,8 @@ sim <- function (ode = NULL,
   for(key in col_names) {
     comb[[key]] <- as.num(comb[[key]])
   }
-  if(!extra_t_obs_bolus) { ## include the observations at which a bolus dose is added into the output object too
-    # comb <- comb %>% dplyr::group_by(id, comp) %>% dplyr::distinct(t)) # we do need to filter out the bolus dose observations
+  if(!extra_t_obs) {
+    ## include the observations at which a bolus dose is added into the output object too
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
   } else { # only remove duplicates at t=0
     comb <- comb[!(duplicated(paste(comb$id, comb$comp, comb$t, sep="_")) & comb$t == 0),]
