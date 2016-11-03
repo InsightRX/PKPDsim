@@ -11,6 +11,7 @@ Imports:
     Rcpp,
     BH,
     dplyr,
+    data.table,
     MASS,
     lubridate,
     MASS,

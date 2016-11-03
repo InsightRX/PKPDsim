@@ -12,8 +12,9 @@
 #' @param regimen a regimen object created using the regimen() function
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
-#' @param covariates list of covariate values (for single individual) to be passed to ODE function
-#' @param covariates_population unnamed list of named lists of covariate values to be passed to ODE function
+#' @param covariates list of covariates (for single individual) created using `new_covariate()` function
+#' @param covariates_population data.frame (or unnamed list of named lists per individual) of covariate values to be passed to ODE function
+#' @param covariates_implementation used only for `covariates_poupulation`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`
 #' @param only_obs only return the observations
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
@@ -26,6 +27,8 @@
 #' @param covariate_model feature not implemented yet.
 #' @param output_include list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.
 #' @param checks perform input checks? Default is TRUE. For calculations where sim_ode is invoked many times (e.g. population estimation, optimal design) it makes sense to switch this to FALSE (after confirming the input is correct) to improve speed.
+#' @param as_date output time as datetime? FALSE by default
+#' @param base_date base date to use when using as_date. Will use current time if NULL (default)
 #' @param verbose show more output
 #' @param ... extra parameters
 #' @return a data frame of compartments with associated concentrations at requested times
@@ -82,6 +85,7 @@ sim <- function (ode = NULL,
                  adherence = NULL,
                  covariates = NULL,
                  covariates_population = NULL,
+                 covariates_implementation = list(),
                  A_init = NULL,
                  only_obs = FALSE,
                  obs_step_size = 1,
@@ -220,6 +224,12 @@ sim <- function (ode = NULL,
       }
     }
     if(!is.null(covariates_population)) {
+      if(class(covariates_population) %in% c("data.frame", "data.table")) {
+        covariates_population <- covariate_table_to_list(covariates_population, covariates_implementation)
+      }
+      if(class(covariates_population) != "list") {
+        stop("Sorry, covariates for population seem to be misspecified. See manual for more information.")
+      }
       if(length(covariates_population) != n_ind) {
         n_ind <- length(covariates_population)
       }
@@ -380,18 +390,15 @@ sim <- function (ode = NULL,
       }
     }
 
-    if("regimen_multiple" %in% class(regimen) || !is.null(adherence)) {
-      comb <- rbind(comb, dat_ind)
+    if("regimen_multiple" %in% class(regimen) || !is.null(adherence) || !is.null(covariates_population)) {
+      comb <- data.table::rbindlist(list(comb, data.table::as.data.table(dat_ind)))
     } else {
-      if(i == 1) {
+      if(i == 1) { ## faster way: data.frame with prespecified length
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
-      } else {
-#        browser()
       }
       comb[((i-1)*l_mat)+(1:l_mat),1:length(dat_ind[1,])] <- dat_ind
     }
-
   }
 
   # Add concentration to dataset, and perform scaling and/or transformation:
@@ -405,25 +412,6 @@ sim <- function (ode = NULL,
     cov_names <- names(covariates_tmp)
   }
   colnames(comb) <- c("id", "t", "comp", "y", par_names, cov_names)
-
-  ## following code disactivated for now, no tte functionality
-  # if(length(events) > 0) {
-  #   events <- data.frame(events)
-  #   events <- events[!duplicated(paste0(events$id, "_", events$t)),]
-  #   ids <- unique(comb$id)
-  #   if(!rtte) { # no repeated TTE
-  #     events <- events[!duplicated(events$id),]
-  #     ids_ev <- unique(events[,1])
-  #   } else {
-  #     ids_ev <- unique(events[events[,2] == max(t_tte),1])
-  #   }
-  #   cens <- setdiff(ids, ids_ev) # censor individuals who didn't have event on last obs day
-  #   comb <- rbind(comb, cbind(events, comp="event", y = 1))
-  #   if(length(cens)>0) {
-  #     comb <- rbind(comb, cbind(id = cens, t = max(comb$t), comp="event", y=0))
-  #   }
-  # }
-
   col_names <- c("id", "t", "y", par_names, cov_names)
   for(key in col_names) {
     comb[[key]] <- as.num(comb[[key]])
@@ -436,13 +424,13 @@ sim <- function (ode = NULL,
   }
   grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
   colnames(grid) <- c("t", "id", "comp")
-  suppressMessages({
+  suppressWarnings(suppressMessages( ## left join is a bit too chatty
     if(!is.null(par_names) || !is.null(cov_names)) {
       comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", par_names, cov_names)]
     } else {
       comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y")]
     }
-  })
+  ))
 
   if(!is.null(regimen_orig$ss_regimen)) {
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval

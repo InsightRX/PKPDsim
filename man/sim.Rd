@@ -7,11 +7,12 @@
 sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
   omega_type = "exponential", res_var = NULL, sequence = NULL,
   n_ind = 1, regimen = NULL, adherence = NULL, covariates = NULL,
-  covariate_model = NULL, A_init = NULL, only_obs = FALSE,
-  obs_step_size = 1, int_step_size = 0.1, t_max = NULL, t_obs = NULL,
-  t_tte = NULL, duplicate_t_obs = FALSE, extra_t_obs_bolus = "auto",
-  rtte = FALSE, checks = TRUE, verbose = FALSE,
-  output_include = list(parameters = FALSE, covariates = FALSE), ...)
+  covariates_population = NULL, covariates_implementation = list(),
+  A_init = NULL, only_obs = FALSE, obs_step_size = 1,
+  int_step_size = 0.1, t_max = NULL, t_obs = NULL, t_tte = NULL,
+  duplicate_t_obs = FALSE, extra_t_obs = TRUE, rtte = FALSE,
+  checks = TRUE, verbose = FALSE, output_include = list(parameters =
+  FALSE, covariates = FALSE), ...)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
@@ -34,9 +35,11 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{adherence}{List specifying adherence. Simulates adherence using either markov model or binomial sampling.}
 
-\item{covariates}{list of covariate values (for single individual) to be passed to ODE function}
+\item{covariates}{list of covariates (for single individual) created using `new_covariate()` function}
 
-\item{covariate_model}{feature not implemented yet.}
+\item{covariates_population}{data.frame (or unnamed list of named lists per individual) of covariate values to be passed to ODE function}
+
+\item{covariates_implementation}{used only for `covariates_poupulation`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`}
 
 \item{A_init}{vector with the initial state of the ODE system}
 
@@ -54,7 +57,7 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 
-\item{extra_t_obs_bolus}{include extra t_obs in output for bolus doses? E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.}
+\item{extra_t_obs}{include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.}
 
 \item{rtte}{should repeated events be allowed (FALSE by default)}
 
@@ -65,6 +68,12 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 \item{output_include}{list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.}
 
 \item{...}{extra parameters}
+
+\item{covariate_model}{feature not implemented yet.}
+
+\item{as_date}{output time as datetime? FALSE by default}
+
+\item{base_date}{base date to use when using as_date. Will use current time if NULL (default)}
 }
 \value{
 a data frame of compartments with associated concentrations at requested times
