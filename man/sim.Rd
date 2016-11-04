@@ -23,7 +23,7 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
-\item{omega_type}{exponential or normal}
+\item{omega_type}{exponential or normal, specified as vector}
 
 \item{res_var}{residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.}
 

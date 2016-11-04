@@ -5,7 +5,7 @@
 #' @param analytical analytical equation (function)
 #' @param parameters model parameters
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
-#' @param omega_type exponential or normal
+#' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
 #' @param sequence for simulations, if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
@@ -105,7 +105,12 @@ sim <- function (ode = NULL,
     extra_t_obs <- FALSE # when t_obs specified manually, we want to return the exact requested timepoints without any duplicates
   }
   if (!is.null(omega)) {
-    omega_mat <- triangle_to_full(omega)
+    if(class(omega) == "matrix") {
+      omega_mat <- omega
+    }
+    if(class(omega) %in% c("numeric", "integer")) {
+      omega_mat <- triangle_to_full(omega)
+    }
     etas   <- mvrnorm2(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat, sequence=sequence)
     if( n_ind == 1) {
       etas <- t(matrix(etas))
