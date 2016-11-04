@@ -13,8 +13,8 @@
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
 #' @param covariates list of covariates (for single individual) created using `new_covariate()` function
-#' @param covariates_population data.frame (or unnamed list of named lists per individual) of covariate values to be passed to ODE function
-#' @param covariates_implementation used only for `covariates_poupulation`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`
+#' @param covariates_table data.frame (or unnamed list of named lists per individual) with covariate values
+#' @param covariates_implementation used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`
 #' @param only_obs only return the observations
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
@@ -84,7 +84,7 @@ sim <- function (ode = NULL,
                  regimen = NULL,
                  adherence = NULL,
                  covariates = NULL,
-                 covariates_population = NULL,
+                 covariates_table = NULL,
                  covariates_implementation = list(),
                  A_init = NULL,
                  only_obs = FALSE,
@@ -208,8 +208,8 @@ sim <- function (ode = NULL,
       }
     }
     if(!is.null(covariates)) {
-      if(!is.null(covariates_population)) {
-        stop("Both `covariates and `covariates_population` are specified!")
+      if(!is.null(covariates_table)) {
+        stop("Both `covariates and `covariates_table` are specified!")
       }
       if(class(covariates) != "list") {
         stop("Covariates need to be specified as a list!")
@@ -223,15 +223,15 @@ sim <- function (ode = NULL,
         }
       }
     }
-    if(!is.null(covariates_population)) {
-      if(class(covariates_population) %in% c("data.frame", "data.table")) {
-        covariates_population <- covariate_table_to_list(covariates_population, covariates_implementation)
+    if(!is.null(covariates_table)) {
+      if(class(covariates_table) %in% c("data.frame", "data.table")) {
+        covariates_table <- covariates_table_to_list(covariates_table, covariates_implementation)
       }
-      if(class(covariates_population) != "list") {
+      if(class(covariates_table) != "list") {
         stop("Sorry, covariates for population seem to be misspecified. See manual for more information.")
       }
-      if(length(covariates_population) != n_ind) {
-        n_ind <- length(covariates_population)
+      if(length(covariates_table) != n_ind) {
+        n_ind <- length(covariates_table)
       }
       message(paste0("Simulating ", n_ind, " individuals from covariate definitions."))
     }
@@ -249,8 +249,8 @@ sim <- function (ode = NULL,
     }
     covs_ode <- attr(ode, "covariates")
     if(!is.null(covs_ode)) {
-      if(!is.null(covariates_population)) {
-        covariates_tmp <- covariates_population[[1]]
+      if(!is.null(covariates_table)) {
+        covariates_tmp <- covariates_table[[1]]
       } else {
         covariates_tmp <- covariates
       }
@@ -284,7 +284,7 @@ sim <- function (ode = NULL,
   if("regimen_multiple" %in% class(regimen)) {
     n_ind <- length(regimen)
   } else {
-    if(is.null(covariates_population)) {
+    if(is.null(covariates_table)) {
       design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates, ode)
     } else {
       design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates[[1]], ode)
@@ -298,14 +298,14 @@ sim <- function (ode = NULL,
   }
   events <- c() # only for tte
   comb <- c()
-  if("regimen_multiple" %in% class(regimen) && !is.null(covariates_population)) {
+  if("regimen_multiple" %in% class(regimen) && !is.null(covariates_table)) {
     stop("Sorry, can't simulate multiple regimens for a population in single call to PKPDsim. Use a loop instead.")
   }
   for (i in 1:n_ind) {
     p_i <- p
-    if(!is.null(covariates_population)) {
-      covariates_tmp <- covariates_population[[1]]
-      design_i <- parse_regimen(regimen, t_max, t_obs, t_tte, p_i, covariates_population[[i]])
+    if(!is.null(covariates_table)) {
+      covariates_tmp <- covariates_table[[1]]
+      design_i <- parse_regimen(regimen, t_max, t_obs, t_tte, p_i, covariates_table[[i]])
     } else {
       covariates_tmp <- covariates
     }
@@ -390,7 +390,7 @@ sim <- function (ode = NULL,
       }
     }
 
-    if("regimen_multiple" %in% class(regimen) || !is.null(adherence) || !is.null(covariates_population)) {
+    if("regimen_multiple" %in% class(regimen) || !is.null(adherence) || !is.null(covariates_table)) {
       comb <- data.table::rbindlist(list(comb, data.table::as.data.table(dat_ind)))
     } else {
       if(i == 1) { ## faster way: data.frame with prespecified length

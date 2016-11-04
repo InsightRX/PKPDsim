@@ -4,7 +4,7 @@
 #' @param covariates_table `data.frame`` with covariates in columns. Potentially with `id` and `t` columns
 #' @param covariates_implementation `list` with implementation method per covariate
 #' @export
-covariate_table_to_list <- function(covariates_table, covariates_implementation = list()) {
+covariates_table_to_list <- function(covariates_table, covariates_implementation = list()) {
   covs <- list()
   names(cov_table)[names(cov_table) == "ID"] <- "id" # NONMEM syntax
   names(cov_table)[names(cov_table) == "TIME"] <- "t" # NONMEM syntax

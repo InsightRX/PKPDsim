@@ -7,7 +7,7 @@
 sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
   omega_type = "exponential", res_var = NULL, sequence = NULL,
   n_ind = 1, regimen = NULL, adherence = NULL, covariates = NULL,
-  covariates_population = NULL, covariates_implementation = list(),
+  covariates_table = NULL, covariates_implementation = list(),
   A_init = NULL, only_obs = FALSE, obs_step_size = 1,
   int_step_size = 0.1, t_max = NULL, t_obs = NULL, t_tte = NULL,
   duplicate_t_obs = FALSE, extra_t_obs = TRUE, rtte = FALSE,
@@ -37,9 +37,9 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{covariates}{list of covariates (for single individual) created using `new_covariate()` function}
 
-\item{covariates_population}{data.frame (or unnamed list of named lists per individual) of covariate values to be passed to ODE function}
+\item{covariates_table}{data.frame (or unnamed list of named lists per individual) with covariate values}
 
-\item{covariates_implementation}{used only for `covariates_poupulation`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`}
+\item{covariates_implementation}{used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`}
 
 \item{A_init}{vector with the initial state of the ODE system}
 
