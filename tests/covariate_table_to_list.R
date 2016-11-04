@@ -22,7 +22,7 @@ pk1 <- new_ode_model(
   ",
   dose = list(cmt = 1, bioav = 1),
   obs = list(cmt = 1, scale = "V"),
-  cpp_show_code = T,
+  cpp_show_code = F,
   dose_code = "rate[1] = rate[1] / V",
   parameters = p, covariates=c("SCR", "WT"))
 
