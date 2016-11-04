@@ -33,7 +33,7 @@ new_ode_model <- function (model = NULL,
                            cpp_show_code = FALSE,
                            verbose = FALSE) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
-    stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are availabler in the default library:\n  ", model_library()))
+    stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
   }
   if (!is.null(func)) { # R function supplied, use deSolve approach
     if(class(func) != "function") {
