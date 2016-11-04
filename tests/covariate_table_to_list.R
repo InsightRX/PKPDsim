@@ -2,6 +2,8 @@
 library(PKPDsim)
 library(testit)
 
+Sys.setenv("R_TESTS" = "")
+
 cov_table <- data.frame(id=c(1,1,2,3), WT = c(40, 45, 50, 60), SCR = c(50, 150, 90,110), t = c(0, 5, 0, 0))
 test1 <- covariates_table_to_list(cov_table)
 assert(length(test1) == 3)

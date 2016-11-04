@@ -29,6 +29,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 
 \item{size}{size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.}
 
+\item{lagtime}{lag time}
+
 \item{obs}{list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment}
 
 \item{dose}{specify default dose compartment, e.g. list(cmt = 1)}

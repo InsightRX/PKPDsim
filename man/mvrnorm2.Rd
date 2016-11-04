@@ -9,6 +9,8 @@ mvrnorm2(n, mu, Sigma, exponential = FALSE, sequence = NULL, ...)
 \arguments{
 \item{n}{number of samples}
 
+\item{mu}{mean}
+
 \item{Sigma}{covariance matrix}
 
 \item{exponential}{exponential distribution (i.e. multiply mu by exponential of sampled numbers)}

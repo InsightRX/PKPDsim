@@ -11,7 +11,9 @@ compile_sim_cpp(code, dose_code, pk_code, size, p, cpp_show_code,
 \arguments{
 \item{code}{C++ code ODE system}
 
-\item{pk_code}{C++ code per event ($PK)}
+\item{dose_code}{C++ code per dose event}
+
+\item{pk_code}{C++ code per any event (similar to $PK)}
 
 \item{size}{size of ODE system}
 

@@ -9,6 +9,7 @@
 #' @param state_init vector of state init
 #' @param parameters list or vector of parameter values
 #' @param size size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.
+#' @param lagtime lag time
 #' @param obs list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment
 #' @param dose specify default dose compartment, e.g. list(cmt = 1)
 #' @param covariates specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)

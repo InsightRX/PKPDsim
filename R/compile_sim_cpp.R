@@ -1,6 +1,7 @@
 #' Compile ODE model to c++ function
 #' @param code C++ code ODE system
-#' @param pk_code C++ code per event ($PK)
+#' @param dose_code C++ code per dose event
+#' @param pk_code C++ code per any event (similar to $PK)
 #' @param size size of ODE system
 #' @param p parameters (list)
 #' @param cpp_show_code show output c++ function?

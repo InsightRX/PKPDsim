@@ -5,6 +5,7 @@
 #' all using the same interface.
 #'
 #' @param n number of samples
+#' @param mu mean
 #' @param Sigma covariance matrix
 #' @param exponential exponential distribution (i.e. multiply mu by exponential of sampled numbers)
 #' @param sequence any sequence available in the randtoolbox, e.g. `halton`, or `sobol`

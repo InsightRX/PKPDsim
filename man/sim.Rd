@@ -68,12 +68,6 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 \item{output_include}{list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.}
 
 \item{...}{extra parameters}
-
-\item{covariate_model}{feature not implemented yet.}
-
-\item{as_date}{output time as datetime? FALSE by default}
-
-\item{base_date}{base date to use when using as_date. Will use current time if NULL (default)}
 }
 \value{
 a data frame of compartments with associated concentrations at requested times
