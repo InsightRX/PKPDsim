@@ -5,30 +5,30 @@
 #' @param covariates_implementation `list` with implementation method per covariate
 #' @export
 covariates_table_to_list <- function(covariates_table, covariates_implementation = list()) {
-  covs <- list()
-  names(cov_table)[names(cov_table) == "ID"] <- "id" # NONMEM syntax
-  names(cov_table)[names(cov_table) == "TIME"] <- "t" # NONMEM syntax
-  names(cov_table)[names(cov_table) == "time"] <- "t"
-  if(!"id" %in% names(cov_table)) {
-    cov_table$id <- 1:length(cov_table)
+  covs_obj <- list()
+  names(covariates_table)[names(covariates_table) == "ID"] <- "id" # NONMEM syntax
+  names(covariates_table)[names(covariates_table) == "TIME"] <- "t" # NONMEM syntax
+  names(covariates_table)[names(covariates_table) == "time"] <- "t"
+  if(!"id" %in% names(covariates_table)) {
+    covariates_table$id <- 1:length(covariates_table)
   }
-  if(!"t" %in% names(cov_table)) {
-    cov_table$t <- 0
+  if(!"t" %in% names(covariates_table)) {
+    covariates_table$t <- 0
   }
-  m <- match(c("id", "t"), colnames(cov_table))
-  ids <- unique(cov_table$id)
+  m <- match(c("id", "t"), colnames(covariates_table))
+  covs <- colnames(covariates_table)[-m]
+  ids <- unique(covariates_table$id)
   for(i in seq(ids)) {
-    tmp <- cov_table[cov_table$id == ids[i],]
-    cov_tmp <- tmp[, -m]
+    tmp <- covariates_table[covariates_table$id == ids[i],]
     l <- list()
-    for(j in seq(names(cov_tmp))) {
+    for(j in seq(covs)) {
       implementation <- "interpolate"
-      if(!is.null(covariates_implementation[[names(cov_tmp)[j]]])) {
-        implementation <- covariates_implementation[[names(cov_tmp)[j]]]
+      if(!is.null(covariates_implementation[[covs[j]]])) {
+        implementation <- covariates_implementation[[covs[j]]]
       }
-      l[[names(cov_tmp)[j]]] <- new_covariate(value = cov_tmp[,j], times = tmp$t, implementation = implementation)
+      l[[covs[j]]] <- new_covariate(value = tmp[,covs[j]], times = tmp$t, implementation = implementation)
     }
-    covs[[i]] <- l
+    covs_obj[[i]] <- l
   }
-  return(covs)
+  return(covs_obj)
 }

@@ -382,7 +382,7 @@ sim <- function (ode = NULL,
     }
 
     if(!is.null(output_include$covariates) && output_include$covariates) {
-      dat_ind <- as.matrix(merge(dat_ind, design_i[1,paste0("cov_", names(covariates_tmp))]))
+      dat_ind <- as.matrix(merge(dat_ind, data.frame(design_i[1,paste0("cov_", names(covariates_tmp))])))
       for(key in names(covariates_tmp)) {
         if(length(covariates_tmp[[key]]$value) > 1) { # timevarying covariates
           for(s in 2:length(covariates_tmp[[key]]$times)) {
