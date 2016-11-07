@@ -7,7 +7,8 @@
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
-#' @param sequence for simulations, if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
+#' @param seed set seed for reproducible results
+#' @param sequence if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
 #' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
@@ -76,6 +77,7 @@ sim <- function (ode = NULL,
                  omega = NULL,
                  omega_type = "exponential",
                  res_var = NULL,
+                 seed = NULL,
                  sequence = NULL,
                  n_ind = 1,
                  regimen = NULL,
@@ -100,6 +102,9 @@ sim <- function (ode = NULL,
                  ) {
   if(!is.null(t_obs)) {
     extra_t_obs <- FALSE # when t_obs specified manually, we want to return the exact requested timepoints without any duplicates
+  }
+  if(!is.null(seed)) {
+    set.seed(seed)
   }
   if (!is.null(omega)) {
     if(class(omega) == "matrix") {
