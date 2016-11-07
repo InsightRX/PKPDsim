@@ -161,7 +161,7 @@ sim <- function (ode = NULL,
     ## add timepoints at which covariate is changing to t_obs:
     if(extra_t_obs) {
       func <- function(x) { return(x$times) }
-      if(!is.null(covariates)) {
+      if(!is.null(covariates) && !is.null(covariates$times)) {
         t_obs <- unique(c(t_obs, unique(unlist(lapply(covariates, func )))))
         t_obs <- t_obs[order(t_obs)]
       }
