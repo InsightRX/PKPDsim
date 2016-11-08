@@ -106,18 +106,6 @@ sim <- function (ode = NULL,
   if(!is.null(seed)) {
     set.seed(seed)
   }
-  if (!is.null(omega)) {
-    if(class(omega) == "matrix") {
-      omega_mat <- omega
-    }
-    if(class(omega) %in% c("numeric", "integer")) {
-      omega_mat <- triangle_to_full(omega)
-    }
-    etas   <- mvrnorm2(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat, sequence=sequence)
-    if( n_ind == 1) {
-      etas <- t(matrix(etas))
-    }
-  }
   if(!is.null(regimen$ss_regimen)) { ## prepend the doses to get to steady state
     regimen_orig <- regimen
     regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
@@ -279,6 +267,18 @@ sim <- function (ode = NULL,
     }
   } else {
     size <- attr(ode, "size")
+  }
+  if (!is.null(omega)) {
+    if(class(omega) == "matrix") {
+      omega_mat <- omega
+    }
+    if(class(omega) %in% c("numeric", "integer")) {
+      omega_mat <- triangle_to_full(omega)
+    }
+    etas <- mvrnorm2(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat, sequence=sequence)
+    if(n_ind == 1) {
+      etas <- t(matrix(etas))
+    }
   }
   if (!is.null(adherence)) { ## varying regimen due to adherence
     tmp <- list()
