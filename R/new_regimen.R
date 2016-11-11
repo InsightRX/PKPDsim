@@ -59,7 +59,7 @@ new_regimen <- function(
     if (is.null(times) && !is.null(interval) && is.null(n)) {
       stop("The number of doses (n) must be specified in the regimen object.")
     }
-    if(is.null(t_inf)) {
+    if(is.null(t_inf) || length(t_inf) == 0 || is.na(t_inf)) {
       reg$t_inf = 1
     }
     if(any(reg$t_inf == 0)) {
