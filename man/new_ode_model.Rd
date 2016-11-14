@@ -9,7 +9,7 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   parameters = NULL, size = NULL, lagtime = NULL, obs = list(cmt = 1,
   scale = 1), dose = list(cmt = 1), covariates = NULL,
   declare_variables = NULL, cpp_show_code = FALSE, package = NULL,
-  folder = NULL, verbose = FALSE)
+  install = TRUE, folder = NULL, verbose = FALSE)
 }
 \arguments{
 \item{model}{model name from model library}

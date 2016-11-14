@@ -35,6 +35,7 @@ new_ode_model <- function (model = NULL,
                            declare_variables = NULL,
                            cpp_show_code = FALSE,
                            package = NULL,
+                           install = TRUE,
                            folder = NULL,
                            verbose = FALSE
                           ) {
@@ -179,7 +180,7 @@ new_ode_model <- function (model = NULL,
     ## save to library, if requested:
     if(!is.null(package)) {
       if(is.null(folder)) {
-        stop("Save as library requested but no `folder` specified.")
+        folder <- tempdir()
       }
 
       ## Copy template files
@@ -221,9 +222,11 @@ new_ode_model <- function (model = NULL,
       search_replace_in_file(paste0(new_folder, "/R/model.R"), repl[,1], repl[,2])
       search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/NAMESPACE"), "\\[MODULE\\]", package)
-      search_replace_in_file(paste0(new_folder, "/man/modulename-package.R"), "\\[MODULE\\]", package)
+      search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)
+      file.rename(paste0(new_folder, "/man/modulename-package.Rd"), paste0(new_folder, "/man/", package, ".Rd"))
 
       ## Compile / build / install
+      curr <- getwd()
       setwd(new_folder)
       if(file.exists(paste0(new_folder, "/R/RcppExports.R"))) {
         file.remove(paste0(new_folder, "/R/RcppExports.R"))
@@ -232,7 +235,20 @@ new_ode_model <- function (model = NULL,
         file.remove(paste0(new_folder, "/src/RcppExports.cpp"))
       }
       Rcpp::compileAttributes(".", )
-      system(paste0("R CMD INSTALL --no-multiarch --with-keep.source ."))
+      if(install) { # install into R
+        system(paste0("R CMD INSTALL --no-multiarch --with-keep.source ."))
+      } else { # build to zip file
+        system(paste0("R CMD build ."))
+        pkg_file <- paste0(new_folder, "/", package, "_1.0.tar.gz")
+        pkg_newfile <- paste0(curr, "/", package, "_PKPDsim.tar.gz")
+        if(file.exists(pkg_file)) {
+          file.copy(pkg_file, pkg_newfile)
+          message(paste0("Package built in: ", pkg_newfile))
+        } else {
+          message("Package not created.")
+        }
+      }
+      setwd(curr)
     }
 
   }
