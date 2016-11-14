@@ -1,0 +1,8 @@
+Package: [MODULE]
+Type: Package
+Title: Simulate PK-PD models
+Version: 0.1
+Description: Simulate PK-PD models
+License: MIT
+Imports: Rcpp (>= 0.11.5), BH
+LinkingTo: Rcpp (>= 0.11.5), BH

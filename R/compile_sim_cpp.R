@@ -11,6 +11,7 @@
 #' @param obs observation specification
 #' @param dose dose specification
 #' @param state_init state init vector
+#' @param compile compile or not?
 #' @param verbose show more output
 #' @export
 compile_sim_cpp <- function(
@@ -26,6 +27,7 @@ compile_sim_cpp <- function(
   covariates = NULL,
   obs = NULL,
   dose = NULL,
+  compile = TRUE,
   verbose = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
@@ -172,9 +174,12 @@ compile_sim_cpp <- function(
   if(length(grep("-w", flg)) == 0) {
     Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
   }
-  Rcpp::sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
-  Sys.setenv("PKG_CXXFLAGS" = flg)
+  if(compile) {
+    Rcpp::sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
+    Sys.setenv("PKG_CXXFLAGS" = flg)
+  }
   return(list(
-    ode = ode_def_cpp
+    ode = ode_def_cpp,
+    cpp = sim_func
   ))
 }

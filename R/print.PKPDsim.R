@@ -5,7 +5,7 @@
 #' @export
 print.PKPDsim <- function(x, ...) {
   cat(paste0("ODE definition: \n", attr(x, "code")), "\n")
-  if(!is.null(attr(x, "pk_code"))) {
+  if(!is.null(attr(x, "pk_code")) && attr(x, "pk_code") != "") {
     cat(paste0("PK event code: \n", attr(x, "pk_code")), "\n")
   }
   cat(paste0("Required parameters: ", paste(attr(x, "parameters"), collapse=", ")), "\n")

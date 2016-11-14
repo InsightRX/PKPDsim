@@ -8,7 +8,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   dose_code = NULL, file = NULL, func = NULL, state_init = NULL,
   parameters = NULL, size = NULL, lagtime = NULL, obs = list(cmt = 1,
   scale = 1), dose = list(cmt = 1), covariates = NULL,
-  declare_variables = NULL, cpp_show_code = FALSE, verbose = FALSE)
+  declare_variables = NULL, cpp_show_code = FALSE, package = NULL,
+  folder = NULL, verbose = FALSE)
 }
 \arguments{
 \item{model}{model name from model library}
@@ -40,6 +41,10 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{declare_variables}{declare variables}
 
 \item{cpp_show_code}{show generated C++ code}
+
+\item{package}{package name when saving as package}
+
+\item{folder}{base folder name to create package in}
 
 \item{verbose}{show more output}
 }

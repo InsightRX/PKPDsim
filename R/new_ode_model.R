@@ -15,6 +15,8 @@
 #' @param covariates specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)
 #' @param declare_variables declare variables
 #' @param cpp_show_code show generated C++ code
+#' @param package package name when saving as package
+#' @param folder base folder name to create package in
 #' @param verbose show more output
 #' @export
 new_ode_model <- function (model = NULL,
@@ -32,7 +34,10 @@ new_ode_model <- function (model = NULL,
                            covariates = NULL,
                            declare_variables = NULL,
                            cpp_show_code = FALSE,
-                           verbose = FALSE) {
+                           package = NULL,
+                           folder = NULL,
+                           verbose = FALSE
+                          ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
   }
@@ -124,6 +129,10 @@ new_ode_model <- function (model = NULL,
     code <- cleanup_code(code)
     pk_code <- cleanup_code(pk_code)
     dose_code <- cleanup_code(dose_code)
+    compile <- TRUE
+    if(!is.null(package)) { # don't compile if saving as library
+      compile = FALSE
+    }
     cmp <- compile_sim_cpp(code = code,
                            pk_code = pk_code,
                            dose_code = dose_code,
@@ -136,12 +145,8 @@ new_ode_model <- function (model = NULL,
                            covariates = covariates,
                            obs = obs,
                            dose = dose,
-                           verbose = verbose)
-    if(exists("sim_wrapper_cpp", envir = globalenv())) {
-      sim_out <- get("sim_wrapper_cpp")
-    } else {
-      message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
-    }
+                           verbose = verbose,
+                           compile = compile)
     reqd <- parameters
     if(!is.null(declare_variables)) {
       reqd <- reqd[!reqd %in% declare_variables]
@@ -149,19 +154,87 @@ new_ode_model <- function (model = NULL,
     if(!is.null(cov_names)) {
       reqd <- reqd[!reqd %in% cov_names]
     }
-    attr(sim_out, "code") <- code
-    if(!is.null(pk_code)) {
-      attr(sim_out, "pk_code") <- pk_code
+    if(compile) {
+      if(exists("sim_wrapper_cpp", envir = globalenv())) {
+        sim_out <- get("sim_wrapper_cpp")
+      } else {
+        message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
+      }
+      attr(sim_out, "code") <- code
+      if(!is.null(pk_code)) {
+        attr(sim_out, "pk_code") <- pk_code
+      }
+      attr(sim_out, "parameters") <- reqd
+      attr(sim_out, "covariates") <- cov_names
+      attr(sim_out, "variables") <- variables
+      attr(sim_out, "cpp")  <- TRUE
+      attr(sim_out, "size")  <- size
+      attr(sim_out, "obs")  <- obs
+      attr(sim_out, "dose") <- dose
+      attr(sim_out, "lagtime") <- lagtime
+      class(sim_out) <- c("PKPDsim", class(sim_out))
+      return(sim_out)
     }
-    attr(sim_out, "parameters") <- reqd
-    attr(sim_out, "covariates") <- cov_names
-    attr(sim_out, "variables") <- variables
-    attr(sim_out, "cpp")  <- TRUE
-    attr(sim_out, "size")  <- size
+
+    ## save to library, if requested:
+    if(!is.null(package)) {
+      if(is.null(folder)) {
+        stop("Save as library requested but no `folder` specified.")
+      }
+
+      ## Copy template files
+      new_folder <- paste0(folder, "/", package)
+      templ_folder <- paste0(system.file(package="PKPDsim"), "/template")
+      templ_folder <- paste0(templ_folder, "/", dir(templ_folder))
+      if(!file.exists(new_folder)) {
+        dir.create(new_folder)
+      }
+      file.copy(from = templ_folder, to = new_folder,
+                overwrite = TRUE, recursive = TRUE, copy.mode = FALSE)
+
+      ## Write new source file
+      fileConn <- file(paste0(new_folder, "/src/sim_wrapper_cpp.cpp"))
+      writeLines(cmp$cpp, fileConn)
+      close(fileConn)
+
+      ## Replace module name and other info
+      if(is.null(pk_code)) { pk_code <- "" }
+      if(is.null(lagtime)) { lagtime <- "" }
+      pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
+      covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
+      repl <- matrix(c("\\[MODULE\\]", package,
+                       "\\[N_COMP\\]", size,
+                       "\\[OBS_COMP\\]", obs$cmt,
+                       "\\[DOSE_COMP\\]", dose$cmt,
+                       "\\[OBS_SCALE\\]", obs$scale,
+                       "\\[DOSE_BIOAV\\]", dose$bioav,
+                       "\\[CODE\\]", code,
+                       "\\[PK_CODE\\]", pk_code,
+                       "\\[PARS\\]", pars,
+                       "\\[VARS\\]", "",
+                       "\\[COVS\\]", covs,
+                       "\\[LAGTIME\\]", lagtime
+      ), ncol=2, byrow=TRUE)
+      if(verbose) {
+        print(repl)
+      }
+      search_replace_in_file(paste0(new_folder, "/R/model.R"), repl[,1], repl[,2])
+      search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[MODULE\\]", package)
+      search_replace_in_file(paste0(new_folder, "/NAMESPACE"), "\\[MODULE\\]", package)
+      search_replace_in_file(paste0(new_folder, "/man/modulename-package.R"), "\\[MODULE\\]", package)
+
+      ## Compile / build / install
+      setwd(new_folder)
+      if(file.exists(paste0(new_folder, "/R/RcppExports.R"))) {
+        file.remove(paste0(new_folder, "/R/RcppExports.R"))
+      }
+      if(file.exists(paste0(new_folder, "/src/RcppExports.cpp"))) {
+        file.remove(paste0(new_folder, "/src/RcppExports.cpp"))
+      }
+      Rcpp::compileAttributes(".", )
+      system(paste0("R CMD INSTALL --no-multiarch --with-keep.source ."))
+    }
+
   }
-  attr(sim_out, "obs")  <- obs
-  attr(sim_out, "dose") <- dose
-  attr(sim_out, "lagtime") <- lagtime
-  class(sim_out) <- c("PKPDsim", class(sim_out))
-  return(sim_out)
+
 }

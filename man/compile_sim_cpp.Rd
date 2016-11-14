@@ -6,7 +6,8 @@
 \usage{
 compile_sim_cpp(code, dose_code, pk_code, size, p, cpp_show_code,
   code_init = NULL, state_init = NULL, declare_variables = NULL,
-  covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE)
+  covariates = NULL, obs = NULL, dose = NULL, compile = TRUE,
+  verbose = FALSE)
 }
 \arguments{
 \item{code}{C++ code ODE system}
@@ -32,6 +33,8 @@ compile_sim_cpp(code, dose_code, pk_code, size, p, cpp_show_code,
 \item{obs}{observation specification}
 
 \item{dose}{dose specification}
+
+\item{compile}{compile or not?}
 
 \item{verbose}{show more output}
 }

@@ -32,3 +32,38 @@ cleanup_code <- function(code) {
   }
   return(code)
 }
+
+#' Find string and replace in file
+#'
+#' @param files vector of files
+#' @param find find what string, vector of character
+#' @param replacement replace with what, vector of character, should be equal in lenght to `find`
+#' @export
+search_replace_in_file <- function(files = c(), find = NULL, replacement = NULL) {
+  for(file in files) {
+    x <- readLines(file)
+    if(length(find) != length(replacement)) {
+      stop("Search string and replacement are not equal length.")
+    }
+    for(i in 1:length(find)) {
+      x <- gsub(find[i], replacement[i], x)
+    }
+    cat(x, file = file, sep="\n")
+  }
+}
+
+
+#' Put vector values in quotes
+#'
+#' @param x vector of string / numeric
+#' @export
+add_quotes <- function(x, quote = "double") {
+  q <- '"'
+  if(quote == "single") {
+    q <- '"'
+  }
+  for(i in 1:length(x)) {
+    x[i] <- paste0('"', x[i], q)
+  }
+  return(x)
+}
