@@ -28,7 +28,8 @@ compile_sim_cpp <- function(
   obs = NULL,
   dose = NULL,
   compile = TRUE,
-  verbose = FALSE) {
+  verbose = FALSE,
+  as_is = FALSE) {
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -43,8 +44,12 @@ compile_sim_cpp <- function(
   par1 <- gsub("[\n\\= ]", "", par1)
   par1 <- gsub("double ", "", par1)
   defined <- par1[-grep("dadt\\[", tolower(par1))]
-  ode_def_cpp <- shift_state_indices(ode_def, -1)
-  ode_def_cpp <- gsub("\\n *", "\\\n  ", ode_def_cpp)
+  if(!as_is) {
+    ode_def_cpp <- shift_state_indices(ode_def, -1)
+    ode_def_cpp <- gsub("\\n *", "\\\n  ", ode_def_cpp)
+  } else {
+    ode_def_cpp <- ode_def
+  }
 
   # add 'rate' for dose compartments to allow infusions, remove if already specified by user (previous versions req'd this)
   if(is.null(dose)) {

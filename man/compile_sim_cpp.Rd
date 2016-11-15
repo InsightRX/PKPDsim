@@ -7,7 +7,7 @@
 compile_sim_cpp(code, dose_code, pk_code, size, p, cpp_show_code,
   code_init = NULL, state_init = NULL, declare_variables = NULL,
   covariates = NULL, obs = NULL, dose = NULL, compile = TRUE,
-  verbose = FALSE)
+  verbose = FALSE, as_is = FALSE)
 }
 \arguments{
 \item{code}{C++ code ODE system}

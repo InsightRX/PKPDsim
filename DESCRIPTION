@@ -17,6 +17,7 @@ Imports:
     MASS,
     randtoolbox,
     ggplot2,
+    jsonlite,
     stats
 Description: Simulate dose regimens for PKPD models described by DE systems or analytical equations.
 License: MIT + file LICENSE

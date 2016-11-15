@@ -37,7 +37,8 @@ new_ode_model <- function (model = NULL,
                            package = NULL,
                            install = TRUE,
                            folder = NULL,
-                           verbose = FALSE
+                           verbose = FALSE,
+                           as_is = FALSE
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -147,7 +148,8 @@ new_ode_model <- function (model = NULL,
                            obs = obs,
                            dose = dose,
                            verbose = verbose,
-                           compile = compile)
+                           compile = compile,
+                           as_is = as_is)
     reqd <- parameters
     if(!is.null(declare_variables)) {
       reqd <- reqd[!reqd %in% declare_variables]
