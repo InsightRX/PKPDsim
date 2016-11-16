@@ -48,6 +48,10 @@ model_from_api <- function(model = NULL,
                                   covariates = def$covariates,
                                   as_is = TRUE,
                                   package = package,
+                                  iiv = def$iiv,
+                                  omega_matrix = def$omega_matrix,
+                                  ruv = def$ruv,
+                                  default_parameters = def$default_parameters,
                                   ...)
     if(is.null(mod)) {
       message("Done.")

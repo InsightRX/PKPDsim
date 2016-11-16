@@ -14,6 +14,10 @@
 #' @param dose specify default dose compartment, e.g. list(cmt = 1)
 #' @param covariates specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)
 #' @param declare_variables declare variables
+#' @param iiv inter-individual variability, can optionally be added to library
+#' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
+#' @param ruv residual variability, can optionally be added to library
+#' @param default_parameters population or specific patient values, can optionally be added to library
 #' @param cpp_show_code show generated C++ code
 #' @param package package name when saving as package
 #' @param folder base folder name to create package in
@@ -33,6 +37,10 @@ new_ode_model <- function (model = NULL,
                            dose = list("cmt" = 1),
                            covariates = NULL,
                            declare_variables = NULL,
+                           iiv = NULL,
+                           omega_matrix = NULL,
+                           ruv = NULL,
+                           default_parameters = NULL,
                            cpp_show_code = FALSE,
                            package = NULL,
                            install = TRUE,
@@ -229,6 +237,24 @@ new_ode_model <- function (model = NULL,
         print(repl)
       }
       search_replace_in_file(paste0(new_folder, "/R/model.R"), repl[,1], repl[,2])
+      if(is.null(iiv)) { iiv <- "" } else {
+        iiv <- PKPDsim::print_list(iiv, FALSE)
+      }
+      if(is.null(ruv)) { ruv <- "" } else {
+        ruv <- PKPDsim::print_list(ruv, FALSE)
+      }
+      if(is.null(omega_matrix)) {
+        omega_matrix <- ""
+      } else {
+        omega_matrix <- paste0("c(", paste(omega_matrix, collapse = ", "), ")")
+      }
+      if(is.null(default_parameters)) { default_parameters <- "" } else {
+        default_parameters <- PKPDsim::print_list(default_parameters, FALSE)
+      }
+      search_replace_in_file(paste0(new_folder, "/R/iiv.R"), "\\[IIV\\]", iiv)
+      search_replace_in_file(paste0(new_folder, "/R/omega_matrix.R"), "\\[OMEGA_MATRIX\\]", omega_matrix)
+      search_replace_in_file(paste0(new_folder, "/R/parameters.R"), "\\[PARAMETERS\\]", default_parameters)
+      search_replace_in_file(paste0(new_folder, "/R/ruv.R"), "\\[RUV\\]", ruv)
       search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/NAMESPACE"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)

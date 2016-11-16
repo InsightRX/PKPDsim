@@ -8,7 +8,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   dose_code = NULL, file = NULL, func = NULL, state_init = NULL,
   parameters = NULL, size = NULL, lagtime = NULL, obs = list(cmt = 1,
   scale = 1), dose = list(cmt = 1), covariates = NULL,
-  declare_variables = NULL, cpp_show_code = FALSE, package = NULL,
+  declare_variables = NULL, iiv = NULL, omega_matrix = NULL, ruv = NULL,
+  default_parameters = NULL, cpp_show_code = FALSE, package = NULL,
   install = TRUE, folder = NULL, verbose = FALSE, as_is = FALSE)
 }
 \arguments{
@@ -39,6 +40,14 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{covariates}{specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)}
 
 \item{declare_variables}{declare variables}
+
+\item{iiv}{inter-individual variability, can optionally be added to library}
+
+\item{omega_matrix}{variance-covariance matrix for inter-individual variability, can optionally be added to library}
+
+\item{ruv}{residual variability, can optionally be added to library}
+
+\item{default_parameters}{population or specific patient values, can optionally be added to library}
 
 \item{cpp_show_code}{show generated C++ code}
 

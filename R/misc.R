@@ -60,10 +60,22 @@ search_replace_in_file <- function(files = c(), find = NULL, replacement = NULL)
 add_quotes <- function(x, quote = "double") {
   q <- '"'
   if(quote == "single") {
-    q <- '"'
+    q <- "'"
   }
   for(i in 1:length(x)) {
-    x[i] <- paste0('"', x[i], q)
+    x[i] <- paste0(q, x[i], q)
   }
   return(x)
+}
+
+#' Return a list in R syntax
+#'
+#' @param x list to be printed
+#' @export
+print_list <- function(x, wrapper = TRUE) {
+  if(wrapper) {
+    return(paste0("list (", paste(PKPDsim::add_quotes(names(x)), "=", x[names(x)], collapse = ", "), ")"))
+  } else {
+    return(paste(PKPDsim::add_quotes(names(x)), "=", x[names(x)], collapse = ", "))
+  }
 }
