@@ -4,12 +4,20 @@
 \alias{model_from_api}
 \title{Load model definition from API, and compile to R library}
 \usage{
-model_from_api(model = NULL, url = NULL, verbose = TRUE, ...)
+model_from_api(model = NULL, url = "http://localhost:8080/api",
+  verbose = TRUE, get_definition = FALSE, to_package = FALSE,
+  force = FALSE, ...)
 }
 \arguments{
 \item{model}{model id}
 
 \item{url}{URL of API}
+
+\item{verbose}{verbosity (T/F)}
+
+\item{force}{force install, even if model inactive}
+
+\item{definition_only}{return only the model definition, do not compile}
 }
 \description{
 Load model definition from API, and compile to R library
