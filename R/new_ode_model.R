@@ -211,12 +211,12 @@ new_ode_model <- function (model = NULL,
       ## Replace module name and other info
       if(is.null(pk_code)) { pk_code <- "" }
       if(is.null(dose_code)) { dose_code <- "" }
-      if(is.null(lagtime)) { lagtime <- "" }
-      if(is.null(obs$cmt)) { obs$cmt <- "" }
-      if(is.null(obs$scale)) { obs$scale <- "" }
-      if(is.null(dose$cmt)) { dose$cmt <- "" }
-      if(is.null(dose$bioav)) { dose$bioav <- "" }
-      if(is.null(size)) { size <- "" }
+      if(is.null(lagtime)) { lagtime <- "NULL" }
+      if(is.null(obs$cmt)) { obs$cmt <- "1" }
+      if(is.null(obs$scale)) { obs$scale <- "1" }
+      if(is.null(dose$cmt)) { dose$cmt <- "1" }
+      if(is.null(dose$bioav)) { dose$bioav <- "1" }
+      if(is.null(size)) { size <- "1" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
       repl <- matrix(c("\\[MODULE\\]", package,
