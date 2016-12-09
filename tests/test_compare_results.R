@@ -149,7 +149,7 @@ assert("no NA", any(is.na(dat$y)) == FALSE)
 
 ## bug reported by JF, if covariate time conincides with end of infusion,
 ## end of infusion is not recorded
-pop_est <- pkvancobuelga::parameters()
+pop_est <- list(CL = 1.08, V = 0.98)
 regimen <- PKPDsim::new_regimen(amt = c(1500, 1000, 1500, 1500, 1500, 1500, 1500),
                                 type = "infusion", t_inf = c(2, 1, 2, 2, 1, 1, 1),
                                 times = c(0, 10.8666666666667, 20.4333333333333, 32.0666666666667, 46.9, 54.9, 62.9 ))
