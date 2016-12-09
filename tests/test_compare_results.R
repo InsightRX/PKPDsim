@@ -147,6 +147,21 @@ assert("some observations duplicated", length(dat[dat$t == 4,]$y) == 9)
 assert("all observations included", length(dat$y) == 21)
 assert("no NA", any(is.na(dat$y)) == FALSE)
 
+## bug reported by JF, if covariate time conincides with end of infusion,
+## end of infusion is not recorded
+pop_est <- pkvancobuelga::parameters()
+regimen <- PKPDsim::new_regimen(amt = c(1500, 1000, 1500, 1500, 1500, 1500, 1500),
+                                type = "infusion", t_inf = c(2, 1, 2, 2, 1, 1, 1),
+                                times = c(0, 10.8666666666667, 20.4333333333333, 32.0666666666667, 46.9, 54.9, 62.9 ))
+covs <- list(WT = new_covariate(value = c(60, 65), times = c(0, 47.9)), CRCL = new_covariate(8), CVVH = new_covariate(0))
+pksim <- sim(ode = pk1cmt_iv,
+             parameters = pop_est,
+             covariates = covs,
+             regimen = regimen,
+             checks = TRUE,
+             only_obs = TRUE)
+testit::assert("infusion ends properly", all(pksim$y < 1000))
+
 ## Check custom t_obs
 t_obs <- seq(from=0, to = 24, by = .1)
 dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
