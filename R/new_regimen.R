@@ -45,7 +45,10 @@ new_regimen <- function(
       reg$amt[reg$amt < 0] <- 0
       warning("Some doses were < 0, setting to 0.")
     }
-    if(any(is.null(reg$type)) || any(is.na(reg$type)) || length(reg$type) == 0 || !(reg$type %in% c("bolus", "oral", "infusion"))) {
+    if(is.null(reg$type)) {
+      reg$type <- "bolus"
+    }
+    if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || length(reg$type) == 0 || !(reg$type %in% c("bolus", "oral", "infusion")))) {
       if(!is.null(t_inf)) {
         reg$type <- "infusion" # assume all infusions
       } else {
@@ -80,7 +83,7 @@ new_regimen <- function(
       n = n_ss,
       cmt = cmt,
       t_inf = t_inf,
-      type = type,
+      type = reg$type,
       checks = FALSE,
       ss = FALSE)
     reg$ss_regimen <- pre_reg
@@ -100,9 +103,7 @@ new_regimen <- function(
     reg$t_inf <- rep(reg$t_inf[1], reg$n)
   }
   if(length(reg$type) != reg$n) {
-    reg$type <- rep(type[1], reg$n)
-  } else {
-    reg$type <- type
+    reg$type <- rep(reg$type[1], reg$n)
   }
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {
