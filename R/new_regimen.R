@@ -45,12 +45,12 @@ new_regimen <- function(
       reg$amt[reg$amt < 0] <- 0
       warning("Some doses were < 0, setting to 0.")
     }
-    if (is.null(type) || length(type) == 0 || !(type %in% c("bolus", "oral", "infusion"))) {
+    if(any(is.null(reg$type)) || any(is.na(reg$type)) || length(reg$type) == 0 || !(reg$type %in% c("bolus", "oral", "infusion"))) {
       if(!is.null(t_inf)) {
-        type <- "infusion"
+        reg$type <- "infusion" # assume all infusions
       } else {
         message("Type argument should be one of 'bolus', 'oral', or 'infusion'. Assuming bolus for all doses.")
-        type <- "bolus"
+        reg$type <- "bolus"
       }
     }
     if (is.null(times) && is.null(interval)) {
@@ -92,15 +92,15 @@ new_regimen <- function(
   }
   reg$n <- length(reg$dose_times)
   if (length(reg$amt) != length(reg$dose_times)) {
-    reg$dose_amts <- rep(reg$amt[1], length(reg$dose_times))
+    reg$dose_amts <- rep(reg$amt[1], reg$n)
   } else {
     reg$dose_amts <- reg$amt
   }
   if(length(reg$t_inf) != length(reg$dose_times)) {
-    reg$t_inf <- rep(reg$t_inf[1], length(reg$dose_times))
+    reg$t_inf <- rep(reg$t_inf[1], reg$n)
   }
-  if(length(reg$type) != length(reg$dose_times)) {
-    reg$type <- rep(type[1], length(reg$dose_times))
+  if(length(reg$type) != reg$n) {
+    reg$type <- rep(type[1], reg$n)
   } else {
     reg$type <- type
   }
