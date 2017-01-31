@@ -4,9 +4,17 @@
 #' @param value a numeric vector
 #' @param times NULL for time-invariant covariate or a numeric vector specifying the update times for the covariate
 #' @param implementation for time-varying covariates either 'LOCF' (last observation carried forward) or 'interpolate' (default)
+#' @param interpolation_join_limit for `interpolate` option, if covariate timepoints are spaced too close together, the ODE solver sometimes chokes. This argument sets a lower limit on the space between timepoints. It will create average values on joint timepoints instead. If undesired set to NULL or 0.
 #' @param unit specify covariate unit (optional, for documentation purposes only)
+#' @param verbose verbosity
 #' @export
-new_covariate <- function(value=NULL, times=NULL, implementation = "interpolate", unit = NULL) {
+new_covariate <- function(
+  value=NULL,
+  times=NULL,
+  implementation = "interpolate",
+  unit = NULL,
+  interpolation_join_limit = 1,
+  verbose = TRUE) {
   if(is.null(value)) {
     stop("Covariate value required!")
   }
@@ -19,8 +27,33 @@ new_covariate <- function(value=NULL, times=NULL, implementation = "interpolate"
     value <- c(value[1], value)
   }
   srt <- order(times)
-  cov <- list(value = value[srt],
-              times = times[srt],
+  times <- times[srt]
+  values <- value[srt]
+  if(implementation == "interpolate" && !is.null(interpolation_join_limit) && interpolation_join_limit > 0) {
+    new_times <- c()
+    new_values <- c()
+    tmp <- data.frame(cbind(t = times, incl = FALSE))
+    msg <- FALSE
+    for(i in 1:length(tmp$t)) {
+      if(!tmp[i,]$incl) {
+        id <- abs(tmp$t - tmp$t[i]) < interpolation_join_limit
+        if(sum(id) > 1) {
+          msg <- TRUE
+        }
+        new_times <- c(new_times, mean(times[id]))
+        new_values <- c(new_values, mean(values[id]))
+        tmp$incl[id] <- TRUE
+      }
+    }
+    if(verbose && msg) {
+      message("Note: Some covariate observations were joined to protect against ODE solver issues, see help on `interpolation_join_limit` argument for more info.")
+    }
+  } else {
+    new_times <- times
+    new_values <- values
+  }
+  cov <- list(value = new_values,
+              times = new_times,
               implementation = implementation,
               unit = unit)
   class(cov) <- c(class(cov), "covariate")
