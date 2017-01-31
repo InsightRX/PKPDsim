@@ -24,7 +24,7 @@
 
 new_regimen <- function(
                     amt = 100,
-                    interval = 12,
+                    interval = NULL,
                     n = 3,
                     times = NULL,
                     type = NULL,

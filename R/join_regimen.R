@@ -41,7 +41,7 @@ join_regimen <- function(
         amt <- c(regimen2$dose_amts)
         t_inf <- c(regimen2$t_inf)
       }
-      joint <- new_regimen(amt = amt, times = t, t_inf = t_inf, type = regimen1$type)
+      joint <- new_regimen(amt = amt, times = t, t_inf = t_inf, type = regimen1$type, interval = interval)
       return(joint)
     }
     if(!is.null(interval)) {
