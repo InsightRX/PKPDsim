@@ -29,7 +29,7 @@ new_covariate <- function(
   srt <- order(times)
   times <- times[srt]
   values <- value[srt]
-  if(implementation == "interpolate" && !is.null(interpolation_join_limit) && interpolation_join_limit > 0) {
+  if(implementation == "interpolate" && class(values) == "numeric" && !is.null(interpolation_join_limit) && interpolation_join_limit > 0) {
     new_times <- c()
     new_values <- c()
     tmp <- data.frame(cbind(t = times, incl = FALSE))
