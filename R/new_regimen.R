@@ -92,6 +92,11 @@ new_regimen <- function(
     reg$dose_times <- c(0:(n-1)) * interval
   } else {
     reg$dose_times <- times
+    if(length(reg$dose_times) > 1) {
+      reg$interval <- diff(tail(reg$dose_times, 2))      
+    } else {
+      reg$interval <- 24
+    }
   }
   reg$n <- length(reg$dose_times)
   if (length(reg$amt) != length(reg$dose_times)) {
