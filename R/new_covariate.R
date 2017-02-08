@@ -22,10 +22,6 @@ new_covariate <- function(
     times <- c(0)
     value <- value[1]
   }
-  if(min(times)>0) { # extend to time zero if first observation is >0
-    times <- c(0, times)
-    value <- c(value[1], value)
-  }
   srt <- order(times)
   times <- times[srt]
   values <- value[srt]
@@ -51,6 +47,10 @@ new_covariate <- function(
   } else {
     new_times <- times
     new_values <- values
+  }
+  if(min(times)>0) { # extend to time zero if first observation is >0
+    new_times <- c(0, new_times)
+    new_values <- c(new_values[1], new_values)
   }
   cov <- list(value = new_values,
               times = new_times,
