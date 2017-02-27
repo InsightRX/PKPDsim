@@ -33,7 +33,7 @@ new_ode_model <- function (model = NULL,
                            parameters = NULL,
                            size = NULL,
                            lagtime = NULL,
-                           obs = list("cmt" = 1, scale = 1),
+                           obs = list("cmt" = 1, "scale" = 1),
                            dose = list("cmt" = 1),
                            covariates = NULL,
                            declare_variables = NULL,
@@ -118,6 +118,9 @@ new_ode_model <- function (model = NULL,
         parameters <- names(parameters)
       }
     }
+    if(is.null(obs$scale)) { obs$scale <- 1 }
+    if(is.null(obs$cmt))   { obs$cmt <- 1 }
+    if(is.null(dose$cmt))  { dose$cmt <- 1 }
     cov_names <- NULL
     if(!is.null(covariates)) {
       if(class(covariates) == "character") {
