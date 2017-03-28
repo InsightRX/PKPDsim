@@ -4,7 +4,8 @@
 \alias{regimen_to_nm}
 \title{Convert PKPDsim regimen to NONMEM table (doses only)}
 \usage{
-regimen_to_nm(reg = NULL, dose_cmt = 1, n_ind = 1)
+regimen_to_nm(reg = NULL, dose_cmt = 1, n_ind = 1, t_obs = NULL,
+  obs_cmt = 1)
 }
 \arguments{
 \item{reg}{`PKPDsim` regimen, created using `new_regimen()` function}
