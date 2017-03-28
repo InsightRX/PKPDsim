@@ -6,7 +6,8 @@
 #' @param n number of doses (requires interval as argument)
 #' @param times vector describing dosing times. Overrides specified times using interval and n arguments
 #' @param type either "infusion" or "bolus" (default)
-#' @param t_inf infusion time (if type==infusion)
+#' @param t_inf infusion time (if `type`==`infusion`)
+#' @param rate infusion rate (if `type`==`infusion`). `NULL` by default. If specified, overrides `t_inf`
 #' @param t_lag lag time (can be applied to any dose type, not only oral). Will just be added to `times`
 #' @param cmt vector of dosing compartments (optional, if NULL will dosing compartment defined in model will be used)
 #' @param first_dose_time datetime stamp of first dose (of class `POSIXct`). Default is current date time.
@@ -23,18 +24,20 @@
 #'r3 <- new_regimen(amt=c(rep(100,4), rep(50,16)), times=c(0:19)*12)  # first 4 doses higher dose
 
 new_regimen <- function(
-                    amt = 100,
-                    interval = NULL,
-                    n = 3,
-                    times = NULL,
-                    type = NULL,
-                    t_inf = NULL,
-                    t_lag = NULL,
-                    cmt = NULL,
-                    checks = TRUE,
-                    ss = FALSE,
-                    n_ss = NULL,
-                    first_dose_time = lubridate::now()) {
+    amt = 100,
+    interval = NULL,
+    n = 3,
+    times = NULL,
+    type = NULL,
+    t_inf = NULL,
+    rate = NULL,
+    t_lag = NULL,
+    cmt = NULL,
+    checks = TRUE,
+    ss = FALSE,
+    n_ss = NULL,
+    first_dose_time = lubridate::now()) {
+
   reg <- structure(list(amt = amt,
                         interval = interval,
                         n = n,
@@ -93,7 +96,7 @@ new_regimen <- function(
   } else {
     reg$dose_times <- times
     if(length(reg$dose_times) > 1) {
-      reg$interval <- diff(tail(reg$dose_times, 2))      
+      reg$interval <- diff(tail(reg$dose_times, 2))
     } else {
       reg$interval <- 24
     }
@@ -103,6 +106,12 @@ new_regimen <- function(
     reg$dose_amts <- rep(reg$amt[1], reg$n)
   } else {
     reg$dose_amts <- reg$amt
+  }
+  if(!is.null(rate) && sum(rate != 0) > 0) {
+    if(length(rate) != length(reg$dose_times)) {
+      rate <- rep(rate, reg$n)
+    }
+    reg$t_inf[rate != 0] <- reg$dose_amts[rate!=0] / rate[rate!=0]
   }
   if(length(reg$t_inf) != length(reg$dose_times)) {
     reg$t_inf <- rep(reg$t_inf[1], reg$n)

@@ -5,8 +5,9 @@
 \title{Dose regimen for sim_ode}
 \usage{
 new_regimen(amt = 100, interval = NULL, n = 3, times = NULL,
-  type = NULL, t_inf = NULL, t_lag = NULL, cmt = NULL, checks = TRUE,
-  ss = FALSE, n_ss = NULL, first_dose_time = lubridate::now())
+  type = NULL, t_inf = NULL, rate = NULL, t_lag = NULL, cmt = NULL,
+  checks = TRUE, ss = FALSE, n_ss = NULL,
+  first_dose_time = lubridate::now())
 }
 \arguments{
 \item{amt}{dosing amount, either a single value (which will repeated for multiple doses), or a vector with doses for each administration}
@@ -19,7 +20,9 @@ new_regimen(amt = 100, interval = NULL, n = 3, times = NULL,
 
 \item{type}{either "infusion" or "bolus" (default)}
 
-\item{t_inf}{infusion time (if type==infusion)}
+\item{t_inf}{infusion time (if `type`==`infusion`)}
+
+\item{rate}{infusion rate (if `type`==`infusion`). `NULL` by default. If specified, overrides `t_inf`}
 
 \item{t_lag}{lag time (can be applied to any dose type, not only oral). Will just be added to `times`}
 
