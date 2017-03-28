@@ -2,7 +2,7 @@
 # compare with analytic equations
 
 library(PKPDsim)
-library(testit) ## testthat doesn't play nice with sourceCpp
+library(testit)
 
 Sys.setenv("R_TESTS" = "")
 
