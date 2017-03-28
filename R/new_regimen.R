@@ -52,7 +52,7 @@ new_regimen <- function(
       reg$type <- "bolus"
     }
     if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || length(reg$type) == 0 || !(reg$type %in% c("bolus", "oral", "infusion")))) {
-      if(!is.null(t_inf)) {
+      if(!is.null(t_inf) || !is.null(rate)) {
         reg$type <- "infusion" # assume all infusions
       } else {
         message("Type argument should be one of 'bolus', 'oral', or 'infusion'. Assuming bolus for all doses.")
@@ -65,11 +65,11 @@ new_regimen <- function(
     if (is.null(times) && !is.null(interval) && is.null(n)) {
       stop("The number of doses (n) must be specified in the regimen object.")
     }
-    if(is.null(t_inf) || length(t_inf) == 0 || is.na(t_inf)) {
+    if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0 || is.na(t_inf))) {
       reg$t_inf = 1
     }
     if(any(reg$t_inf == 0)) {
-      message("Infusion time cannot be zero, changing to 1 minute instead.")
+      message("Infusion time cannot be zero, changing to 1/60 instead.")
       reg$t_inf[reg$t_inf == 0] <- 1/60
     }
   }
@@ -118,6 +118,10 @@ new_regimen <- function(
   }
   if(length(reg$type) != reg$n) {
     reg$type <- rep(reg$type[1], reg$n)
+  }
+  if(any(reg$type == "bolus")) {
+    reg$t_inf[reg$type == "bolus"] <- NA
+    reg$rate[reg$type == "bolus"] <- NA
   }
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {
