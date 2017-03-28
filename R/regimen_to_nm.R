@@ -6,15 +6,15 @@
 #'
 #' @export
 regimen_to_nm <- function(reg = NULL, dose_cmt = 1, n_ind = 1) {
-  if(is.null(regimen) || ! "regimen" %in% class(reg)) {
-    error("No regimen or invalid regimen object supplied.")
+  if(is.null(reg) || ! "regimen" %in% class(reg)) {
+    stop("No regimen or invalid regimen object supplied.")
   }
   dat <- data.frame(cbind(
-    ID = rep(1:n_ind, each = length(reg_vanco$dose_times)),
-    TIME = reg_vanco$dose_times,
+    ID = rep(1:n_ind, each = length(reg$dose_times)),
+    TIME = reg$dose_times,
     CMT = dose_cmt,
     DV = 0,
-    AMT = reg_vanco$dose_amts,
+    AMT = reg$dose_amts,
     EVID = 1,
     MDV = 1))
   if(any(reg$type == "infusion")) {
