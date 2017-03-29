@@ -38,7 +38,6 @@ new_covariate <- function(
         }
         new_times <- c(new_times, mean(times[id]))
         new_values <- c(new_values, mean(values[id]))
-        new_values <- c(new_values, mean(values[id]))
         tmp$incl[id] <- TRUE
       }
     }
