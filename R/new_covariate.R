@@ -38,11 +38,12 @@ new_covariate <- function(
         }
         new_times <- c(new_times, mean(times[id]))
         new_values <- c(new_values, mean(values[id]))
+        new_values <- c(new_values, mean(values[id]))
         tmp$incl[id] <- TRUE
       }
     }
     if(verbose && msg) {
-      message("Note: Some covariate observations were joined to protect against ODE solver issues, see help on `interpolation_join_limit` argument for more info.")
+      message("Note: Some covariate observations were joined to protect against ODE solver issues, see help on `interpolation_join_limit` argument for more info. Important: Units are disregarded in this join, so please preprocess data if units vary!")
     }
   } else {
     new_times <- times
@@ -51,6 +52,9 @@ new_covariate <- function(
   if(min(times)>0) { # extend to time zero if first observation is >0
     new_times <- c(0, new_times)
     new_values <- c(new_values[1], new_values)
+  }
+  if(length(unit) > length(new_values)) {
+    unit <- unit[1:length(new_values)]
   }
   cov <- list(value = new_values,
               times = new_times,
