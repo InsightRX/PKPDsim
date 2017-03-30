@@ -30,6 +30,7 @@ compile_sim_cpp <- function(
   compile = TRUE,
   verbose = FALSE,
   as_is = FALSE) {
+
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
@@ -39,10 +40,11 @@ compile_sim_cpp <- function(
   par1 <- regmatches(ode_def, newpar)[[1]]
   def1 <- par1[-grep("dadt\\[", tolower(par1))]
   for (i in seq(def1)) {
-    ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n","",def1[i])), ode_def, perl=TRUE)
+    ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n[;]*","",def1[i])), ode_def, perl=TRUE)
   }
   par1 <- gsub("[\n\\= ]", "", par1)
   par1 <- gsub("double ", "", par1)
+  par1 <- gsub(";", "", par1)
   defined <- par1[-grep("dadt\\[", tolower(par1))]
   if(!as_is) {
     ode_def_cpp <- shift_state_indices(ode_def, -1)
@@ -150,9 +152,9 @@ compile_sim_cpp <- function(
     cpp_code[idx7] <- "  scale = 1;"
     cpp_code[idx8] <- paste0("    scale = ", obs$scale, ";")
   } else {
-    cpp_code[idx5] <- paste0("    scale = ", obs$scale, ";")
-    cpp_code[idx6] <- paste0("  int cmt = ", (obs$cmt-1), ";")
-    cpp_code[idx7] <- paste0("      scale = ", obs$scale, ";")
+    cpp_code[idx5] <- paste0("    scale = ", obs$scale[1], ";")
+    cpp_code[idx6] <- paste0("  int cmt = ", (obs$cmt[1]-1), ";")
+    cpp_code[idx7] <- paste0("      scale = ", obs$scale[1], ";")
     cpp_code[idx8] <- cov_scale
   }
   if(!is.null(pk_code)) {
