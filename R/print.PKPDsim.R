@@ -12,6 +12,6 @@ print.PKPDsim <- function(x, ...) {
   cat(paste0("Covariates: ", paste(attr(x, "covariates"), collapse=", ")), "\n")
   cat(paste0("Variables: ", paste(attr(x, "variables"), collapse=", ")), "\n")
   cat(paste0("Number of compartments: ", attr(x, "size")), "\n")
-  cat(paste0("Observation compartment: ", attr(x, "obs")$cmt), "\n")
-  cat(paste0("Observation scaling: ", attr(x, "obs")$scale), "\n")
+  cat(paste0("Observation compartment: ", paste(attr(x, "obs")$cmt, collapse=", "), "\n"))
+  cat(paste0("Observation scaling: ", paste(attr(x, "obs")$scale, collapse=", "), "\n"))
 }

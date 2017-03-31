@@ -46,7 +46,7 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
 List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
-  std::vector<double> obs;
+  // insert observation variable definition
   double t_start, t_end;
   std::vector<double> times, doses, dummy, rates, bioav;
   std::vector<int> dose_cmt, dose_type, evid;
@@ -110,13 +110,13 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     for( int k = start; k < tmp.y.size(); k++) {
       // insert time-dependent covariates scale
       // insert scale definition for observation
-      obs.insert(obs.end(), tmp.y[k][cmt] / scale);
+      // insert saving observations to obs object(s)
     }
   }
 
   List comb;
   comb["time"] = t;
   comb["y"] = y;
-  comb["obs"] = obs;
+  // insert copy observation object
   return(comb);
 }

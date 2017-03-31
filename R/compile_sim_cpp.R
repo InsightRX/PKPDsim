@@ -84,7 +84,12 @@ compile_sim_cpp <- function(
     m <- p_def %in% declare_variables # remove covariates and other declared variables
     p_def <- p_def[!m]
   }
-  p <- unique(c(p, "conc", "scale", declare_variables)) # add rate and conc as explicitly declared variables
+  if(!is.null(obs) && length(obs$scale) > 1) {
+    p <- c(p, paste0("scale", 1:length(obs$scale)))
+  } else {
+    p <- c(p, "scale")
+  }
+  p <- unique(c(p, "conc", declare_variables)) # add rate and conc as explicitly declared variables
   pars <- "\n"
   par_def <- ""
   for(i in seq(p)) { # parameters and auxiliary variables
@@ -146,16 +151,35 @@ compile_sim_cpp <- function(
   idx9 <- grep("insert custom pk event code", cpp_code)
   idx10 <- grep("insert bioav definition", cpp_code)
   idx11 <- grep("insert custom dosing event code", cpp_code)
+  idx12 <- grep("insert saving observations", cpp_code)
+  idx13 <- grep("insert copy observation object", cpp_code)
+  idx14 <- grep("insert observation variable definition", cpp_code)
   if(is.null(obs)) {
     cpp_code[idx5] <- "    double scale = 1;"
     cpp_code[idx6] <- "  int cmt = 0;"
     cpp_code[idx7] <- "  scale = 1;"
-    cpp_code[idx8] <- paste0("    scale = ", obs$scale, ";")
+    cpp_code[idx8] <- paste0("    scale = ", obs$scale[1], ";")
+    cpp_code[idx14] <- "  std::vector<double> obs;"
   } else {
-    cpp_code[idx5] <- paste0("    scale = ", obs$scale[1], ";")
-    cpp_code[idx6] <- paste0("  int cmt = ", (obs$cmt[1]-1), ";")
-    cpp_code[idx7] <- paste0("      scale = ", obs$scale[1], ";")
-    cpp_code[idx8] <- cov_scale
+    if(length(obs$cmt) == 1) {
+      cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale = ", obs$scale[1], ";")
+#      cpp_code[idx6] <- paste0("  int cmt = ", (obs$cmt[1]-1), ";")
+      cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale = ", obs$scale[1], ";")
+      cpp_code[idx8] <- cov_scale
+      cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale);")
+      cpp_code[idx13] <- paste0('    comb["obs"] = obs;\n');
+      cpp_code[idx14] <- "  std::vector<double> obs;"
+    } else {
+      for(k in 1:length(obs$cmt)) {
+        cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale", k," = ", obs$scale[k], ";")
+  #      cpp_code[idx6] <- paste0("  int cmt = ", (obs$cmt[1]-1), ";")
+        cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale", k," = ", obs$scale[k], ";")
+        cpp_code[idx8] <- cov_scale
+        cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs",k,".insert(obs",k,".end(), tmp.y[k][", obs$cmt[k]-1,"] / scale", k,");")
+        cpp_code[idx13] <- paste0(cpp_code[idx13], '\n  comb["obs', k,'"] = obs', k,';');
+        cpp_code[idx14] <- paste0(cpp_code[idx14], "\n  std::vector<double> obs",k,";")
+      }
+    }
   }
   if(!is.null(pk_code)) {
     cpp_code[idx9] <- shift_state_indices(pk_code, -1)

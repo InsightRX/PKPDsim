@@ -372,13 +372,23 @@ sim <- function (ode = NULL,
 
     des_out <- matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE)
     dat_ind <- c()
+    obs <- attr(ode, "obs")
+    dat_obs <- c()
+    if(!is.null(obs) && length(obs$cmt) > 1) {
+      for(j in 1:length(obs$cmt)) {
+        lab <- ifelse(!is.null(obs$label[j]), obs$label[j], paste0("obs",j))
+        dat_obs <- rbind(dat_obs, cbind(id=i, t=tmp$time, comp=lab, y=unlist(tmp[[paste0("obs",j)]])))
+      }
+    } else {
+      dat_obs <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs))
+    }
     if(only_obs || !is.null(analytical)) {
-      dat_ind <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs))
+      dat_ind <- dat_obs
     } else {
       for (j in 1:length(A_init)) {
-        dat_ind <- rbind (dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
+        dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
       }
-      dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs)))
+      dat_ind <- rbind(dat_ind, dat_obs)
     }
 
     ## Add parameters and covariates, if needed. Implementation is slow, can be improved.
