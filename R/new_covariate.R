@@ -49,8 +49,7 @@ new_covariate <- function(
     new_values <- values
   }
   if(min(times)>0) { # extend to time zero if first observation is >0
-    new_times <- c(0, new_times)
-    new_values <- c(new_values[1], new_values)
+    new_times <- c(0, new_times[-1])
   }
   if(length(unit) > length(new_values)) {
     unit <- unit[1:length(new_values)]
