@@ -49,7 +49,7 @@ new_covariate <- function(
     new_values <- values
   }
   if(min(times)>0) { # extend to time zero if first observation is >0
-    if(new_times[0] > interpolation_join_limit) {
+    if(new_times[1] > interpolation_join_limit) {
       # add observation at t=0
       new_times <- c(0, new_times)
       new_values <- c(new_values[1], new_values)
