@@ -50,6 +50,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   double t_start, t_end;
   std::vector<double> times, doses, dummy, rates, bioav;
   std::vector<int> dose_cmt, dose_type, evid;
+  // insert variable definitions
   times = design["t"];
   doses = design["dose"];
   evid = design["evid"];
@@ -111,6 +112,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
       // insert time-dependent covariates scale
       // insert scale definition for observation
       // insert saving observations to obs object(s)
+      // insert copy variables into all variables
     }
   }
 
@@ -118,5 +120,6 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   comb["time"] = t;
   comb["y"] = y;
   // insert copy observation object
+  // insert copy all variables object
   return(comb);
 }

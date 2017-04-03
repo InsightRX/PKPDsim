@@ -391,12 +391,19 @@ sim <- function (ode = NULL,
       dat_ind <- rbind(dat_ind, dat_obs)
     }
 
-    ## Add parameters and covariates, if needed. Implementation is slow, can be improved.
+    ## Add parameters, variables and/or covariates, if needed. Implementation is slow, can be improved.
     if(!is.null(output_include$parameters) && output_include$parameters) {
       dat_ind <- as.matrix(merge(dat_ind, p_i[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]))
     }
+    var_names <- NULL
+    if(!is.null(output_include$variables) && output_include$variables) var_names <- attr(ode, "variables")
+    if(!is.null(var_names)) {
+      for(key in var_names) {
+        dat_ind <- cbind(dat_ind, tmp[[key]])
+      }
+    }
 
-    if(!is.null(output_include$covariates) && output_include$covariates) {
+    if(!is.null(covariates) && !is.null(output_include$covariates) && output_include$covariates) {
       dat_ind <- as.matrix(merge(dat_ind, data.frame(design_i[1,paste0("cov_", names(covariates_tmp))])))
       for(key in names(covariates_tmp)) {
         if(length(covariates_tmp[[key]]$value) > 1) { # timevarying covariates
@@ -428,8 +435,8 @@ sim <- function (ode = NULL,
   if(!is.null(output_include$covariates) && output_include$covariates) {
     cov_names <- names(covariates_tmp)
   }
-  colnames(comb) <- c("id", "t", "comp", "y", par_names, cov_names)
-  col_names <- c("id", "t", "y", par_names, cov_names)
+  colnames(comb) <- c("id", "t", "comp", "y", par_names, var_names, cov_names)
+  col_names <- c("id", "t", "y", par_names, var_names, cov_names)
   for(key in col_names) {
     comb[[key]] <- as.num(comb[[key]])
   }
@@ -443,7 +450,7 @@ sim <- function (ode = NULL,
   colnames(grid) <- c("t", "id", "comp")
   suppressWarnings(suppressMessages( ## left join is a bit too chatty
     if(!is.null(par_names) || !is.null(cov_names)) {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", par_names, cov_names)]
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", par_names, var_names, cov_names)]
     } else {
       comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y")]
     }

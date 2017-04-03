@@ -40,7 +40,12 @@ compile_sim_cpp <- function(
   par1 <- regmatches(ode_def, newpar)[[1]]
   def1 <- par1[-grep("dadt\\[", tolower(par1))]
   for (i in seq(def1)) {
-    ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n[;]*","",def1[i])), ode_def, perl=TRUE)
+    tmp <- gsub("[\n =]*", "", def1[i])
+    if(tmp %in% declare_variables) { # is already defined as global variable
+      ode_def <- gsub(def1[i], paste0("\n", gsub("\n[;]*","",def1[i])), ode_def, perl=TRUE)
+    } else {
+      ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n[;]*","",def1[i])), ode_def, perl=TRUE)
+    }
   }
   par1 <- gsub("[\n\\= ]", "", par1)
   par1 <- gsub("double ", "", par1)
@@ -154,6 +159,9 @@ compile_sim_cpp <- function(
   idx12 <- grep("insert saving observations", cpp_code)
   idx13 <- grep("insert copy observation object", cpp_code)
   idx14 <- grep("insert observation variable definition", cpp_code)
+  idx15 <- grep("insert copy variables", cpp_code)
+  idx16 <- grep("insert copy all variables", cpp_code)
+  idx17 <- grep("insert variable definitions", cpp_code)
   if(is.null(obs)) {
     cpp_code[idx5] <- "    double scale = 1;"
     cpp_code[idx6] <- "  int cmt = 0;"
@@ -176,9 +184,16 @@ compile_sim_cpp <- function(
         cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale", k," = ", obs$scale[k], ";")
         cpp_code[idx8] <- cov_scale
         cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs",k,".insert(obs",k,".end(), tmp.y[k][", obs$cmt[k]-1,"] / scale", k,");")
-        cpp_code[idx13] <- paste0(cpp_code[idx13], '\n  comb["obs', k,'"] = obs', k,';');
+        cpp_code[idx13] <- paste0(cpp_code[idx13], '\ncomb["obs', k,'"] = obs', k,';');
         cpp_code[idx14] <- paste0(cpp_code[idx14], "\n  std::vector<double> obs",k,";")
       }
+    }
+  }
+  if(!is.null(declare_variables)) {
+    cpp_code[idx17] <- paste0("  std::vector<double> ", paste(paste0("vars_", declare_variables), collapse = ", "), ";");
+    for(k in seq(declare_variables)) {
+      cpp_code[idx15] <- paste0(cpp_code[idx15], '\n      vars_',declare_variables[k],'.insert(vars_',declare_variables[k],'.end(), ', declare_variables[k],");")
+      cpp_code[idx16] <- paste0(cpp_code[idx16], '\n  comb["', declare_variables[k],'"] = vars_', declare_variables[k],";")
     }
   }
   if(!is.null(pk_code)) {
