@@ -36,13 +36,16 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
   if(!is.null(covariates)) {
     covt <- c()
     for (i in 1:length(covariates)) {
-      covt <- data.frame(rbind(covt,
-                    cbind(name = names(covariates)[i],
-                          time = covariates[[i]]$times,
-                          value = covariates[[i]]$value,
-                          implementation = covariates[[i]]$implementation)))
-      covt$time <- as.numeric(as.character(covt$time))
-      covt$value <- as.numeric(as.character(covt$value))
+      covt <- dplyr::bind_rows(covt,
+          data.frame(
+            name = names(covariates)[i],
+            time = covariates[[i]]$times,
+            value = covariates[[i]]$value,
+            implementation = covariates[[i]]$implementation))
+      suppressWarnings({
+        covt$time <- as.numeric(as.character(covt$time))
+        covt$value <- as.numeric(as.character(covt$value))
+      })
     }
     # add covariate update times as dummy dose
     regimen$dose_times <- c(regimen$dose_times, covt$time)
