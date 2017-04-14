@@ -33,5 +33,6 @@ get_t_obs_from_regimen <- function(
       t_obs <- t_obs[order(t_obs)]
     }
   }
+  t_obs <- round(t_obs, 6)
   return(t_obs)
 }

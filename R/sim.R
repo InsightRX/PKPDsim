@@ -122,7 +122,7 @@ sim <- function (ode = NULL,
   }
   comb <- list()
   p <- as.list(parameters)
-  t_obs_orig <- t_obs
+  t_obs_orig <- round(t_obs, 6)
   if(is.null(analytical)) {
     if ("character" %in% class(ode)) {
       ode <- get(ode)
@@ -285,7 +285,7 @@ sim <- function (ode = NULL,
         p_i$dose_amts <- regimen[[i]]$dose_amts
       }
     }
-    t_obs <- round(t_obs, 8) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
+    t_obs <- round(t_obs, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
     if (!is.null(omega)) {
       if (omega_type == "exponential") {
         p_i[1:nrow(omega_mat)] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
