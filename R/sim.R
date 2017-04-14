@@ -122,7 +122,10 @@ sim <- function (ode = NULL,
   }
   comb <- list()
   p <- as.list(parameters)
-  t_obs_orig <- round(t_obs, 6)
+  if(!is.null(t_obs)) {
+    t_obs <- round(t_obs, 6)
+  }
+  t_obs_orig <- t_obs
   if(is.null(analytical)) {
     if ("character" %in% class(ode)) {
       ode <- get(ode)
