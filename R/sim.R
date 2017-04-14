@@ -11,7 +11,6 @@
 #' @param sequence if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
-#' @param adherence List specifying adherence. Simulates adherence using either markov model or binomial sampling.
 #' @param A_init vector with the initial state of the ODE system
 #' @param covariates list of covariates (for single individual) created using `new_covariate()` function
 #' @param covariates_table data.frame (or unnamed list of named lists per individual) with covariate values
@@ -81,7 +80,6 @@ sim <- function (ode = NULL,
                  sequence = NULL,
                  n_ind = 1,
                  regimen = NULL,
-                 adherence = NULL,
                  covariates = NULL,
                  covariates_table = NULL,
                  covariates_implementation = list(),
@@ -162,13 +160,6 @@ sim <- function (ode = NULL,
     if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
       stop("Sorry. Non-C++ functions are deprecated.")
     }
-    if(!is.null(adherence)) {
-      if(adherence$type == "markov") {
-        if(!all(c("p01", "p11") %in% names(adherence$markov))) {
-          stop("Adherence simulation using Markov model requires specification of p01 and p11!")
-        }
-      }
-    }
     if(!is.null(covariates)) {
       if(!is.null(covariates_table)) {
         stop("Both `covariates and `covariates_table` are specified!")
@@ -247,14 +238,6 @@ sim <- function (ode = NULL,
       etas <- t(matrix(etas))
     }
   }
-  if (!is.null(adherence)) { ## varying regimen due to adherence
-    tmp <- list()
-    for(i in 1:n_ind) {
-      tmp[[i]] <- regimen
-    }
-    regimen <- tmp
-    class(regimen) <- c(class(regimen), "regimen_multiple")
-  }
   if("regimen_multiple" %in% class(regimen)) {
     n_ind <- length(regimen)
   } else {
@@ -301,17 +284,6 @@ sim <- function (ode = NULL,
       }
     }
     t_obs <- round(t_obs, 8) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
-    if (!is.null(adherence)) {
-      l <- length(design_i[design_i$dose != 0,]$dose)
-      if(adherence$type == "markov") {
-        adh_i <- new_adherence(n = l,
-                               markov = list(p01 = adherence$markov$p01, p11 = adherence$markov$p11))
-      } else {
-        adh_i <- new_adherence(n = l,
-                               p_binom = adherence$p_bionm)
-      }
-      design_i[design_i$dose != 0,]$dose <- design_i[design_i$dose != 0,]$dose * adh_i
-    }
     if (!is.null(omega)) {
       if (omega_type == "exponential") {
         p_i[1:nrow(omega_mat)] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
@@ -383,7 +355,7 @@ sim <- function (ode = NULL,
       }
     }
 
-    if("regimen_multiple" %in% class(regimen) || !is.null(adherence) || !is.null(covariates_table)) {
+    if("regimen_multiple" %in% class(regimen) || !is.null(covariates_table)) {
       comb <- data.table::rbindlist(list(comb, data.table::as.data.table(dat_ind)))
     } else {
       if(i == 1) { ## faster way: data.frame with prespecified length
