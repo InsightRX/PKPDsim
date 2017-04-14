@@ -26,6 +26,7 @@
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param output_include list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.
 #' @param checks perform input checks? Default is TRUE. For calculations where sim_ode is invoked many times (e.g. population estimation, optimal design) it makes sense to switch this to FALSE (after confirming the input is correct) to improve speed.
+#' @param return_design Useful for iterative functions like estimation. Only prepares the design (event table) for the simulation, does not run the actual simulation.
 #' @param verbose show more output
 #' @param ... extra parameters
 #' @return a data frame of compartments with associated concentrations at requested times
@@ -95,6 +96,7 @@ sim <- function (ode = NULL,
                  rtte = FALSE,
                  checks = TRUE,
                  verbose = FALSE,
+                 return_design = FALSE,
                  output_include = list(parameters = FALSE, covariates = FALSE),
                  ...
                  ) {
@@ -302,6 +304,15 @@ sim <- function (ode = NULL,
       design_i[design_i$t >= p_i$dose_times[k] & design_i$t < (p_i$dose_times[k] + p_i$t_inf[k]),]$rate <- (p_i$dose_amts[k] / p_i$t_inf[k])
     }
     p_i$rate <- 0
+
+    if(return_design) {
+      return(list(
+        A_init = A_init,
+        design = design_i,
+        p = p_i,
+        int_step_size = int_step_size
+      ))
+    }
 
     #################### Main call to ODE solver / analytical eq solver #######################
     if(!is.null(ode)) {
