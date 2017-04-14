@@ -123,39 +123,6 @@ sim <- function (ode = NULL,
   comb <- list()
   p <- as.list(parameters)
   t_obs_orig <- t_obs
-  if(is.null(t_obs)) { # find reasonable default to output
-    if(is.null(obs_step_size)) {
-      if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
-        obs_step_size <- 1
-      } else {
-        obs_step_size <- 100
-        if(max(regimen$dose_times) < 10000) { obs_step_size <- 100 }
-        if(max(regimen$dose_times) < 1000) { obs_step_size <- 10 }
-        if(max(regimen$dose_times) < 100) { obs_step_size <- 1 }
-        if(max(regimen$dose_times) < 10) { obs_step_size <- .1 }
-      }
-    }
-    if("regimen" %in% class(regimen)) {
-      if(!is.null(t_max)) {
-        t_obs <- seq(from=0, to=t_max, by=obs_step_size)
-      } else {
-        if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
-          t_obs <- seq(from=regimen$dose_times[1], to=24, by=obs_step_size)
-        } else {
-          t_obs <- seq(from=0, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
-        }
-      }
-    }
-    ## add timepoints at which covariate is changing to t_obs:
-    if(extra_t_obs) {
-      func <- function(x) { return(x$times) }
-      if(!is.null(covariates) && !is.null(covariates$times)) {
-        t_obs <- unique(c(t_obs, unique(unlist(lapply(covariates, func )))))
-        t_obs <- t_obs[order(t_obs)]
-      }
-    }
-  }
-  t_obs <- round(t_obs, 8) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
   if(is.null(analytical)) {
     if ("character" %in% class(ode)) {
       ode <- get(ode)
@@ -291,6 +258,11 @@ sim <- function (ode = NULL,
   if("regimen_multiple" %in% class(regimen)) {
     n_ind <- length(regimen)
   } else {
+    if(is.null(t_obs)) { # find reasonable default to output
+      t_obs <- get_t_obs_from_regimen(
+        regimen, obs_step_size, t_max,
+        covariates, extra_t_obs)
+    }
     if(is.null(covariates_table)) {
       design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates, ode)
     } else {
@@ -298,7 +270,7 @@ sim <- function (ode = NULL,
     }
     design_i <- design
     p$dose_times <- regimen$dose_times
-    p$dose_amts <- regimen$dose_amts
+    p$dose_amts  <- regimen$dose_amts
   }
   if (is.null(A_init)) {
     A_init <- rep(0, size)
@@ -317,22 +289,18 @@ sim <- function (ode = NULL,
       covariates_tmp <- covariates
     }
     if("regimen_multiple" %in% class(regimen)) {
+      if(is.null(t_obs)) { # find reasonable default to output
+        t_obs <- get_t_obs_from_regimen(
+          regimen[[i]], obs_step_size, t_max,
+          covariates, extra_t_obs)
+      }
       design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates_tmp)
       if("regimen_multiple" %in% class(regimen)) {
         p_i$dose_times <- regimen[[i]]$dose_times
         p_i$dose_amts <- regimen[[i]]$dose_amts
       }
-      if(i == 1 && is.null(t_obs)) { # find reasonable default to output
-        if(is.null(obs_step_size)) {
-          obs_step_size <- 100
-          if(max(design_i$t) < 10000) { obs_step_size <- 100 }
-          if(max(design_i$t) < 1000) { obs_step_size <- 10 }
-          if(max(design_i$t) < 100) { obs_step_size <- 1 }
-          if(max(design_i$t) < 10) { obs_step_size <- .1 }
-        }
-        t_obs <- seq(from=0, to=max(design_i$t), by=obs_step_size)
-      }
     }
+    t_obs <- round(t_obs, 8) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
     if (!is.null(adherence)) {
       l <- length(design_i[design_i$dose != 0,]$dose)
       if(adherence$type == "markov") {
@@ -362,6 +330,7 @@ sim <- function (ode = NULL,
       design_i[design_i$t >= p_i$dose_times[k] & design_i$t < (p_i$dose_times[k] + p_i$t_inf[k]),]$rate <- (p_i$dose_amts[k] / p_i$t_inf[k])
     }
     p_i$rate <- 0
+
     #################### Main call to ODE solver / analytical eq solver #######################
     if(!is.null(ode)) {
       tmp <- ode(A_init, design_i, p_i, int_step_size)
