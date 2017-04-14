@@ -310,7 +310,8 @@ sim <- function (ode = NULL,
         A_init = A_init,
         design = design_i,
         p = p_i,
-        int_step_size = int_step_size
+        int_step_size = int_step_size,
+        t_obs = t_obs_orig
       ))
     }
 
