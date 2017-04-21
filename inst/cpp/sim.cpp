@@ -48,38 +48,36 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
   std::vector<state_type> y;
   // insert observation variable definition
   double t_start, t_end;
-  std::vector<double> times, doses, dummy, rates, bioav;
+  std::vector<double> times, doses, dummy, rates;
   std::vector<int> dose_cmt, dose_type, evid;
   // insert variable definitions
   times = design["t"];
   doses = design["dose"];
   evid = design["evid"];
-  bioav = design["bioav"];
   dummy = design["dum"];
   rates = design["rate"];
   dose_cmt = design["dose_cmt"];
   dose_type = design["type"];
   int len = times.size();
   int start;
+  double bioav = 1;
   // insert observation compartment
-
+  // insert bioavailability definition
   // insert covariate definitions
-
   // insert_parameter_definitions
-
   // insert_state_init
   NumericVector Aupd = clone(A);
 
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];
+    // insert covariates for integration period
+    // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
       memset(rate, 0, sizeof(rate));
-      rate[dose_cmt[i]-1] = rates[i];
+      rate[dose_cmt[i]-1] = rates[i] * bioav;
       // insert custom dosing event code
     }
-
-    // insert covariates for integration period
     // insert scale definition for integration period
     // insert custom pk event code
 
@@ -89,10 +87,9 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     }
     if(evid[i] == 1) {
       t_prv_dose = times[i];
-      prv_dose = doses[i];
-      // insert bioav definition
+      prv_dose = doses[i] * bioav;
       if(dose_type[i] == 0) { // bolus
-        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav[i];
+        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav;
         start = 0;
       }
     }

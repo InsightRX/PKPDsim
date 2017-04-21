@@ -200,7 +200,7 @@ compile_sim_cpp <- function(
     cpp_code[idx9] <- shift_state_indices(pk_code, -1)
   }
   if(!is.null(dose$bioav)) {
-    cpp_code[idx10] <- paste0("      bioav[i] = ", dose$bioav, ";")
+    cpp_code[idx10] <- paste0("      bioav = ", dose$bioav, ";")
   }
   if(!is.null(dose_code)) {
     cpp_code[idx11] <- shift_state_indices(dose_code, -1)
