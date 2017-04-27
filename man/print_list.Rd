@@ -12,4 +12,3 @@ print_list(x, wrapper = TRUE)
 \description{
 Return a list in R syntax
 }
-

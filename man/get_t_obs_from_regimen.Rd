@@ -9,4 +9,3 @@ get_t_obs_from_regimen(regimen, obs_step_size, t_max, covariates, extra_t_obs)
 \description{
 Extract sensible default observation times from a specified regimen
 }
-

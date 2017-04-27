@@ -20,4 +20,3 @@ Create lower-diagonal omega matrix from CV for parameter estimates
 \seealso{
 \link{sim_ode}
 }
-

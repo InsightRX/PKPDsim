@@ -12,4 +12,3 @@ add_quotes(x, quote = "double")
 \description{
 Put vector values in quotes
 }
-

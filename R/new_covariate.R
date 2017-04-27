@@ -6,6 +6,7 @@
 #' @param implementation for time-varying covariates either 'LOCF' (last observation carried forward) or 'interpolate' (default)
 #' @param interpolation_join_limit for `interpolate` option, if covariate timepoints are spaced too close together, the ODE solver sometimes chokes. This argument sets a lower limit on the space between timepoints. It will create average values on joint timepoints instead. If undesired set to NULL or 0.
 #' @param unit specify covariate unit (optional, for documentation purposes only)
+#' @param remove_negative_times `TRUE`` or `FALSE`
 #' @param verbose verbosity
 #' @export
 new_covariate <- function(
@@ -14,6 +15,7 @@ new_covariate <- function(
   implementation = "interpolate",
   unit = NULL,
   interpolation_join_limit = 1,
+  remove_negative_times = TRUE,
   verbose = TRUE) {
   if(is.null(value)) {
     stop("Covariate value required!")
@@ -48,7 +50,36 @@ new_covariate <- function(
     new_times <- times
     new_values <- values
   }
-  if(min(times)>0) { # extend to time zero if first observation is >0
+  if(remove_negative_times) {
+    if(any(times < 0)) { # extend to time zero if any observation is < 0
+      if(! (0 %in% times)) {
+        # add zero time, and remove all t < 0
+        if(any(times > 0)) { # add the interpolated obs before and after 0 as t=0
+          if(implementation == 'interpolate') {
+            new_times <- c(new_times, 0)
+            y1 <- tail(new_values[new_times < 0],1)
+            y2 <- head(new_values[new_times > 0],1)
+            t1 <- tail(new_times[new_times < 0],1)
+            t2 <- head(new_times[new_times > 0],1)
+            grad <-  (y2-y1) / (t2-t1)
+            new_values <- c(new_values, y1 + grad * (0-t1))
+          } else { # add the last obs before 0 as t=0
+            new_times <- c(new_times, 0)
+            new_values <- c(new_values, tail(new_values[new_times < 0], 1))
+          }
+        } else {
+          new_times <- 0
+          new_values <- tail(new_values,1)
+        }
+      }
+    }
+    new_values <- new_values[new_times >= 0]
+    new_times <- new_times[new_times >= 0]
+    srt <- order(new_times)
+    new_times <- new_times[srt]
+    new_values <- new_values[srt]
+  }
+  if(min(times)>0) { # extend to time zero if first observation is > 0
     if(new_times[1] > interpolation_join_limit) {
       # add observation at t=0
       new_times <- c(0, new_times)

@@ -22,4 +22,3 @@ model_from_api(model = NULL, url = "http://localhost:8080/api",
 \description{
 Load model definition from API, and compile to R library
 }
-

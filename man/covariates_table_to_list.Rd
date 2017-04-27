@@ -16,4 +16,3 @@ covariates_table_to_list(covariates_table, covariates_implementation = list())
 Convert covariate table specified as data.frame
 Can handle time-varying data too, if `t` or `time` is specified as column
 }
-

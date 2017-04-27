@@ -12,4 +12,3 @@ data(pkdata)
 Example PK dataset
 }
 \keyword{datasets}
-

@@ -16,4 +16,3 @@ shift_state_indices(ode_def, n = -1)
 R starts counting vector indices at 1, c++ starts at 0,
 so reduce all state numbers in the Cpp function definition by 1
 }
-

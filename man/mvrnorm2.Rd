@@ -24,4 +24,3 @@ Besides standard mutlivariate normal sampling (mvrnorm), allows exponential
 multivarate normal and quasi-random multivariate normal (using the randtoolbox)
 all using the same interface.
 }
-

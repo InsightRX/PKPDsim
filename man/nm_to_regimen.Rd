@@ -16,4 +16,3 @@ nm_to_regimen(data, reset_time = TRUE, first_only = FALSE)
 \description{
 Create a regimen based on a NONMEM, or NONMEM-like dataset
 }
-

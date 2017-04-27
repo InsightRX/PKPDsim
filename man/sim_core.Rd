@@ -16,4 +16,3 @@ sim_core(sim_object = NULL, ode)
 Only core function of the simulation function, always just returns observations.
 Mostly useful for estimations / optimal design. Has no checks (for speed)!
 }
-

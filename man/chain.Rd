@@ -20,4 +20,3 @@ as the specified argument(s).
 \description{
 Pipe/chain an object forward into a function call/expression.
 }
-

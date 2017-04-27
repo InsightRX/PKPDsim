@@ -16,4 +16,3 @@ search_replace_in_file(files = c(), find = NULL, replacement = NULL)
 \description{
 Find string and replace in file
 }
-

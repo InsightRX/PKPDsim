@@ -14,4 +14,3 @@ get_ode_model_size(code)
 Get the number of states in the ODE from the code
 code C++ code for model
 }
-

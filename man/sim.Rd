@@ -120,4 +120,3 @@ ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) +
 \seealso{
 \link{sim_ode_shiny}
 }
-

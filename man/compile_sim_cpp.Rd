@@ -41,4 +41,3 @@ compile_sim_cpp(code, dose_code, pk_code, size, p, cpp_show_code,
 \description{
 Compile ODE model to c++ function
 }
-

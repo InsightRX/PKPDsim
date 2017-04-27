@@ -60,4 +60,3 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \description{
 Create new ODE model
 }
-

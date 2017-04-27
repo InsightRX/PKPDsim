@@ -17,4 +17,3 @@ regimen_to_nm(reg = NULL, dose_cmt = 1, n_ind = 1, t_obs = NULL,
 \description{
 Convert PKPDsim regimen to NONMEM table (doses only)
 }
-

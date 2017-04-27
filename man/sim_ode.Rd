@@ -12,4 +12,3 @@ sim_ode(...)
 \description{
 Deprecated function, renamed to `sim()`
 }
-

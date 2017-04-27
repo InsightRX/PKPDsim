@@ -14,4 +14,3 @@ add_ruv(x, ruv = list())
 \description{
 Add residual variability to the dependent variable
 }
-

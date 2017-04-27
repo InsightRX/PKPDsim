@@ -51,4 +51,3 @@ r3 <- new_regimen(amt=c(rep(100,4), rep(50,16)), times=c(0:19)*12)  # first 4 do
 \seealso{
 \link{sim_ode}
 }
-

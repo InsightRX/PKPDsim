@@ -14,4 +14,3 @@ adherence_binomial(n = 100, p = 0.5)
 \description{
 Binomial adherence'
 }
-

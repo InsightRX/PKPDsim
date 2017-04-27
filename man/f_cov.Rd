@@ -12,4 +12,3 @@ f_cov(...)
 \description{
 covariate function builder
 }
-

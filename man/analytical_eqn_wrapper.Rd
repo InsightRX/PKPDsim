@@ -16,4 +16,3 @@ analytical_eqn_wrapper(analytical, design = NULL, parameters)
 \description{
 In development. Needs to be optimized significantly to be useful in production.
 }
-
