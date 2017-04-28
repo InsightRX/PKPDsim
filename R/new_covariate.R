@@ -51,10 +51,10 @@ new_covariate <- function(
     new_values <- values
   }
   if(remove_negative_times) {
-    if(any(times < 0)) { # extend to time zero if any observation is < 0
-      if(! (0 %in% times)) {
+    if(any(new_times < 0)) { # extend to time zero if any observation is < 0
+      if(! (0 %in% new_times)) {
         # add zero time, and remove all t < 0
-        if(any(times > 0)) { # add the interpolated obs before and after 0 as t=0
+        if(any(new_times > 0)) { # add the interpolated obs before and after 0 as t=0
           if(implementation == 'interpolate') {
             new_times <- c(new_times, 0)
             y1 <- tail(new_values[new_times < 0],1)
@@ -79,7 +79,7 @@ new_covariate <- function(
     new_times <- new_times[srt]
     new_values <- new_values[srt]
   }
-  if(min(times)>0) { # extend to time zero if first observation is > 0
+  if(min(new_times) > 0) { # extend to time zero if first observation is > 0
     if(new_times[1] > interpolation_join_limit) {
       # add observation at t=0
       new_times <- c(0, new_times)
@@ -87,7 +87,7 @@ new_covariate <- function(
     } else {
       # assume observation was at t=0
       new_times <- c(0, new_times[-1])
-      warning("Time for first covariate measurement set to 0.")
+      message("Note: time for first covariate measurement set to 0.")
     }
   }
   if(length(unit) > length(new_values)) {
