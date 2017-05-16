@@ -5,17 +5,26 @@
 \title{Load model definition from API, and compile to R library}
 \usage{
 model_from_api(model = NULL, url = "http://localhost:8080/api",
-  verbose = TRUE, get_definition = FALSE, to_package = FALSE,
-  force = FALSE, ...)
+  github = FALSE, repo = NULL, auth_token = NULL, verbose = TRUE,
+  get_definition = FALSE, to_package = FALSE, force = FALSE,
+  run_tests = FALSE, ...)
 }
 \arguments{
 \item{model}{model id}
 
 \item{url}{URL of API}
 
+\item{github}{not a custom API but GitHub}
+
+\item{repo}{GH repository specified as `owner/repo`}
+
+\item{auth_token}{for private repositories}
+
 \item{verbose}{verbosity (T/F)}
 
 \item{force}{force install, even if model inactive}
+
+\item{run_tests}{run tests associated with model?}
 
 \item{definition_only}{return only the model definition, do not compile}
 }

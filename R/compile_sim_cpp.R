@@ -37,17 +37,29 @@ compile_sim_cpp <- function(
   ## find newly declared variables and make sure they are defined as double
   ode_def <- paste0(gsub("[\n^]( *?)double ", "", ode_def))
   newpar <- gregexpr("[\n^](.*?)=", ode_def)
-  par1 <- regmatches(ode_def, newpar)[[1]]
-  def1 <- par1[-grep("dadt\\[", tolower(par1))]
+  #
+#  par1 <- regmatches(par1, newpar)[[1]]
+  pars <- unlist(strsplit(ode_def, "\n"))
+  par1 <- c()
+  for(pr in pars) {
+    if(length(grep("=", pr))>0) {
+      par1 <- c(par1, gsub("=.*$", "=", pr))
+    }
+  }
+  def1 <- par1[grep("\\=", par1)]
+  def1 <- par1[-grep("dadt\\[", tolower(def1))]
+  if(length(grep("\\(", def1)) > 0) {
+    def1 <- def1[-grep("\\(", def1)]
+  }
   for (i in seq(def1)) {
-    tmp <- gsub("[\n =]*", "", def1[i])
+    tmp <- gsub("[\n =;]*", "", def1[i])
     if(tmp %in% declare_variables) { # is already defined as global variable
       ode_def <- gsub(def1[i], paste0("\n", gsub("\n[;]*","",def1[i])), ode_def, perl=TRUE)
     } else {
-      ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n[;]*","",def1[i])), ode_def, perl=TRUE)
+      ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n[;]*?","",def1[i])), ode_def, perl=TRUE)
     }
   }
-  par1 <- gsub("[\n\\= ]", "", par1)
+  par1 <- gsub("[\n\\= ]", "", unique(par1))
   par1 <- gsub("double ", "", par1)
   par1 <- gsub(";", "", par1)
   defined <- par1[-grep("dadt\\[", tolower(par1))]
