@@ -212,7 +212,7 @@ sim <- function (ode = NULL,
       } else {
         covariates_tmp <- covariates
       }
-      if(!all(covs_ode %in% c(names(covariates_tmp)))) {
+      if(covs_ode != "" && !all(covs_ode %in% c(names(covariates_tmp)))) {
         m <- match(names(covariates_tmp), covs_ode)
         if(length(m) == 0) {
           missing <- covs_ode
