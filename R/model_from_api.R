@@ -118,7 +118,8 @@ model_from_api <- function(model = NULL,
     if(run_tests) {
       if(file.exists(tmp_file)) {
         if(verbose) message("Running test(s)...")
-        system(paste0("Rscript ", tmp_file))
+        # system(paste0("Rscript ", tmp_file))
+        source(tmp_file, local=TRUE)
       }
     }
   }
