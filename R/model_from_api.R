@@ -28,7 +28,11 @@ model_from_api <- function(model = NULL,
                               auth_token = auth_token)
       defs <- mods$name %>% stringr::str_replace_all(".json[5].?", "")
     } else {
-      defs <- jsonlite::fromJSON(paste0(url, "/models"))
+      if(length(grep("http", url)) > 0) { ## if internet
+        defs <- jsonlite::fromJSON(paste0(url, "/models"))
+      } else {
+        defs <- jsonlite::fromJSON(readLines(paste0(url, "/models"), flatten=TRUE))
+      }
     }
     message("No `model` specified, returning available PKPDsim models.")
     return(defs)
