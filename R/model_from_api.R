@@ -108,8 +108,10 @@ model_from_api <- function(model = NULL,
                                   default_parameters = def$default_parameters,
                                   ...)
     if(run_tests) {
-      if(verbose) message("Running test(s)...")
-      system(paste0("Rscript ", tmp_file))
+      if(file.exists(tmp_file)) {
+        if(verbose) message("Running test(s)...")
+        system(paste0("Rscript ", tmp_file))
+      }
     }
   }
   if(is.null(mod)) {
