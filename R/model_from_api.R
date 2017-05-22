@@ -37,10 +37,10 @@ model_from_api <- function(model = NULL,
     message("No `model` specified, returning available PKPDsim models.")
     return(defs)
   }
-  if(verbose) {
-    message("Connecting to API...")
-  }
   if(github) {
+    if(verbose) {
+      message("Connecting to API at GitHub...")
+    }
     if(is.null(repo)) stop("Please specify GitHub repository!")
     def <- github_download(repo = repo, path = paste0("models/", model, ".json5"),
                                  auth_token = auth_token, raw = FALSE)
@@ -56,6 +56,13 @@ model_from_api <- function(model = NULL,
     postfix <- ".json5"
     if(length(grep("http", url)) > 0) { # if API and not local, don't add json5 extension
       postfix <- ""
+      if(verbose) {
+        message("Connecting to API...")
+      }
+    } else {
+      if(verbose) {
+        message("Reading from local repository...")
+      }
     }
     lines <- paste(readLines(paste0(url, "/models/", model, postfix)), collapse="\n") %>%
       stringr::str_replace_all("'", "\"") %>%
@@ -106,6 +113,7 @@ model_from_api <- function(model = NULL,
                                   omega_matrix = def$omega_matrix,
                                   ruv = def$ruv,
                                   default_parameters = def$default_parameters,
+                                  verbose = verbose,
                                   ...)
     if(run_tests) {
       if(file.exists(tmp_file)) {
