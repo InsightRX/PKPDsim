@@ -21,6 +21,7 @@
 #' @param cpp_show_code show generated C++ code
 #' @param package package name when saving as package
 #' @param folder base folder name to create package in
+#' @param lib_location install into folder (`--library` argument)
 #' @param verbose show more output
 #' @export
 new_ode_model <- function (model = NULL,
@@ -45,6 +46,7 @@ new_ode_model <- function (model = NULL,
                            package = NULL,
                            install = TRUE,
                            folder = NULL,
+                           lib_location = NULL,
                            verbose = FALSE,
                            as_is = FALSE
                           ) {
@@ -282,7 +284,11 @@ new_ode_model <- function (model = NULL,
       }
       Rcpp::compileAttributes(".", )
       if(install) { # install into R
-        system(paste0("R CMD INSTALL --no-multiarch --with-keep.source ."))
+        lib_location_arg <- ""
+        if(!is.null(lib_location)) {
+          lib_location_arg <- paste0("--library=", lib_location)
+        }
+        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source ."))
       } else { # build to zip file
         system(paste0("R CMD build ."))
         pkg_file <- paste0(new_folder, "/", package, "_1.0.tar.gz")
