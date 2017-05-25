@@ -112,7 +112,8 @@ sim <- function (ode = NULL,
   } else {
     regimen_orig <- regimen
   }
-  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime") != "undefined") {
+  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime") != "undefined" && attr(ode, "lagtime") !=
+    "NULL") {
     if(class(attr(ode, "lagtime")) %in% c("numeric", "integer")) {
       regimen$dose_times <- regimen$dose_times + attr(ode, "lagtime")
     }
