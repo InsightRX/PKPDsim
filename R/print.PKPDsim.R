@@ -14,4 +14,5 @@ print.PKPDsim <- function(x, ...) {
   cat(paste0("Number of compartments: ", attr(x, "size")), "\n")
   cat(paste0("Observation compartment: ", paste(attr(x, "obs")$cmt, collapse=", "), "\n"))
   cat(paste0("Observation scaling: ", paste(attr(x, "obs")$scale, collapse=", "), "\n"))
+  cat(paste0("Lag time: ", attr(x, "lagtime")), "\n")
 }

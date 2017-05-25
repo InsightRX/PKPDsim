@@ -112,6 +112,7 @@ model_from_api <- function(model = NULL,
                                   iiv = def$iiv,
                                   omega_matrix = def$omega_matrix,
                                   ruv = def$ruv,
+                                  lagtime = def$lagtime,
                                   default_parameters = def$default_parameters,
                                   verbose = verbose,
                                   ...)
