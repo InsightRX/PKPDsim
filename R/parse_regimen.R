@@ -64,6 +64,8 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     regimen$t_inf  <- regimen$t_inf[ord]
     regimen$evid  <- regimen$evid[ord]
     regimen$bioav <- 0
+  } else {
+    regimen$evid <- 1
   }
 
   # parse list to a design (data.frame)

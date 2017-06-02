@@ -10,7 +10,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   scale = 1), dose = list(cmt = 1), covariates = NULL,
   declare_variables = NULL, iiv = NULL, omega_matrix = NULL, ruv = NULL,
   default_parameters = NULL, cpp_show_code = FALSE, package = NULL,
-  install = TRUE, folder = NULL, verbose = FALSE, as_is = FALSE)
+  install = TRUE, folder = NULL, lib_location = NULL, verbose = FALSE,
+  as_is = FALSE)
 }
 \arguments{
 \item{model}{model name from model library}
@@ -54,6 +55,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{package}{package name when saving as package}
 
 \item{folder}{base folder name to create package in}
+
+\item{lib_location}{install into folder (`--library` argument)}
 
 \item{verbose}{show more output}
 }
