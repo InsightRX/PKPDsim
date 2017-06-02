@@ -49,6 +49,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     }
     covt <- data.frame(covt)
     # add covariate update times as dummy dose
+    regimen$evid <- c(rep(1, length(regimen$dose_times)), rep(2, length(covt$time)))
     regimen$dose_times <- c(regimen$dose_times, covt$time)
     regimen$dose_amts <- c(regimen$dose_amts, rep(0, length(covt$time)))
     regimen$type <- c(regimen$type, rep(0, length(covt$time)))
@@ -61,7 +62,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     regimen$type <- regimen$type[ord]
     regimen$dose_cmt  <- regimen$dose_cmt[ord]
     regimen$t_inf  <- regimen$t_inf[ord]
-    regimen$evid <- 2
+    regimen$evid  <- regimen$evid[ord]
     regimen$bioav <- 0
   }
 
@@ -74,7 +75,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                   dum = 0,
                   dose_cmt = regimen$dose_cmt,
                   t_inf = regimen$t_inf,
-                  evid = 1,
+                  evid = regimen$evid,
                   bioav = bioav,
                   rate = 0))
   if(sum(regimen$t_inf > 0) > 0) {
