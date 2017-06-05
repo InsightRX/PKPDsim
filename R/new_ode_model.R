@@ -15,6 +15,7 @@
 #' @param covariates specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)
 #' @param declare_variables declare variables
 #' @param iiv inter-individual variability, can optionally be added to library
+#' @param iov inter-occasion variability, can optionally be added to library
 #' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
 #' @param ruv residual variability, can optionally be added to library
 #' @param default_parameters population or specific patient values, can optionally be added to library
@@ -39,6 +40,7 @@ new_ode_model <- function (model = NULL,
                            covariates = NULL,
                            declare_variables = NULL,
                            iiv = NULL,
+                           iov = NULL,
                            omega_matrix = NULL,
                            ruv = NULL,
                            default_parameters = NULL,
@@ -253,6 +255,9 @@ new_ode_model <- function (model = NULL,
       if(is.null(iiv)) { iiv <- "" } else {
         iiv <- PKPDsim::print_list(iiv, FALSE)
       }
+      if(is.null(iov)) { iov <- "" } else {
+        iov <- PKPDsim::print_list(iov, FALSE)
+      }
       if(is.null(ruv)) { ruv <- "" } else {
         ruv <- PKPDsim::print_list(ruv, FALSE)
       }
@@ -265,6 +270,7 @@ new_ode_model <- function (model = NULL,
         default_parameters <- PKPDsim::print_list(default_parameters, FALSE)
       }
       search_replace_in_file(paste0(new_folder, "/R/iiv.R"), "\\[IIV\\]", iiv)
+      search_replace_in_file(paste0(new_folder, "/R/iov.R"), "\\[IOV\\]", iov)
       search_replace_in_file(paste0(new_folder, "/R/omega_matrix.R"), "\\[OMEGA_MATRIX\\]", omega_matrix)
       search_replace_in_file(paste0(new_folder, "/R/parameters.R"), "\\[PARAMETERS\\]", default_parameters)
       search_replace_in_file(paste0(new_folder, "/R/ruv.R"), "\\[RUV\\]", ruv)

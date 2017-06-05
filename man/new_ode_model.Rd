@@ -8,10 +8,10 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   dose_code = NULL, file = NULL, func = NULL, state_init = NULL,
   parameters = NULL, size = NULL, lagtime = NULL, obs = list(cmt = 1,
   scale = 1), dose = list(cmt = 1), covariates = NULL,
-  declare_variables = NULL, iiv = NULL, omega_matrix = NULL, ruv = NULL,
-  default_parameters = NULL, cpp_show_code = FALSE, package = NULL,
-  install = TRUE, folder = NULL, lib_location = NULL, verbose = FALSE,
-  as_is = FALSE)
+  declare_variables = NULL, iiv = NULL, iov = NULL, omega_matrix = NULL,
+  ruv = NULL, default_parameters = NULL, cpp_show_code = FALSE,
+  package = NULL, install = TRUE, folder = NULL, lib_location = NULL,
+  verbose = FALSE, as_is = FALSE)
 }
 \arguments{
 \item{model}{model name from model library}
@@ -43,6 +43,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{declare_variables}{declare variables}
 
 \item{iiv}{inter-individual variability, can optionally be added to library}
+
+\item{iov}{inter-occasion variability, can optionally be added to library}
 
 \item{omega_matrix}{variance-covariance matrix for inter-individual variability, can optionally be added to library}
 
