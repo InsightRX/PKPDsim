@@ -14,7 +14,11 @@ github_download(repo, path = "/README.md", branch = "master",
 
 \item{branch}{git branch}
 
-\item{auth}{auth_token (for private repositories)}
+\item{auth_token}{authentication token for GitHub private repositories}
+
+\item{raw}{return the raw response from GitHub}
+
+\item{action}{either `download` or `ls` (to list files)}
 }
 \description{
 Download a single file from GitHub, or get list of files

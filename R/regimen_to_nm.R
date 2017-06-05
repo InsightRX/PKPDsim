@@ -3,6 +3,8 @@
 #' @param reg `PKPDsim` regimen, created using `new_regimen()` function
 #' @param dose_cmt dosing compartment, if not specified in `reg` object
 #' @param n_ind repeat for `n_ind` subjects
+#' @param t_obs add observation time(s)
+#' @param obs_cmt observation compartment for added observation time(s)
 #'
 #' @export
 regimen_to_nm <- function(
@@ -26,16 +28,16 @@ regimen_to_nm <- function(
     dat$RATE <- reg$dose_amts / reg$t_inf
   }
   if(!is.null(t_obs)) {
-    obs <- nm_tab %>% filter(!duplicated(ID))
-    obs <- data.frame(cbind(
-      ID = obs$ID,
-      TIME = rep(t_obs, each = length(obs$ID)),
-      obs[,3:length(obs)]))
-    obs <- obs %>% dplyr::mutate(EVID = 0, MDV = 0, AMT = 0, CMT = obs_comp)
-    if("RATE" %in% colnames(obs)) {
+    obs <- data.frame(
+      ID = rep(1:n_ind, each = length(t_obs)),
+      TIME = rep(t_obs, each = length(1:n_ind)),
+      DV = 0)
+    obs <- obs %>% dplyr::mutate("EVID" = 0, "MDV" = 0, "AMT" = 0, "CMT" = obs_cmt)
+    if("RATE" %in% colnames(dat)) {
       obs$RATE <- 0
     }
-    dat <- bind_rows(dat, obs) %>% arrange(ID, TIME, -EVID, CMT)
+    dat <- dplyr::bind_rows(dat, obs)
+    dat <- dat[order(dat$ID, dat$TIME, -dat$EVID, dat$CMT),] # not using arrange due to package check error (NOTE no visible binding etc.)
   }
   return(dat)
 }

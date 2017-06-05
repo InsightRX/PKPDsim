@@ -6,7 +6,7 @@
 \title{PK dataset}
 \format{A data frame with 624 rows and 12 variables in NONMEM format}
 \usage{
-data(pkdata)
+pkdata
 }
 \description{
 Example PK dataset

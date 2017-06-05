@@ -4,14 +4,16 @@
 #' @param repo repository, specified as `"owner/repo"`
 #' @param path path to file
 #' @param branch git branch
-#' @param auth auth_token (for private repositories)
+#' @param auth_token authentication token for GitHub private repositories
+#' @param raw return the raw response from GitHub
+#' @param action either `download` or `ls` (to list files)
 #' @export
 github_download <- function(repo,
-                                 path = "/README.md",
-                                 branch = "master",
-                                 auth_token = NULL,
-                                 raw = FALSE,
-                                 action = "download") {
+                           path = "/README.md",
+                           branch = "master",
+                           auth_token = NULL,
+                           raw = FALSE,
+                           action = "download") {
   full_url <- NULL
   if(!(action %in% c("download", "ls"))) {
     stop("Action not defined.")

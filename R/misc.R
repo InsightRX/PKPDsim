@@ -56,6 +56,7 @@ search_replace_in_file <- function(files = c(), find = NULL, replacement = NULL)
 #' Put vector values in quotes
 #'
 #' @param x vector of string / numeric
+#' @param quote what type of quotes (`double` or `single`)
 #' @export
 add_quotes <- function(x, quote = "double") {
   q <- '"'
@@ -71,6 +72,7 @@ add_quotes <- function(x, quote = "double") {
 #' Return a list in R syntax
 #'
 #' @param x list to be printed
+#' @param wrapper wrap in list object?
 #' @export
 print_list <- function(x, wrapper = TRUE) {
   if(wrapper) {

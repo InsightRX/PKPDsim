@@ -8,6 +8,8 @@ print_list(x, wrapper = TRUE)
 }
 \arguments{
 \item{x}{list to be printed}
+
+\item{wrapper}{wrap in list object?}
 }
 \description{
 Return a list in R syntax

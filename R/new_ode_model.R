@@ -21,9 +21,11 @@
 #' @param default_parameters population or specific patient values, can optionally be added to library
 #' @param cpp_show_code show generated C++ code
 #' @param package package name when saving as package
+#' @param install install package after compilation?
 #' @param folder base folder name to create package in
 #' @param lib_location install into folder (`--library` argument)
 #' @param verbose show more output
+#' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,

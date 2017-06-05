@@ -22,11 +22,15 @@ model_from_api(model = NULL, url = "http://localhost:8080/api",
 
 \item{verbose}{verbosity (T/F)}
 
+\item{get_definition}{return only the model definition, do not compile}
+
+\item{to_package}{compile to package?}
+
 \item{force}{force install, even if model inactive}
 
 \item{run_tests}{run tests associated with model?}
 
-\item{definition_only}{return only the model definition, do not compile}
+\item{...}{arguments passed to `new_ode_model()` function}
 }
 \description{
 Load model definition from API, and compile to R library

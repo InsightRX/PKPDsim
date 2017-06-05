@@ -6,9 +6,11 @@
 #' @param repo GH repository specified as `owner/repo`
 #' @param auth_token for private repositories
 #' @param verbose verbosity (T/F)
-#' @param definition_only return only the model definition, do not compile
+#' @param get_definition return only the model definition, do not compile
+#' @param to_package compile to package?
 #' @param force force install, even if model inactive
 #' @param run_tests run tests associated with model?
+#' @param ... arguments passed to `new_ode_model()` function
 #' @export
 model_from_api <- function(model = NULL,
                            url = "http://localhost:8080/api",
@@ -31,7 +33,7 @@ model_from_api <- function(model = NULL,
       if(length(grep("http", url)) > 0) { ## if internet
         defs <- jsonlite::fromJSON(paste0(url, "/models"))
       } else {
-        defs <- jsonlite::fromJSON(readLines(paste0(url, "/models"), flatten=TRUE))
+        defs <- jsonlite::fromJSON(readLines(paste0(url, "/models")))
       }
     }
     message("No `model` specified, returning available PKPDsim models.")

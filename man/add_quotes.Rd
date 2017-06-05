@@ -8,6 +8,8 @@ add_quotes(x, quote = "double")
 }
 \arguments{
 \item{x}{vector of string / numeric}
+
+\item{quote}{what type of quotes (`double` or `single`)}
 }
 \description{
 Put vector values in quotes

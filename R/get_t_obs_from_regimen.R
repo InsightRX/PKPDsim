@@ -1,4 +1,10 @@
 #' Extract sensible default observation times from a specified regimen
+#'
+#' @param regimen regimen created using `new_regimen()`
+#' @param obs_step_size step size between observations. Will be auto-calculated if NULL
+#' @param t_max max time value
+#' @param covariates covariates object, created using `list(new_covariate(), ...)`
+#' @param extra_t_obs add timepoints to t_obs at which covariate is changing (`T`/`F`)
 get_t_obs_from_regimen <- function(
   regimen, obs_step_size, t_max,
   covariates, extra_t_obs) {

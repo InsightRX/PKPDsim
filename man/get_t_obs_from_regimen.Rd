@@ -6,6 +6,17 @@
 \usage{
 get_t_obs_from_regimen(regimen, obs_step_size, t_max, covariates, extra_t_obs)
 }
+\arguments{
+\item{regimen}{regimen created using `new_regimen()`}
+
+\item{obs_step_size}{step size between observations. Will be auto-calculated if NULL}
+
+\item{t_max}{max time value}
+
+\item{covariates}{covariates object, created using `list(new_covariate(), ...)`}
+
+\item{extra_t_obs}{add timepoints to t_obs at which covariate is changing (`T`/`F`)}
+}
 \description{
 Extract sensible default observation times from a specified regimen
 }

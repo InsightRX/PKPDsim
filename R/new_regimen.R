@@ -96,7 +96,7 @@ new_regimen <- function(
   } else {
     reg$dose_times <- times
     if(length(reg$dose_times) > 1) {
-      reg$interval <- diff(tail(reg$dose_times, 2))
+      reg$interval <- diff(utils::tail(reg$dose_times, 2))
     } else {
       reg$interval <- 24
     }

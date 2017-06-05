@@ -13,6 +13,7 @@
 #' @param state_init state init vector
 #' @param compile compile or not?
 #' @param verbose show more output
+#' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @export
 compile_sim_cpp <- function(
   code,

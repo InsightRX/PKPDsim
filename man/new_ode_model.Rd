@@ -56,11 +56,15 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 
 \item{package}{package name when saving as package}
 
+\item{install}{install package after compilation?}
+
 \item{folder}{base folder name to create package in}
 
 \item{lib_location}{install into folder (`--library` argument)}
 
 \item{verbose}{show more output}
+
+\item{as_is}{use C-code as-is, don't substitute line-endings or shift indices}
 }
 \description{
 Create new ODE model

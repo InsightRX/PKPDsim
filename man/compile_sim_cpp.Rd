@@ -37,6 +37,8 @@ compile_sim_cpp(code, dose_code, pk_code, size, p, cpp_show_code,
 \item{compile}{compile or not?}
 
 \item{verbose}{show more output}
+
+\item{as_is}{use C-code as-is, don't substitute line-endings or shift indices}
 }
 \description{
 Compile ODE model to c++ function

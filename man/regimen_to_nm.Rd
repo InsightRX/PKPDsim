@@ -13,6 +13,10 @@ regimen_to_nm(reg = NULL, dose_cmt = 1, n_ind = 1, t_obs = NULL,
 \item{dose_cmt}{dosing compartment, if not specified in `reg` object}
 
 \item{n_ind}{repeat for `n_ind` subjects}
+
+\item{t_obs}{add observation time(s)}
+
+\item{obs_cmt}{observation compartment for added observation time(s)}
 }
 \description{
 Convert PKPDsim regimen to NONMEM table (doses only)
