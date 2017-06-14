@@ -8,6 +8,7 @@
 #' @param func R function to be used with deSolve library
 #' @param state_init vector of state init
 #' @param parameters list or vector of parameter values
+#' @param units list or vector of parameter units
 #' @param size size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.
 #' @param lagtime lag time
 #' @param obs list with "scale": character string with definition for scale, e.g. "V" or "V*(WT/70)". If NULL, scale defaults to 1., and "cmt" the observation compartment
@@ -35,6 +36,7 @@ new_ode_model <- function (model = NULL,
                            func = NULL,
                            state_init = NULL,
                            parameters = NULL,
+                           units = NULL,
                            size = NULL,
                            lagtime = NULL,
                            obs = list("cmt" = 1, "scale" = 1),
@@ -271,15 +273,21 @@ new_ode_model <- function (model = NULL,
       if(is.null(default_parameters)) { default_parameters <- "" } else {
         default_parameters <- PKPDsim::print_list(default_parameters, FALSE)
       }
+      if(is.null(units)) { units <- "''" } else {
+        units <- PKPDsim::print_list(units, TRUE, TRUE)
+        print('test')
+        print(units)
+      }
       search_replace_in_file(paste0(new_folder, "/R/iiv.R"), "\\[IIV\\]", iiv)
       search_replace_in_file(paste0(new_folder, "/R/iov.R"), "\\[IOV\\]", iov)
       search_replace_in_file(paste0(new_folder, "/R/omega_matrix.R"), "\\[OMEGA_MATRIX\\]", omega_matrix)
-      search_replace_in_file(paste0(new_folder, "/R/parameters.R"), "\\[PARAMETERS\\]", default_parameters)
+      search_replace_in_file(paste0(new_folder, "/R/parameters.R"), c("\\[PARAMETERS\\]", "\\[UNITS\\]"), c(default_parameters, units))
       search_replace_in_file(paste0(new_folder, "/R/ruv.R"), "\\[RUV\\]", ruv)
       search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/NAMESPACE"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)
       file.rename(paste0(new_folder, "/man/modulename-package.Rd"), paste0(new_folder, "/man/", package, ".Rd"))
+      system(paste0("cat ", new_folder, "/R/parameters.R"))
 
       ## Compile / build / install
       curr <- getwd()

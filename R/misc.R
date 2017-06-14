@@ -74,10 +74,15 @@ add_quotes <- function(x, quote = "double") {
 #' @param x list to be printed
 #' @param wrapper wrap in list object?
 #' @export
-print_list <- function(x, wrapper = TRUE) {
-  if(wrapper) {
-    return(paste0("list (", paste(PKPDsim::add_quotes(names(x)), "=", x[names(x)], collapse = ", "), ")"))
+print_list <- function(x, wrapper = TRUE, quote = FALSE) {
+  if(!quote) {
+    tmp <- paste(PKPDsim::add_quotes(names(x)), "=", x[names(x)], collapse = ", ")
   } else {
-    return(paste(PKPDsim::add_quotes(names(x)), "=", x[names(x)], collapse = ", "))
+    tmp <- paste(PKPDsim::add_quotes(names(x)), "=", add_quotes(x[names(x)]), collapse = ", ")
+  }
+  if(wrapper) {
+    return(paste0("list (", tmp, ")"))
+  } else {
+    return(tmp)
   }
 }
