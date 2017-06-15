@@ -1,6 +1,7 @@
 library(PKPDsim)
 library(dplyr)
 library(testit)
+Sys.setenv("R_TESTS" = "")
 
 covs <- list(
   CRCL = new_covariate(value = c(4.662744, 5.798767, 6.195943),
