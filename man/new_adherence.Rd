@@ -19,4 +19,3 @@ new_adherence(n = 100, type = "markov", markov = list(p11 = 0.75, p01 =
 \description{
 Adherence function
 }
-

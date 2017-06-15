@@ -1,4 +1,6 @@
-runge_kutta_cash_karp54 < state_type > stepr;
+// euler < state_type > stepr;
+runge_kutta4 < state_type > stepr;
+// runge_kutta_cash_karp54 < state_type > stepr;
 
 struct push_back_solution
 {
@@ -44,39 +46,40 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
 List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
-  std::vector<double> obs;
+  // insert observation variable definition
   double t_start, t_end;
-  std::vector<double> times, doses, dummy, rates, bioav;
+  std::vector<double> times, doses, dummy, rates;
   std::vector<int> dose_cmt, dose_type, evid;
+  // insert variable definitions
   times = design["t"];
   doses = design["dose"];
   evid = design["evid"];
-  bioav = design["bioav"];
   dummy = design["dum"];
   rates = design["rate"];
   dose_cmt = design["dose_cmt"];
   dose_type = design["type"];
   int len = times.size();
   int start;
+  double bioav = 1;
   // insert observation compartment
-
+  // insert bioavailability definition
   // insert covariate definitions
-
   // insert_parameter_definitions
-
   // insert_state_init
   NumericVector Aupd = clone(A);
 
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];
+    // insert covariates for integration period
+    // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
       memset(rate, 0, sizeof(rate));
-      rate[dose_cmt[i]-1] = rates[i];
+      rate[dose_cmt[i]-1] = rates[i] * bioav;
+      // insert custom dosing event code
     }
-
-    // insert covariates for integration period
     // insert scale definition for integration period
+    // insert custom pk event code
 
     start = 0;
     if(i > 0) {
@@ -86,7 +89,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
       t_prv_dose = times[i];
       prv_dose = doses[i];
       if(dose_type[i] == 0) { // bolus
-        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav[i];
+        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav;
         start = 0;
       }
     }
@@ -105,13 +108,15 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     for( int k = start; k < tmp.y.size(); k++) {
       // insert time-dependent covariates scale
       // insert scale definition for observation
-      obs.insert(obs.end(), tmp.y[k][cmt] / scale);
+      // insert saving observations to obs object(s)
+      // insert copy variables into all variables
     }
   }
 
   List comb;
   comb["time"] = t;
   comb["y"] = y;
-  comb["obs"] = obs;
+  // insert copy observation object
+  // insert copy all variables object
   return(comb);
 }

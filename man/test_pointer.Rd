@@ -12,4 +12,3 @@ test_pointer(model)
 \description{
 Test if model still in memory
 }
-

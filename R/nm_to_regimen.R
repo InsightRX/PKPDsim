@@ -5,9 +5,9 @@
 #' @param reset_time start time for each simulated patient at 0, irrespective of design in dataset
 #' @param first_only use only design from first individual in dataset
 #' @export
-new_regimen_from_nm_dataset <- function(data,
-                                        reset_time = TRUE,
-                                        first_only = FALSE) {
+nm_to_regimen <- function(data,
+                          reset_time = TRUE,
+                          first_only = FALSE) {
   colnames(data) <- tolower(colnames(data))
   if(!"evid" %in% colnames(data)) {
     stop("EVID column is required in source dataset!")
@@ -33,7 +33,7 @@ new_regimen_from_nm_dataset <- function(data,
   }
   reg <- list()
   for(i in 1:length(ids)) {
-    tmp <- doses %>% dplyr::filter(id == ids[i])
+    tmp <- doses[doses$id == ids[i],]
     if(reset_time) {
       tmp$time <- tmp$time - min(tmp$time)
     }

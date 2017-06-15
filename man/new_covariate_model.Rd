@@ -12,4 +12,3 @@ new_covariate_model(model = list())
 \description{
 covariate model function
 }
-

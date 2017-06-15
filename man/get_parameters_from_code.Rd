@@ -16,4 +16,3 @@ get_parameters_from_code(code, state_init, declare_variables = NULL)
 \description{
 Get model parameters from code
 }
-

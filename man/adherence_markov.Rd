@@ -16,4 +16,3 @@ adherence_markov(n = 100, p11 = 0.9, p01 = 0.7)
 \description{
 Markov adherence'
 }
-

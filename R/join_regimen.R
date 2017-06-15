@@ -6,8 +6,10 @@
 #' @param dose_update dose number at which to override regimen1 with regimen 2 (if interval not specified)
 #' @export
 join_regimen <- function(
-  regimen1 = NULL, regimen2 = NULL,
-  interval = NULL, dose_update = NULL) {
+  regimen1 = NULL,
+  regimen2 = NULL,
+  interval = NULL,
+  dose_update = NULL) {
   if(is.null(regimen1) && is.null(regimen2)) {
     stop("please specify two intervals to this function.")
   } else {
@@ -30,7 +32,7 @@ join_regimen <- function(
           amt <- c(regimen1$dose_amts[1:(dose_update-1)], regimen2$dose_amts)
           t_inf <- c(regimen1$t_inf[1:(dose_update-1)], regimen2$t_inf)
         } else { # just add to regimen
-          t <- c(regimen1$dose_times, regimen2$dose_times + tail(regimen1$dose_times,1) + interval)
+          t <- c(regimen1$dose_times, regimen2$dose_times + utils::tail(regimen1$dose_times,1) + interval)
           amt <- c(regimen1$dose_amts, regimen2$dose_amts)
           t_inf <- c(regimen1$t_inf, regimen2$t_inf)
         }
@@ -39,15 +41,17 @@ join_regimen <- function(
         amt <- c(regimen2$dose_amts)
         t_inf <- c(regimen2$t_inf)
       }
-      joint <- new_regimen(amt = amt, times = t, t_inf = t_inf, type = regimen1$type)
+      joint <- new_regimen(amt = amt, times = t, t_inf = t_inf, type = regimen1$type, interval = interval)
       return(joint)
     }
     if(!is.null(interval)) {
       joint <- new_regimen(
         amt = c(regimen1$dose_amts, regimen2$dose_amts),
-        times = c(regimen1$dose_times, regimen2$dose_times + tail(regimen1$dose_times,1) + interval),
-        type = "infusion",
-        t_inf = c(regimen1$t_inf, regimen2$t_inf)
+        times = c(regimen1$dose_times, regimen2$dose_times + utils::tail(regimen1$dose_times,1) + interval),
+        cmt = c(regimen1$cmt, regimen2$cmt),
+        type = c(regimen1$type, regimen2$type),
+        t_inf = c(regimen1$t_inf, regimen2$t_inf),
+        interval = interval
       )
       return(joint)
     } else {

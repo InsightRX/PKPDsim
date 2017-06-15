@@ -2,11 +2,21 @@
 # compare with analytic equations
 
 library(PKPDsim)
-library(testit) ## testthat doesn't play nice with sourceCpp
+library(testit)
 
 Sys.setenv("R_TESTS" = "")
 
-## parameters:
+###########################################################################
+## Regimens
+###########################################################################
+
+tmp <- new_regimen(amt = c(-1,-2,3,4), times = c(0,24,48,72), type = "infusion")
+assert("Doses <0  set to 0", all(tmp$dose_amts >= 0))
+
+###########################################################################
+## Simulations
+###########################################################################
+
 p <- list(KA = 1, CL = 5, V = 50)
 t_obs <- c(0:72)
 t_obs2 <- t_obs + 0.1234 # also needs to be producing results with non-integer times
@@ -29,10 +39,17 @@ res$pk1cmt_oral_lib <- sim_ode(
   ode=pk1cmt_oral_lib,
   par=p,
   regimen=regimen,
-  t_obs=t_obs,
-  int_step_size = 1,
+  t_obs = t_obs,
+  int_step_size = 0.1,
+  duplicate_t_obs = TRUE,
   only_obs=TRUE)
-res$pk1cmt_oral_code <- sim_ode(ode=pk1cmt_oral_code, par=p, regimen=regimen, t_obs=t_obs, only_obs=TRUE)
+res$pk1cmt_oral_code <- sim_ode(ode = pk1cmt_oral_code,
+                                par=p,
+                                duplicate_t_obs = TRUE,
+                                regimen=regimen,
+                                t_obs=t_obs,
+                                int_step_size = 0.1,
+                                only_obs=TRUE)
 res$pk1cmt_oral_anal <- pk1cmt_oral_anal(t_obs, dose, p$KA, p$V, p$CL)
 
 ## basic testing
@@ -50,7 +67,7 @@ t_obs <- c(11.916, 14.000, 16.000, 17.000, 30)
 tmp <- sim_ode(ode = pk1cmt_iv,
                           par = list(CL = 5, V = 50),
                           regimen = regimen_mult,
-                          int_step_size = 1,
+                          # int_step_size = 1,
                           t_obs = t_obs,
                           only_obs = TRUE)
 assert('correct number of observations returned (bug precision time-axis)',
@@ -61,7 +78,7 @@ xtim<-c(0,2,4,8,12,24)
 sujdos<-320
 param<-list(KA=1.8, V=30, CL=1.7)
 pk1 <- new_ode_model("pk_1cmt_oral")
-regim<-new_regimen(amt=sujdos, times=c(0,12))
+regim<-new_regimen(amt=sujdos, times=c(0,12), type= "bolus")
 out<-sim_ode(ode="pk1", par=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
 assert("all requested observations in ouput",
        out$t == xtim)
@@ -82,7 +99,7 @@ pk  <- new_ode_model(code = "
                      dAdt[3] = S2*(A[2]-A[3])
                      ",
                      obs = list(cmt=2, scale="V"),
-                     dose = list(cmt = 2), cpp_show_code = TRUE)
+                     dose = list(cmt = 2), cpp_show_code = FALSE)
 r <- new_regimen(amt = 100, times = c(0), type = "infusion")
 dat <- sim_ode (ode = "pk", n_ind = 1,
                 omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
@@ -113,3 +130,43 @@ dat3 <- sim_ode (ode = "pk", n_ind = 1,
                  verbose = FALSE, t_max=48)
 assert("dose in comp 2 and 3 as well", ((max(dat3[dat3$comp == 2,]$y)-142.4)/142.4 < 0.01) && ((max(dat3[dat3$comp == 3,]$y)-157.2)/157.2) < 0.01)
 
+## test duplicate obs (e.g. for optimal design purposes)
+p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
+r <- new_regimen(amt = c(100, 100, 100, 100),
+                 times = c(0, 6, 12, 18),
+                 cmt = c(2, 2, 1, 1),
+                 t_inf = c(1, 1, 1, 1), # for first 2 doses, infusion time will just be ignored, but a value has to be specified in the vector
+                 type = c("bolus", "bolus", "infusion", "infusion"))
+dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
+                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+                par = p, regimen = r,
+                t_obs = c(1,2,3,4,4,4,6),
+                duplicate_t_obs = T,
+                only_obs = F)
+assert("some observations duplicated", length(dat[dat$t == 4,]$y) == 9)
+assert("all observations included", length(dat$y) == 21)
+assert("no NA", any(is.na(dat$y)) == FALSE)
+
+## bug reported by JF, if covariate time conincides with end of infusion,
+## end of infusion is not recorded
+pop_est <- list(CL = 1.08, V = 0.98)
+regimen <- PKPDsim::new_regimen(amt = c(1500, 1000, 1500, 1500, 1500, 1500, 1500),
+                                type = "infusion", t_inf = c(2, 1, 2, 2, 1, 1, 1),
+                                times = c(0, 10.8666666666667, 20.4333333333333, 32.0666666666667, 46.9, 54.9, 62.9 ))
+covs <- list(WT = new_covariate(value = c(60, 65), times = c(0, 47.9)), CRCL = new_covariate(8), CVVH = new_covariate(0))
+pksim <- sim(ode = pk1cmt_iv,
+             parameters = pop_est,
+             covariates = covs,
+             regimen = regimen,
+             checks = TRUE,
+             only_obs = TRUE)
+testit::assert("infusion ends properly", all(pksim$y < 1000))
+
+## Check custom t_obs
+t_obs <- seq(from=0, to = 24, by = .1)
+dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
+                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+                par = p, regimen = r,
+                t_obs = t_obs,
+                only_obs = T)
+assert("custom t_obs works", mean(diff(t_obs)) == mean(diff(dat$t)))

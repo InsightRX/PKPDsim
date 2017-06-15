@@ -1,5 +1,7 @@
 #' Compile ODE model to c++ function
-#' @param code C++ code
+#' @param code C++ code ODE system
+#' @param dose_code C++ code per dose event
+#' @param pk_code C++ code per any event (similar to $PK)
 #' @param size size of ODE system
 #' @param p parameters (list)
 #' @param cpp_show_code show output c++ function?
@@ -9,25 +11,66 @@
 #' @param covariates covariates specification
 #' @param obs observation specification
 #' @param dose dose specification
+#' @param state_init state init vector
+#' @param compile compile or not?
 #' @param verbose show more output
+#' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @export
-compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, state_init = NULL, declare_variables = NULL, covariates = NULL, obs = NULL, dose = NULL, verbose = FALSE) {
+compile_sim_cpp <- function(
+  code,
+  dose_code,
+  pk_code,
+  size,
+  p,
+  cpp_show_code,
+  code_init = NULL,
+  state_init = NULL,
+  declare_variables = NULL,
+  covariates = NULL,
+  obs = NULL,
+  dose = NULL,
+  compile = TRUE,
+  verbose = FALSE,
+  as_is = FALSE) {
+
   folder <- c(system.file(package="PKPDsim"))
   ode_def <- code
 
   ## find newly declared variables and make sure they are defined as double
   ode_def <- paste0(gsub("[\n^]( *?)double ", "", ode_def))
   newpar <- gregexpr("[\n^](.*?)=", ode_def)
-  par1 <- regmatches(ode_def, newpar)[[1]]
-  def1 <- par1[-grep("dadt\\[", tolower(par1))]
-  for (i in seq(def1)) {
-    ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n","",def1[i])), ode_def)
+  #
+#  par1 <- regmatches(par1, newpar)[[1]]
+  pars <- unlist(strsplit(ode_def, "\n"))
+  par1 <- c()
+  for(pr in pars) {
+    if(length(grep("=", pr))>0) {
+      par1 <- c(par1, gsub("=.*$", "=", pr))
+    }
   }
-  par1 <- gsub("[\n\\= ]", "", par1)
+  def1 <- par1[grep("\\=", par1)]
+  def1 <- par1[-grep("dadt\\[", tolower(def1))]
+  if(length(grep("\\(", def1)) > 0) {
+    def1 <- def1[-grep("\\(", def1)]
+  }
+  for (i in seq(def1)) {
+    tmp <- gsub("[\n =;]*", "", def1[i])
+    if(tmp %in% declare_variables) { # is already defined as global variable
+      ode_def <- gsub(def1[i], paste0("\n", gsub("\n[;]*","",def1[i])), ode_def, perl=TRUE)
+    } else {
+      ode_def <- gsub(def1[i], paste0("\ndouble ", gsub("\n[;]*?","",def1[i])), ode_def, perl=TRUE)
+    }
+  }
+  par1 <- gsub("[\n\\= ]", "", unique(par1))
   par1 <- gsub("double ", "", par1)
+  par1 <- gsub(";", "", par1)
   defined <- par1[-grep("dadt\\[", tolower(par1))]
-  ode_def_cpp <- shift_state_indices(ode_def, -1)
-  ode_def_cpp <- gsub("\\n *", "\\\n  ", ode_def_cpp)
+  if(!as_is) {
+    ode_def_cpp <- shift_state_indices(ode_def, -1)
+    ode_def_cpp <- gsub("\\n *", "\\\n  ", ode_def_cpp)
+  } else {
+    ode_def_cpp <- ode_def
+  }
 
   # add 'rate' for dose compartments to allow infusions, remove if already specified by user (previous versions req'd this)
   if(is.null(dose)) {
@@ -60,7 +103,12 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, stat
     m <- p_def %in% declare_variables # remove covariates and other declared variables
     p_def <- p_def[!m]
   }
-  p <- unique(c(p, "conc", "scale", declare_variables)) # add rate and conc as explicitly declared variables
+  if(!is.null(obs) && length(obs$scale) > 1) {
+    p <- c(p, paste0("scale", 1:length(obs$scale)))
+  } else {
+    p <- c(p, "scale")
+  }
+  p <- unique(c(p, "conc", declare_variables)) # add rate and conc as explicitly declared variables
   pars <- "\n"
   par_def <- ""
   for(i in seq(p)) { # parameters and auxiliary variables
@@ -100,13 +148,14 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, stat
       cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_t_', nam, ' = design["cov_t_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  std::vector<double> gradients_', nam, ' = design["gradients_', nam,'"];\n'))
       cov_tmp <- paste0(cov_tmp, paste0('    ', nam, '_0 = cov_', nam,'[i];\n'))
-      if(class(covariates) == "list" && tolower(covariates[[nam]]$implementation) != "locf") {
+      if(class(covariates) == "character" || (class(covariates) == "list" && tolower(covariates[[nam]]$implementation) != "locf")) {
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = gradients_',nam,'[i] ;\n'))
         cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = cov_t_', nam, '[i] ;\n'))
       } else { ## if covariates specified as character vector, also assume non-timevarying
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = 0 ;\n'))
         cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = 0 ;\n'))
       }
+      cov_tmp <- paste0(cov_tmp, paste0('    ', nam, ' = ', nam,'_0;\n'))
       cov_scale <- paste0(cov_scale, paste0('      ', nam, ' = ', nam, '_0 + gr_', nam, ' * (tmp.time[k] - t_prv_', nam), ');\n')
     }
     idx3 <- grep("insert covariate definitions", cpp_code)
@@ -118,16 +167,57 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, stat
   idx6 <- grep("observation compartment", cpp_code)
   idx7 <- grep("insert scale definition for observation", cpp_code)
   idx8 <- grep("insert time-dependent covariates scale", cpp_code)
+  idx9 <- grep("insert custom pk event code", cpp_code)
+  idx10 <- grep("insert bioav definition", cpp_code)
+  idx11 <- grep("insert custom dosing event code", cpp_code)
+  idx12 <- grep("insert saving observations", cpp_code)
+  idx13 <- grep("insert copy observation object", cpp_code)
+  idx14 <- grep("insert observation variable definition", cpp_code)
+  idx15 <- grep("insert copy variables", cpp_code)
+  idx16 <- grep("insert copy all variables", cpp_code)
+  idx17 <- grep("insert variable definitions", cpp_code)
   if(is.null(obs)) {
-    cpp_code[idx5] = "    double scale = 1;"
-    cpp_code[idx6] = "  int cmt = 0;"
-    cpp_code[idx7] = "  scale = 1;"
-    cpp_code[idx8] = paste0("    scale = ", obs$scale, ";")
+    cpp_code[idx5] <- "    double scale = 1;"
+    cpp_code[idx6] <- "  int cmt = 0;"
+    cpp_code[idx7] <- "  scale = 1;"
+    cpp_code[idx8] <- paste0("    scale = ", obs$scale[1], ";")
+    cpp_code[idx14] <- "  std::vector<double> obs;"
   } else {
-    cpp_code[idx5] = paste0("    scale = ", obs$scale, ";")
-    cpp_code[idx6] = paste0("  int cmt = ", (obs$cmt-1), ";")
-    cpp_code[idx7] = paste0("      scale = ", obs$scale, ";")
-    cpp_code[idx8] = cov_scale
+    if(length(obs$cmt) == 1) {
+      cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale = ", obs$scale[1], ";")
+#      cpp_code[idx6] <- paste0("  int cmt = ", (obs$cmt[1]-1), ";")
+      cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale = ", obs$scale[1], ";")
+      cpp_code[idx8] <- cov_scale
+      cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale);")
+      cpp_code[idx13] <- paste0('    comb["obs"] = obs;\n');
+      cpp_code[idx14] <- "  std::vector<double> obs;"
+    } else {
+      for(k in 1:length(obs$cmt)) {
+        cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale", k," = ", obs$scale[k], ";")
+  #      cpp_code[idx6] <- paste0("  int cmt = ", (obs$cmt[1]-1), ";")
+        cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale", k," = ", obs$scale[k], ";")
+        cpp_code[idx8] <- cov_scale
+        cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs",k,".insert(obs",k,".end(), tmp.y[k][", obs$cmt[k]-1,"] / scale", k,");")
+        cpp_code[idx13] <- paste0(cpp_code[idx13], '\ncomb["obs', k,'"] = obs', k,';');
+        cpp_code[idx14] <- paste0(cpp_code[idx14], "\n  std::vector<double> obs",k,";")
+      }
+    }
+  }
+  if(!is.null(declare_variables)) {
+    cpp_code[idx17] <- paste0("  std::vector<double> ", paste(paste0("vars_", declare_variables), collapse = ", "), ";");
+    for(k in seq(declare_variables)) {
+      cpp_code[idx15] <- paste0(cpp_code[idx15], '\n      vars_',declare_variables[k],'.insert(vars_',declare_variables[k],'.end(), ', declare_variables[k],");")
+      cpp_code[idx16] <- paste0(cpp_code[idx16], '\n  comb["', declare_variables[k],'"] = vars_', declare_variables[k],";")
+    }
+  }
+  if(!is.null(pk_code)) {
+    cpp_code[idx9] <- shift_state_indices(pk_code, -1)
+  }
+  if(!is.null(dose$bioav)) {
+    cpp_code[idx10] <- paste0("      bioav = ", dose$bioav, ";")
+  }
+  if(!is.null(dose_code)) {
+    cpp_code[idx11] <- shift_state_indices(dose_code, -1)
   }
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),
@@ -144,10 +234,12 @@ compile_sim_cpp <- function(code, size, p, cpp_show_code, code_init = NULL, stat
   if(length(grep("-w", flg)) == 0) {
     Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
   }
-  sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
-  Sys.setenv("PKG_CXXFLAGS" = flg)
+  if(compile) {
+    Rcpp::sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
+    Sys.setenv("PKG_CXXFLAGS" = flg)
+  }
   return(list(
-    parameters = get_parameters_from_code(ode_def_cpp, state_init, unique(c(defined, declare_variables))),
-    ode = ode_def_cpp
+    ode = ode_def_cpp,
+    cpp = sim_func
   ))
 }

@@ -30,7 +30,7 @@ adherence_markov <- function (n = 100, p11 = 0.9, p01 = 0.7) {
       } else {
         prob <- p01
       }
-      dos <- rbinom(1, 1, prob)
+      dos <- stats::rbinom(1, 1, prob)
       adh <- c(adh,dos)
     }
   } else {
@@ -44,5 +44,5 @@ adherence_markov <- function (n = 100, p11 = 0.9, p01 = 0.7) {
 #' @param p binomial probability
 #' @export
 adherence_binomial <- function (n = 100, p = 0.5) {
-  return(rbinom (n, 1, prob=p))
+  return(stats::rbinom (n, 1, prob=p))
 }

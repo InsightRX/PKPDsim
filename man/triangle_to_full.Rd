@@ -12,4 +12,3 @@ triangle_to_full(vect)
 \description{
 Convert triangle omega matrix to full omega matrix
 }
-

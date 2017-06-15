@@ -4,12 +4,17 @@
 \alias{compile_sim_cpp}
 \title{Compile ODE model to c++ function}
 \usage{
-compile_sim_cpp(code, size, p, cpp_show_code, code_init = NULL,
-  state_init = NULL, declare_variables = NULL, covariates = NULL,
-  obs = NULL, dose = NULL, verbose = FALSE)
+compile_sim_cpp(code, dose_code, pk_code, size, p, cpp_show_code,
+  code_init = NULL, state_init = NULL, declare_variables = NULL,
+  covariates = NULL, obs = NULL, dose = NULL, compile = TRUE,
+  verbose = FALSE, as_is = FALSE)
 }
 \arguments{
-\item{code}{C++ code}
+\item{code}{C++ code ODE system}
+
+\item{dose_code}{C++ code per dose event}
+
+\item{pk_code}{C++ code per any event (similar to $PK)}
 
 \item{size}{size of ODE system}
 
@@ -29,9 +34,12 @@ compile_sim_cpp(code, size, p, cpp_show_code, code_init = NULL,
 
 \item{dose}{dose specification}
 
+\item{compile}{compile or not?}
+
 \item{verbose}{show more output}
+
+\item{as_is}{use C-code as-is, don't substitute line-endings or shift indices}
 }
 \description{
 Compile ODE model to c++ function
 }
-

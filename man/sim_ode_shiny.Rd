@@ -15,4 +15,3 @@ Simulate ODE and create a Shiny app
 \seealso{
 \link{sim_ode}
 }
-

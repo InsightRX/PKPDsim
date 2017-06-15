@@ -1,0 +1,7 @@
+Package: [MODULE]
+Type: Package
+Title: Simulate PK-PD model
+Version: 1.0
+Description: Simulate PK-PD model
+Imports: Rcpp (>= 0.11.5), BH
+LinkingTo: Rcpp (>= 0.11.5), BH

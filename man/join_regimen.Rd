@@ -19,4 +19,3 @@ join_regimen(regimen1 = NULL, regimen2 = NULL, interval = NULL,
 \description{
 Join two dosing regimens
 }
-

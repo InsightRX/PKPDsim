@@ -24,4 +24,3 @@ parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates, model = NULL)
 \description{
 Parse regimen
 }
-
