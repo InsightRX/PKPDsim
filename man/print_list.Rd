@@ -4,7 +4,7 @@
 \alias{print_list}
 \title{Return a list in R syntax}
 \usage{
-print_list(x, wrapper = TRUE)
+print_list(x, wrapper = TRUE, quote = FALSE)
 }
 \arguments{
 \item{x}{list to be printed}

@@ -48,6 +48,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
       })
     }
     covt <- data.frame(covt)
+
     # add covariate update times as dummy dose
     regimen$evid <- c(rep(1, length(regimen$dose_times)), rep(2, length(covt$time)))
     regimen$dose_times <- c(regimen$dose_times, covt$time)
@@ -174,7 +175,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     }
     # remove covariate points where there is also a dose
     design <- design[!duplicated(paste0(design$t, "_", design$dose, "_", design$dum)),]
-    design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
+    # design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
   }
   design <- design[order(design$t, -design$dum),]
   return(design)

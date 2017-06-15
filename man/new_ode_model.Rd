@@ -6,8 +6,8 @@
 \usage{
 new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   dose_code = NULL, file = NULL, func = NULL, state_init = NULL,
-  parameters = NULL, size = NULL, lagtime = NULL, obs = list(cmt = 1,
-  scale = 1), dose = list(cmt = 1), covariates = NULL,
+  parameters = NULL, units = NULL, size = NULL, lagtime = NULL,
+  obs = list(cmt = 1, scale = 1), dose = list(cmt = 1), covariates = NULL,
   declare_variables = NULL, iiv = NULL, iov = NULL, omega_matrix = NULL,
   ruv = NULL, default_parameters = NULL, cpp_show_code = FALSE,
   package = NULL, install = TRUE, folder = NULL, lib_location = NULL,
@@ -29,6 +29,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{state_init}{vector of state init}
 
 \item{parameters}{list or vector of parameter values}
+
+\item{units}{list or vector of parameter units}
 
 \item{size}{size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.}
 
