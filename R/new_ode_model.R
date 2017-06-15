@@ -285,7 +285,6 @@ new_ode_model <- function (model = NULL,
       search_replace_in_file(paste0(new_folder, "/NAMESPACE"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)
       file.rename(paste0(new_folder, "/man/modulename-package.Rd"), paste0(new_folder, "/man/", package, ".Rd"))
-      system(paste0("cat ", new_folder, "/R/parameters.R"))
 
       ## Compile / build / install
       curr <- getwd()
