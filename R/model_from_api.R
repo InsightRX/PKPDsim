@@ -118,6 +118,7 @@ model_from_api <- function(model = NULL,
                                   ruv = def$ruv,
                                   lagtime = def$lagtime,
                                   default_parameters = def$default_parameters,
+                                  state_init = def$state_init,
                                   verbose = verbose,
                                   ...)
     if(run_tests) {
