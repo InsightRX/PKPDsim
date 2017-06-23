@@ -223,8 +223,9 @@ compile_sim_cpp <- function(
     cpp_code[idx11] <- shift_state_indices(dose_code, -1)
   }
   cpp_code[idx18] <- paste0(
-    "      const state_type& A_dum = { ", paste(rep(0, size), collapse=", ")," };\n",
-    "      state_type dAdt_dum = { ", paste(rep(0, size), collapse=", ")," };")
+    "      boost::array<double, ",size,"> b = { ", paste(rep(0, size), collapse=", ")," };\n",
+    "      const state_type& A_dum = b;\n",
+    "      state_type dAdt_dum = b;")
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),
            pars,
