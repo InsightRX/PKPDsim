@@ -8,8 +8,8 @@ Maintainer: Ron Keizer <ronkeizer@gmail.com>
 Depends:
     R (>= 3.0.2)
 Imports:
-    Rcpp (>= 0.12.10),
-    BH (>= 1.62.0),
+    Rcpp (>= 0.12.9),
+    BH,
     dplyr,
     data.table,
     lubridate,
