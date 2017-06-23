@@ -352,12 +352,19 @@ sim <- function (ode = NULL,
     if(!is.null(output_include$parameters) && output_include$parameters) {
       dat_ind <- as.matrix(merge(dat_ind, p_i[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]))
     }
-    var_names <- NULL
-    if((!is.null(output_include$variables) && output_include$variables) ||
-       (!is.null(output_include$covariates) && output_include$covariates))   {
-        var_names <- attr(ode, "variables")
+    cov_names <- NULL
+    if(!is.null(output_include$covariates) && output_include$covariates) {
+      cov_names <- names(covariates)
+      for(key in cov_names) {
+        dat_ind <- cbind(dat_ind, design_i[[paste0("cov_", key)]] + (design_i$t - design_i[[paste0("cov_t_", key)]]) * design_i[[paste0("gradients_", key)]] )
+      }
     }
-    if(!is.null(var_names)) {
+    var_names <- NULL
+    if(!is.null(output_include$variables) && output_include$variables) {
+      var_names <- attr(ode, "variables")
+      var_names <- var_names[!var_names %in% cov_names]
+    }
+    if(!is.null(var_names) && length(var_names) > 0) {
       for(key in var_names) {
         dat_ind <- cbind(dat_ind, tmp[[key]])
       }
@@ -380,8 +387,9 @@ sim <- function (ode = NULL,
   if(!is.null(output_include$parameters) && output_include$parameters) {
     par_names <- names(p_i)[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]
   }
-  colnames(comb) <- c("id", "t", "comp", "y", par_names, var_names)
-  col_names <- c("id", "t", "y", par_names, var_names)
+  all_names <- unique(c(par_names, cov_names, var_names))
+  colnames(comb) <- c("id", "t", "comp", "y", all_names)
+  col_names <- c("id", "t", "y", all_names)
   for(key in col_names) {
     comb[[key]] <- as.num(comb[[key]])
   }
@@ -394,8 +402,8 @@ sim <- function (ode = NULL,
   grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
   colnames(grid) <- c("t", "id", "comp")
   suppressWarnings(suppressMessages( ## left join is a bit too chatty
-    if(!is.null(par_names) || !is.null(var_names)) {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", par_names, var_names)]
+    if(!is.null(all_names) && length(all_names) > 0) {
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", all_names)]
     } else {
       comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y")]
     }

@@ -171,6 +171,7 @@ new_ode_model <- function (model = NULL,
                            code_init = code_init_text,
                            state_init = state_init,
                            declare_variables = declare_variables,
+                           variables = variables,
                            covariates = covariates,
                            obs = obs,
                            dose = dose,
@@ -241,6 +242,7 @@ new_ode_model <- function (model = NULL,
       if(is.null(size)) { size <- "1" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
+      vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
       repl <- matrix(c("\\[MODULE\\]", package,
                        "\\[N_COMP\\]", size,
                        "\\[OBS_COMP\\]", obs$cmt,
@@ -251,7 +253,7 @@ new_ode_model <- function (model = NULL,
                        "\\[PK_CODE\\]", pk_code,
                        "\\[DOSE_CODE\\]", dose_code,
                        "\\[PARS\\]", pars,
-                       "\\[VARS\\]", "",
+                       "\\[VARS\\]", vars,
                        "\\[COVS\\]", covs,
                        "\\[LAGTIME\\]", lagtime
       ), ncol=2, byrow=TRUE)
