@@ -4,7 +4,7 @@
 #' @param ... arguments to pass
 #' @export
 print.regimen <- function(x, ...) {
-  tmp <- data.frame(cbind(t = x$dose_times, type = x$type, amt = x$amt, cmt = x$cmt))
+  tmp <- data.frame(cbind(t = x$dose_times, type = x$type, amt = x$dose_amts, cmt = x$cmt))
   if(!is.null(x$t_inf)) {
     tmp <- data.frame(cbind(tmp, t_inf = x$t_inf))
   }

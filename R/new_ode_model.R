@@ -178,6 +178,9 @@ new_ode_model <- function (model = NULL,
                            compile = compile,
                            as_is = as_is)
     reqd <- parameters
+    if(length(grep("cov_", reqd)) > 0) {
+      reqd <- reqd[-grep("cov_", reqd)]
+    }
     if(!is.null(declare_variables)) {
       reqd <- reqd[!reqd %in% declare_variables]
     }
