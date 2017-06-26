@@ -13,5 +13,7 @@ print.regimen <- function(x, ...) {
       message("Note: Steady state regimen, steady state assumed to be reached at t = 0.\n")
     }
     print(tmp)
+  } else {
+    print("Not a PKPDSim regimen structure.")
   }
 }

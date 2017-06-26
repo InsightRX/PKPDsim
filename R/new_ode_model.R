@@ -117,9 +117,6 @@ new_ode_model <- function (model = NULL,
       }
     }
     code_init_text <- shift_state_indices(code_init_text, -1)
-    if(exists("sim_wrapper_cpp", envir = globalenv())) {
-      rm("sim_wrapper_cpp", envir = globalenv())
-    }
     if(is.null(size)) {
       size <- get_ode_model_size(code)
     }
@@ -188,12 +185,13 @@ new_ode_model <- function (model = NULL,
     if(!is.null(cov_names)) {
       reqd <- reqd[!reqd %in% cov_names]
     }
-    if(compile) {
-      if(exists("sim_wrapper_cpp", envir = globalenv())) {
+    if(exists("sim_wrapper_cpp", envir = globalenv())) {
+      if(compile) {
         sim_out <- get("sim_wrapper_cpp")
-      } else {
-        message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
       }
+      rm("sim_wrapper_cpp", envir = globalenv())
+    }
+    if(compile) {
       attr(sim_out, "code") <- code
       if(!is.null(pk_code)) {
         attr(sim_out, "pk_code") <- pk_code
@@ -320,7 +318,6 @@ new_ode_model <- function (model = NULL,
       }
       setwd(curr)
     }
-
   }
 
 }
