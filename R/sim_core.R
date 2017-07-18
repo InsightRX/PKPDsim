@@ -10,5 +10,5 @@ sim_core <- function(sim_object = NULL, ode) {
              sim_object$p,
              sim_object$int_step_size)
   out <- data.frame(t = tmp$time, y = tmp$obs)
-  return(out[!duplicated(out$t) & out$t %in% sim_object$t_obs,])
+  return(out[out$t %in% sim_object$t_obs,])
 }
