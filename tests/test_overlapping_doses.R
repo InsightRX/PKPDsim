@@ -8,7 +8,7 @@ reg <- new_regimen(amt = c(100, 100, 100, 100),
                    type = "infusion",
                    t_inf = c(2, 2, 2, 2, 2))
 par <- list(CL = 5, V = 50)
-res <- sim_ode(mod, par = par, reg = reg, only_obs = TRUE, return_design = TRUE)
+res <- sim_ode(mod, par = par, reg = reg, only_obs = TRUE)
 assert(res[res$t == 7,]$y > res[res$t == 6,]$y)
 assert(res[res$t == 8,]$y > res[res$t == 7,]$y)
 assert(res[res$t == 9,]$y > res[res$t == 8,]$y)

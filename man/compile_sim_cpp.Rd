@@ -41,8 +41,6 @@ compile_sim_cpp(code, dose_code, pk_code, size, p, cpp_show_code,
 \item{verbose}{show more output}
 
 \item{as_is}{use C-code as-is, don't substitute line-endings or shift indices}
-
-\item{state_init}{state init vector}
 }
 \description{
 Compile ODE model to c++ function

@@ -12,7 +12,6 @@
 #' @param covariates covariates specification
 #' @param obs observation specification
 #' @param dose dose specification
-#' @param state_init state init vector
 #' @param compile compile or not?
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
