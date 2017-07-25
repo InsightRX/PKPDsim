@@ -93,7 +93,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                           t_inf = 0,
                           evid = 2,
                           bioav = 0,
-                          rate = 0)
+                          rate = -dos$rate[regimen$t_inf > 0])
     dos[(length(dos[,1])+1) : (length(dos[,1])+length(dos_t2[,1])),] <- dos_t2
     dos <- data.frame(dos)
   }
