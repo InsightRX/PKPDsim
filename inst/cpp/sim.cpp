@@ -80,10 +80,13 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     }
 
     // insert bioav definition
-    if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
-      // memset(rate, 0, sizeof(rate));
+    if(doses[i] > 0 && dose_type[i] == 1) { // change rate if start of dose
       rate[dose_cmt[i]-1] += (rates[i] * bioav);
       // insert custom dosing event code
+    }
+    if(dummy[i] == 1) { // stop infusion
+      memset(rate, 0, sizeof(rate));
+      // rate[dose_cmt[i]-1] += (rates[i] * bioav);
     }
     // insert scale definition for integration period
     // insert custom pk event code
