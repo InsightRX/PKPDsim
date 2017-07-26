@@ -87,7 +87,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
   if(any(regimen$type == "infusion")) {
     dos_t2 <- cbind(t = regimen$dose_times[regimen$type == "infusion"] + regimen$t_inf[regimen$type == "infusion"],
                           dose = 0,
-                          type = 1,
+                          type = 0,
                           dum = 1,
                           dose_cmt = regimen$dose_cmt[regimen$type == "infusion"],
                           t_inf = 0,
