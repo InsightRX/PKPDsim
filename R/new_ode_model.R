@@ -117,9 +117,6 @@ new_ode_model <- function (model = NULL,
       }
     }
     code_init_text <- shift_state_indices(code_init_text, -1)
-    if(exists("sim_wrapper_cpp", envir = globalenv())) {
-      rm("sim_wrapper_cpp", envir = globalenv())
-    }
     if(is.null(size)) {
       size <- get_ode_model_size(code)
     }
@@ -171,6 +168,7 @@ new_ode_model <- function (model = NULL,
                            code_init = code_init_text,
                            state_init = state_init,
                            declare_variables = declare_variables,
+                           variables = variables,
                            covariates = covariates,
                            obs = obs,
                            dose = dose,
@@ -178,18 +176,22 @@ new_ode_model <- function (model = NULL,
                            compile = compile,
                            as_is = as_is)
     reqd <- parameters
+    if(length(grep("cov_", reqd)) > 0) {
+      reqd <- reqd[-grep("cov_", reqd)]
+    }
     if(!is.null(declare_variables)) {
       reqd <- reqd[!reqd %in% declare_variables]
     }
     if(!is.null(cov_names)) {
       reqd <- reqd[!reqd %in% cov_names]
     }
-    if(compile) {
-      if(exists("sim_wrapper_cpp", envir = globalenv())) {
+    if(exists("sim_wrapper_cpp", envir = globalenv())) {
+      if(compile) {
         sim_out <- get("sim_wrapper_cpp")
-      } else {
-        message("Compilation failed. Please use verbose=TRUE and cpp_show_code=TRUE arguments to debug.")
       }
+      rm("sim_wrapper_cpp", envir = globalenv())
+    }
+    if(compile) {
       attr(sim_out, "code") <- code
       if(!is.null(pk_code)) {
         attr(sim_out, "pk_code") <- pk_code
@@ -238,6 +240,7 @@ new_ode_model <- function (model = NULL,
       if(is.null(size)) { size <- "1" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
+      vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
       repl <- matrix(c("\\[MODULE\\]", package,
                        "\\[N_COMP\\]", size,
                        "\\[OBS_COMP\\]", obs$cmt,
@@ -248,7 +251,7 @@ new_ode_model <- function (model = NULL,
                        "\\[PK_CODE\\]", pk_code,
                        "\\[DOSE_CODE\\]", dose_code,
                        "\\[PARS\\]", pars,
-                       "\\[VARS\\]", "",
+                       "\\[VARS\\]", vars,
                        "\\[COVS\\]", covs,
                        "\\[LAGTIME\\]", lagtime
       ), ncol=2, byrow=TRUE)
@@ -315,7 +318,6 @@ new_ode_model <- function (model = NULL,
       }
       setwd(curr)
     }
-
   }
 
 }

@@ -5,12 +5,14 @@
 \title{Only core function of the simulation function, always just returns observations.
 Mostly useful for estimations / optimal design. Has no checks (for speed)!}
 \usage{
-sim_core(sim_object = NULL, ode)
+sim_core(sim_object = NULL, ode, duplicate_t_obs = FALSE)
 }
 \arguments{
 \item{sim_object}{list with design and simulation parameters}
 
 \item{ode}{ode}
+
+\item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 }
 \description{
 Only core function of the simulation function, always just returns observations.

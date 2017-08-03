@@ -92,8 +92,8 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
                           dose_cmt = regimen$dose_cmt[regimen$type == "infusion"],
                           t_inf = 0,
                           evid = 2,
-                          bioav = 0,
-                          rate = 0)
+                          bioav = 0, #bioav,
+                          rate = 0)  # -dos$rate[regimen$t_inf > 0])
     dos[(length(dos[,1])+1) : (length(dos[,1])+length(dos_t2[,1])),] <- dos_t2
     dos <- data.frame(dos)
   }
@@ -177,6 +177,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     design <- design[!duplicated(paste0(design$t, "_", design$dose, "_", design$dum)),]
     # design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
   }
-  design <- design[order(design$t, -design$dum),]
+  design$t <- round(design$t, 4) # not rounding gave issues with consecutive continuous dosing, due to tiny differences. Now rounding to less than a second
+  design <- design[order(design$t, design$type, design$dum),]
   return(design)
 }

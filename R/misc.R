@@ -73,6 +73,7 @@ add_quotes <- function(x, quote = "double") {
 #'
 #' @param x list to be printed
 #' @param wrapper wrap in list object?
+#' @param quote add quotes to values in list definition?
 #' @export
 print_list <- function(x, wrapper = TRUE, quote = FALSE) {
   if(!quote) {

@@ -12,7 +12,7 @@ get_parameters_from_code <- function (code, state_init, declare_variables = NULL
   code <- gsub("double (.*?)=", "", code) # parameter declarations in code
   code <- gsub("[\\;\\/\\*\\^\\+\\=\\(\\)\\-\\{\\}\\>\\<\\,]", " ", code)
   code <- gsub("\\-", " ", code)
-  code <- gsub("(if|then|else|pow|sqrt|exp|log)", " ", code)
+  code <- gsub("(if|then|else|pow|sqrt|exp|log|cout)", " ", code)
   A <- gregexpr("A\\[([0-9]*)\\]", code)
   m1 <- paste0(unlist(regmatches(code, A, invert = TRUE)), collapse="")
   dAdt <- gregexpr("dAdt\\[([0-9]*)\\]", m1)
@@ -34,6 +34,12 @@ get_parameters_from_code <- function (code, state_init, declare_variables = NULL
     match_def <- match(defined, pars)
     if (length(match_def[!is.na(match_def)]) > 0) {
       pars <- pars[-match_def[!is.na(match_def)]]
+    }
+    ## remove partial matches too
+    partial <- c("cov_")
+    for(i in seq(partial)) {
+      idx <- grep(partial[i], pars)
+      if(length(idx) > 0) pars <- pars[-idx]
     }
     return(pars)
   }

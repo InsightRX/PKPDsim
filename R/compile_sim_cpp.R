@@ -7,11 +7,11 @@
 #' @param cpp_show_code show output c++ function?
 #' @param code_init code for initialization of state
 #' @param state_init state init vector
-#' @param declare_variables variable declaration
+#' @param declare_variables variable declaration for all required variables (including user-specified)
+#' @param variables only the user-specified variables
 #' @param covariates covariates specification
 #' @param obs observation specification
 #' @param dose dose specification
-#' @param state_init state init vector
 #' @param compile compile or not?
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
@@ -26,6 +26,7 @@ compile_sim_cpp <- function(
   code_init = NULL,
   state_init = NULL,
   declare_variables = NULL,
+  variables = NULL,
   covariates = NULL,
   obs = NULL,
   dose = NULL,
@@ -142,7 +143,7 @@ compile_sim_cpp <- function(
     for(i in seq(cov_names)) {
       nam <- cov_names[i]
       ode_def_cpp <- paste0(
-        paste0('  double ', nam, ' = ', nam, '_0 + gr_', nam, ' * (t - t_prv_', nam, ');\n'),
+        paste0('    ', nam, ' = ', nam, '_0 + gr_', nam, ' * (t - t_prv_', nam, ');\n'),
         ode_def_cpp)
       cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_', nam, ' = design["cov_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_t_', nam, ' = design["cov_t_', nam,'"];\n'))
@@ -176,6 +177,7 @@ compile_sim_cpp <- function(
   idx15 <- grep("insert copy variables", cpp_code)
   idx16 <- grep("insert copy all variables", cpp_code)
   idx17 <- grep("insert variable definitions", cpp_code)
+  idx18 <- grep("insert A dAdt state_init", cpp_code)
   if(is.null(obs)) {
     cpp_code[idx5] <- "    double scale = 1;"
     cpp_code[idx6] <- "  int cmt = 0;"
@@ -203,11 +205,11 @@ compile_sim_cpp <- function(
       }
     }
   }
-  if(!is.null(declare_variables)) {
-    cpp_code[idx17] <- paste0("  std::vector<double> ", paste(paste0("vars_", declare_variables), collapse = ", "), ";");
-    for(k in seq(declare_variables)) {
-      cpp_code[idx15] <- paste0(cpp_code[idx15], '\n      vars_',declare_variables[k],'.insert(vars_',declare_variables[k],'.end(), ', declare_variables[k],");")
-      cpp_code[idx16] <- paste0(cpp_code[idx16], '\n  comb["', declare_variables[k],'"] = vars_', declare_variables[k],";")
+  if(!is.null(variables)) {
+    cpp_code[idx17] <- paste0("  std::vector<double> ", paste(paste0("vars_", variables), collapse = ", "), ";");
+    for(k in seq(variables)) {
+      cpp_code[idx15] <- paste0(cpp_code[idx15], '\n      vars_',variables[k],'.insert(vars_', variables[k],'.end(), ', declare_variables[k],");")
+      cpp_code[idx16] <- paste0(cpp_code[idx16], '\n  comb["', variables[k],'"] = vars_', variables[k],";")
     }
   }
   if(!is.null(pk_code)) {
@@ -219,6 +221,10 @@ compile_sim_cpp <- function(
   if(!is.null(dose_code)) {
     cpp_code[idx11] <- shift_state_indices(dose_code, -1)
   }
+  cpp_code[idx18] <- paste0(
+    "      boost::array<double, ",size,"> b = { ", paste(rep(0, size), collapse=", ")," };\n",
+    "      const state_type& A_dum = b;\n",
+    "      state_type dAdt_dum = b;")
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),
            pars,

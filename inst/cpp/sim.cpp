@@ -72,11 +72,17 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) 
     t_start = times[i];
     t_end = times[(i+1)];
     // insert covariates for integration period
+
+    if(i == 0) {
+      // call ode() once to pre-calculate any initial variables
+      // insert A dAdt state_init
+      ode(A_dum, dAdt_dum, 0);
+    }
+
     // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
       memset(rate, 0, sizeof(rate));
       rate[dose_cmt[i]-1] = rates[i] * bioav;
-      // insert custom dosing event code
     }
     // insert scale definition for integration period
     // insert custom pk event code

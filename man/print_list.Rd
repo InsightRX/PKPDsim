@@ -10,6 +10,8 @@ print_list(x, wrapper = TRUE, quote = FALSE)
 \item{x}{list to be printed}
 
 \item{wrapper}{wrap in list object?}
+
+\item{quote}{add quotes to values in list definition?}
 }
 \description{
 Return a list in R syntax
