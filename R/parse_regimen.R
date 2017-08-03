@@ -177,7 +177,6 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     design <- design[!duplicated(paste0(design$t, "_", design$dose, "_", design$dum)),]
     # design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
   }
-  design$t <- round(design$t, 4) # not rounding gave issues with consecutive continuous dosing, due to tiny differences. Now rounding to less than a second
   design <- design[order(design$t, design$type, design$dum),]
   return(design)
 }
