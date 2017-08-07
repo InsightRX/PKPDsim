@@ -7,12 +7,14 @@
 shift_state_indices <- function(ode_def, n = -1) {
 
   shift <- function(ode_def, n = -1, regxp = "A") {
+    ode_def_orig <- ode_def
     m <- gregexpr(paste0(regxp, "\\[([0-9]*)\\]"), ode_def, perl=TRUE)
     if(length(m) > 0 && m[[1]][1] > 0) {
       start <- unlist(attr(m[[1]], "capture.start"))[,1]
       len <- attr(m[[1]], "capture.length")
       txt <- unlist(regmatches(ode_def, m))
       txt <- as.num(gsub(paste0("[",regxp,"\\[\\]]"), "", txt, perl=TRUE)) + n
+      if(txt < 0) return(ode_def_orig)
 
       for(i in 1:length(start)) {
         if(length(start[i]) > 0) {
