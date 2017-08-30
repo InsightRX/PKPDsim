@@ -107,6 +107,7 @@ new_regimen <- function(
   } else {
     reg$dose_amts <- reg$amt
   }
+  reg$dose_amts <- as.num(reg$dose_amts)
   if(!is.null(rate) && sum(rate != 0) > 0) {
     if(length(rate) != length(reg$dose_times)) {
       rate <- rep(rate, reg$n)
