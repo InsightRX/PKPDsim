@@ -12,7 +12,7 @@ sim_core <- function(sim_object = NULL, ode, duplicate_t_obs = FALSE) {
              sim_object$int_step_size)
   out <- data.frame(t = tmp$time, y = tmp$obs)
   if(duplicate_t_obs) {
-    return(out[out$t %in% sim_object$t_obs,])
+    return(out[match(sim_object$t_obs, out$t),]) # use match to ensure that duplicates in t_obs is possible
   } else {
     return(out[!duplicated(out$t) & out$t %in% sim_object$t_obs,])
   }
