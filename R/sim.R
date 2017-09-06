@@ -148,7 +148,7 @@ sim <- function (ode = NULL,
       p_mod <- attr(ode, "parameters")
       m <- stringr::str_detect(p_mod, "_kappa")
       if(any(m)) {
-        message("Some IOV parameters (kappa) not supplied, setting to 0.")
+        if(verbose) message("Some IOV parameters (kappa) not supplied, setting to 0.")
         p_kappa <- p_mod[m]
         for(key in p_kappa) { # just set to zero, i.e. no IOV
           if(is.null(parameters[[key]])) parameters[[key]] <- 0
