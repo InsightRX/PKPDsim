@@ -143,6 +143,19 @@ sim <- function (ode = NULL,
     } else {
       cpp <- FALSE
     }
+    ## Add _kappa parameters (IOV) if not specified by user but required by model
+    if(!is.null(attr(ode, "parameters"))) {
+      p_mod <- attr(ode, "parameters")
+      m <- stringr::str_detect(p_mod, "_kappa")
+      if(any(m)) {
+        message("Some IOV parameters (kappa) not supplied, setting to 0.")
+        p_kappa <- p_mod[m]
+        for(key in p_kappa) { # just set to zero, i.e. no IOV
+          if(is.null(parameters[[key]])) parameters[[key]] <- 0
+        }
+        p <- parameters
+      }
+    }
     if(is.null(analytical)) {
       if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
         stop("Sorry. Non-C++ functions are deprecated as input for ODE.")
