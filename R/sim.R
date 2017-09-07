@@ -109,7 +109,12 @@ sim <- function (ode = NULL,
   if(!is.null(regimen$ss_regimen)) { ## prepend the doses to get to steady state
     regimen_orig <- regimen
     regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
+    t_ss <- max(regimen_orig$ss_regimen$dose_times) + regimen_orig$ss_regimen$interval
+    t_obs <- t_obs + t_ss
+    if(!is.null(t_max)) t_max <- t_max + t_ss
+    ## Also adjust the times for the covariates!
   } else {
+    t_ss <- 0
     regimen_orig <- regimen
   }
   if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime") != "undefined" && attr(ode, "lagtime") !=
