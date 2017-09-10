@@ -42,7 +42,7 @@ new_regimen <- function(
                         interval = interval,
                         n = n,
                         type = type,
-                        t_inf = t_inf), class = "regimen")
+                        t_inf = t_inf), class = c("regimen", "list"))
   if(checks) {
     if(any(reg$amt < 0)) {
       reg$amt[reg$amt < 0] <- 0
