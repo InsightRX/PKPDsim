@@ -42,6 +42,9 @@ join_regimen <- function(
         t_inf <- c(regimen2$t_inf)
       }
       joint <- new_regimen(amt = amt, times = t, t_inf = t_inf, type = regimen1$type, interval = interval)
+      if(!is.null(regimen1$ss_regimen)) {
+        joint$ss_regimen <- regimen1$ss_regimen
+      }
       return(joint)
     }
     if(!is.null(interval)) {
@@ -53,6 +56,9 @@ join_regimen <- function(
         t_inf = c(regimen1$t_inf, regimen2$t_inf),
         interval = interval
       )
+      if(!is.null(regimen1$ss_regimen)) {
+        joint$ss_regimen <- regimen1$ss_regimen
+      }
       return(joint)
     } else {
       stop("Please provide the interval between the two dose regimens (`interval`), or else the dose number from which to update (`dose_update`)")
