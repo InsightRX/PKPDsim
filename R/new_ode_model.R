@@ -241,6 +241,7 @@ new_ode_model <- function (model = NULL,
       if(is.null(dose$cmt)) { dose$cmt <- "1" }
       if(is.null(dose$bioav)) { dose$bioav <- "1" }
       if(is.null(size)) { size <- "1" }
+      if(is.null(ltbs)) { ltbs <- FALSE }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
       vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
