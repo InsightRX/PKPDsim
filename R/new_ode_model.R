@@ -19,6 +19,7 @@
 #' @param iov inter-occasion variability, can optionally be added to library
 #' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
 #' @param ruv residual variability, can optionally be added to library
+#' @param ltbs log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).
 #' @param default_parameters population or specific patient values, can optionally be added to library
 #' @param cpp_show_code show generated C++ code
 #' @param package package name when saving as package
@@ -47,6 +48,7 @@ new_ode_model <- function (model = NULL,
                            iov = NULL,
                            omega_matrix = NULL,
                            ruv = NULL,
+                           ltbs = NULL,
                            default_parameters = NULL,
                            cpp_show_code = FALSE,
                            package = NULL,
@@ -204,6 +206,7 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "obs")  <- obs
       attr(sim_out, "dose") <- dose
       attr(sim_out, "lagtime") <- lagtime
+      attr(sim_out, "ltbs") <- ltbs
       class(sim_out) <- c("PKPDsim", class(sim_out))
       return(sim_out)
     }
@@ -253,7 +256,8 @@ new_ode_model <- function (model = NULL,
                        "\\[PARS\\]", pars,
                        "\\[VARS\\]", vars,
                        "\\[COVS\\]", covs,
-                       "\\[LAGTIME\\]", lagtime
+                       "\\[LAGTIME\\]", lagtime,
+                       "\\[LTBS\\]", as.character(ltbs)
       ), ncol=2, byrow=TRUE)
       if(verbose) {
         print(repl)

@@ -11,6 +11,7 @@ model <- function(mod = NULL) {
   attr(ret, "variables") <- [VARS]
   attr(ret, "covariates") <- [COVS]
   attr(ret, "lagtime") <- "[LAGTIME]"
+  attr(ret, "ltbs") <- [LTBS]
   class(ret) <- c("PKPDsim", class(ret))
   return(ret)
 }
