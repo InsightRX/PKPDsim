@@ -122,6 +122,35 @@ new_ode_model <- function (model = NULL,
     if(is.null(size)) {
       size <- get_ode_model_size(code)
     }
+
+    ## IOV
+    if(!is.null(iov)) {
+      if(is.null(iov$cv) || class(iov$cv) != "list" || is.null(iov$bins)) {
+        stop("IOV misspecified.")
+      }
+      # add parameters
+      for(i in rev(seq(iov$cv))) {
+        if(!stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))) {
+          message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE code. Please see documentation for more info."))
+        }
+        txt <- paste0("    kappa_", names(iov$cv)[i], " = 0;\ \n")
+        for(j in 1:(length(iov$bins)-1)) {
+          txt_occ <- paste0("    if(t >= ", iov$bins[j]," && t < ", iov$bins[j+1],") { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
+          txt <- paste0(txt, txt_occ)
+          par_tmp <- paste0("kappa_", names(iov$cv)[i], "_", j)
+          if(! par_tmp %in% parameters) {
+            parameters <- c(parameters, par_tmp)
+          }
+          default_parameters[[par_tmp]] <- 0
+        }
+        code = paste0(txt, code)
+        var_tmp <- paste0("kappa_", names(iov$cv)[i])
+        if(! var_tmp %in% declare_variables) {
+          declare_variables <- c(declare_variables, var_tmp)
+        }
+      }
+    }
+
     if(is.null(parameters)) {
       comb_code <- code
       if(!is.null(pk_code)) {
