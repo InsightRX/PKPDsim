@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/ronkeizer/PKPDsim.svg?branch=master)](https://travis-ci.org/ronkeizer/PKPDsim)
-[![codecov](https://codecov.io/gh/ronkeizer/PKPKDsim/branch/master/graph/badge.svg)](https://codecov.io/gh/ronkeizer/PKPDsim)
+[![Build Status](https://travis-ci.org/InsightRX/PKPDsim.svg?branch=master)](https://travis-ci.org/InsightRX/PKPDsim)
+[![codecov](https://codecov.io/gh/ronkeizer/PKPKDsim/branch/master/graph/badge.svg)](https://codecov.io/gh/InsightRX/PKPDsim)
 
 # Description
 
@@ -9,7 +9,7 @@
 
 ```
 library(devtools)
-install_github("ronkeizer/PKPDsim")
+install_github("InsightRX/PKPDsim")
 library(PKPDsim)
 ```
 

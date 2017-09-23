@@ -3,7 +3,7 @@
 library(ggplot2)
 install.packages("microbenchmark")
 library(devtools)
-# install_github("ronkeizer/PKPDsim")
+# install_github("InsightRX/PKPDsim")
 # install_github("MarcLavielle/mlxR")
 library(PKPDsim)
 library(mlxR)

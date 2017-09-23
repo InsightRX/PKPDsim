@@ -8,6 +8,6 @@ sim_ode_shiny <- function(...) {
 #   if("PKPDsimShiny" %in% rownames(installed.packages())) {
 #     PKPDsimShiny::sim_ode_shiny(...)
 #   } else {
-    message("Sorry, the sim_ode_shiny function is not available in the PKPDsim library anymore, but has its own package! Please install the package 'PKPDsimShiny': devtools::install('ronkeizer/PKPDsimShiny'), load the library after you load PKPDsim, and rerun sim_ode_shiny().")
+    message("Sorry, the sim_ode_shiny function is not available in the PKPDsim library anymore, but has its own package! Please install the package 'PKPDsimShiny': devtools::install('InsightRX/PKPDsimShiny'), load the library after you load PKPDsim, and rerun sim_ode_shiny().")
   # }
 }

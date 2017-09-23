@@ -1,5 +1,5 @@
 #library(devtools)
-#install_github("ronkeizer/PKPDsim")
+#install_github("InsightRX/PKPDsim")
 library(PKPDsim)
 library(ggplot2)
 library(plyr)
