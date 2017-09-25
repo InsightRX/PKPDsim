@@ -143,7 +143,12 @@ new_ode_model <- function (model = NULL,
           }
           default_parameters[[par_tmp]] <- 0
         }
-        code = paste0(txt, code)
+        if(length(grep(paste0("kappa_", names(iov$cv)[i]), code)) > 0) {
+          code <- paste0(txt, code)
+        }
+        if(length(grep(paste0("kappa_", names(iov$cv)[i]), pk_code)) > 0) {
+          pk_code <- paste0(txt, pk_code)
+        }
         var_tmp <- paste0("kappa_", names(iov$cv)[i])
         if(! var_tmp %in% declare_variables) {
           declare_variables <- c(declare_variables, var_tmp)
