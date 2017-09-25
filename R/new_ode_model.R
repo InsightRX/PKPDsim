@@ -134,19 +134,28 @@ new_ode_model <- function (model = NULL,
           message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE code. Please see documentation for more info."))
         }
         txt <- paste0("    kappa_", names(iov$cv)[i], " = 0;\ \n")
-        for(j in 1:(length(iov$bins)-1)) {
-          txt_occ <- paste0("    if(t >= ", iov$bins[j]," && t < ", iov$bins[j+1],") { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
-          txt <- paste0(txt, txt_occ)
-          par_tmp <- paste0("kappa_", names(iov$cv)[i], "_", j)
-          if(! par_tmp %in% parameters) {
-            parameters <- c(parameters, par_tmp)
-          }
-          default_parameters[[par_tmp]] <- 0
-        }
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), code)) > 0) {
+          for(j in 1:(length(iov$bins)-1)) {
+            txt_occ <- paste0("    if(t >= ", iov$bins[j]," && t < ", iov$bins[j+1],") { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
+            txt <- paste0(txt, txt_occ)
+            par_tmp <- paste0("kappa_", names(iov$cv)[i], "_", j)
+            if(! par_tmp %in% parameters) {
+              parameters <- c(parameters, par_tmp)
+            }
+            default_parameters[[par_tmp]] <- 0
+          }
           code <- paste0(txt, code)
         }
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), pk_code)) > 0) {
+          for(j in 1:(length(iov$bins)-1)) {
+            txt_occ <- paste0("    if(times[i] >= ", iov$bins[j]," && times[i] < ", iov$bins[j+1],") { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
+            txt <- paste0(txt, txt_occ)
+            par_tmp <- paste0("kappa_", names(iov$cv)[i], "_", j)
+            if(! par_tmp %in% parameters) {
+              parameters <- c(parameters, par_tmp)
+            }
+            default_parameters[[par_tmp]] <- 0
+          }
           pk_code <- paste0(txt, pk_code)
         }
         var_tmp <- paste0("kappa_", names(iov$cv)[i])
