@@ -6,10 +6,10 @@
 #include <stdlib.h>
 #include <math.h>
 #include <Rcpp.h>
+#include <vector>
 #include <boost/array.hpp>
 #include <boost/numeric/odeint.hpp>
 
 using namespace std;
 using namespace boost::numeric::odeint;
 using namespace Rcpp;
-

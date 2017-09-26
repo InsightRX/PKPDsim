@@ -124,13 +124,11 @@ new_ode_model <- function (model = NULL,
     }
 
     ## IOV
-    n_bins_iov <- 1
     use_iov <- FALSE
     if(!is.null(iov)) {
       if(is.null(iov$cv) || class(iov$cv) != "list" || is.null(iov$n_bins)) {
         stop("IOV misspecified.")
       }
-      n_bins_iov <- iov$n_bins
       # add parameters
       for(i in rev(seq(iov$cv))) {
         if(!stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))) {
