@@ -120,7 +120,7 @@ compile_sim_cpp <- function(
   pars <- paste0(pars, "double prv_dose, t_prv_dose = 0;\n")
   pars <- paste0(pars, paste0("double rate[] = { ", paste(rep(0, size), collapse=", "), " };\n"))
   if(!is.null(iov) && !is.null(iov$n_bins)) {
-    pars <- paste0(pars, paste0("std::array<double,", (iov$n_bins+1) ,"> iov_bin;\n"))
+    pars <- paste0(pars, paste0("std::vector<double> iov_bin(", (iov$n_bins+1) ,");\n"))
     par_def <- paste0('  for(int i = 0; i < (iov_bin.size()-1); i++) { iov_bin[i] = iov_bins[i]; };\n', par_def);
   }
   for(i in seq(p_def)) { # actual parameters for model
