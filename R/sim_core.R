@@ -9,6 +9,7 @@ sim_core <- function(sim_object = NULL, ode, duplicate_t_obs = FALSE) {
   tmp <- ode(sim_object$A_init,
              sim_object$design,
              sim_object$p,
+             sim_object$iov_bins,
              sim_object$int_step_size)
   out <- data.frame(t = tmp$time, y = tmp$obs)
   if(duplicate_t_obs) {

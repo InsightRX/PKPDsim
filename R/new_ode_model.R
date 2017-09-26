@@ -133,10 +133,10 @@ new_ode_model <- function (model = NULL,
         if(!stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))) {
           message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE code. Please see documentation for more info."))
         }
-        txt <- paste0("    kappa_", names(iov$cv)[i], " = 0;\ \n")
+        txt <- paste0("    kappa_", names(iov$cv)[i], " = 1e-6;\ \n")
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), code)) > 0) {
           for(j in 1:(length(iov$bins)-1)) {
-            txt_occ <- paste0("    if(t >= ", iov$bins[j]," && t < ", iov$bins[j+1],") { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
+            txt_occ <- paste0("    if(t >= iov_bin[",(j-1),"] && t < iov_bin[",j,"]) { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, " + 1e-6; } \ \n")
             txt <- paste0(txt, txt_occ)
             par_tmp <- paste0("kappa_", names(iov$cv)[i], "_", j)
             if(! par_tmp %in% parameters) {
@@ -148,7 +148,7 @@ new_ode_model <- function (model = NULL,
         }
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), pk_code)) > 0) {
           for(j in 1:(length(iov$bins)-1)) {
-            txt_occ <- paste0("    if(times[i] >= ", iov$bins[j]," && times[i] < ", iov$bins[j+1],") { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
+            txt_occ <- paste0("    if(times[i] >= iov_bin[",(j-1),"] && times[i] < iov_bin[",j,"]) { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
             txt <- paste0(txt, txt_occ)
             par_tmp <- paste0("kappa_", names(iov$cv)[i], "_", j)
             if(! par_tmp %in% parameters) {
@@ -219,7 +219,8 @@ new_ode_model <- function (model = NULL,
                            dose = dose,
                            verbose = verbose,
                            compile = compile,
-                           as_is = as_is)
+                           as_is = as_is,
+                           iov = iov)
     reqd <- parameters
     if(length(grep("cov_", reqd)) > 0) {
       reqd <- reqd[-grep("cov_", reqd)]

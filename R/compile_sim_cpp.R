@@ -12,6 +12,7 @@
 #' @param covariates covariates specification
 #' @param obs observation specification
 #' @param dose dose specification
+#' @param iov iov specification
 #' @param compile compile or not?
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
@@ -30,6 +31,7 @@ compile_sim_cpp <- function(
   covariates = NULL,
   obs = NULL,
   dose = NULL,
+  iov = NULL,
   compile = TRUE,
   verbose = FALSE,
   as_is = FALSE) {
@@ -117,6 +119,10 @@ compile_sim_cpp <- function(
   }
   pars <- paste0(pars, "double prv_dose, t_prv_dose = 0;\n")
   pars <- paste0(pars, paste0("double rate[] = { ", paste(rep(0, size), collapse=", "), " };\n"))
+  if(!is.null(iov)) {
+    pars <- paste0(pars, paste0("std::array<double,",length(iov$bins),"> iov_bin;\n"))
+    par_def <- paste0('  for(int i = 0; i < (iov_bin.size()-1); i++) { iov_bin[i] = iov_bins[i]; };\n', par_def);
+  }
   for(i in seq(p_def)) { # actual parameters for model
     par_def <- paste0(par_def, '  ', p_def[i], ' = par["', p_def[i], '"];\n')
   }

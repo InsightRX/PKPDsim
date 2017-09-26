@@ -7,6 +7,7 @@
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
+#' @param iov_bins allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. `iov_bins = c(0, 24, 48, 72, 9999)`.
 #' @param seed set seed for reproducible results
 #' @param sequence if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
@@ -77,6 +78,7 @@ sim <- function (ode = NULL,
                  omega = NULL,
                  omega_type = "exponential",
                  res_var = NULL,
+                 iov_bins = NULL,
                  seed = NULL,
                  sequence = NULL,
                  n_ind = 1,
@@ -327,6 +329,10 @@ sim <- function (ode = NULL,
     }
     p_i$rate <- 0
 
+    ## Inter-occasion variability:
+    if(is.null(iov_bins)) {
+      iov_bins <- c(0, 9999) # dummy
+    }
     if(return_design) {
       return(list(
         A_init = A_init,
@@ -334,13 +340,14 @@ sim <- function (ode = NULL,
         p = p_i,
         int_step_size = int_step_size,
         t_obs = t_obs,
-        t_obs_orig = t_obs_orig
+        t_obs_orig = t_obs_orig,
+        iov_bins = iov_bins
       ))
     }
 
     #################### Main call to ODE solver / analytical eq solver #######################
     if(!is.null(ode)) {
-      tmp <- ode(A_init, design_i, p_i, int_step_size)
+      tmp <- ode(A_init, design_i, p_i, iov_bins, int_step_size)
     } else {
       tmp <- analytical_eqn_wrapper(analytical, design_i, p_i)
     }

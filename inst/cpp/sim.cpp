@@ -43,7 +43,7 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
 }
 
 // [[Rcpp::export]]
-List sim_wrapper_cpp (NumericVector A, List design, List par, double step_size) {
+List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_bins, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
   // insert observation variable definition
