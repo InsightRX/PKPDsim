@@ -76,6 +76,7 @@ add_quotes <- function(x, quote = "double") {
 #' @param quote add quotes to values in list definition?
 #' @export
 print_list <- function(x, wrapper = TRUE, quote = FALSE) {
+  if(is.null(x)) return("")
   if(!quote) {
     tmp <- paste(PKPDsim::add_quotes(names(x)), "=", x[names(x)], collapse = ", ")
   } else {

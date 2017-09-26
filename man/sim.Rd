@@ -5,13 +5,13 @@
 \title{Simulate ODE or analytical equation}
 \usage{
 sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
-  omega_type = "exponential", res_var = NULL, seed = NULL,
-  sequence = NULL, n_ind = 1, regimen = NULL, covariates = NULL,
-  covariates_table = NULL, covariates_implementation = list(),
-  A_init = NULL, only_obs = FALSE, obs_step_size = 1,
-  int_step_size = 0.1, t_max = NULL, t_obs = NULL, t_tte = NULL,
-  duplicate_t_obs = FALSE, extra_t_obs = TRUE, rtte = FALSE,
-  checks = TRUE, verbose = FALSE, return_design = FALSE,
+  omega_type = "exponential", res_var = NULL, iov_bins = NULL,
+  seed = NULL, sequence = NULL, n_ind = 1, regimen = NULL,
+  covariates = NULL, covariates_table = NULL,
+  covariates_implementation = list(), A_init = NULL, only_obs = FALSE,
+  obs_step_size = 1, int_step_size = 0.1, t_max = NULL, t_obs = NULL,
+  t_tte = NULL, duplicate_t_obs = FALSE, extra_t_obs = TRUE,
+  rtte = FALSE, checks = TRUE, verbose = FALSE, return_design = FALSE,
   output_include = list(parameters = FALSE, covariates = FALSE), ...)
 }
 \arguments{
@@ -26,6 +26,8 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 \item{omega_type}{exponential or normal, specified as vector}
 
 \item{res_var}{residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.}
+
+\item{iov_bins}{allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. `iov_bins = c(0, 24, 48, 72, 9999)`.}
 
 \item{seed}{set seed for reproducible results}
 

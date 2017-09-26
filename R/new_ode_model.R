@@ -124,10 +124,13 @@ new_ode_model <- function (model = NULL,
     }
 
     ## IOV
+    n_bins_iov <- 1
+    use_iov <- FALSE
     if(!is.null(iov)) {
-      if(is.null(iov$cv) || class(iov$cv) != "list" || is.null(iov$bins)) {
+      if(is.null(iov$cv) || class(iov$cv) != "list" || is.null(iov$n_bins)) {
         stop("IOV misspecified.")
       }
+      n_bins_iov <- iov$n_bins
       # add parameters
       for(i in rev(seq(iov$cv))) {
         if(!stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))) {
@@ -135,7 +138,7 @@ new_ode_model <- function (model = NULL,
         }
         txt <- paste0("    kappa_", names(iov$cv)[i], " = 1e-6;\ \n")
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), code)) > 0) {
-          for(j in 1:(length(iov$bins)-1)) {
+          for(j in 1:iov$n_bins) {
             txt_occ <- paste0("    if(t >= iov_bin[",(j-1),"] && t < iov_bin[",j,"]) { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, " + 1e-6; } \ \n")
             txt <- paste0(txt, txt_occ)
             par_tmp <- paste0("kappa_", names(iov$cv)[i], "_", j)
@@ -147,7 +150,7 @@ new_ode_model <- function (model = NULL,
           code <- paste0(txt, code)
         }
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), pk_code)) > 0) {
-          for(j in 1:(length(iov$bins)-1)) {
+          for(j in 1:iov$n_bins) {
             txt_occ <- paste0("    if(times[i] >= iov_bin[",(j-1),"] && times[i] < iov_bin[",j,"]) { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
             txt <- paste0(txt, txt_occ)
             par_tmp <- paste0("kappa_", names(iov$cv)[i], "_", j)
@@ -163,6 +166,8 @@ new_ode_model <- function (model = NULL,
           declare_variables <- c(declare_variables, var_tmp)
         }
       }
+    } else {
+      iov <- list(n_bins = 1) # dummy
     }
 
     if(is.null(parameters)) {
@@ -251,6 +256,7 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "dose") <- dose
       attr(sim_out, "lagtime") <- lagtime
       attr(sim_out, "ltbs") <- ltbs
+      attr(sim_out, "iov") <- iov
       class(sim_out) <- c("PKPDsim", class(sim_out))
       return(sim_out)
     }
@@ -302,6 +308,8 @@ new_ode_model <- function (model = NULL,
                        "\\[VARS\\]", vars,
                        "\\[COVS\\]", covs,
                        "\\[LAGTIME\\]", lagtime,
+                       "\\[USE_IOV\\]", as.character(use_iov),
+                       "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
                        "\\[LTBS\\]", as.character(ltbs)
       ), ncol=2, byrow=TRUE)
       if(verbose) {

@@ -331,7 +331,7 @@ sim <- function (ode = NULL,
 
     ## Inter-occasion variability:
     if(is.null(iov_bins)) {
-      iov_bins <- c(0, 9999) # dummy
+      iov_bins <- c(0, 99999) # dummy
     }
     if(return_design) {
       return(list(
