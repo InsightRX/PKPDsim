@@ -147,6 +147,7 @@ new_ode_model <- function (model = NULL,
           }
           code <- paste0(txt, code)
         }
+        txt <- paste0("    kappa_", names(iov$cv)[i], " = 1e-6;\ \n")
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), pk_code)) > 0) {
           for(j in 1:iov$n_bins) {
             txt_occ <- paste0("    if(times[i] >= iov_bin[",(j-1),"] && times[i] < iov_bin[",j,"]) { kappa_", names(iov$cv)[i], " = kappa_", names(iov$cv)[i], "_", j, "; } \ \n")
