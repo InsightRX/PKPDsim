@@ -153,7 +153,7 @@ sim <- function (ode = NULL,
     ## Add _kappa parameters (IOV) if not specified by user but required by model
     if(!is.null(attr(ode, "parameters"))) {
       p_mod <- attr(ode, "parameters")
-      m <- stringr::str_detect(p_mod, "_kappa")
+      m <- stringr::str_detect(p_mod, "kappa_")
       if(any(m)) {
         if(verbose) message("Some IOV parameters (kappa) not supplied, setting to 0.")
         p_kappa <- p_mod[m]
