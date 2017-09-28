@@ -7,6 +7,7 @@
 #include <math.h>
 #include <Rcpp.h>
 #include <vector>
+#include <algorithm>    // std::max/min
 #include <boost/array.hpp>
 #include <boost/numeric/odeint.hpp>
 
