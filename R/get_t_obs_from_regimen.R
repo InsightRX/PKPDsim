@@ -17,7 +17,7 @@ get_t_obs_from_regimen <- function(
       obs_step_size <- 100
       if(max(regimen$dose_times) < 10000) { obs_step_size <- 100 }
       if(max(regimen$dose_times) < 1000) { obs_step_size <- 10 }
-      if(max(regimen$dose_times) < 100) { obs_step_size <- 1 }
+      if(max(regimen$dose_times) < 250) { obs_step_size <- 1 }
       if(max(regimen$dose_times) < 10) { obs_step_size <- .1 }
     }
   }
@@ -31,6 +31,10 @@ get_t_obs_from_regimen <- function(
         t_obs <- seq(from=0, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
       }
     }
+    t_obs <- unique(t_obs, regimen$dose_times)
+    if(any(regimen$type == "infusion")) {
+      t_obs <- unique(t_obs, regimen$t_inf[regimen$type == "infusion"])
+    } 
   }
   ## add timepoints at which covariate is changing to t_obs:
   if(extra_t_obs) {
