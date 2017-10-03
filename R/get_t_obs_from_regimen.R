@@ -10,9 +10,10 @@ get_t_obs_from_regimen <- function(
   covariates, extra_t_obs) {
 
   if(is.null(obs_step_size)) {
+    obs_step_size <- 1
     if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
       obs_step_size <- 1
-    } else {
+      } else {
       obs_step_size <- 100
       if(max(regimen$dose_times) < 10000) { obs_step_size <- 100 }
       if(max(regimen$dose_times) < 1000) { obs_step_size <- 10 }

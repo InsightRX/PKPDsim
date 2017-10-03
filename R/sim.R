@@ -88,7 +88,7 @@ sim <- function (ode = NULL,
                  covariates_implementation = list(),
                  A_init = NULL,
                  only_obs = FALSE,
-                 obs_step_size = 1,
+                 obs_step_size = NULL,
                  int_step_size = .1,
                  t_max = NULL,
                  t_obs = NULL,
@@ -125,6 +125,9 @@ sim <- function (ode = NULL,
       regimen$dose_times <- regimen$dose_times + attr(ode, "lagtime")
     }
     if(class(attr(ode, "lagtime")) %in% c("character")) {
+      if(is.null(parameters[[attr(ode, "lagtime")]])) {
+        stop(paste0("Lagtime parameter ",parameters[[attr(ode, "lagtime")]], " not specified!"))
+      }
       regimen$dose_times <- regimen$dose_times + parameters[[attr(ode, "lagtime")]]
     }
   }
