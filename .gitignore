@@ -4,4 +4,6 @@
 .RData
 .Rbuildignore
 .DS_Store
-
+..Rcheck
+*.pdf
+*.Rout
