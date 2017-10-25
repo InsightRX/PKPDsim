@@ -13,6 +13,7 @@ model <- function(mod = NULL) {
   attr(ret, "lagtime") <- "[LAGTIME]"
   attr(ret, "ltbs") <- [LTBS]
   attr(ret, "iov") <- list([IOV])
+  attr(ret, "nonmem") <- "[NONMEM]"
   class(ret) <- c("PKPDsim", class(ret))
   return(ret)
 }

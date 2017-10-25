@@ -28,6 +28,7 @@
 #' @param lib_location install into folder (`--library` argument)
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
+#' @param nonmem add nonmem code as attribute to model object
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,
@@ -56,7 +57,8 @@ new_ode_model <- function (model = NULL,
                            folder = NULL,
                            lib_location = NULL,
                            verbose = FALSE,
-                           as_is = FALSE
+                           as_is = FALSE,
+                           nonmem = NULL
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -291,6 +293,7 @@ new_ode_model <- function (model = NULL,
       if(is.null(dose$bioav)) { dose$bioav <- "1" }
       if(is.null(size)) { size <- "1" }
       if(is.null(ltbs)) { ltbs <- FALSE }
+      if(is.null(nonmem)) { nonmem <- "NULL" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
       vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
@@ -309,7 +312,8 @@ new_ode_model <- function (model = NULL,
                        "\\[LAGTIME\\]", lagtime,
                        "\\[USE_IOV\\]", as.character(use_iov),
                        "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
-                       "\\[LTBS\\]", as.character(ltbs)
+                       "\\[LTBS\\]", as.character(ltbs),
+                       "\\[NONMEM\\]", as.character(nonmem)
       ), ncol=2, byrow=TRUE)
       if(verbose) {
         print(repl)

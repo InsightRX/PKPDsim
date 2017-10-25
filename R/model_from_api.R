@@ -92,6 +92,7 @@ model_from_api <- function(model = NULL,
   if(!def$build && !force) {
     message("Model not flagged for building, skipping compilation. Use `force`=TRUE to force build.")
   }
+  nonmem <- def$nonmem
   if(def$build || force) {
     if(verbose) {
       message("Compiling model.")
@@ -121,6 +122,7 @@ model_from_api <- function(model = NULL,
                                   default_parameters = def$default_parameters,
                                   state_init = def$state_init,
                                   verbose = verbose,
+                                  nonmem = nonmem,
                                   ...)
     if(run_tests) {
       if(file.exists(tmp_file)) {
