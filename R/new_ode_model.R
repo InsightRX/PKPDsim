@@ -291,6 +291,9 @@ new_ode_model <- function (model = NULL,
       if(is.null(obs$scale)) { obs$scale <- "1" }
       if(is.null(dose$cmt)) { dose$cmt <- "1" }
       if(is.null(dose$bioav)) { dose$bioav <- "1" }
+      if(class(dose$bioav) == "character") {
+        dose$bioav <- paste0('\\"', dose$bioav, '\\"')
+      }
       if(is.null(size)) { size <- "1" }
       if(is.null(ltbs)) { ltbs <- FALSE }
       if(is.null(nonmem)) { nonmem <- "NULL" }
