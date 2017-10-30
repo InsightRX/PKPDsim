@@ -86,11 +86,13 @@ compile_sim_cpp <- function(
   }
   lines <- strsplit(ode_def_cpp, ";")[[1]]
   new_ode <- c()
-  j <- 0
   for(i in seq(lines)) {
     if(length(grep("dAdt", lines[i])) > 0) {
-      lines[i] <- paste0(lines[i], " + rate[", j, "]")
-      j <- j+1
+      m <- gregexpr("dAdt\\[([0-9]*)\\]", lines[i], perl=TRUE)
+      start <- unlist(attr(m[[1]], "capture.start"))[,1]
+      len <- attr(m[[1]], "capture.length")
+      num <- substr(lines[i], start, start+len-1)
+      lines[i] <- paste0(lines[i], " + rate[", num, "]")
     }
     if(nchar(lines[i]) > 0) {
       new_ode <- c(new_ode, lines[i])

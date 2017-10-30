@@ -14,7 +14,7 @@ shift_state_indices <- function(ode_def, n = -1) {
       len <- attr(m[[1]], "capture.length")
       txt <- unlist(regmatches(ode_def, m))
       txt <- as.num(gsub(paste0("[",regxp,"\\[\\]]"), "", txt, perl=TRUE)) + n
-      if(txt < 0) return(ode_def_orig)
+      if(any(txt < 0)) return(ode_def_orig)
 
       for(i in 1:length(start)) {
         if(length(start[i]) > 0) {
