@@ -61,6 +61,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   int len = times.size();
   int start;
   double bioav = 1;
+  memset(rate, 0, sizeof(rate));
   // insert observation compartment
   // insert bioavailability definition
   // insert covariate definitions
@@ -81,8 +82,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
 
     // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
-      memset(rate, 0, sizeof(rate));
-      rate[dose_cmt[i]-1] = rates[i] * bioav;
+      rate[dose_cmt[i]-1] = (rate[dose_cmt[i]-1])*1.0 + rates[i] * bioav;
     }
     // insert scale definition for integration period
     // insert custom pk event code
