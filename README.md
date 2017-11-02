@@ -17,6 +17,8 @@ library(PKPDsim)
 
 See [docs](http://pkpdsim.ronkeizer.com)
 
+See [forum](https://groups.google.com/forum/#!forum/pkpdsim)
+
 ## License
 
 [MIT license](http://opensource.org/licenses/MIT)
