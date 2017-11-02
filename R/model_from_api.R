@@ -39,6 +39,7 @@ model_from_api <- function(model = NULL,
     message("No `model` specified, returning available PKPDsim models.")
     return(defs)
   }
+  validation <- NULL
   if(github) {
     if(verbose) {
       message("Connecting to API at GitHub...")
@@ -78,6 +79,10 @@ model_from_api <- function(model = NULL,
       fileConn <- file(tmp_file)
       writeLines(test_txt, fileConn)
       close(fileConn)
+    }
+    validation <- NULL
+    if(file.exists(paste0(url, "/validation/", model, ".json"))) {
+      validation <- paste0(url, "/validation/", model, ".json")
     }
   }
   if(verbose) {
@@ -123,6 +128,7 @@ model_from_api <- function(model = NULL,
                                   state_init = def$state_init,
                                   verbose = verbose,
                                   nonmem = nonmem,
+                                  validation = validation,
                                   ...)
     if(run_tests) {
       if(file.exists(tmp_file)) {

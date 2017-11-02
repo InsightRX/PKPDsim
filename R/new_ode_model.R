@@ -29,6 +29,7 @@
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @param nonmem add nonmem code as attribute to model object
+#' @param validation path to JSON file with specs for numerical validation
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,
@@ -58,7 +59,8 @@ new_ode_model <- function (model = NULL,
                            lib_location = NULL,
                            verbose = FALSE,
                            as_is = FALSE,
-                           nonmem = NULL
+                           nonmem = NULL,
+                           validation = NULL
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -277,6 +279,17 @@ new_ode_model <- function (model = NULL,
       }
       file.copy(from = templ_folder, to = new_folder,
                 overwrite = TRUE, recursive = TRUE, copy.mode = FALSE)
+
+      ## Copy validation specs into package
+      if(!is.null(validation)) {
+        dir.create(paste0(new_folder, "/inst"))
+        dir.create(paste0(new_folder, "/inst/validation"))
+        if(file.exists(validation)) {
+          file.copy(from = validation, to = paste0(new_folder, "/inst/validation/"))
+        } else {
+          warning("Specified validation file not found.")
+        }
+      }
 
       ## Write new source file
       fileConn <- file(paste0(new_folder, "/src/sim_wrapper_cpp.cpp"))

@@ -11,7 +11,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   declare_variables = NULL, iiv = NULL, iov = NULL, omega_matrix = NULL,
   ruv = NULL, ltbs = NULL, default_parameters = NULL,
   cpp_show_code = FALSE, package = NULL, install = TRUE, folder = NULL,
-  lib_location = NULL, verbose = FALSE, as_is = FALSE)
+  lib_location = NULL, verbose = FALSE, as_is = FALSE, nonmem = NULL,
+  validation = NULL)
 }
 \arguments{
 \item{model}{model name from model library}
@@ -69,6 +70,10 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{verbose}{show more output}
 
 \item{as_is}{use C-code as-is, don't substitute line-endings or shift indices}
+
+\item{nonmem}{add nonmem code as attribute to model object}
+
+\item{validation}{path to JSON file with specs for numerical validation}
 }
 \description{
 Create new ODE model
