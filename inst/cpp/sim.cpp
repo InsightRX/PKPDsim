@@ -51,13 +51,13 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   std::vector<double> times, doses, dummy, rates;
   std::vector<int> dose_cmt, dose_type, evid;
   // insert variable definitions
-  times = design["t"];
-  doses = design["dose"];
-  evid = design["evid"];
-  dummy = design["dum"];
-  rates = design["rate"];
-  dose_cmt = design["dose_cmt"];
-  dose_type = design["type"];
+  times = as<std::vector<double> >(design["t"]);
+  doses = as<std::vector<double> >(design["dose"]);
+  evid = as<std::vector<int> >(design["evid"]);
+  dummy = as<std::vector<double> >(design["dum"]);
+  rates = as<std::vector<double> >(design["rate"]);
+  dose_cmt = as<std::vector<int> >(design["dose_cmt"]);
+  dose_type = as<std::vector<int> >(design["type"]);
   int len = times.size();
   int start;
   double bioav = 1;
