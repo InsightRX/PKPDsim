@@ -6,8 +6,14 @@
 #' @param auto is auto-detect syntax (`from`)
 #' @param from from syntax
 #' @param to to syntax
+#' @param verbose verbose, `TRUE` or `FALSE`
 #' @export
-translate_ode <- function(code, auto = TRUE, from = NULL, to = NULL, verbose = TRUE) {
+translate_ode <- function(
+  code,
+  auto = TRUE,
+  from = NULL,
+  to = NULL,
+  verbose = TRUE) {
   supported <- c("PKPDsim", "RxODE")
 
   if("PKPDsim" %in% class(code)) {

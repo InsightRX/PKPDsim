@@ -18,6 +18,8 @@ nlmixr_parse_parameters(parameters = list(CL = 5, V = 50), omega = c(0.1,
 \item{fixed}{vector of fixed parameters}
 
 \item{log_transform}{log-transform estimated parameters in nlmixr?}
+
+\item{...}{passed on}
 }
 \description{
 Function to parse parameters for a model into a structure used by nlmixr

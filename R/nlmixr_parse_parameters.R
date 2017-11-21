@@ -5,6 +5,7 @@
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
 #' @param fixed vector of fixed parameters
 #' @param log_transform log-transform estimated parameters in nlmixr?
+#' @param ... passed on
 #' @export
 nlmixr_parse_parameters <- function(
   parameters = list(CL = 5, V = 50),

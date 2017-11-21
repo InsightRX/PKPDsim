@@ -1,5 +1,6 @@
 library(PKPDsim)
 library(testit)
+Sys.setenv("R_TESTS" = "")
 
 mod   <- new_ode_model("pk_1cmt_iv")
 par   <- list(CL = 5, V = 50)

@@ -8,6 +8,7 @@
 #' @param model_code manually specify the `model` block for nlmixr
 #' @param model_par_code manually specify the parameters section inside the `model` block for nlmixr
 #' @param verbose verbose, `TRUE` or `FALSE`
+#' @param ... passed on
 #' @export
 pkpdsim_to_nlmixr <- function(
   model = NULL,
@@ -37,13 +38,13 @@ pkpdsim_to_nlmixr <- function(
 
   ## Model block
   if(is.null(model_code)) {
-    if("PKPDsim" %in% class(mod)) {
-      model_code <- PKPDsim::translate_ode(attr(mod, "code"), from = "PKPDsim", to = "RxODE", verbose = verbose)
+    if("PKPDsim" %in% class(model)) {
+      model_code <- PKPDsim::translate_ode(attr(model, "code"), from = "PKPDsim", to = "RxODE", verbose = verbose)
     } else {
       stop("This doesn't seem to be a valid PKPDsim model.")
     }
   }
-  dv_def <- paste0("    y = A", attr(mod, "obs")$cmt, "/", attr(mod, "obs")$scale)
+  dv_def <- paste0("    y = A", attr(model, "obs")$cmt, "/", attr(model, "obs")$scale)
   ruv_code <- paste("    y ~ ",
                     paste(lapply(names(res_var), function(x) return(paste0(x, "(err_", x, ")"))), collapse = " + "))
   model_code <- paste0("  model({\n",

@@ -24,6 +24,8 @@ pkpdsim_to_nlmixr(model = NULL, parameters = NULL, omega = NULL,
 \item{model_par_code}{manually specify the parameters section inside the `model` block for nlmixr}
 
 \item{verbose}{verbose, `TRUE` or `FALSE`}
+
+\item{...}{passed on}
 }
 \description{
 Convert a model generated with PKPDsim to an object for nlmixr

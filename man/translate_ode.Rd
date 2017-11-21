@@ -14,6 +14,8 @@ translate_ode(code, auto = TRUE, from = NULL, to = NULL, verbose = TRUE)
 \item{from}{from syntax}
 
 \item{to}{to syntax}
+
+\item{verbose}{verbose, `TRUE` or `FALSE`}
 }
 \description{
 Currently only supports PKDPsim <--> RxODE
