@@ -29,7 +29,7 @@ calculate_parameters <- function(
                  parameters = parameters,
                  regimen = reg,
                  omega = NULL,
-                 covariates = covs,
+                 covariates = covariates,
                  output_include = incl,
                  t_obs = c(0,1), only_obs = TRUE, ...) %>% tail(1)
   return(pars <- as.list(res[,-c(1:4)]))
