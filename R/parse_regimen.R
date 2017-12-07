@@ -3,14 +3,22 @@
 #' @param t_max t_max
 #' @param t_obs t_obs
 #' @param t_tte t_tte
+#' @param t_init t_init
 #' @param p parameters
 #' @param covariates covariates
 #' @param model model
 #' @export
-parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = NULL) {
+parse_regimen <- function(
+  regimen,
+  t_max = NULL, t_obs = NULL, t_tte = NULL,
+  t_init = 0,
+  p, covariates, model = NULL) {
 
   if(length(regimen$t_inf) < length(regimen$dose_times)) {
     regimen$t_inf <- c(regimen$tinf, rep(utils::tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
+  }
+  if(t_init != 0) {
+    t_obs <- c(0, t_obs + t_init)
   }
 
   dose_cmt <- 1
@@ -131,6 +139,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     }
   }
   if(is.null(t_max)) {
+    if(t_init != 0) t_max <- t_max + t_init
     if(length(design$t) > 1) {
       t_max <- utils::tail(design$t,1)
     } else {
@@ -140,6 +149,7 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
       if(is.null(t_max) || is.na(t_max) || t_max < max(t_obs)) { t_max <- max(t_obs) }
     }
     if(!is.null(t_tte) && length(t_tte) > 0) {
+      t_tte <- t_tte + t_init
       if(is.null(t_tte) || is.na(t_max) || t_max < max(t_tte)) { t_max <- max(t_tte) }
     }
   }
@@ -178,5 +188,11 @@ parse_regimen <- function(regimen, t_max, t_obs, t_tte, p, covariates, model = N
     # design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
   }
   design <- design[order(design$t, design$type, design$dum),]
+
+  if(t_init != 0) { # add event line at t=0, to start integration
+     design <- design[c(1, 1:nrow(design)),]
+     design[1,] <- c(0, 0, 0, 0, 0, 0, 2, 0, 0)
+  }
+
   return(design)
 }

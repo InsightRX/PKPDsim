@@ -4,6 +4,7 @@
 #' @param parameters list of parameters
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
+#' @param fixed vector of fixed (not estimated) parameter names
 #' @param ini_code manually specify the `ini` block for nlmixr
 #' @param model_code manually specify the `model` block for nlmixr
 #' @param model_par_code manually specify the parameters section inside the `model` block for nlmixr
@@ -15,6 +16,7 @@ pkpdsim_to_nlmixr <- function(
   parameters = NULL,
   omega = NULL,
   res_var = NULL,
+  fixed = c(),
   ini_code = NULL,
   model_code = NULL,
   model_par_code = NULL,
@@ -29,7 +31,9 @@ pkpdsim_to_nlmixr <- function(
   ## Ini block
   if(is.null(ini_code)) {
     if(verbose) message("Converting parameters to nlmixr object.")
-    params <- nlmixr_parse_parameters(parameters = parameters, omega = omega, rew_var = res_var, ...)
+    params <- nlmixr_parse_parameters(
+      parameters = parameters, omega = omega, rew_var = res_var,
+      fixed = fixed, ...)
     ini_code <- params$ini
     model_par_code <- params$model_par_code
   } else {

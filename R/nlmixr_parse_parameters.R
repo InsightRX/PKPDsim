@@ -19,12 +19,12 @@ nlmixr_parse_parameters <- function(
   model_par_code <- ""
   etas <- c()
   for(key in names(parameters)) {
-    if(log_transform) {
-      par_code <- paste0(par_code, "    log", key, " <- log(", parameters[[key]], ") # log ", key, " \n")
-    } else {
-      par_code <- paste0(par_code, "    ", key, " <- ", parameters[[key]], " # ", key, " \n")
-    }
     if(! key %in% fixed) {
+      if(log_transform) {
+        par_code <- paste0(par_code, "    log", key, " <- log(", parameters[[key]], ") # log ", key, " \n")
+      } else {
+        par_code <- paste0(par_code, "    ", key, " <- ", parameters[[key]], " # ", key, " \n")
+      }
       etas <- c(etas, paste0("eta_", key))
       if(log_transform) {
         model_par_code <- paste0(model_par_code, paste0("    ", key, " <- exp(log", key, " + eta_", key, ")\n" ))
@@ -32,7 +32,7 @@ nlmixr_parse_parameters <- function(
         model_par_code <- paste0(model_par_code, paste0("    ", key, " <- tv_", key, " * exp(eta_", key, ")\n" ))
       }
     } else {
-      model_par_code <- paste0(model_par_code, paste0("    ", key, " <- tv_", key, "\n" ))
+      model_par_code <- paste0(model_par_code, paste0("    ", key, " <- ", parameters[[key]], "\n" ))
     }
   }
   om_text <- paste0("    ",

@@ -7,7 +7,7 @@
 #' @param extra_t_obs add timepoints to t_obs at which covariate is changing (`T`/`F`)
 get_t_obs_from_regimen <- function(
   regimen, obs_step_size, t_max,
-  covariates, extra_t_obs) {
+  covariates, extra_t_obs, t_init = 0) {
 
   if(is.null(obs_step_size)) {
     obs_step_size <- 1
@@ -23,12 +23,12 @@ get_t_obs_from_regimen <- function(
   }
   if("regimen" %in% class(regimen)) {
     if(!is.null(t_max)) {
-      t_obs <- seq(from=0, to=t_max, by=obs_step_size)
+      t_obs <- seq(from=-t_init, to=t_max, by=obs_step_size)
     } else {
       if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
         t_obs <- seq(from=regimen$dose_times[1], to=24, by=obs_step_size)
       } else {
-        t_obs <- seq(from=0, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
+        t_obs <- seq(from=-t_init, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
       }
     }
     t_obs <- unique(c(t_obs, regimen$dose_times))

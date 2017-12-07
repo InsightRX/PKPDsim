@@ -10,7 +10,7 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
   covariates = NULL, covariates_table = NULL,
   covariates_implementation = list(), A_init = NULL, only_obs = FALSE,
   obs_step_size = NULL, int_step_size = 0.1, t_max = NULL, t_obs = NULL,
-  t_tte = NULL, duplicate_t_obs = FALSE, extra_t_obs = TRUE,
+  t_tte = NULL, t_init = 0, duplicate_t_obs = FALSE, extra_t_obs = TRUE,
   rtte = FALSE, checks = TRUE, verbose = FALSE, return_design = FALSE,
   output_include = list(parameters = FALSE, covariates = FALSE), ...)
 }
@@ -56,6 +56,8 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 \item{t_obs}{vector of observation times, only output these values (only used when t_obs==NULL)}
 
 \item{t_tte}{vector of observation times for time-to-event simulation}
+
+\item{t_init}{initialization time before first dose, default 0.}
 
 \item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 

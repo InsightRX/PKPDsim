@@ -22,6 +22,7 @@
 #' @param t_max maximum simulation time, if not specified will pick the end of the regimen as maximum
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
+#' @param t_init initialization time before first dose, default 0.
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
 #' @param extra_t_obs include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.
 #' @param rtte should repeated events be allowed (FALSE by default)
@@ -93,6 +94,7 @@ sim <- function (ode = NULL,
                  t_max = NULL,
                  t_obs = NULL,
                  t_tte = NULL,
+                 t_init = 0,
                  duplicate_t_obs = FALSE,
                  extra_t_obs = TRUE,
                  rtte = FALSE,
@@ -131,12 +133,13 @@ sim <- function (ode = NULL,
       regimen$dose_times <- regimen$dose_times + parameters[[attr(ode, "lagtime")]]
     }
   }
+  if(t_init != 0) regimen$dose_times <- regimen$dose_times + t_init
   comb <- list()
   p <- as.list(parameters)
   if(!is.null(t_obs)) {
     t_obs <- round(t_obs, 6)
   }
-  t_obs_orig <- t_obs
+  t_obs_orig <- t_obs + t_init
   if(is.null(analytical)) {
     if ("character" %in% class(ode)) {
       ode <- get(ode)
@@ -273,12 +276,12 @@ sim <- function (ode = NULL,
     if(is.null(t_obs)) { # find reasonable default to output
       t_obs <- get_t_obs_from_regimen(
         regimen, obs_step_size, t_max,
-        covariates, extra_t_obs)
+        covariates, extra_t_obs, t_init = t_init)
     }
     if(is.null(covariates_table)) {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates, ode)
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, ode)
     } else {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, p, covariates[[1]], ode)
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], ode)
     }
     design_i <- design
     p$dose_times <- regimen$dose_times
@@ -296,7 +299,7 @@ sim <- function (ode = NULL,
     p_i <- p
     if(!is.null(covariates_table)) {
       covariates_tmp <- covariates_table[[1]]
-      design_i <- parse_regimen(regimen, t_max, t_obs, t_tte, p_i, covariates_table[[i]])
+      design_i <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]])
     } else {
       covariates_tmp <- covariates
     }
@@ -306,13 +309,13 @@ sim <- function (ode = NULL,
           regimen[[i]], obs_step_size, t_max,
           covariates, extra_t_obs)
       }
-      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, p_i, covariates_tmp)
+      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_tmp)
       if("regimen_multiple" %in% class(regimen)) {
         p_i$dose_times <- regimen[[i]]$dose_times
         p_i$dose_amts <- regimen[[i]]$dose_amts
       }
     }
-    t_obs <- round(t_obs, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
+    t_obs <- round(t_obs + t_init, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
     if (!is.null(omega)) {
       if (omega_type == "exponential") {
         p_i[1:nrow(omega_mat)] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
@@ -451,6 +454,7 @@ sim <- function (ode = NULL,
   if(!is.null(res_var)) {
     comb[comb$comp == 'obs',]$y <- add_ruv(comb[comb$comp == 'obs',]$y, res_var)
   }
+  comb$t <- comb$t - t_init
 
   class(comb) <- c("PKPDsim_data", class(comb))
   attr(comb, "regimen") <- regimen_orig

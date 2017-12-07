@@ -5,7 +5,7 @@
 \title{Only core function of the simulation function, always just returns observations.
 Mostly useful for estimations / optimal design. Has no checks (for speed)!}
 \usage{
-sim_core(sim_object = NULL, ode, duplicate_t_obs = FALSE)
+sim_core(sim_object = NULL, ode, duplicate_t_obs = FALSE, t_init = 0)
 }
 \arguments{
 \item{sim_object}{list with design and simulation parameters}

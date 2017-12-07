@@ -5,7 +5,7 @@
 \title{Convert a model generated with PKPDsim to an object for nlmixr}
 \usage{
 pkpdsim_to_nlmixr(model = NULL, parameters = NULL, omega = NULL,
-  res_var = NULL, ini_code = NULL, model_code = NULL,
+  res_var = NULL, fixed = c(), ini_code = NULL, model_code = NULL,
   model_par_code = NULL, verbose = FALSE, ...)
 }
 \arguments{
@@ -16,6 +16,8 @@ pkpdsim_to_nlmixr(model = NULL, parameters = NULL, omega = NULL,
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
 \item{res_var}{residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.}
+
+\item{fixed}{vector of fixed (not estimated) parameter names}
 
 \item{ini_code}{manually specify the `ini` block for nlmixr}
 
