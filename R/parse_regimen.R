@@ -191,7 +191,7 @@ parse_regimen <- function(
 
   if(t_init != 0) { # add event line at t=0, to start integration
      design <- design[c(1, 1:nrow(design)),]
-     design[1,] <- c(0, 0, 0, 0, 0, 0, 2, 0, 0)
+     design[1, 1:9] <- c(0, 0, 0, 0, 0, 0, 2, 0, 0)
   }
 
   return(design)
