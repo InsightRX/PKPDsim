@@ -6,13 +6,16 @@
 #' @export
 #' @seealso \link{sim_ode}
 
-cv_to_omega <- function(par_cv = NULL, parameters = NULL) {
-  if (is.null(par_cv)) {
+cv_to_omega <- function(par_cv = NULL, parameters = NULL, type = "") {
+  if (is.null(par_cv) || !("list" %in% class(par_cv))) {
     stop("List of coefficients of variation required as argument to cv_to_omega().")
   }
-  if (is.null(parameters)) {
-    message("No parameter list provided as argument, assuming same order for IIV and parameters.")
+  if(is.null(names(par_cv))) {
+    stop("`par_cv` should be a named list.")
+  }
+  if(is.null(parameters)) {
     nam <- names(par_cv)
+    message(paste0("No parameter list provided as argument, assumed order for `omega_matrix`: ", paste(nam, collapse=", ")))
   } else {
     nam <- names(parameters)
   }
