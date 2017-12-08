@@ -1,26 +1,20 @@
 ## Test t_init functionality
-## 
+##
 library(testit)
-library(PKPDmap)
 library(PKPDsim)
 Sys.setenv("R_TESTS" = "")
 
 ## e.g. TDM before first dose:
 ## at t=-8, conc=10000
 ## Use this as true value in the simulations
-
-dat   <- read.table(file=paste0(system.file(package="PKPDmap"), "/pktab1"), skip=1, header=TRUE)
-colnames(dat)[1:3] <- c("id", "t", "y")
-dat   <- dat[dat$id == 1 & dat$EVID == 0,]
-par   <- list(CL = 7.67, V = 97.7, TDM_INIT = 500) 
-
+par   <- list(CL = 7.67, V = 97.7, TDM_INIT = 500)
 mod <- new_ode_model(code = "
                      dAdt[1] = -(CL/V)*A[1];
                      ", state_init = "
                      A[1] = TDM_INIT * V
                      ", parameters = par, obs = list(cmt = 1, scale = "V"), cpp_show_code=F)
 fits <- c()
-omega <- c(0.0406, 
+omega <- c(0.0406,
            0.0623, 0.117)
 reg <- new_regimen(amt = 100000, times=c(0, 24), type="bolus")
 
