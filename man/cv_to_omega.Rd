@@ -4,7 +4,7 @@
 \alias{cv_to_omega}
 \title{Create lower-diagonal omega matrix from CV for parameter estimates}
 \usage{
-cv_to_omega(par_cv = NULL, parameters = NULL)
+cv_to_omega(par_cv = NULL, parameters = NULL, type = "")
 }
 \arguments{
 \item{par_cv}{list of parameter CVs}

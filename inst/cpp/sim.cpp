@@ -42,6 +42,10 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
   return(tmp);
 }
 
+void pk_code (int i) {
+  // insert custom pk event code
+}
+
 // [[Rcpp::export]]
 List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_bins, double step_size) {
   std::vector<double> t;
@@ -66,6 +70,13 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert bioavailability definition
   // insert covariate definitions
   // insert_parameter_definitions
+
+  // Initialize parameters, compartments, etc:
+  pk_code(0);
+  // call ode() once to pre-calculate any initial variables
+  // insert A dAdt state_init
+  ode(A_dum, dAdt_dum, 0);
+
   // insert_state_init
   NumericVector Aupd = clone(A);
 
@@ -74,18 +85,13 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     t_end = times[(i+1)];
     // insert covariates for integration period
 
-    if(i == 0) {
-      // call ode() once to pre-calculate any initial variables
-      // insert A dAdt state_init
-      ode(A_dum, dAdt_dum, 0);
-    }
-
     // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
       rate[dose_cmt[i]-1] = (rate[dose_cmt[i]-1])*1.0 + rates[i] * bioav;
     }
     // insert scale definition for integration period
-    // insert custom pk event code
+
+    pk_code(i);
 
     start = 0;
     if(i > 0) {

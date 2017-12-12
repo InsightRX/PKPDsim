@@ -8,6 +8,9 @@ print.PKPDsim <- function(x, ...) {
   if(!is.null(attr(x, "pk_code")) && attr(x, "pk_code") != "") {
     cat(paste0("PK event code: \n", attr(x, "pk_code")), "\n")
   }
+  if(!is.null(attr(x, "state_init"))) {
+    cat(paste("State init: \n", attr(x, "state_init"), "\n"))
+  }
   cat(paste0("Required parameters: ", paste(attr(x, "parameters"), collapse=", ")), "\n")
   cat(paste0("Covariates: ", paste(attr(x, "covariates"), collapse=", ")), "\n")
   cat(paste0("Variables: ", paste(attr(x, "variables"), collapse=", ")), "\n")

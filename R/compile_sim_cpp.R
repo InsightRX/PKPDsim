@@ -156,7 +156,7 @@ compile_sim_cpp <- function(
       cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_', nam, ' = design["cov_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_t_', nam, ' = design["cov_t_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  std::vector<double> gradients_', nam, ' = design["gradients_', nam,'"];\n'))
-      cov_def <- paste0(cov_def, paste0('                      ', nam,' = cov_WT[0];\n'))
+      cov_def <- paste0(cov_def, paste0('                      ', nam,' = cov_', nam,'[0];\n'))
       cov_tmp <- paste0(cov_tmp, paste0('    ', nam, '_0 = cov_', nam,'[i];\n'))
       if(class(covariates) == "character" || (class(covariates) == "list" && tolower(covariates[[nam]]$implementation) != "locf")) {
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = gradients_',nam,'[i] ;\n'))
@@ -225,15 +225,15 @@ compile_sim_cpp <- function(
     cpp_code[idx9] <- shift_state_indices(pk_code, -1)
   }
   if(!is.null(dose$bioav)) {
-    cpp_code[idx10] <- paste0("      bioav = ", dose$bioav, ";")
+    cpp_code[idx10] <- paste0("    bioav = ", dose$bioav, ";")
   }
   if(!is.null(dose_code)) {
     cpp_code[idx11] <- shift_state_indices(dose_code, -1)
   }
   cpp_code[idx18] <- paste0(
-    "      boost::array<double, ",size,"> b = { ", paste(rep(0, size), collapse=", ")," };\n",
-    "      const state_type& A_dum = b;\n",
-    "      state_type dAdt_dum = b;")
+    "  boost::array<double, ",size,"> b = { ", paste(rep(0, size), collapse=", ")," };\n",
+    "  const state_type& A_dum = b;\n",
+    "  state_type dAdt_dum = b;")
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),
            pars,

@@ -7,6 +7,7 @@ model <- function(mod = NULL) {
   attr(ret, "dose") <- list("cmt" = [DOSE_COMP], "bioav" = [DOSE_BIOAV] )
   attr(ret, "code") <- "[CODE]"
   attr(ret, "pk_code") <- "[PK_CODE]"
+  attr(ret, "state_init") <- "[STATE_INIT]"
   attr(ret, "parameters") <- [PARS]
   attr(ret, "variables") <- [VARS]
   attr(ret, "covariates") <- [COVS]
