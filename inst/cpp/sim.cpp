@@ -42,7 +42,7 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
   return(tmp);
 }
 
-void pk_code (int i) {
+void pk_code (int i, std::vector<double> times, std::vector<double> doses) {
   // insert custom pk event code
 }
 
@@ -72,7 +72,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert_parameter_definitions
 
   // Initialize parameters, compartments, etc:
-  pk_code(0);
+  pk_code(0, times, doses);
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
   ode(A_dum, dAdt_dum, 0);
@@ -91,7 +91,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     }
     // insert scale definition for integration period
 
-    pk_code(i);
+    pk_code(i, times, doses);
 
     start = 0;
     if(i > 0) {
