@@ -156,6 +156,7 @@ compile_sim_cpp <- function(
       cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_', nam, ' = design["cov_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  std::vector<double> cov_t_', nam, ' = design["cov_t_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  std::vector<double> gradients_', nam, ' = design["gradients_', nam,'"];\n'))
+      cov_def <- paste0(cov_def, paste0('                      ', nam,' = cov_WT[0];\n'))
       cov_tmp <- paste0(cov_tmp, paste0('    ', nam, '_0 = cov_', nam,'[i];\n'))
       if(class(covariates) == "character" || (class(covariates) == "list" && tolower(covariates[[nam]]$implementation) != "locf")) {
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = gradients_',nam,'[i] ;\n'))
