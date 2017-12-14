@@ -42,7 +42,11 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
   return(tmp);
 }
 
-void pk_code (int i, std::vector<double> times, std::vector<double> doses) {
+void set_covariates(int i) {
+  // insert covariates for integration period
+}
+
+void pk_code (int i, std::vector<double> times, std::vector<double> doses, double prv_dose, std::vector<int> dose_cmt, std::vector<int> dose_type, std::vector<double> iov_bin) {
   // insert custom pk event code
 }
 
@@ -64,7 +68,6 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   dose_type = as<std::vector<int> >(design["type"]);
   int len = times.size();
   int start;
-  double bioav = 1;
   memset(rate, 0, sizeof(rate));
   // insert observation compartment
   // insert bioavailability definition
@@ -72,9 +75,12 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert_parameter_definitions
 
   // Initialize parameters, compartments, etc:
-  pk_code(0, times, doses);
+  pk_code(0, times, doses, 0, dose_cmt, dose_type, iov_bin);
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
+  set_covariates(0);
+
+  // Main call to ODE solver
   ode(A_dum, dAdt_dum, 0);
 
   // insert_state_init
@@ -83,7 +89,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
     t_end = times[(i+1)];
-    // insert covariates for integration period
+
+    set_covariates(i);
 
     // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
@@ -91,7 +98,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     }
     // insert scale definition for integration period
 
-    pk_code(i, times, doses);
+    pk_code(i, times, doses, prv_dose, dose_cmt, dose_type, iov_bin);
 
     start = 0;
     if(i > 0) {
