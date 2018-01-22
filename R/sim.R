@@ -385,8 +385,8 @@ sim <- function (ode = NULL,
       dat_ind <- as.matrix(merge(dat_ind, p_i[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]))
     }
     cov_names <- NULL
-    if(!is.null(output_include$covariates) && output_include$covariates && !is.null(covariates)) {
-      cov_names <- names(covariates)
+    if(!is.null(output_include$covariates) && output_include$covariates && (!is.null(covariates) || !is.null(covariates_table))) {
+      cov_names <- names(covariates_tmp)
       for(key in cov_names) {
         dat_ind <- cbind(dat_ind, design_i[[paste0("cov_", key)]] + (design_i$t - design_i[[paste0("cov_t_", key)]]) * design_i[[paste0("gradients_", key)]] )
       }
