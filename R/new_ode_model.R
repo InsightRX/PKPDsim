@@ -84,7 +84,6 @@ new_ode_model <- function (model = NULL,
       }
     }
     code_init_text <- ""
-    
     code <- gsub("(#).*?\\n", "\n", code) # remove comments
     if(class(state_init) == "character") {
       code <- gsub("dadt", "dAdt", code)
