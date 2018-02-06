@@ -4,6 +4,7 @@
 #' @param sim_object list with design and simulation parameters
 #' @param ode ode
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
+#' @param t_init time of initization of the ODE system. Usually 0.
 #' @export
 sim_core <- function(
   sim_object = NULL,

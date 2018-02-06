@@ -11,6 +11,7 @@
 #' @param covariates covariate list. Make sure to include covariates at the right time point, since only last observed covariate values are used.
 #' @param include_parameters boolean, include parameters?
 #' @param include_variables boolean, include variables?
+#' @param ... arguments to pass on to simulation function
 #' @export
 calculate_parameters <- function(
   ode = NULL,
@@ -31,6 +32,6 @@ calculate_parameters <- function(
                  omega = NULL,
                  covariates = covariates,
                  output_include = incl,
-                 t_obs = c(0,1), only_obs = TRUE, ...) %>% tail(1)
+                 t_obs = c(0,1), only_obs = TRUE, ...) %>% utils::tail(1)
   return(pars <- as.list(res[,-c(1:4)]))
 }

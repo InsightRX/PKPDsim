@@ -21,7 +21,7 @@ join_regimen <- function(
     if(is.null(regimen2)) {
       return(regimen1)
     }
-    if(is.null(interval) && is.null(dose_update) && is.null(dose_update_time)) {
+    if(is.null(interval) && is.null(dose_update) && is.null(t_dose_update)) {
       stop("either interval or dose_update have to be specified as arguments")
     }
     if(!is.null(t_dose_update)) { # from a specific time

@@ -17,6 +17,8 @@ calculate_parameters(ode = NULL, parameters = NULL, covariates = NULL,
 \item{include_parameters}{boolean, include parameters?}
 
 \item{include_variables}{boolean, include variables?}
+
+\item{...}{arguments to pass on to simulation function}
 }
 \description{
 This is a convenience function for PKPDsim users, it is not used inside the `sim_ode()``

@@ -5,9 +5,14 @@
 #' @param t_max max time value
 #' @param covariates covariates object, created using `list(new_covariate(), ...)`
 #' @param extra_t_obs add timepoints to t_obs at which covariate is changing (`T`/`F`)
+#' @param t_init time of initization of the ODE system. Usually 0.
 get_t_obs_from_regimen <- function(
-  regimen, obs_step_size, t_max,
-  covariates, extra_t_obs, t_init = 0) {
+  regimen = NULL,
+  obs_step_size = NULL,
+  t_max = NULL,
+  covariates = NULL,
+  extra_t_obs = NULL,
+  t_init = 0) {
 
   if(is.null(obs_step_size)) {
     obs_step_size <- 1

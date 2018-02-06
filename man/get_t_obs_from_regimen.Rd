@@ -4,8 +4,8 @@
 \alias{get_t_obs_from_regimen}
 \title{Extract sensible default observation times from a specified regimen}
 \usage{
-get_t_obs_from_regimen(regimen, obs_step_size, t_max, covariates, extra_t_obs,
-  t_init = 0)
+get_t_obs_from_regimen(regimen = NULL, obs_step_size = NULL, t_max = NULL,
+  covariates = NULL, extra_t_obs = NULL, t_init = 0)
 }
 \arguments{
 \item{regimen}{regimen created using `new_regimen()`}
@@ -17,6 +17,8 @@ get_t_obs_from_regimen(regimen, obs_step_size, t_max, covariates, extra_t_obs,
 \item{covariates}{covariates object, created using `list(new_covariate(), ...)`}
 
 \item{extra_t_obs}{add timepoints to t_obs at which covariate is changing (`T`/`F`)}
+
+\item{t_init}{time of initization of the ODE system. Usually 0.}
 }
 \description{
 Extract sensible default observation times from a specified regimen

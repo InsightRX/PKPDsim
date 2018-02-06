@@ -6,7 +6,7 @@
 #' @export
 #' @seealso \link{sim_ode}
 
-cv_to_omega <- function(par_cv = NULL, parameters = NULL, type = "") {
+cv_to_omega <- function(par_cv = NULL, parameters = NULL) {
   if (is.null(par_cv) || !("list" %in% class(par_cv))) {
     stop("List of coefficients of variation required as argument to cv_to_omega().")
   }
