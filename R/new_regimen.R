@@ -69,7 +69,9 @@ new_regimen <- function(
       reg$t_inf = 1
     }
     if(any(reg$t_inf == 0)) {
-      message("Infusion time cannot be zero, changing to 1/60 instead.")
+      if(any(reg$type == "infusion")) {
+        message("Infusion time cannot be zero, changing to 1/60 instead.")
+      }
       reg$t_inf[reg$t_inf == 0] <- 1/60
     }
   }
