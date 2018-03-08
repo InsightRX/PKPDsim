@@ -97,6 +97,30 @@ model_from_api <- function(model = NULL,
   if(!def$build && !force) {
     message("Model not flagged for building, skipping compilation. Use `force`=TRUE to force build.")
   }
+  if(!is.null(def$misc$init_parameter) && !is.null(def$misc$model_type)) {
+    ## Add a parameter and initialization code for setting the initial concentration based on a TDM value
+    if(def$misc$init_parameter) {
+      def$parameters$TDM_INIT <- 0
+      if(!is.null(def$state_init)) {
+        stop("Sorry, state init already specified. Cannot override for TDM-based initializiaton.")
+      }
+      if(! def$misc$model_type %in% c("1cmt_iv", "2cmt_iv")) {
+        stop("Sorry, TDM initialization not supported for this model type yet.")
+      } else {
+        if(def$misc$model_type == "1cmt_iv") {
+          def$state_init <- "\
+              A[0] = TDM_INIT * Vi;\
+          "
+        }
+        if(def$misc$model_type == "2cmt_iv") {
+          def$state_init <- "\
+              A[0] = TDM_INIT * Vi;\
+              A[1] = (Q/Vi)*(TDM_INIT * Vi) / (Q/V2i);\
+          "
+        }
+      }
+    }
+  }
   nonmem <- def$nonmem
   if(def$build || force) {
     if(verbose) {
