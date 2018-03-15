@@ -18,7 +18,9 @@ sim_core <- function(
              step_size = sim_object$int_step_size)
   out <- data.frame(t = tmp$time, y = tmp$obs)
   if(duplicate_t_obs) {
-    out <- out[match(sim_object$t_obs, out$t),] # use match to ensure that duplicates in t_obs is possible
+    # use match to ensure that duplicates in t_obs is possible
+    # make sure rounding level is same! We use 6 digits in sim.R
+    out <- out[match(round(sim_object$t_obs, 6), round(out$t, 6)),]
   } else {
     out <- out[!duplicated(out$t) & out$t %in% sim_object$t_obs,]
   }
