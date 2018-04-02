@@ -100,6 +100,6 @@ new_covariate <- function(
               implementation = implementation,
               unit = unit,
               comments = comments)
-  class(cov) <- c(class(cov), "covariate")
+  class(cov) <- c("covariate", class(cov))
   return(cov)
 }
