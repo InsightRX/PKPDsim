@@ -153,6 +153,7 @@ model_from_api <- function(model = NULL,
                                   verbose = verbose,
                                   nonmem = nonmem,
                                   validation = validation,
+                                  int_step_size = def$simulation$int_step_size,
                                   ...)
     if(run_tests) {
       if(file.exists(tmp_file)) {

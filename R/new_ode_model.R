@@ -20,6 +20,7 @@
 #' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
 #' @param ruv residual variability, can optionally be added to library
 #' @param ltbs log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).
+#' @param int_step_size step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`
 #' @param default_parameters population or specific patient values, can optionally be added to library
 #' @param cpp_show_code show generated C++ code
 #' @param package package name when saving as package
@@ -51,6 +52,7 @@ new_ode_model <- function (model = NULL,
                            omega_matrix = NULL,
                            ruv = NULL,
                            ltbs = NULL,
+                           int_step_size = NULL,
                            default_parameters = NULL,
                            cpp_show_code = FALSE,
                            package = NULL,
@@ -261,6 +263,9 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "lagtime") <- lagtime
       attr(sim_out, "ltbs") <- ltbs
       attr(sim_out, "iov") <- iov
+      if(!is.null(int_step_size)) {
+        attr(sim_out, "int_step_size") <- int_step_size
+      }
       class(sim_out) <- c("PKPDsim", class(sim_out))
       return(sim_out)
     }
@@ -312,6 +317,7 @@ new_ode_model <- function (model = NULL,
       if(is.null(ltbs)) { ltbs <- FALSE }
       if(is.null(state_init)) { state_init <- "NULL" }
       if(is.null(nonmem)) { nonmem <- "NULL" }
+      if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
       vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
@@ -332,6 +338,7 @@ new_ode_model <- function (model = NULL,
                        "\\[USE_IOV\\]", as.character(use_iov),
                        "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
                        "\\[LTBS\\]", as.character(ltbs),
+                       "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
                        "\\[NONMEM\\]", as.character(nonmem)
       ), ncol=2, byrow=TRUE)
       if(verbose) {
