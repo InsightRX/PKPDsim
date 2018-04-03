@@ -122,6 +122,7 @@ model_from_api <- function(model = NULL,
     }
   }
   nonmem <- def$nonmem
+  mod <- NULL
   if(def$build || force) {
     if(verbose) {
       message("Compiling model.")
