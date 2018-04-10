@@ -130,6 +130,13 @@ new_ode_model <- function (model = NULL,
       size <- get_ode_model_size(code)
     }
 
+    ## IIV
+    if(!is.null(omega_matrix)) {
+       if(!is_positive_definite(omega_matrix)) {
+           stop("Specified omega matrix is not positive definite.")
+       }
+    }
+
     ## IOV
     use_iov <- FALSE
     if(!is.null(iov)) {
