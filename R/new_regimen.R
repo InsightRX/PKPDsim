@@ -68,12 +68,11 @@ new_regimen <- function(
     if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0 || is.na(t_inf))) {
       reg$t_inf = 1
     }
-    if(any(reg$t_inf == 0)) {
-      if(any(reg$type == "infusion")) {
-        message("Infusion time cannot be zero, changing to 1/60 instead.")
-      }
+    if(any(reg$t_inf[reg$type == "infusion"] == 0)) {
+      message("Infusion time cannot be zero, changing to 1/60 instead.")
       reg$t_inf[reg$t_inf == 0] <- 1/60
     }
+    if(any(reg$type %in% c("oral", "bolus"))) reg$t_inf <- NULL
   }
   if(ss) {
     if(is.null(amt) || is.null(interval)) {
