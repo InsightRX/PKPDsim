@@ -74,11 +74,16 @@ model_from_api <- function(model = NULL,
       stringr::str_replace_all("\\\\", "\\\\n")
     def <- jsonlite::fromJSON(lines)
     if(run_tests) {
-      test_txt <- readLines(paste0(url, "/tests/", model, ".R"))
-      tmp_file <- tempfile()
-      fileConn <- file(tmp_file)
-      writeLines(test_txt, fileConn)
-      close(fileConn)
+      test_file <- paste0(url, "/tests/", model, ".R")
+      if(file.exists(test_file)) {
+        test_txt <- readLines(test_file)
+        tmp_file <- tempfile()
+        fileConn <- file(tmp_file)
+        writeLines(test_txt, fileConn)
+        close(fileConn)
+      } else {
+        stop("Test file not found!")
+      }
     }
     validation <- NULL
     if(file.exists(paste0(url, "/validation/", model, ".json"))) {
@@ -122,6 +127,7 @@ model_from_api <- function(model = NULL,
     }
   }
   nonmem <- def$nonmem
+  mod <- NULL
   if(def$build || force) {
     if(verbose) {
       message("Compiling model.")
@@ -153,6 +159,7 @@ model_from_api <- function(model = NULL,
                                   verbose = verbose,
                                   nonmem = nonmem,
                                   validation = validation,
+                                  int_step_size = def$simulation$int_step_size,
                                   ...)
     if(run_tests) {
       if(file.exists(tmp_file)) {

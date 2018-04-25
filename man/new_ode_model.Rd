@@ -9,10 +9,10 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   parameters = NULL, units = NULL, size = NULL, lagtime = NULL,
   obs = list(cmt = 1, scale = 1), dose = list(cmt = 1), covariates = NULL,
   declare_variables = NULL, iiv = NULL, iov = NULL, omega_matrix = NULL,
-  ruv = NULL, ltbs = NULL, default_parameters = NULL,
-  cpp_show_code = FALSE, package = NULL, install = TRUE, folder = NULL,
-  lib_location = NULL, verbose = FALSE, as_is = FALSE, nonmem = NULL,
-  validation = NULL)
+  ruv = NULL, ltbs = NULL, int_step_size = NULL,
+  default_parameters = NULL, cpp_show_code = FALSE, package = NULL,
+  install = TRUE, folder = NULL, lib_location = NULL, verbose = FALSE,
+  as_is = FALSE, nonmem = NULL, validation = NULL)
 }
 \arguments{
 \item{model}{model name from model library}
@@ -54,6 +54,8 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{ruv}{residual variability, can optionally be added to library}
 
 \item{ltbs}{log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).}
+
+\item{int_step_size}{step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`}
 
 \item{default_parameters}{population or specific patient values, can optionally be added to library}
 
