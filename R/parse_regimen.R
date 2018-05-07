@@ -89,7 +89,7 @@ parse_regimen <- function(
                   evid = regimen$evid,
                   bioav = bioav,
                   rate = 0))
-  if(sum(regimen$t_inf > 0) > 0) {
+  if(sum(regimen$t_inf) > 0) {
     dos$rate[regimen$t_inf > 0] <- regimen$dose_amts[regimen$t_inf > 0] / regimen$t_inf[regimen$t_inf > 0]
   }
   if(any(regimen$type == "infusion")) {

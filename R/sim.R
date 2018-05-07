@@ -295,6 +295,8 @@ sim <- function (ode = NULL,
   if("regimen_multiple" %in% class(regimen) && !is.null(covariates_table)) {
     stop("Sorry, can't simulate multiple regimens for a population in single call to PKPDsim. Use a loop instead.")
   }
+  ## Overrie integrator step size if precision tied to model
+  int_step_size <- ifelse(!is.null(attr(ode, "int_step_size")), as.num(attr(ode, "int_step_size")), int_step_size)
   for (i in 1:n_ind) {
     p_i <- p
     if(!is.null(covariates_table)) {
