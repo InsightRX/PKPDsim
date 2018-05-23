@@ -31,6 +31,7 @@
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @param nonmem add nonmem code as attribute to model object
 #' @param validation path to JSON file with specs for numerical validation
+#' @param version number of library
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,
@@ -62,7 +63,8 @@ new_ode_model <- function (model = NULL,
                            verbose = FALSE,
                            as_is = FALSE,
                            nonmem = NULL,
-                           validation = NULL
+                           validation = NULL,
+                           version = "0.1.0"
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -378,6 +380,7 @@ new_ode_model <- function (model = NULL,
       search_replace_in_file(paste0(new_folder, "/R/parameters.R"), c("\\[PARAMETERS\\]", "\\[UNITS\\]"), c(default_parameters, units))
       search_replace_in_file(paste0(new_folder, "/R/ruv.R"), "\\[RUV\\]", ruv)
       search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[MODULE\\]", package)
+      search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[VERSION\\]", version)
       search_replace_in_file(paste0(new_folder, "/NAMESPACE"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)
       file.rename(paste0(new_folder, "/man/modulename-package.Rd"), paste0(new_folder, "/man/", package, ".Rd"))
@@ -400,8 +403,8 @@ new_ode_model <- function (model = NULL,
         system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source --pkglock ."))
       } else { # build to zip file
         system(paste0("R CMD build ."))
-        pkg_file <- paste0(new_folder, "/", package, "_1.0.tar.gz")
-        pkg_newfile <- paste0(curr, "/", package, "_PKPDsim.tar.gz")
+        pkg_file <- paste0(new_folder, "/", package, "_", version, ".tar.gz")
+        pkg_newfile <- paste0(curr, "/", package, "_", version, ".tar.gz")
         if(file.exists(pkg_file)) {
           file.copy(pkg_file, pkg_newfile)
           message(paste0("Package built in: ", pkg_newfile))

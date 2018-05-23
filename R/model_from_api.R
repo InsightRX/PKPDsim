@@ -160,6 +160,7 @@ model_from_api <- function(model = NULL,
                                   nonmem = nonmem,
                                   validation = validation,
                                   int_step_size = def$simulation$int_step_size,
+                                  version = ifelse(!is.null(def$version), def$version, "0.1.0"),
                                   ...)
     if(run_tests) {
       if(file.exists(tmp_file)) {

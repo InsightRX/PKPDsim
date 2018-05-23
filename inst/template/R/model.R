@@ -16,6 +16,7 @@ model <- function(mod = NULL) {
   attr(ret, "int_step_size") <- [INT_STEP_SIZE]
   attr(ret, "iov") <- list([IOV])
   attr(ret, "nonmem") <- "[NONMEM]"
+  attr(ret, "version") <- "[VERSION]"
   class(ret) <- c("PKPDsim", class(ret))
   return(ret)
 }
