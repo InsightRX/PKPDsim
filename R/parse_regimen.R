@@ -187,9 +187,9 @@ parse_regimen <- function(
     design <- design[!duplicated(paste0(design$t, "_", design$dose, "_", design$dum)),]
     # design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
   }
-  design <- design[order(design$t, design$type, design$dum),] %>%
-    dplyr::filter(t <= t_obs)
-
+  design <- design %>%
+    dplyr::arrange(t, type, dum) %>%
+    dplyr::filter(t <= max(t_obs))
   if(t_init != 0) { # add event line at t=0, to start integration
      design <- design[c(1, 1:nrow(design)),]
      design[1, 1:9] <- c(0, 0, 0, 0, 0, 0, 2, 0, 0)
