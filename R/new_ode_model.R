@@ -307,6 +307,7 @@ new_ode_model <- function (model = NULL,
       }
 
       ## Write new source file
+      # message(cmp$cpp)
       fileConn <- file(paste0(new_folder, "/src/sim_wrapper_cpp.cpp"))
       writeLines(cmp$cpp, fileConn)
       close(fileConn)
@@ -317,6 +318,7 @@ new_ode_model <- function (model = NULL,
       if(is.null(lagtime)) { lagtime <- "NULL" }
       if(is.null(obs$cmt)) { obs$cmt <- "1" }
       if(is.null(obs$scale)) { obs$scale <- "1" }
+      if(is.null(obs$variable)) { obs$variable <- "NULL" }
       if(is.null(dose$cmt)) { dose$cmt <- "1" }
       if(is.null(dose$bioav)) { dose$bioav <- "1" }
       if(class(dose$bioav) == "character") {
@@ -335,6 +337,7 @@ new_ode_model <- function (model = NULL,
                        "\\[OBS_COMP\\]", obs$cmt,
                        "\\[DOSE_COMP\\]", dose$cmt,
                        "\\[OBS_SCALE\\]", obs$scale,
+                       "\\[OBS_VARIABLE\\]", obs$variable,
                        "\\[DOSE_BIOAV\\]", dose$bioav,
                        "\\[CODE\\]", code,
                        "\\[PK_CODE\\]", pk_code,
