@@ -147,8 +147,10 @@ new_ode_model <- function (model = NULL,
       }
       # add parameters
       for(i in rev(seq(iov$cv))) {
-        if(!stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))) {
-          message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE code. Please see documentation for more info."))
+        test1 <- stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))
+        test2 <- stringr::str_detect(pk_code, paste0("kappa_", names(iov$cv)[i]))
+        if(!(test1 || test2)) {
+          message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE or PK code. Please see documentation for more info."))
         }
         txt <- paste0("    kappa_", names(iov$cv)[i], " = 1e-6;\ \n")
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), code)) > 0) {
@@ -318,7 +320,9 @@ new_ode_model <- function (model = NULL,
       if(is.null(lagtime)) { lagtime <- "NULL" }
       if(is.null(obs$cmt)) { obs$cmt <- "1" }
       if(is.null(obs$scale)) { obs$scale <- "1" }
-      if(is.null(obs$variable)) { obs$variable <- "NULL" }
+      if(is.null(obs$variable)) { obs$variable <- "NULL" } else {
+        obs$variable <- paste0('\\"', obs$variable, '\\"')
+      }
       if(is.null(dose$cmt)) { dose$cmt <- "1" }
       if(is.null(dose$bioav)) { dose$bioav <- "1" }
       if(class(dose$bioav) == "character") {
