@@ -330,7 +330,7 @@ new_ode_model <- function (model = NULL,
       }
       if(is.null(size)) { size <- "1" }
       if(is.null(ltbs)) { ltbs <- FALSE }
-      if(is.null(state_init)) { state_init <- "NULL" }
+      if(is.null(state_init)) { state_init <- "NULL" } else { state_init <- add_quotes(state_init)}
       if(is.null(nonmem)) { nonmem <- "NULL" }
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
