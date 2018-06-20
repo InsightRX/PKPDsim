@@ -126,7 +126,15 @@ model_from_api <- function(model = NULL,
       }
     }
   }
-  nonmem <- def$nonmem
+  nonmem <- NULL
+  if(!is.null(def$implementations$nonmem)) {
+    nonmem <- paste(readLines(paste0(url, "/models/nonmem/", def$implementations$nonmem)), collapse="\n")
+    # %>%
+    #   stringr::str_replace_all("'", "\"") %>%
+    #   stringr::str_replace_all("\\\\n", "\n") %>%
+    #   stringr::str_replace_all("\n", "") %>%
+    #   stringr::str_replace_all("\\\\", "\\\\n")
+  }
   mod <- NULL
   if(def$build || force) {
     if(verbose) {
