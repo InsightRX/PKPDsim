@@ -9,10 +9,11 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
   seed = NULL, sequence = NULL, n_ind = 1, regimen = NULL,
   covariates = NULL, covariates_table = NULL,
   covariates_implementation = list(), A_init = NULL, only_obs = FALSE,
-  obs_step_size = NULL, int_step_size = 0.1, t_max = NULL, t_obs = NULL,
-  t_tte = NULL, t_init = 0, duplicate_t_obs = FALSE, extra_t_obs = TRUE,
-  rtte = FALSE, checks = TRUE, verbose = FALSE, return_design = FALSE,
-  output_include = list(parameters = FALSE, covariates = FALSE), ...)
+  obs_step_size = NULL, int_step_size = 0.01, t_max = NULL,
+  t_obs = NULL, t_tte = NULL, t_init = 0, duplicate_t_obs = FALSE,
+  extra_t_obs = TRUE, rtte = FALSE, checks = TRUE, verbose = FALSE,
+  return_design = FALSE, output_include = list(parameters = FALSE,
+  covariates = FALSE), ...)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
