@@ -14,6 +14,9 @@
             pwd
             sudo chmod 777 ~/workspace
             cd ~/workspace
+            if [ -d "json2test" ]; then
+              sudo rm -R json2test
+            fi
             git clone git@github.com:InsightRX/json2test.git
             cd json2test
             R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
@@ -28,6 +31,9 @@
           echo 'building clinPK'
           sh """
             cd /$workspace
+            if [ -d "clinPK2" ]; then
+              sudo rm -R clinPK2
+            fi
             git clone git@github.com:InsightRX/clinPK2.git
             cd clinPK2
             R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
@@ -41,6 +47,10 @@
         steps {
           echo 'building PKPDsim'
           sh """
+          if [ -d "PKPDsim2" ]; then
+            sudo rm -R PKPDsim2
+          fi
+          git clone git@github.com:InsightRX/PKPDsim2.git
           cd PKPDsim2
           R CMD INSTALL . --library=/usr/lib/R/site-library ||  || { export STATUS=failed
           ./slack_notification.sh
