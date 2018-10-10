@@ -20,6 +20,7 @@
 #' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
 #' @param ruv residual variability, can optionally be added to library
 #' @param ltbs log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).
+#' @param int_step_size step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`
 #' @param default_parameters population or specific patient values, can optionally be added to library
 #' @param cpp_show_code show generated C++ code
 #' @param package package name when saving as package
@@ -30,6 +31,7 @@
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @param nonmem add nonmem code as attribute to model object
 #' @param validation path to JSON file with specs for numerical validation
+#' @param version number of library
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,
@@ -51,6 +53,7 @@ new_ode_model <- function (model = NULL,
                            omega_matrix = NULL,
                            ruv = NULL,
                            ltbs = NULL,
+                           int_step_size = NULL,
                            default_parameters = NULL,
                            cpp_show_code = FALSE,
                            package = NULL,
@@ -60,7 +63,8 @@ new_ode_model <- function (model = NULL,
                            verbose = FALSE,
                            as_is = FALSE,
                            nonmem = NULL,
-                           validation = NULL
+                           validation = NULL,
+                           version = "0.1.0"
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -128,6 +132,13 @@ new_ode_model <- function (model = NULL,
       size <- get_ode_model_size(code)
     }
 
+    ## IIV
+    if(!is.null(omega_matrix)) {
+       if(!is_positive_definite(omega_matrix)) {
+           stop("Specified omega matrix is not positive definite.")
+       }
+    }
+
     ## IOV
     use_iov <- FALSE
     if(!is.null(iov)) {
@@ -136,8 +147,10 @@ new_ode_model <- function (model = NULL,
       }
       # add parameters
       for(i in rev(seq(iov$cv))) {
-        if(!stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))) {
-          message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE code. Please see documentation for more info."))
+        test1 <- stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))
+        test2 <- stringr::str_detect(pk_code, paste0("kappa_", names(iov$cv)[i]))
+        if(!(test1 || test2)) {
+          message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE or PK code. Please see documentation for more info."))
         }
         txt <- paste0("    kappa_", names(iov$cv)[i], " = 1e-6;\ \n")
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), code)) > 0) {
@@ -261,6 +274,9 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "lagtime") <- lagtime
       attr(sim_out, "ltbs") <- ltbs
       attr(sim_out, "iov") <- iov
+      if(!is.null(int_step_size)) {
+        attr(sim_out, "int_step_size") <- int_step_size
+      }
       class(sim_out) <- c("PKPDsim", class(sim_out))
       return(sim_out)
     }
@@ -293,6 +309,7 @@ new_ode_model <- function (model = NULL,
       }
 
       ## Write new source file
+      # message(cmp$cpp)
       fileConn <- file(paste0(new_folder, "/src/sim_wrapper_cpp.cpp"))
       writeLines(cmp$cpp, fileConn)
       close(fileConn)
@@ -303,6 +320,9 @@ new_ode_model <- function (model = NULL,
       if(is.null(lagtime)) { lagtime <- "NULL" }
       if(is.null(obs$cmt)) { obs$cmt <- "1" }
       if(is.null(obs$scale)) { obs$scale <- "1" }
+      if(is.null(obs$variable)) { obs$variable <- "NULL" } else {
+        obs$variable <- paste0('\\"', obs$variable, '\\"')
+      }
       if(is.null(dose$cmt)) { dose$cmt <- "1" }
       if(is.null(dose$bioav)) { dose$bioav <- "1" }
       if(class(dose$bioav) == "character") {
@@ -310,8 +330,9 @@ new_ode_model <- function (model = NULL,
       }
       if(is.null(size)) { size <- "1" }
       if(is.null(ltbs)) { ltbs <- FALSE }
-      if(is.null(state_init)) { state_init <- "NULL" }
+      if(is.null(state_init)) { state_init <- "NULL" } else { state_init <- add_quotes(state_init)}
       if(is.null(nonmem)) { nonmem <- "NULL" }
+      if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
       vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
@@ -320,6 +341,7 @@ new_ode_model <- function (model = NULL,
                        "\\[OBS_COMP\\]", obs$cmt,
                        "\\[DOSE_COMP\\]", dose$cmt,
                        "\\[OBS_SCALE\\]", obs$scale,
+                       "\\[OBS_VARIABLE\\]", obs$variable,
                        "\\[DOSE_BIOAV\\]", dose$bioav,
                        "\\[CODE\\]", code,
                        "\\[PK_CODE\\]", pk_code,
@@ -332,6 +354,7 @@ new_ode_model <- function (model = NULL,
                        "\\[USE_IOV\\]", as.character(use_iov),
                        "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
                        "\\[LTBS\\]", as.character(ltbs),
+                       "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
                        "\\[NONMEM\\]", as.character(nonmem)
       ), ncol=2, byrow=TRUE)
       if(verbose) {
@@ -364,6 +387,7 @@ new_ode_model <- function (model = NULL,
       search_replace_in_file(paste0(new_folder, "/R/parameters.R"), c("\\[PARAMETERS\\]", "\\[UNITS\\]"), c(default_parameters, units))
       search_replace_in_file(paste0(new_folder, "/R/ruv.R"), "\\[RUV\\]", ruv)
       search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[MODULE\\]", package)
+      search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[VERSION\\]", version)
       search_replace_in_file(paste0(new_folder, "/NAMESPACE"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)
       file.rename(paste0(new_folder, "/man/modulename-package.Rd"), paste0(new_folder, "/man/", package, ".Rd"))
@@ -383,11 +407,11 @@ new_ode_model <- function (model = NULL,
         if(!is.null(lib_location)) {
           lib_location_arg <- paste0("--library=", lib_location)
         }
-        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source ."))
+        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source --pkglock ."))
       } else { # build to zip file
         system(paste0("R CMD build ."))
-        pkg_file <- paste0(new_folder, "/", package, "_1.0.tar.gz")
-        pkg_newfile <- paste0(curr, "/", package, "_PKPDsim.tar.gz")
+        pkg_file <- paste0(new_folder, "/", package, "_", version, ".tar.gz")
+        pkg_newfile <- paste0(curr, "/", package, "_", version, ".tar.gz")
         if(file.exists(pkg_file)) {
           file.copy(pkg_file, pkg_newfile)
           message(paste0("Package built in: ", pkg_newfile))

@@ -74,11 +74,16 @@ model_from_api <- function(model = NULL,
       stringr::str_replace_all("\\\\", "\\\\n")
     def <- jsonlite::fromJSON(lines)
     if(run_tests) {
-      test_txt <- readLines(paste0(url, "/tests/", model, ".R"))
-      tmp_file <- tempfile()
-      fileConn <- file(tmp_file)
-      writeLines(test_txt, fileConn)
-      close(fileConn)
+      test_file <- paste0(url, "/tests/", model, ".R")
+      if(file.exists(test_file)) {
+        test_txt <- readLines(test_file)
+        tmp_file <- tempfile()
+        fileConn <- file(tmp_file)
+        writeLines(test_txt, fileConn)
+        close(fileConn)
+      } else {
+        stop("Test file not found!")
+      }
     }
     validation <- NULL
     if(file.exists(paste0(url, "/validation/", model, ".json"))) {
@@ -97,7 +102,40 @@ model_from_api <- function(model = NULL,
   if(!def$build && !force) {
     message("Model not flagged for building, skipping compilation. Use `force`=TRUE to force build.")
   }
-  nonmem <- def$nonmem
+  if(!is.null(def$misc$init_parameter) && !is.null(def$misc$model_type)) {
+    ## Add a parameter and initialization code for setting the initial concentration based on a TDM value
+    if(def$misc$init_parameter) {
+      def$parameters$TDM_INIT <- 0
+      if(!is.null(def$state_init)) {
+        stop("Sorry, state init already specified. Cannot override for TDM-based initializiaton.")
+      }
+      if(! def$misc$model_type %in% c("1cmt_iv", "2cmt_iv")) {
+        stop("Sorry, TDM initialization not supported for this model type yet.")
+      } else {
+        if(def$misc$model_type == "1cmt_iv") {
+          def$state_init <- "\
+              A[0] = TDM_INIT * Vi;\
+          "
+        }
+        if(def$misc$model_type == "2cmt_iv") {
+          def$state_init <- "\
+              A[0] = TDM_INIT * Vi;\
+              A[1] = (Q/Vi)*(TDM_INIT * Vi) / (Q/V2i);\
+          "
+        }
+      }
+    }
+  }
+  nonmem <- NULL
+  if(!is.null(def$implementations$nonmem)) {
+    nonmem <- paste(readLines(paste0(url, "/models/nonmem/", def$implementations$nonmem)), collapse="\n")
+    # %>%
+    #   stringr::str_replace_all("'", "\"") %>%
+    #   stringr::str_replace_all("\\\\n", "\n") %>%
+    #   stringr::str_replace_all("\n", "") %>%
+    #   stringr::str_replace_all("\\\\", "\\\\n")
+  }
+  mod <- NULL
   if(def$build || force) {
     if(verbose) {
       message("Compiling model.")
@@ -129,6 +167,8 @@ model_from_api <- function(model = NULL,
                                   verbose = verbose,
                                   nonmem = nonmem,
                                   validation = validation,
+                                  int_step_size = def$simulation$int_step_size,
+                                  version = ifelse(!is.null(def$version), def$version, "0.1.0"),
                                   ...)
     if(run_tests) {
       if(file.exists(tmp_file)) {

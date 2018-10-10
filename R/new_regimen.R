@@ -68,12 +68,6 @@ new_regimen <- function(
     if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0 || is.na(t_inf))) {
       reg$t_inf = 1
     }
-    if(any(reg$t_inf == 0)) {
-      if(any(reg$type == "infusion")) {
-        message("Infusion time cannot be zero, changing to 1/60 instead.")
-      }
-      reg$t_inf[reg$t_inf == 0] <- 1/60
-    }
   }
   if(ss) {
     if(is.null(amt) || is.null(interval)) {
@@ -117,14 +111,24 @@ new_regimen <- function(
     reg$t_inf[rate != 0] <- reg$dose_amts[rate!=0] / rate[rate!=0]
   }
   if(length(reg$t_inf) != length(reg$dose_times)) {
-    reg$t_inf <- rep(reg$t_inf[1], reg$n)
+    reg$t_inf <- rep(reg$t_inf[1], length(reg$dose_times))
   }
-  if(length(reg$type) != reg$n) {
-    reg$type <- rep(reg$type[1], reg$n)
+  if(length(reg$type) != length(reg$dose_times)) {
+    reg$type <- rep(reg$type[1], length(reg$dose_times))
+  }
+  if(any(reg$type == "infusion")) {
+    if(any(reg$t_inf == 0)) {
+      reg$t_inf[reg$t_inf == 0] <- 1/60
+      reg$rate[reg$t_inf == 0] <- 60
+    }
   }
   if(any(reg$type == "bolus")) {
-    reg$t_inf[reg$type == "bolus"] <- NA
-    reg$rate[reg$type == "bolus"] <- NA
+    reg$t_inf[reg$type == "bolus"] <- 0
+    reg$rate[reg$type == "bolus"] <- 0
+  }
+  if(any(reg$type == "oral")) {
+    reg$t_inf[reg$type == "oral"] <- 0
+    reg$rate[reg$type == "oral"] <- 0
   }
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {
