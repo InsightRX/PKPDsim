@@ -2,7 +2,7 @@
 
   pipeline {
     agent {
-      label 'R-slave3'
+      label 'R-slave'
     }
     stages{
       stage('Dependencies - build json2test') {
@@ -17,7 +17,7 @@
             if [ -d "json2test" ]; then
               sudo rm -R json2test
             fi
-            git clone https://github.com/InsightRX/json2test.git
+            git clone git@github.com:InsightRX/json2test.git
 
             R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
             ./slack_notification.sh
@@ -34,7 +34,7 @@
             if [ -d "clinPK2" ]; then
               sudo rm -R clinPK2
             fi
-            git clone https://github.com/InsightRX/clinPK2.git
+            git clone git@github.com:InsightRX/clinPK2.git
 
             R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
             ./slack_notification.sh
