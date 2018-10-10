@@ -41,6 +41,7 @@
         steps {
           echo 'building PKPDsim'
           sh """
+          cd PKPDsim2
           R CMD INSTALL . --library=/usr/lib/R/site-library ||  || { export STATUS=failed
           ./slack_notification.sh
           exit 1
