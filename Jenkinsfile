@@ -14,6 +14,9 @@
             pwd
             sudo chmod 777 ~/workspace
             cd ~/workspace
+            cd json2test
+            git checkout master
+            git pull origin master
             R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
             ./slack_notification.sh
             exit 1
@@ -26,7 +29,8 @@
           echo 'building clinPK'
           sh """
             cd /$workspace
-
+            git checkout master
+            git pull origin master
             R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
             ./slack_notification.sh
             exit 1
