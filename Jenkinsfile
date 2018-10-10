@@ -52,11 +52,11 @@
           fi
           git clone git@github.com:InsightRX/PKPDsim2.git
           cd PKPDsim2
-          R CMD INSTALL . --library=/usr/lib/R/site-library ||  || { export STATUS=failed
+          R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
           ./slack_notification.sh
           exit 1
           }
-          R CMD check . --no-manual ||  || { export STATUS=failed
+          R CMD check . --no-manual || { export STATUS=failed
           ./slack_notification.sh
           exit 1
           }
