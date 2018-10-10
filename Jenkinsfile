@@ -2,7 +2,7 @@
 
   pipeline {
     agent {
-      label 'R-slave2'
+      label 'r-slave'
     }
     stages{
       stage('Dependencies - build json2test') {
