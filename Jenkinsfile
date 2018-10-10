@@ -9,9 +9,11 @@
         steps {
           echo 'building json2test'
           sh """
-            workspace=$(pwd)
-            sudo chmod 777 /$workspace
-            cd /$workspace
+            #!/bin/bash
+            set -ex
+            pwd
+            sudo chmod 777 ~/workspace
+            cd ~/workspace
             if [ -d "json2test" ]; then
               sudo rm -R json2test
             fi
