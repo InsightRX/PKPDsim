@@ -19,6 +19,7 @@
             fi
             git clone git@github.com:InsightRX/json2test.git
             cd json2test
+            chmod +x slack_notification.sh
             R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
             ./slack_notification.sh
             exit 1
@@ -36,6 +37,7 @@
             fi
             git clone git@github.com:InsightRX/clinPK2.git
             cd clinPK2
+            chmod +x slack_notification.sh
             R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
             ./slack_notification.sh
             exit 1
@@ -52,6 +54,10 @@
           fi
           git clone git@github.com:InsightRX/PKPDsim2.git
           cd PKPDsim2
+          git checkout $GIT_BRANCH
+          git pull origin $GIT_BRANCH
+
+          chmod +x slack_notification.sh
           R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
           ./slack_notification.sh
           exit 1
