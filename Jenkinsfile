@@ -55,6 +55,8 @@
           git clone git@github.com:InsightRX/PKPDsim2.git
           cd PKPDsim2
           git checkout $GIT_BRANCH
+          git pull origin $GIT_BRANCH
+
           chmod +x slack_notification.sh
           R CMD INSTALL . --library=/usr/lib/R/site-library || { export STATUS=failed
           ./slack_notification.sh
