@@ -46,7 +46,7 @@ void set_covariates(int i) {
   // insert covariates for integration period
 }
 
-void pk_code (int i, std::vector<double> times, std::vector<double> doses, double prv_dose, std::vector<int> dose_cmt, std::vector<int> dose_type, std::vector<double> iov_bin) {
+void pk_code (int i, std::vector<double> times, std::vector<double> doses, double prv_dose, std::vector<int> dose_cmt, std::vector<int> dose_type, Rcpp::NumericVector iov_bin) {
   // insert custom pk event code
 }
 

@@ -123,7 +123,7 @@ compile_sim_cpp <- function(
   pars <- paste0(pars, paste0("double rate[] = { ", paste(rep(0, size), collapse=", "), " };\n"))
   pars <- paste0(pars, "double bioav = 1;\n")
   if(!is.null(iov) && !is.null(iov$n_bins)) {
-    pars <- paste0(pars, paste0("std::vector<double> iov_bin(", (iov$n_bins+1) ,");\n"))
+    pars <- paste0(pars, paste0("Rcpp::NumericVector iov_bin(", (iov$n_bins+1) ,");\n"))
     par_def <- paste0('  for(int i = 0; i < (iov_bin.size()-1); i++) { iov_bin[i] = iov_bins[i]; };\n', par_def);
   }
   for(i in seq(p_def)) { # actual parameters for model
@@ -154,9 +154,9 @@ compile_sim_cpp <- function(
       ode_def_cpp <- paste0(
         paste0('    ', nam, ' = ', nam, '_0 + gr_', nam, ' * (t - t_prv_', nam, ');\n'),
         ode_def_cpp)
-      pars <- paste0(pars, paste0("std::vector<double> cov_", nam, ";\n"))
-      pars <- paste0(pars, paste0("std::vector<double> cov_t_", nam, ";\n"))
-      pars <- paste0(pars, paste0("std::vector<double> gradients_", nam, ";\n"))
+      pars <- paste0(pars, paste0("Rcpp::NumericVector cov_", nam, ";\n"))
+      pars <- paste0(pars, paste0("Rcpp::NumericVector cov_t_", nam, ";\n"))
+      pars <- paste0(pars, paste0("Rcpp::NumericVector gradients_", nam, ";\n"))
       cov_def <- paste0(cov_def, paste0('  cov_', nam, ' = design["cov_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  cov_t_', nam, ' = design["cov_t_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  gradients_', nam, ' = design["gradients_', nam,'"];\n'))
