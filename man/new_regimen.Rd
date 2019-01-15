@@ -5,8 +5,8 @@
 \title{Dose regimen for sim_ode}
 \usage{
 new_regimen(amt = 100, interval = NULL, n = 3, times = NULL,
-  type = NULL, t_inf = NULL, rate = NULL, t_lag = NULL, cmt = NULL,
-  checks = TRUE, ss = FALSE, n_ss = NULL,
+  type = NULL, t_inf = NULL, rate = NULL, t_lag = NULL,
+  cmt = NULL, checks = TRUE, ss = FALSE, n_ss = NULL,
   first_dose_time = lubridate::now())
 }
 \arguments{

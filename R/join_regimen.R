@@ -58,9 +58,14 @@ join_regimen <- function(
       return(joint)
     }
     if(!is.null(interval)) {
+      tmp2 <-  regimen2$dose_times + utils::tail(regimen1$dose_times,1) + interval
+      if(tmp2[1] == utils::tail(regimen1$dose_times,1)) {
+        tmp2[1] <- utils::tail(regimen1$dose_times,1) + 0.01
+        message("Dose for second regimen planned at same time as last dose in 1st regimen. Added 0.01 hrs to administration time of 1st dose of 2nd regimen to avoid simulation issues.")
+      }
       joint <- new_regimen(
         amt = c(regimen1$dose_amts, regimen2$dose_amts),
-        times = c(regimen1$dose_times, regimen2$dose_times + utils::tail(regimen1$dose_times,1) + interval),
+        times = c(regimen1$dose_times, tmp2),
         cmt = c(regimen1$cmt, regimen2$cmt),
         type = c(regimen1$type, regimen2$type),
         t_inf = c(regimen1$t_inf, regimen2$t_inf),

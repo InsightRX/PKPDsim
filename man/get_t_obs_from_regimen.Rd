@@ -4,8 +4,8 @@
 \alias{get_t_obs_from_regimen}
 \title{Extract sensible default observation times from a specified regimen}
 \usage{
-get_t_obs_from_regimen(regimen = NULL, obs_step_size = NULL, t_max = NULL,
-  covariates = NULL, extra_t_obs = NULL, t_init = 0)
+get_t_obs_from_regimen(regimen = NULL, obs_step_size = NULL,
+  t_max = NULL, covariates = NULL, extra_t_obs = NULL, t_init = 0)
 }
 \arguments{
 \item{regimen}{regimen created using `new_regimen()`}

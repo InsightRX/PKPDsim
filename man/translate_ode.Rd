@@ -4,7 +4,8 @@
 \alias{translate_ode}
 \title{Translate a model from/to various PKPD simulators}
 \usage{
-translate_ode(code, auto = TRUE, from = NULL, to = NULL, verbose = TRUE)
+translate_ode(code, auto = TRUE, from = NULL, to = NULL,
+  verbose = TRUE)
 }
 \arguments{
 \item{code}{character string with ODE code}
