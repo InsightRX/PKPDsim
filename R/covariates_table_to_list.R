@@ -10,7 +10,8 @@ covariates_table_to_list <- function(covariates_table, covariates_implementation
   names(covariates_table)[names(covariates_table) == "TIME"] <- "t" # NONMEM syntax
   names(covariates_table)[names(covariates_table) == "time"] <- "t"
   if(!"id" %in% names(covariates_table)) {
-    covariates_table$id <- 1:length(covariates_table)
+    covariates_table$id <- 1:nrow(covariates_table)
+    warning('No ID column provided; adding dummy IDs.')
   }
   if(!"t" %in% names(covariates_table)) {
     covariates_table$t <- 0
