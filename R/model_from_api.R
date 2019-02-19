@@ -120,7 +120,7 @@ model_from_api <- function(model = NULL,
         if(def$misc$model_type == "2cmt_iv") {
           def$state_init <- "\
               A[0] = TDM_INIT * Vi;\
-              A[1] = (Q/Vi)*(TDM_INIT * Vi) / (Q/V2i);\
+              A[1] = (Qi/Vi)*(TDM_INIT * Vi) / (Qi/V2i);\
           "
         }
       }
