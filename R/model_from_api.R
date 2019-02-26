@@ -82,7 +82,9 @@ model_from_api <- function(model = NULL,
         writeLines(test_txt, fileConn)
         close(fileConn)
       } else {
-        stop("Test file not found!")
+        if(def$build || force) {
+          stop(paste0("Test file (", test_file,") not found!"))
+        }
       }
     }
     validation <- NULL
