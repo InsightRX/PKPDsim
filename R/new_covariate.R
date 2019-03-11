@@ -57,17 +57,19 @@ new_covariate <- function(
       if(! (0 %in% new_times)) {
         # add zero time, and remove all t < 0
         if(any(new_times > 0)) { # add the interpolated obs before and after 0 as t=0
-          if(implementation == 'interpolate') {
-            new_times <- c(new_times, 0)
-            y1 <- utils::tail(new_values[new_times < 0],1)
-            y2 <- utils::head(new_values[new_times > 0],1)
-            t1 <- utils::tail(new_times[new_times < 0],1)
-            t2 <- utils::head(new_times[new_times > 0],1)
-            grad <-  (y2-y1) / (t2-t1)
-            new_values <- c(new_values, y1 + grad * (0-t1))
-          } else { # add the last obs before 0 as t=0
-            new_times <- c(new_times, 0)
-            new_values <- c(new_values, utils::tail(new_values[new_times < 0], 1))
+          if(class(new_values) %in% c("numeric", "integer")) {
+            if(implementation == 'interpolate') {
+              new_times <- c(new_times, 0)
+              y1 <- utils::tail(new_values[new_times < 0],1)
+              y2 <- utils::head(new_values[new_times > 0],1)
+              t1 <- utils::tail(new_times[new_times < 0],1)
+              t2 <- utils::head(new_times[new_times > 0],1)
+              grad <-  (y2-y1) / (t2-t1)
+              new_values <- c(new_values, y1 + grad * (0-t1))
+            } else { # add the last obs before 0 as t=0
+              new_times <- c(new_times, 0)
+              new_values <- c(new_values, utils::tail(new_values[new_times < 0], 1))
+            }
           }
         } else {
           new_times <- 0
