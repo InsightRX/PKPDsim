@@ -30,6 +30,7 @@ join_regimen <- function(
       regimen1$dose_amts <- c(regimen1$dose_amts[keep], regimen2$dose_amts)
       regimen1$t_inf <- c(regimen1$t_inf[keep], regimen2$t_inf)
       regimen1$interval <- regimen2$interval
+      regimen1$type <- c(regimen1$type, regimen2$type)
       return(regimen1)
     }
     if(!is.null(dose_update) && dose_update < 1) {
