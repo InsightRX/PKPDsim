@@ -102,7 +102,7 @@ model_from_api <- function(model = NULL,
     return(def)
   }
   if(!def$build && !force) {
-    message("Model not flagged for building, skipping compilation. Use `force`=TRUE to force build.")
+    message(paste0("Model ", model, " not flagged for building, skipping compilation. Use `force`=TRUE to force build."))
   }
   if(!is.null(def$misc$init_parameter) && !is.null(def$misc$model_type)) {
     ## Add a parameter and initialization code for setting the initial concentration based on a TDM value
