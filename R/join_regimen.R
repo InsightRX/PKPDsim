@@ -5,13 +5,15 @@
 #' @param interval interval between regimen1 and regimen2 (if dose_update not specified)
 #' @param dose_update dose number at which to override regimen1 with regimen 2 (if interval not specified)
 #' @param t_dose_update dose time from which to update regimen
+#' @param continuous for joining continuous infusions
 #' @export
 join_regimen <- function(
   regimen1 = NULL,
   regimen2 = NULL,
   interval = NULL,
   dose_update = NULL,
-  t_dose_update = NULL) {
+  t_dose_update = NULL, 
+  continuous = FALSE) {
   if(is.null(regimen1) && is.null(regimen2)) {
     stop("please specify two intervals to this function.")
   } else {
@@ -25,7 +27,7 @@ join_regimen <- function(
       stop("either interval or dose_update have to be specified as arguments")
     }
     if(!is.null(t_dose_update)) { # from a specific time
-      keep <- regimen1$dose_times < t_dose_update
+      keep <- (regimen1$dose_times + regimen1$t_inf) < t_dose_update
       regimen1$dose_times <- c(regimen1$dose_times[keep], regimen2$dose_times + t_dose_update)
       regimen1$dose_amts <- c(regimen1$dose_amts[keep], regimen2$dose_amts)
       regimen1$t_inf <- c(regimen1$t_inf[keep], regimen2$t_inf)
