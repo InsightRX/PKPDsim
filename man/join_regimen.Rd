@@ -5,7 +5,7 @@
 \title{Join two dosing regimens}
 \usage{
 join_regimen(regimen1 = NULL, regimen2 = NULL, interval = NULL,
-  dose_update = NULL, t_dose_update = NULL)
+  dose_update = NULL, t_dose_update = NULL, continuous = FALSE)
 }
 \arguments{
 \item{regimen1}{first regimen}
@@ -17,6 +17,8 @@ join_regimen(regimen1 = NULL, regimen2 = NULL, interval = NULL,
 \item{dose_update}{dose number at which to override regimen1 with regimen 2 (if interval not specified)}
 
 \item{t_dose_update}{dose time from which to update regimen}
+
+\item{continuous}{for joining continuous infusions}
 }
 \description{
 Join two dosing regimens
