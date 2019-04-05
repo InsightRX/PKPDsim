@@ -24,13 +24,15 @@ regimen_to_nm <- function(
     AMT = reg$dose_amts,
     EVID = 1,
     MDV = 1))
+  if(any(reg$type == "infusion")) {
+    dat$RATE <- reg$dose_amts / reg$t_inf
+  }
   if(!is.null(t_obs)) {
     obs <- data.frame(
       ID = rep(1:n_ind, each = length(t_obs)),
       TIME = rep(t_obs, n_ind))
     obs <- obs %>% dplyr::mutate("CMT" = obs_cmt, "DV" = 0, "AMT" = 0, "EVID" = 0, "MDV" = 0)
     if(any(reg$type == "infusion")) {
-      dat$RATE <- reg$dose_amts / reg$t_inf
       obs$RATE <- 0
     }
     dat <- dplyr::bind_rows(dat, obs)
