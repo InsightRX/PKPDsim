@@ -27,7 +27,11 @@ join_regimen <- function(
       stop("either interval or dose_update have to be specified as arguments")
     }
     if(!is.null(t_dose_update)) { # from a specific time
-      keep <- (regimen1$dose_times + regimen1$t_inf) < t_dose_update
+      if(!continuous) {
+        keep <- (regimen1$dose_times + regimen1$t_inf) < t_dose_update
+      } else {
+        keep <- regimen1$dose_times < t_dose_update
+      }
       regimen1$dose_times <- c(regimen1$dose_times[keep], regimen2$dose_times + t_dose_update)
       regimen1$dose_amts <- c(regimen1$dose_amts[keep], regimen2$dose_amts)
       regimen1$t_inf <- c(regimen1$t_inf[keep], regimen2$t_inf)
