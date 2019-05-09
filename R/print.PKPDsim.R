@@ -21,7 +21,16 @@ print.PKPDsim <- function(x, ...) {
     cat(paste0("Observation compartment: ", paste(attr(x, "obs")$cmt, collapse=", "), "\n"))
   }
   cat(paste0("Observation scaling: ", paste(attr(x, "obs")$scale, collapse=", "), "\n"))
-  cat(paste0("Lag time: ", attr(x, "lagtime")), "\n")
+  if(!is.null(attr(x, "lagtime"))) {
+    if(length(attr(x, "lagtime")) == 1) {
+      cat(paste0("Lag time: ", attr(x, "lagtime"), "\n"))
+
+    } else {
+      cat(paste0("Lag time: [ ", paste(attr(x, "lagtime"), collapse = ", "), " ]\n"))
+    }
+  } else {
+    cat("Lag time: none\n")
+  }
   if(!is.null(attr(x, "ltbs")) && attr(x, "ltbs")) cat(paste("Transform: LTBS", "\n"))
   if(!is.null(attr(x, "int_step_size"))) cat(paste("ODE step size:", attr(x, "int_step_size"), "\n"))
   if(!is.null(attr(x, "iov")) && !is.null(attr(x, "iov")$n_bins)) {
