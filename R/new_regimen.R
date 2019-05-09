@@ -144,5 +144,8 @@ new_regimen <- function(
   reg$dose_amts <- reg$dose_amts[!is.na(reg$dose_amts)]
   reg$amt <- NULL
   reg$first_dose_time <- first_dose_time
+  if(!is.null(t_lag)) {
+    reg$dose_times <- reg$dose_times + t_lag
+  }
   return(reg)
 }

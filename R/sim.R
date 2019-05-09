@@ -84,6 +84,7 @@ sim <- function (ode = NULL,
                  sequence = NULL,
                  n_ind = 1,
                  regimen = NULL,
+                 lagtime = NULL,
                  covariates = NULL,
                  covariates_table = NULL,
                  covariates_implementation = list(),
@@ -121,17 +122,13 @@ sim <- function (ode = NULL,
     t_ss <- 0
     regimen_orig <- regimen
   }
-  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime") != "undefined" && attr(ode, "lagtime") !=
-    "NULL") {
-    if(class(attr(ode, "lagtime")) %in% c("numeric", "integer")) {
-      regimen$dose_times <- regimen$dose_times + attr(ode, "lagtime")
+  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime") != "undefined" && attr(ode, "lagtime") != "NULL") {
+    if(is.null(lagtime)) { # only override from metadata if not specified by user
+      lagtime <- attr(ode, "lagtime")
     }
-    if(class(attr(ode, "lagtime")) %in% c("character")) {
-      if(is.null(parameters[[attr(ode, "lagtime")]])) {
-        stop(paste0("Lagtime parameter ",parameters[[attr(ode, "lagtime")]], " not specified!"))
-      }
-      regimen$dose_times <- regimen$dose_times + parameters[[attr(ode, "lagtime")]]
-    }
+  }
+  if(!is.null(lagtime)) {
+    regimen <- apply_lagtime(regimen, lagtime, parameters)
   }
   if(t_init != 0) regimen$dose_times <- regimen$dose_times + t_init
   comb <- list()

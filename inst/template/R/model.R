@@ -11,7 +11,7 @@ model <- function(mod = NULL) {
   attr(ret, "parameters") <- [PARS]
   attr(ret, "variables") <- [VARS]
   attr(ret, "covariates") <- [COVS]
-  attr(ret, "lagtime") <- "[LAGTIME]"
+  attr(ret, "lagtime") <- [LAGTIME]
   attr(ret, "ltbs") <- [LTBS]
   attr(ret, "int_step_size") <- [INT_STEP_SIZE]
   attr(ret, "iov") <- list([IOV])

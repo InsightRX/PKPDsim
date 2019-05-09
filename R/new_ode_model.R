@@ -317,7 +317,9 @@ new_ode_model <- function (model = NULL,
       ## Replace module name and other info
       if(is.null(pk_code)) { pk_code <- "" }
       if(is.null(dose_code)) { dose_code <- "" }
-      if(is.null(lagtime)) { lagtime <- "NULL" }
+      if(is.null(lagtime)) { lagtime <- "NULL" } else {
+        lagtime <- paste0("c(", paste(add_quotes(lagtime), collapse = ", "), ")")
+      }
       if(is.null(obs$cmt)) { obs$cmt <- "1" }
       if(is.null(obs$scale)) { obs$scale <- "1" }
       if(is.null(obs$variable)) { obs$variable <- "NULL" } else {
