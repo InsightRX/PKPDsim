@@ -15,9 +15,6 @@ apply_lagtime <- function(regimen, lagtime, parameters) {
     }
     if(class(lagtime) %in% c("character")) {
       if(length(lagtime) == 1) {
-        if(is.null(parameters[[attr(ode, "lagtime")]])) {
-          stop(paste0("Lagtime parameter ",parameters[[attr(ode, "lagtime")]], " not specified!"))
-        }
         regimen$dose_times <- regimen$dose_times + parameters[[lagtime]]
       } else {
         par_tmp <- parameters
