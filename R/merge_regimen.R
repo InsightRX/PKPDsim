@@ -10,7 +10,7 @@ merge_regimen <- function(regimens) {
   reg <- data.frame(regimens[[1]]) %>% dplyr::mutate(type = as.character(type))
   if(length(regimens) > 1) {
     for(i in 2:length(regimens)) {
-      reg <- bind_rows(reg, data.frame(regimens[[i]]) %>% dplyr::mutate(type = as.character(type)))
+      reg <- dplyr::bind_rows(reg, data.frame(regimens[[i]]) %>% dplyr::mutate(type = as.character(type)))
     }
   }
   reg <- reg %>% 
