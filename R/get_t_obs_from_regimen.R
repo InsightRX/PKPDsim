@@ -33,7 +33,7 @@ get_t_obs_from_regimen <- function(
       if(length(regimen$dose_times) == 1 && regimen$dose_times == 0) {
         t_obs <- seq(from=regimen$dose_times[1], to=24, by=obs_step_size)
       } else {
-        t_obs <- seq(from=-t_init, to=max(regimen$dose_times) + regimen$interval, by=obs_step_size)
+        t_obs <- seq(from=-t_init, to=max(regimen$dose_times) + tail(regimen$interval,1), by=obs_step_size)
       }
     }
     t_obs <- unique(c(t_obs, regimen$dose_times))
