@@ -111,7 +111,6 @@ sim <- function (ode = NULL,
   if(!is.null(seed)) {
     set.seed(seed)
   }
-  print("a")
   if(!is.null(regimen$ss_regimen)) { ## prepend the doses to get to steady state
     regimen_orig <- regimen
     regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
@@ -128,8 +127,6 @@ sim <- function (ode = NULL,
       lagtime <- attr(ode, "lagtime")
     }
   }
-  print(regimen)
-  print(lagtime)
   if(!is.null(lagtime)) {
     regimen <- apply_lagtime(regimen, lagtime, parameters)
   }
@@ -145,7 +142,6 @@ sim <- function (ode = NULL,
       ode <- get(ode)
     }
   }
-  print("e")
   if(checks) {
     ## test_pointer looks if the model is in memory, will throw error if needs to be recompiled.
     test_pointer(ode)
@@ -271,7 +267,6 @@ sim <- function (ode = NULL,
       etas <- t(matrix(etas))
     }
   }
-  print("a")
   if("regimen_multiple" %in% class(regimen)) {
     n_ind <- length(regimen)
   } else {
@@ -294,7 +289,6 @@ sim <- function (ode = NULL,
   }
   events <- c() # only for tte
   comb <- c()
-  print("b")
   if("regimen_multiple" %in% class(regimen) && !is.null(covariates_table)) {
     stop("Sorry, can't simulate multiple regimens for a population in single call to PKPDsim. Use a loop instead.")
   }
@@ -357,13 +351,11 @@ sim <- function (ode = NULL,
     }
 
     #################### Main call to ODE solver / analytical eq solver #######################
-    print("sim!")
     if(!is.null(ode)) {
       tmp <- ode(A_init, design_i, p_i, iov_bins, int_step_size)
     } else {
       tmp <- analytical_eqn_wrapper(analytical, design_i, p_i)
     }
-    print(tmp)
     #####################################################################
 
     des_out <- matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE)
