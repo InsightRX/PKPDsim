@@ -17,9 +17,11 @@ apply_lagtime <- function(regimen, lagtime, parameters) {
       if(length(lagtime) == 1) {
         regimen$dose_times <- regimen$dose_times + parameters[[lagtime]]
       } else {
-        par_tmp <- parameters
-        par_tmp[["0"]] <- 0
-        regimen$dose_times <- regimen$dose_times + as.numeric(unlist(par_tmp[lagtime[regimen$cmt]]))
+        if(!is.null(regimen$cmt)) {
+          par_tmp <- parameters
+          par_tmp[["0"]] <- 0
+          regimen$dose_times <- regimen$dose_times + as.numeric(unlist(par_tmp[lagtime[regimen$cmt]]))
+        }
       }
     }
     regimen <- regimen %>% data.frame() %>% dplyr::arrange(dose_times) 
