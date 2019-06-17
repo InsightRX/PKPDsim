@@ -31,9 +31,9 @@ new_covariate <- function(
   values <- value[srt]
   if(is.null(unit)) unit <- "undefined"
   if(length(unit) == 1) {
-    unit <- rep(unit, length(srt))
+    unit <- rep(as.character(unit), length(srt))
   } else {
-    unit <- unit[srt]
+    unit <- as.character(unit[srt])
   }
   if(implementation == "interpolate" && class(values) == "numeric" && !is.null(interpolation_join_limit) && interpolation_join_limit > 0) {
     new_times <- c()
