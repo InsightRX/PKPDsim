@@ -1,5 +1,5 @@
 #' @export
-parameters <- function(id = NULL) {
+parameters <- function() {
   par <- list(
     [PARAMETERS]
   )
