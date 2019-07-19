@@ -23,7 +23,7 @@ sim(ode = NULL, analytical = NULL, parameters = NULL,
 
 \item{parameters}{model parameters}
 
-\item{parameters_table}{data.frame of parameters (with parameters as columns) containing parameter estimates for individuals to simulate.}
+\item{parameters_table}{dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 

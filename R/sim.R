@@ -4,7 +4,7 @@
 #' @param ode function describing the ODE system
 #' @param analytical analytical equation (function)
 #' @param parameters model parameters
-#' @param parameters_table data.frame of parameters (with parameters as columns) containing parameter estimates for individuals to simulate.
+#' @param parameters_table dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
