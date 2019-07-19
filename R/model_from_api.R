@@ -40,6 +40,7 @@ model_from_api <- function(model = NULL,
     return(defs)
   }
   validation <- NULL
+  custom_parameters <- NULL
   if(github) {
     if(verbose) {
       message("Connecting to API at GitHub...")
@@ -87,9 +88,12 @@ model_from_api <- function(model = NULL,
         }
       }
     }
-    validation <- NULL
     if(file.exists(paste0(url, "/validation/", model, ".json"))) {
       validation <- paste0(url, "/validation/", model, ".json")
+    }
+    ## Parameter sets:
+    if(file.exists(paste0(url, "/parameters/", model, ".json"))) {
+      custom_parameters <- paste0(url, "/parameters/", model, ".json")
     }
   }
   if(verbose) {
@@ -169,6 +173,7 @@ model_from_api <- function(model = NULL,
                                   verbose = verbose,
                                   nonmem = nonmem,
                                   validation = validation,
+                                  custom_parameters = custom_parameters,
                                   int_step_size = def$simulation$int_step_size,
                                   version = ifelse(!is.null(def$version), def$version, "0.1.0"),
                                   ...)
