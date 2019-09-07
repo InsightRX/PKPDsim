@@ -316,10 +316,15 @@ sim <- function (ode = NULL,
     }
     t_obs <- round(t_obs + t_init, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
     if (!is.null(omega)) {
-      if (omega_type == "exponential") {
-        p_i[1:nrow(omega_mat)] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
-      } else {
-        p_i[1:nrow(omega_mat)] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])
+      if(length(omega_type) == 1) omega_type <- rep(omega_type, nrow(omega_mat))
+      n_om <- nrow(omega_mat)
+      if (any(omega_type == "exponential")) {
+        idx <- (omega_type == "exponential")[1:n_om]
+        p_i[(1:nrow(omega_mat))[idx]] <- (utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,])))[idx]
+      }
+      if(any(omega_type == "normal")) {
+        idx <- (omega_type == "normal")[1:n_om]
+        p_i[(1:nrow(omega_mat))[idx]] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])[idx]
       }
     }
     tmp <- c()
