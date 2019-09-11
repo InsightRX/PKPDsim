@@ -4,10 +4,10 @@
 \alias{sim}
 \title{Simulate ODE or analytical equation}
 \usage{
-sim(ode = NULL, analytical = NULL, parameters = list(),
-  omega = NULL, omega_type = "exponential", res_var = NULL,
-  iov_bins = NULL, seed = NULL, sequence = NULL, n_ind = 1,
-  regimen = NULL, lagtime = NULL, covariates = NULL,
+sim(ode = NULL, analytical = NULL, parameters = NULL,
+  parameters_table = NULL, omega = NULL, omega_type = "exponential",
+  res_var = NULL, iov_bins = NULL, seed = NULL, sequence = NULL,
+  n_ind = 1, regimen = NULL, lagtime = NULL, covariates = NULL,
   covariates_table = NULL, covariates_implementation = list(),
   A_init = NULL, only_obs = FALSE, obs_step_size = NULL,
   int_step_size = 0.01, t_max = NULL, t_obs = NULL, t_tte = NULL,
@@ -22,6 +22,8 @@ sim(ode = NULL, analytical = NULL, parameters = list(),
 \item{analytical}{analytical equation (function)}
 
 \item{parameters}{model parameters}
+
+\item{parameters_table}{dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 

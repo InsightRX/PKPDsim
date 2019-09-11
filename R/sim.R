@@ -4,6 +4,7 @@
 #' @param ode function describing the ODE system
 #' @param analytical analytical equation (function)
 #' @param parameters model parameters
+#' @param parameters_table dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
@@ -75,7 +76,8 @@
 #'}
 sim <- function (ode = NULL,
                  analytical = NULL,
-                 parameters = list(),
+                 parameters = NULL,
+                 parameters_table = NULL,
                  omega = NULL,
                  omega_type = "exponential",
                  res_var = NULL,
@@ -177,8 +179,11 @@ sim <- function (ode = NULL,
         }
       }
     }
-    if(is.null(ode) | is.null(parameters)) {
-      stop("Please specify at least the required arguments 'ode' and 'parameters'.")
+    if(!is.null(parameters) && !is.null(parameters_table)) {
+      stop("Both `parameters` and `parameters_table` are specified!")
+    }
+    if(is.null(ode) | (is.null(parameters) && is.null(parameters_table)) ) {
+      stop("Please specify at least the required arguments 'ode' and 'parameters' (or `parameters_table`).")
     }
     if(is.null(regimen)) {
       stop("Please specify a regimen created using the `new_regimen()` function.")
@@ -191,7 +196,7 @@ sim <- function (ode = NULL,
     }
     if(!is.null(covariates)) {
       if(!is.null(covariates_table)) {
-        stop("Both `covariates and `covariates_table` are specified!")
+        stop("Both `covariates` and `covariates_table` are specified!")
       }
       if(class(covariates) != "list") {
         stop("Covariates need to be specified as a list!")
@@ -205,6 +210,18 @@ sim <- function (ode = NULL,
         }
       }
     }
+    if(!is.null(parameters_table)) {
+      if(class(parameters_table) %in% c("data.frame", "data.table")) {
+        parameters_table <- table_to_list(parameters_table)
+      }
+      if(class(parameters_table) != "list") {
+        stop("Sorry, covariates for population seem to be misspecified. See manual for more information.")
+      }
+      if(length(parameters_table) != n_ind) {
+        n_ind <- length(parameters_table)
+      }
+      p <- parameters_table[[1]]
+    }
     if(!is.null(covariates_table)) {
       if(class(covariates_table) %in% c("data.frame", "data.table")) {
         covariates_table <- covariates_table_to_list(covariates_table, covariates_implementation)
@@ -215,13 +232,13 @@ sim <- function (ode = NULL,
       if(length(covariates_table) != n_ind) {
         n_ind <- length(covariates_table)
       }
-      message(paste0("Simulating ", n_ind, " individuals from covariate definitions."))
+      message(paste0("Simulating ", n_ind, " individuals."))
     }
     ## check parameters specified
     pars_ode <- attr(ode, "parameters")
     rates <- paste0("rate[", 0:(size-1), "]")
-    if(!all(pars_ode %in% c(names(parameters), rates))) {
-      m <- match(c(names(parameters), names(covariates)), pars_ode)
+    if(!all(pars_ode %in% c(names(p), rates))) {
+      m <- match(c(names(p), names(covariates)), pars_ode)
       if(length(m) == 0) {
         missing <- pars_ode
       } else {
@@ -301,6 +318,9 @@ sim <- function (ode = NULL,
       design_i <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]])
     } else {
       covariates_tmp <- covariates
+    }
+    if(!is.null(parameters_table)) {
+      parameters <- parameters_table[[i]]
     }
     if("regimen_multiple" %in% class(regimen)) {
       if(is.null(t_obs)) { # find reasonable default to output
@@ -411,7 +431,7 @@ sim <- function (ode = NULL,
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
       }
-      comb[((i-1)*l_mat)+(1:l_mat),1:length(dat_ind[1,])] <- dat_ind
+      comb[((i-1)*l_mat)+(1:l_mat), 1:length(dat_ind[1,])] <- dat_ind
     }
   }
 
