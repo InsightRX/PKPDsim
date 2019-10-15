@@ -32,6 +32,7 @@
 #' @param nonmem add nonmem code as attribute to model object
 #' @param validation path to JSON file with specs for numerical validation
 #' @param custom_parameters path to JSON file with specs for custom parameters
+#' @param comments comments for model
 #' @param version number of library
 #' @export
 new_ode_model <- function (model = NULL,
@@ -66,6 +67,7 @@ new_ode_model <- function (model = NULL,
                            nonmem = NULL,
                            validation = NULL,
                            custom_parameters = NULL,
+                           comments = NULL,
                            version = "0.1.0"
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
@@ -276,6 +278,7 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "lagtime") <- lagtime
       attr(sim_out, "ltbs") <- ltbs
       attr(sim_out, "iov") <- iov
+      attr(sim_out, "comments") <- comments
       if(!is.null(int_step_size)) {
         attr(sim_out, "int_step_size") <- int_step_size
       }
@@ -370,6 +373,7 @@ new_ode_model <- function (model = NULL,
                        "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
                        "\\[LTBS\\]", as.character(ltbs),
                        "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
+                       "\\[COMMENTS\\]", as.character(comments),
                        "\\[NONMEM\\]", as.character(nonmem)
       ), ncol=2, byrow=TRUE)
       if(verbose) {
