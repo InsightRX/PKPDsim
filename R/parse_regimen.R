@@ -23,15 +23,16 @@ parse_regimen <- function(
   if(length(regimen$t_inf) < length(regimen$dose_times)) {
     regimen$t_inf <- c(regimen$tinf, rep(utils::tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
   }
-  if(t_init != 0) {
-    t_obs <- c(0, t_obs + t_init)
-  }
   if(is.null(obs_type)) {
     obs_type <- rep(1, length(t_obs))
   } else {
     if(length(obs_type) != length(t_obs)) {
       stop("Length of `obs_type` vector is not equal to length of `t_obs`. Please fix input data.")
     }
+  }
+  if(t_init != 0) {
+    t_obs <- c(0, t_obs + t_init)
+    obs_type <- c(1, obs_type) # Temporary: assume pre-TDM is obs-type 1. Should be specified in argument?
   }
 
   dose_cmt <- 1
