@@ -207,7 +207,7 @@ parse_regimen <- function(
     suppressMessages(suppressWarnings(
       design <- design %>%
         dplyr::left_join(data.frame(cbind(t = t_obs, obs_type))) %>%
-        dplyr::mutate(obs_type = ifelse(is.na(obs_type), 0, obs_type))
+        dplyr::mutate(obs_type = ifelse(is.na(obs_type), 0, as.integer(obs_type)))
     ))
   }
   if(t_init != 0) { # add event line at t=0, to start integration

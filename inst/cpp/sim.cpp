@@ -57,7 +57,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert observation variable definition
   double t_start, t_end;
   std::vector<double> times, doses, dummy, rates;
-  std::vector<int> dose_cmt, dose_type, evid;
+  std::vector<int> dose_cmt, dose_type, evid, obs_type;
   // insert variable definitions
   times = as<std::vector<double> >(design["t"]);
   doses = as<std::vector<double> >(design["dose"]);
@@ -66,6 +66,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   rates = as<std::vector<double> >(design["rate"]);
   dose_cmt = as<std::vector<int> >(design["dose_cmt"]);
   dose_type = as<std::vector<int> >(design["type"]);
+  obs_type = as<std::vector<int> >(design["obs_type"]);
   int len = times.size();
   int start;
   memset(rate, 0, sizeof(rate));

@@ -401,8 +401,7 @@ sim <- function (ode = NULL,
       dat_ind <- rbind(dat_ind, dat_obs)
     }
 
-    ## Add obs_type, parameters, variables and/or covariates, if needed. Implementation is slow, can be improved.
-    dat_ind <- cbind(dat_ind, design_i$obs_type)
+    ## Add parameters, variables and/or covariates, if needed. Implementation is slow, can be improved.
     if(!is.null(output_include$parameters) && output_include$parameters) {
       dat_ind <- as.matrix(merge(dat_ind, p_i[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]))
     }
@@ -445,10 +444,12 @@ sim <- function (ode = NULL,
     par_names <- names(p_i)[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]
   }
   all_names <- unique(c(par_names, cov_names, var_names))
-  colnames(comb) <- c("id", "t", "comp", "y", "obs_type", all_names)
-  for(key in c("id", "t", "y", "obs_type", all_names)) {
+  colnames(comb) <- c("id", "t", "comp", "y", all_names)
+  for(key in c("id", "t", "y", all_names)) {
     comb[[key]] <- as.num(comb[[key]])
   }
+  comb <- comb %>%
+    dplyr::left_join(design_i[,c("t", "obs_type")], by = "t")
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]

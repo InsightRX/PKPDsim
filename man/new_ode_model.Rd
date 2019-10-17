@@ -14,7 +14,7 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
   cpp_show_code = FALSE, package = NULL, install = TRUE,
   folder = NULL, lib_location = NULL, verbose = FALSE,
   as_is = FALSE, nonmem = NULL, validation = NULL,
-  version = "0.1.0")
+  custom_parameters = NULL, comments = NULL, version = "0.1.0")
 }
 \arguments{
 \item{model}{model name from model library}
@@ -78,6 +78,10 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{nonmem}{add nonmem code as attribute to model object}
 
 \item{validation}{path to JSON file with specs for numerical validation}
+
+\item{custom_parameters}{path to JSON file with specs for custom parameters}
+
+\item{comments}{comments for model}
 
 \item{version}{number of library}
 }
