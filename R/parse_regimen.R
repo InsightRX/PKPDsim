@@ -7,18 +7,31 @@
 #' @param p parameters
 #' @param covariates covariates
 #' @param model model
+#' @param obs_type observation type
 #' @export
 parse_regimen <- function(
   regimen,
-  t_max = NULL, t_obs = NULL, t_tte = NULL,
+  t_max = NULL,
+  t_obs = NULL,
+  t_tte = NULL,
   t_init = 0,
-  p, covariates, model = NULL) {
+  p,
+  covariates,
+  model = NULL,
+  obs_type = NULL) {
 
   if(length(regimen$t_inf) < length(regimen$dose_times)) {
     regimen$t_inf <- c(regimen$tinf, rep(utils::tail(regimen$t_inf, 1), (length(regimen$dose_times) - length(regimen$t_inf))) )
   }
   if(t_init != 0) {
     t_obs <- c(0, t_obs + t_init)
+  }
+  if(is.null(obs_type)) {
+    obs_type <- rep(1, length(t_obs))
+  } else {
+    if(length(obs_type) != length(t_obs)) {
+      stop("Length of `obs_type` vector is not equal to length of `t_obs`. Please fix input data.")
+    }
   }
 
   dose_cmt <- 1
@@ -190,6 +203,13 @@ parse_regimen <- function(
   design <- design %>%
     dplyr::arrange(t, type, dum) %>%
     dplyr::filter(t <= max(t_obs))
+  if(!is.null(obs_type)) {
+    suppressMessages(suppressWarnings(
+      design <- design %>%
+        dplyr::left_join(data.frame(cbind(t = t_obs, obs_type))) %>%
+        dplyr::mutate(obs_type = ifelse(is.na(obs_type), 0, obs_type))
+    ))
+  }
   if(t_init != 0) { # add event line at t=0, to start integration
      design <- design[c(1, 1:nrow(design)),]
      design[1, 1:9] <- c(0, 0, 0, 0, 0, 0, 2, 0, 0)
