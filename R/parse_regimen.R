@@ -32,7 +32,11 @@ parse_regimen <- function(
   }
   if(t_init != 0) {
     t_obs <- c(0, t_obs + t_init)
-    obs_type <- c(1, obs_type) # Temporary: assume pre-TDM is obs-type 1. Should be specified in argument?
+    if(length(obs_type) > 0) {
+      obs_type <- c(as.numeric(sort(table(obs_type), decreasing=TRUE)[1]), obs_type) # Temporary: assume pre-TDM is most common observed type. Should be specified in argument ideally, but edge-case so leaving for now.
+    } else {
+      obs_type <- 1
+    }
   }
 
   dose_cmt <- 1
