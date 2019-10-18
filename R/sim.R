@@ -24,6 +24,7 @@
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
 #' @param t_init initialization time before first dose, default 0.
+#' @param obs_type vector of observation types. Only valid in combination with equal length vector `t_obs`.
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
 #' @param extra_t_obs include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.
 #' @param rtte should repeated events be allowed (FALSE by default)
@@ -98,6 +99,7 @@ sim <- function (ode = NULL,
                  t_obs = NULL,
                  t_tte = NULL,
                  t_init = 0,
+                 obs_type = NULL,
                  duplicate_t_obs = FALSE,
                  extra_t_obs = TRUE,
                  rtte = FALSE,
@@ -293,9 +295,9 @@ sim <- function (ode = NULL,
         covariates, extra_t_obs, t_init = t_init)
     }
     if(is.null(covariates_table)) {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, ode)
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
     } else {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], ode)
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], model = ode, obs_type = obs_type)
     }
     design_i <- design
     p$dose_times <- regimen$dose_times
@@ -443,10 +445,11 @@ sim <- function (ode = NULL,
   }
   all_names <- unique(c(par_names, cov_names, var_names))
   colnames(comb) <- c("id", "t", "comp", "y", all_names)
-  col_names <- c("id", "t", "y", all_names)
-  for(key in col_names) {
+  for(key in c("id", "t", "y", all_names)) {
     comb[[key]] <- as.num(comb[[key]])
   }
+  comb <- comb %>%
+    dplyr::left_join(design_i[,c("t", "obs_type")], by = "t")
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
@@ -457,9 +460,9 @@ sim <- function (ode = NULL,
   colnames(grid) <- c("t", "id", "comp")
   suppressWarnings(suppressMessages( ## left join is a bit too chatty
     if(!is.null(all_names) && length(all_names) > 0) {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", all_names)]
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", "obs_type", all_names)]
     } else {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y")]
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", "obs_type")]
     }
   ))
 
@@ -471,7 +474,10 @@ sim <- function (ode = NULL,
 
   ## add residual variability
   if(!is.null(res_var)) {
-    comb[comb$comp == 'obs',]$y <- add_ruv(comb[comb$comp == 'obs',]$y, res_var)
+    comb[comb$comp == 'obs',]$y <- add_ruv(
+      x = comb[comb$comp == 'obs',]$y,
+      ruv = res_var,
+      obs_type = comb[comb$comp == 'obs',]$obs_type)
   }
   comb$t <- comb$t - t_init
 

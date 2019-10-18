@@ -11,8 +11,8 @@ sim(ode = NULL, analytical = NULL, parameters = NULL,
   covariates_table = NULL, covariates_implementation = list(),
   A_init = NULL, only_obs = FALSE, obs_step_size = NULL,
   int_step_size = 0.01, t_max = NULL, t_obs = NULL, t_tte = NULL,
-  t_init = 0, duplicate_t_obs = FALSE, extra_t_obs = TRUE,
-  rtte = FALSE, checks = TRUE, verbose = FALSE,
+  t_init = 0, obs_type = NULL, duplicate_t_obs = FALSE,
+  extra_t_obs = TRUE, rtte = FALSE, checks = TRUE, verbose = FALSE,
   return_design = FALSE, output_include = list(parameters = FALSE,
   covariates = FALSE), ...)
 }
@@ -62,6 +62,8 @@ sim(ode = NULL, analytical = NULL, parameters = NULL,
 \item{t_tte}{vector of observation times for time-to-event simulation}
 
 \item{t_init}{initialization time before first dose, default 0.}
+
+\item{obs_type}{vector of observation types. Only valid in combination with equal length vector `t_obs`.}
 
 \item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 
