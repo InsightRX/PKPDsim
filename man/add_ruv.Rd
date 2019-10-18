@@ -4,7 +4,7 @@
 \alias{add_ruv}
 \title{Add residual variability to the dependent variable}
 \usage{
-add_ruv(x, ruv = list())
+add_ruv(x, ruv = list(), obs_type = 1)
 }
 \arguments{
 \item{x}{dependent value without residual variability}

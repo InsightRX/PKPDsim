@@ -4,6 +4,7 @@
 #' @param ode function describing the ODE system
 #' @param analytical analytical equation (function)
 #' @param parameters model parameters
+#' @param parameters_table dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
@@ -23,6 +24,7 @@
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
 #' @param t_init initialization time before first dose, default 0.
+#' @param obs_type vector of observation types. Only valid in combination with equal length vector `t_obs`.
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
 #' @param extra_t_obs include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.
 #' @param rtte should repeated events be allowed (FALSE by default)
@@ -75,7 +77,8 @@
 #'}
 sim <- function (ode = NULL,
                  analytical = NULL,
-                 parameters = list(),
+                 parameters = NULL,
+                 parameters_table = NULL,
                  omega = NULL,
                  omega_type = "exponential",
                  res_var = NULL,
@@ -96,6 +99,7 @@ sim <- function (ode = NULL,
                  t_obs = NULL,
                  t_tte = NULL,
                  t_init = 0,
+                 obs_type = NULL,
                  duplicate_t_obs = FALSE,
                  extra_t_obs = TRUE,
                  rtte = FALSE,
@@ -177,8 +181,11 @@ sim <- function (ode = NULL,
         }
       }
     }
-    if(is.null(ode) | is.null(parameters)) {
-      stop("Please specify at least the required arguments 'ode' and 'parameters'.")
+    if(!is.null(parameters) && !is.null(parameters_table)) {
+      stop("Both `parameters` and `parameters_table` are specified!")
+    }
+    if(is.null(ode) | (is.null(parameters) && is.null(parameters_table)) ) {
+      stop("Please specify at least the required arguments 'ode' and 'parameters' (or `parameters_table`).")
     }
     if(is.null(regimen)) {
       stop("Please specify a regimen created using the `new_regimen()` function.")
@@ -191,7 +198,7 @@ sim <- function (ode = NULL,
     }
     if(!is.null(covariates)) {
       if(!is.null(covariates_table)) {
-        stop("Both `covariates and `covariates_table` are specified!")
+        stop("Both `covariates` and `covariates_table` are specified!")
       }
       if(class(covariates) != "list") {
         stop("Covariates need to be specified as a list!")
@@ -205,6 +212,18 @@ sim <- function (ode = NULL,
         }
       }
     }
+    if(!is.null(parameters_table)) {
+      if(class(parameters_table) %in% c("data.frame", "data.table")) {
+        parameters_table <- table_to_list(parameters_table)
+      }
+      if(class(parameters_table) != "list") {
+        stop("Sorry, covariates for population seem to be misspecified. See manual for more information.")
+      }
+      if(length(parameters_table) != n_ind) {
+        n_ind <- length(parameters_table)
+      }
+      p <- parameters_table[[1]]
+    }
     if(!is.null(covariates_table)) {
       if(class(covariates_table) %in% c("data.frame", "data.table")) {
         covariates_table <- covariates_table_to_list(covariates_table, covariates_implementation)
@@ -215,13 +234,13 @@ sim <- function (ode = NULL,
       if(length(covariates_table) != n_ind) {
         n_ind <- length(covariates_table)
       }
-      message(paste0("Simulating ", n_ind, " individuals from covariate definitions."))
+      message(paste0("Simulating ", n_ind, " individuals."))
     }
     ## check parameters specified
     pars_ode <- attr(ode, "parameters")
     rates <- paste0("rate[", 0:(size-1), "]")
-    if(!all(pars_ode %in% c(names(parameters), rates))) {
-      m <- match(c(names(parameters), names(covariates)), pars_ode)
+    if(!all(pars_ode %in% c(names(p), rates))) {
+      m <- match(c(names(p), names(covariates)), pars_ode)
       if(length(m) == 0) {
         missing <- pars_ode
       } else {
@@ -276,9 +295,9 @@ sim <- function (ode = NULL,
         covariates, extra_t_obs, t_init = t_init)
     }
     if(is.null(covariates_table)) {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, ode)
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
     } else {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], ode)
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], model = ode, obs_type = obs_type)
     }
     design_i <- design
     p$dose_times <- regimen$dose_times
@@ -302,6 +321,9 @@ sim <- function (ode = NULL,
     } else {
       covariates_tmp <- covariates
     }
+    if(!is.null(parameters_table)) {
+      parameters <- parameters_table[[i]]
+    }
     if("regimen_multiple" %in% class(regimen)) {
       if(is.null(t_obs)) { # find reasonable default to output
         t_obs <- get_t_obs_from_regimen(
@@ -316,8 +338,14 @@ sim <- function (ode = NULL,
     }
     t_obs <- round(t_obs + t_init, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
     if (!is.null(omega)) {
-      if(length(omega_type) == 1) omega_type <- rep(omega_type, nrow(omega_mat))
       n_om <- nrow(omega_mat)
+      if(length(omega_type) == 1) {
+        omega_type <- rep(omega_type, n_om)
+      } else {
+        if(length(omega_type) != n_om) {
+          warning("Length of `omega_type` vector is not equal to expected number of omega's. This could lead to errors or unexpected results.")
+        }
+      }
       if (any(omega_type == "exponential")) {
         idx <- (omega_type == "exponential")[1:n_om]
         p_i[(1:nrow(omega_mat))[idx]] <- (utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,])))[idx]
@@ -416,7 +444,7 @@ sim <- function (ode = NULL,
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
       }
-      comb[((i-1)*l_mat)+(1:l_mat),1:length(dat_ind[1,])] <- dat_ind
+      comb[((i-1)*l_mat)+(1:l_mat), 1:length(dat_ind[1,])] <- dat_ind
     }
   }
 
@@ -428,10 +456,11 @@ sim <- function (ode = NULL,
   }
   all_names <- unique(c(par_names, cov_names, var_names))
   colnames(comb) <- c("id", "t", "comp", "y", all_names)
-  col_names <- c("id", "t", "y", all_names)
-  for(key in col_names) {
+  for(key in c("id", "t", "y", all_names)) {
     comb[[key]] <- as.num(comb[[key]])
   }
+  comb <- comb %>%
+    dplyr::left_join(design_i[,c("t", "obs_type")], by = "t")
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
@@ -442,9 +471,9 @@ sim <- function (ode = NULL,
   colnames(grid) <- c("t", "id", "comp")
   suppressWarnings(suppressMessages( ## left join is a bit too chatty
     if(!is.null(all_names) && length(all_names) > 0) {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", all_names)]
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", "obs_type", all_names)]
     } else {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y")]
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", "obs_type")]
     }
   ))
 
@@ -456,7 +485,10 @@ sim <- function (ode = NULL,
 
   ## add residual variability
   if(!is.null(res_var)) {
-    comb[comb$comp == 'obs',]$y <- add_ruv(comb[comb$comp == 'obs',]$y, res_var)
+    comb[comb$comp == 'obs',]$y <- add_ruv(
+      x = comb[comb$comp == 'obs',]$y,
+      ruv = res_var,
+      obs_type = comb[comb$comp == 'obs',]$obs_type)
   }
   comb$t <- comb$t - t_init
 

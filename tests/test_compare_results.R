@@ -36,15 +36,15 @@ pk1cmt_oral_code <- new_ode_model(code = "
 
 res <- list()
 res$pk1cmt_oral_lib <- sim_ode(
-  ode=pk1cmt_oral_lib,
-  par=p,
-  regimen=regimen,
+  ode = pk1cmt_oral_lib,
+  parameters = p,
+  regimen = regimen,
   t_obs = t_obs,
   int_step_size = 0.1,
   duplicate_t_obs = TRUE,
   only_obs=TRUE)
 res$pk1cmt_oral_code <- sim_ode(ode = pk1cmt_oral_code,
-                                par=p,
+                                parameters=p,
                                 duplicate_t_obs = TRUE,
                                 regimen=regimen,
                                 t_obs=t_obs,
@@ -65,7 +65,7 @@ regimen_mult <- new_regimen(amt=rep(12.8, 3),
 pk1cmt_iv <- new_ode_model("pk_1cmt_iv")
 t_obs <- c(11.916, 14.000, 16.000, 17.000, 30)
 tmp <- sim_ode(ode = pk1cmt_iv,
-                          par = list(CL = 5, V = 50),
+                          parameters = list(CL = 5, V = 50),
                           regimen = regimen_mult,
                           # int_step_size = 1,
                           t_obs = t_obs,
@@ -79,7 +79,7 @@ sujdos<-320
 param<-list(KA=1.8, V=30, CL=1.7)
 pk1 <- new_ode_model("pk_1cmt_oral")
 regim<-new_regimen(amt=sujdos, times=c(0,12), type= "bolus")
-out<-sim_ode(ode="pk1", par=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
+out<-sim_ode(ode="pk1", parameters=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
 assert("all requested observations in ouput",
        out$t == xtim)
 
@@ -103,7 +103,7 @@ pk  <- new_ode_model(code = "
 r <- new_regimen(amt = 100, times = c(0), type = "infusion")
 dat <- sim_ode (ode = "pk", n_ind = 1,
                 omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
-                par = p, regimen = r,
+                parameters = p, regimen = r,
                 verbose = FALSE, t_max=48)
 assert("dose in comp 2", sum(dat[dat$comp == 1,]$y) == 0 && sum(dat[dat$comp == 2,]$y) > 0)
 
@@ -113,7 +113,7 @@ r <- new_regimen(amt = c(100, 100, 100),
                  cmt = c(1,2,3),
                  type = "bolus")
 dat2 <- sim_ode (ode = "pk", n_ind = 1,
-                par = p, regimen = r,
+                parameters = p, regimen = r,
                 t_obs = seq(from=0, to=20, by = .1),
                 verbose = FALSE, t_max=48)
 assert("dose in comp 2 and 3 as well", max(diff(dat2[dat2$comp == 2,]$y)) > 95 && max(diff(dat2[dat2$comp == 2,]$y)) > 95)
@@ -125,7 +125,7 @@ r <- new_regimen(amt = c(100, 100, 100),
                  cmt = c(1,2,3), t_inf = 3,
                  type = "infusion")
 dat3 <- sim_ode (ode = "pk", n_ind = 1,
-                 par = p, regimen = r,
+                 parameters = p, regimen = r,
                  t_obs = seq(from=0, to=20, by = .1),
                  verbose = FALSE, t_max=48)
 assert("dose in comp 2 and 3 as well", ((max(dat3[dat3$comp == 2,]$y)-142.4)/142.4 < 0.01) && ((max(dat3[dat3$comp == 3,]$y)-157.2)/157.2) < 0.01)
@@ -139,7 +139,7 @@ r <- new_regimen(amt = c(100, 100, 100, 100),
                  type = c("bolus", "bolus", "infusion", "infusion"))
 dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
                 omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
-                par = p, regimen = r,
+                parameters = p, regimen = r,
                 t_obs = c(1,2,3,4,4,4,6),
                 duplicate_t_obs = T,
                 only_obs = F)
@@ -166,7 +166,7 @@ testit::assert("infusion ends properly", all(pksim$y < 1000))
 t_obs <- seq(from=0, to = 24, by = .1)
 dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
                 omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
-                par = p, regimen = r,
+                parameters = p, regimen = r,
                 t_obs = t_obs,
                 only_obs = T)
 assert("custom t_obs works", mean(diff(t_obs)) == mean(diff(dat$t)))
