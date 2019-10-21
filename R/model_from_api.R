@@ -141,6 +141,7 @@ model_from_api <- function(model = NULL,
     #   stringr::str_replace_all("\n", "") %>%
     #   stringr::str_replace_all("\\\\", "\\\\n")
   }
+  if(is.null(def$comments)) def$comments <- ""
   mod <- NULL
   if(def$build || force) {
     if(verbose) {
