@@ -278,7 +278,7 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "lagtime") <- lagtime
       attr(sim_out, "ltbs") <- ltbs
       attr(sim_out, "iov") <- iov
-      attr(sim_out, "comments") <- comments
+      attr(sim_out, "comments") <- paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n")))
       if(!is.null(int_step_size)) {
         attr(sim_out, "int_step_size") <- int_step_size
       }
@@ -373,7 +373,7 @@ new_ode_model <- function (model = NULL,
                        "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
                        "\\[LTBS\\]", as.character(ltbs),
                        "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
-                       "\\[COMMENTS\\]", as.character(comments),
+                       "\\[COMMENTS\\]", paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n"))),
                        "\\[NONMEM\\]", as.character(nonmem)
       ), ncol=2, byrow=TRUE)
       if(verbose) {
