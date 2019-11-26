@@ -5,8 +5,14 @@
 \title{Simulate analytical PK equations
 WORK IN PROGRESS!!!}
 \usage{
-sim_ae(model = "pk_1cmt_iv", parameters, regimen, cov_model = NULL,
-  covariates = NULL, t_obs = NULL)
+sim_ae(
+  model = "pk_1cmt_iv",
+  parameters,
+  regimen,
+  cov_model = NULL,
+  covariates = NULL,
+  t_obs = NULL
+)
 }
 \arguments{
 \item{model}{model, choose from `pk_1cmt_iv`, `pk_1cmt_oral`, `pk_2cmt_iv`, `pk_2cmt_oral`.}

@@ -4,9 +4,14 @@
 \alias{nlmixr_parse_parameters}
 \title{Function to parse parameters for a model into a structure used by nlmixr}
 \usage{
-nlmixr_parse_parameters(parameters = list(CL = 5, V = 50),
-  omega = c(0.1, 0.05, 0.1), res_var = list(prop = 0.1, add = 1),
-  fixed = c(), log_transform = TRUE, ...)
+nlmixr_parse_parameters(
+  parameters = list(CL = 5, V = 50),
+  omega = c(0.1, 0.05, 0.1),
+  res_var = list(prop = 0.1, add = 1),
+  fixed = c(),
+  log_transform = TRUE,
+  ...
+)
 }
 \arguments{
 \item{parameters}{list of parameters}
