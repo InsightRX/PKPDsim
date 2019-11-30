@@ -4,8 +4,14 @@
 \alias{join_regimen}
 \title{Join two dosing regimens}
 \usage{
-join_regimen(regimen1 = NULL, regimen2 = NULL, interval = NULL,
-  dose_update = NULL, t_dose_update = NULL, continuous = FALSE)
+join_regimen(
+  regimen1 = NULL,
+  regimen2 = NULL,
+  interval = NULL,
+  dose_update = NULL,
+  t_dose_update = NULL,
+  continuous = FALSE
+)
 }
 \arguments{
 \item{regimen1}{first regimen}

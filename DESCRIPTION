@@ -13,4 +13,4 @@ Description: Simulate dose regimens for PKPD models described by DE
 License: MIT + file LICENSE
 LazyData: TRUE
 Suggests: testit
-RoxygenNote: 6.1.0
+RoxygenNote: 7.0.1

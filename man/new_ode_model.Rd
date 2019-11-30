@@ -4,17 +4,42 @@
 \alias{new_ode_model}
 \title{Create new ODE model}
 \usage{
-new_ode_model(model = NULL, code = NULL, pk_code = NULL,
-  dose_code = NULL, file = NULL, func = NULL, state_init = NULL,
-  parameters = NULL, units = NULL, size = NULL, lagtime = NULL,
-  obs = list(cmt = 1, scale = 1), dose = list(cmt = 1),
-  covariates = NULL, declare_variables = NULL, iiv = NULL,
-  iov = NULL, omega_matrix = NULL, ruv = NULL, ltbs = NULL,
-  int_step_size = NULL, default_parameters = NULL,
-  cpp_show_code = FALSE, package = NULL, install = TRUE,
-  folder = NULL, lib_location = NULL, verbose = FALSE,
-  as_is = FALSE, nonmem = NULL, validation = NULL,
-  custom_parameters = NULL, comments = NULL, version = "0.1.0")
+new_ode_model(
+  model = NULL,
+  code = NULL,
+  pk_code = NULL,
+  dose_code = NULL,
+  file = NULL,
+  func = NULL,
+  state_init = NULL,
+  parameters = NULL,
+  units = NULL,
+  size = NULL,
+  lagtime = NULL,
+  obs = list(cmt = 1, scale = 1),
+  dose = list(cmt = 1),
+  covariates = NULL,
+  declare_variables = NULL,
+  iiv = NULL,
+  iov = NULL,
+  omega_matrix = NULL,
+  ruv = NULL,
+  ltbs = NULL,
+  int_step_size = NULL,
+  default_parameters = NULL,
+  cpp_show_code = FALSE,
+  package = NULL,
+  install = TRUE,
+  folder = NULL,
+  lib_location = NULL,
+  verbose = FALSE,
+  as_is = FALSE,
+  nonmem = NULL,
+  validation = NULL,
+  custom_parameters = NULL,
+  comments = NULL,
+  version = "0.1.0"
+)
 }
 \arguments{
 \item{model}{model name from model library}
