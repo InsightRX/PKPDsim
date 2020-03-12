@@ -24,7 +24,5 @@ apply_lagtime <- function(regimen, lagtime, parameters) {
         }
       }
     }
-    regimen <- regimen %>% data.frame() %>% dplyr::arrange(dose_times) 
-    class(regimen) <- c("regimen", "list")
     return(regimen)
 }
