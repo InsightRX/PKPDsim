@@ -125,7 +125,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     for (int k = 0; k < n_comp; k++) {
       Aupd[k] = tail[k];
     }
-    for( int k = start; k < tmp.y.size(); k++) {
+    for (int k = start; k < tmp.y.size(); k++) {
       // insert time-dependent covariates scale
       // insert scale definition for observation
       // insert saving observations to obs object(s)

@@ -206,6 +206,7 @@ compile_sim_cpp <- function(
       cpp_code[idx13] <- paste0('  comb["obs"] = obs;\n');
       cpp_code[idx14] <- "  std::vector<double> obs;"
     } else {
+      if(is.null(obs$cmt)) obs$cmt <- 1
       for(k in 1:length(obs$cmt)) {
         cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale", k," = ", obs$scale[k], ";")
         cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale", k," = ", obs$scale[k], ";")
@@ -215,8 +216,20 @@ compile_sim_cpp <- function(
         cpp_code[idx14] <- paste0(cpp_code[idx14], "\n  std::vector<double> obs",k,";")
       }
     }
-    if(!is.null(obs$variable)) {
-      cpp_code[idx12] <- paste0("      obs.insert(obs.end(), ", obs$variable,"/", obs$scale,");")
+    if(!is.null(obs$variable) && length(obs$variable) > 0) {
+      tmp <- c()
+      if(length(obs$variable) == 1) {
+        tmp <- paste0("      obs.insert(obs.end(), ", obs$variable, "/", obs$scale,"); ")
+      } else {
+        if(length(obs$scale) < length(obs$variable)) {
+          obs$scale <- rep(obs$scale[1], length(obs$variable))
+        }
+        for(k in 1:length(obs$variable)) {
+          tmp <- c(tmp, paste0("      if (obs_type[i+1]==", k, ") { obs.insert(obs.end(), ", obs$variable[k], "/", obs$scale[k], "); } else "))
+        }
+        tmp <- c(tmp, paste0("        { obs.insert(obs.end(), ", obs$variable[1], "/", obs$scale[1], "); }")) # make sure something is pushed on obs stack
+      }
+      cpp_code[idx12] <- paste0(tmp, collapse = "\n")
     }
   }
   if(!is.null(variables)) {
