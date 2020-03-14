@@ -42,8 +42,8 @@ data2 <- sim(ode = pk1,
             output_include = list("variables" = TRUE),
             res_var = ruv_multi)
 y <- diag(as.matrix(data2[1:5,5+obs_type]))
-testit::assert("y taken from correct variables", all(data2$y[-4] == y[-4])) # obs_type 1 and 2 get no residual error
-testit::assert("y taken from correct variables", data2$y[-4][4] != y[4]) # obs_type3 gets residual error
+testit::assert("obs_type 1 and 2 get no residual error", all(data2$y[-4] == y[-4])) 
+testit::assert("only obs_type 3 gets residual error", data2$y[-4][4] != y[4]) 
 
 ## check that residual error correctly applied to right var
 set.seed(12345)
@@ -58,6 +58,6 @@ data3 <- sim(ode = pk1,
              output_include = list("variables" = TRUE),
              res_var = ruv_multi)
 y <- diag(as.matrix(data3[1:5,5+obs_type]))
-testit::assert("y taken from correct variables", all(data3$y[-c(1,3,5)] == y[-c(1,3,5)])) # obs_type 1 and 2 get no residual error
-testit::assert("y taken from correct variables", data3$y[c(1,3,5)] != y[c(1,3,5)]) # obs_type3 gets residual error
+testit::assert("obs_type 2 and 3 get no residual error", all(data3$y[-c(1,3,5)] == y[-c(1,3,5)])) 
+testit::assert("obs_type 1 gets residual error", data3$y[c(1,3,5)] != y[c(1,3,5)])
 
