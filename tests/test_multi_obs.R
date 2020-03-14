@@ -8,7 +8,7 @@ vars <- c("CONC", "METAB", "METAB2")
 pk1 <- new_ode_model(code = "dAdt[1] = -(CL/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t;",
                      obs = list(variable = vars, scale = 1),
                      declare_variables = vars,
-                     cpp_show_code = T)
+                     cpp_show_code = F)
 
 regimen  <- new_regimen(amt = 100, interval = 12, n = 5, type="infusion", t_inf = 1)
 parameters   <- list("CL" = 15, "V" = 150)
