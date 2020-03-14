@@ -217,16 +217,13 @@ compile_sim_cpp <- function(
       }
     }
     if(!is.null(obs$variable) && length(obs$variable) > 0) {
-      tmp <- c()
       if(length(obs$variable) == 1) {
         tmp <- paste0("      obs.insert(obs.end(), ", obs$variable, "/", obs$scale,"); ")
       } else {
         if(length(obs$scale) < length(obs$variable)) {
           obs$scale <- rep(obs$scale[1], length(obs$variable))
         }
-        for(k in 1:length(obs$variable)) {
-          tmp <- c(tmp, paste0("      if (obs_type[i+1]==", k, ") { obs.insert(obs.end(), ", obs$variable[k], "/", obs$scale[k], "); } else "))
-        }
+        tmp <- paste0("      if (obs_type[i+1]==", 1:length(obs$variable), ") { obs.insert(obs.end(), ", obs$variable, "/", obs$scale, "); } else ")
         tmp <- c(tmp, paste0("        { obs.insert(obs.end(), ", obs$variable[1], "/", obs$scale[1], "); }")) # make sure something is pushed on obs stack
       }
       cpp_code[idx12] <- paste0(tmp, collapse = "\n")
