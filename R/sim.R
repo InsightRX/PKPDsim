@@ -294,6 +294,9 @@ sim <- function (ode = NULL,
         regimen, obs_step_size, t_max,
         covariates, extra_t_obs, t_init = t_init)
     }
+    if(is.null(obs_type)) {
+      obs_type <- rep(1, length(t_obs))
+    }
     if(is.null(covariates_table)) {
       design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
     } else {
@@ -329,6 +332,9 @@ sim <- function (ode = NULL,
         t_obs <- get_t_obs_from_regimen(
           regimen[[i]], obs_step_size, t_max,
           covariates, extra_t_obs)
+      }
+      if(is.null(obs_type)) {
+        obs_type <- rep(1, length(t_obs))
       }
       design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_tmp)
       if("regimen_multiple" %in% class(regimen)) {
@@ -379,6 +385,7 @@ sim <- function (ode = NULL,
         int_step_size = int_step_size,
         t_obs = t_obs,
         t_obs_orig = t_obs_orig,
+        obs_type = obs_type,
         iov_bins = iov_bins
       ))
     }
@@ -398,16 +405,16 @@ sim <- function (ode = NULL,
     if(!is.null(obs) && length(obs$cmt) > 1) {
       for(j in 1:length(obs$cmt)) {
         lab <- ifelse(!is.null(obs$label[j]), obs$label[j], paste0("obs",j))
-        dat_obs <- rbind(dat_obs, cbind(id=i, t=tmp$time, comp=lab, y=unlist(tmp[[paste0("obs",j)]])))
+        dat_obs <- rbind(dat_obs, cbind(id=i, t=tmp$time, comp=lab, y=unlist(tmp[[paste0("obs",j)]]), obs_type = tmp$obs_type))
       }
     } else {
-      dat_obs <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs))
+      dat_obs <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs), obs_type = tmp$obs_type)
     }
     if(only_obs || !is.null(analytical)) {
       dat_ind <- dat_obs
     } else {
       for (j in 1:length(A_init)) {
-        dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
+        dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j], obs_type = tmp$obs_type))
       }
       dat_ind <- rbind(dat_ind, dat_obs)
     }
@@ -455,28 +462,27 @@ sim <- function (ode = NULL,
     par_names <- names(p_i)[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]
   }
   all_names <- unique(c(par_names, cov_names, var_names))
-  colnames(comb) <- c("id", "t", "comp", "y", all_names)
-  for(key in c("id", "t", "y", all_names)) {
+  colnames(comb) <- c("id", "t", "comp", "y", "obs_type", all_names)
+  for(key in c("id", "t", "y", "obs_type", all_names)) {
     comb[[key]] <- as.num(comb[[key]])
   }
-  comb <- comb %>%
-    dplyr::left_join(design_i[,c("t", "obs_type")], by = "t")
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
-    comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
+    comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_")),]
   } else { # only remove duplicates at t=0
-    comb <- comb[!(duplicated(paste(comb$id, comb$comp, comb$t, sep="_")) & comb$t == 0),]
+    comb <- comb[!(duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_")) & comb$t == 0),]
   }
-  grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
-  colnames(grid) <- c("t", "id", "comp")
+  grid <- expand.grid(paste(t_obs, obs_type, sep="_"), unique(comb$id), unique(comb$comp))
+  colnames(grid) <- c("t_obs_type", "id", "comp")
+  comb$t_obs_type <- paste(comb$t, comb$obs_type, sep = "_")
   suppressWarnings(suppressMessages( ## left join is a bit too chatty
     if(!is.null(all_names) && length(all_names) > 0) {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", "obs_type", all_names)]
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type", all_names)]
     } else {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", "obs_type")]
+      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type")]
     }
   ))
-
+  comb <- comb[,-2]
   if(!is.null(regimen_orig$ss_regimen)) {
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
     comb$t <- as.num(comb$t) - t_ss
