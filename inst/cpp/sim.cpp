@@ -57,7 +57,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert observation variable definition
   double t_start, t_end;
   std::vector<double> times, doses, dummy, rates;
-  std::vector<int> dose_cmt, dose_type, evid, obs_type;
+  std::vector<int> dose_cmt, dose_type, evid, obs_type, y_type;
   // insert variable definitions
   times = as<std::vector<double> >(design["t"]);
   doses = as<std::vector<double> >(design["dose"]);
@@ -118,14 +118,17 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     if(start == 0) {
       t.insert(t.end(), tmp.time.begin(), tmp.time.end());
       y.insert(y.end(), tmp.y.begin(), tmp.y.end());
+      y_type.insert(y_type.end(), obs_type[i]);
+      y_type.insert(y_type.end(), obs_type[i+1]);
     } else {
       t.insert(t.end(), boost::next(tmp.time.begin()), tmp.time.end());
       y.insert(y.end(), boost::next(tmp.y.begin()), tmp.y.end());
+      y_type.insert(y_type.end(), obs_type[i+1]);
     }
     for (int k = 0; k < n_comp; k++) {
       Aupd[k] = tail[k];
     }
-    for( int k = start; k < tmp.y.size(); k++) {
+    for (int k = start; k < tmp.y.size(); k++) {
       // insert time-dependent covariates scale
       // insert scale definition for observation
       // insert saving observations to obs object(s)
@@ -136,6 +139,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   List comb;
   comb["time"] = t;
   comb["y"] = y;
+  comb["obs_type"] = y_type;
   // insert copy observation object
   // insert copy all variables object
   return(comb);
