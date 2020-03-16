@@ -118,15 +118,17 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     if(start == 0) {
       t.insert(t.end(), tmp.time.begin(), tmp.time.end());
       y.insert(y.end(), tmp.y.begin(), tmp.y.end());
+      y_type.insert(y_type.end(), obs_type[i]);
+      y_type.insert(y_type.end(), 0);
     } else {
       t.insert(t.end(), boost::next(tmp.time.begin()), tmp.time.end());
       y.insert(y.end(), boost::next(tmp.y.begin()), tmp.y.end());
+      y_type.insert(y_type.end(), obs_type[i+1]);
     }
     for (int k = 0; k < n_comp; k++) {
       Aupd[k] = tail[k];
     }
     for (int k = start; k < tmp.y.size(); k++) {
-      y_type.insert(y_type.end(), obs_type[i+1]);
       // insert time-dependent covariates scale
       // insert scale definition for observation
       // insert saving observations to obs object(s)
