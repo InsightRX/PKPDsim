@@ -119,7 +119,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
       t.insert(t.end(), tmp.time.begin(), tmp.time.end());
       y.insert(y.end(), tmp.y.begin(), tmp.y.end());
       y_type.insert(y_type.end(), obs_type[i]);
-      y_type.insert(y_type.end(), 0);
+      y_type.insert(y_type.end(), obs_type[i+1]);
     } else {
       t.insert(t.end(), boost::next(tmp.time.begin()), tmp.time.end());
       y.insert(y.end(), boost::next(tmp.y.begin()), tmp.y.end());
