@@ -35,6 +35,8 @@ OneCompIVbolus <- function(d){
   }
   d
 }
+attr(OneCompIVbolus, "cmt") <- 1
+attr(OneCompIVbolus, "type") <- "bolus"
 
 #' IV bolus- 2 compartment
 #' @param d data
@@ -52,8 +54,8 @@ TwoCompIVbolus <- function(d) {
   # The loop advances the solution from one time interval to the next.
   # It also calculates the concentration in the central compartment.
   for(i in 2:nrow(d)) {
-    k10 <- d$CL[i]/d$V1[i]
-    k12 <- d$Q[i]/d$V1[i]
+    k10 <- d$CL[i]/d$V[i]
+    k12 <- d$Q[i]/d$V[i]
     k21 <- d$Q[i]/d$V2[i]
     k20 <- 0
     E1 <- k10+k12
@@ -72,10 +74,12 @@ TwoCompIVbolus <- function(d) {
 
     A2term = (((A2last*E1+A1last*k12)-A2last*lambda1)*exp(-t*lambda1)-((A2last*E1+A1last*k12)-A2last*lambda2)*exp(-t*lambda2))/(lambda2-lambda1)
     d$A2[i] = A2term            #Amount in the peripheral compartment
-    d$DV[i] <- d$A1[i]/d$V1[i]  #Concentartion in the central compartment
+    d$DV[i] <- d$A1[i]/d$V[i]  #Concentartion in the central compartment
   }
   d
 }
+attr(TwoCompIVbolus, "cmt") <- 2
+attr(TwoCompIVbolus, "type") <- "bolus"
 
 #' IV bolus- 3 compartment
 #' @param d data
@@ -95,11 +99,11 @@ ThreeCompIVbolus <- function(d) {
   # It also calculates the concentration in the central compartment.
   for(i in 2:nrow(d))
   {
-    k10 <- d$CL[i]/d$V1[i]
-    k12 <- d$Q12[i]/d$V1[i]
-    k21 <- k12*d$V1[i]/d$V2[i]
-    k13 <- d$Q13[i]/d$V1[i]
-    k31 <- k13*d$V1[i]/d$V3[i]
+    k10 <- d$CL[i]/d$V[i]
+    k12 <- d$Q12[i]/d$V[i]
+    k21 <- k12*d$V[i]/d$V2[i]
+    k13 <- d$Q13[i]/d$V[i]
+    k31 <- k13*d$V[i]/d$V3[i]
     k20 <- 0
     k30 <- 0
     E1 <- k10+k12+k13
@@ -149,10 +153,12 @@ ThreeCompIVbolus <- function(d) {
 
     d$A3[i] <- A3term1+A3term2            #Amount in the second-peripheral compartment
 
-    d$DV[i] <- d$A1[i]/d$V1[i]            #Concentration in the central compartment
+    d$DV[i] <- d$A1[i]/d$Vs[i]            #Concentration in the central compartment
   }
   d
 }
+attr(ThreeCompIVbolus, "cmt") <- 3
+attr(ThreeCompIVbolus, "type") <- "bolus"
 
 #' IV infusion- 1 compartment
 #' @param d data
@@ -181,6 +187,8 @@ OneCompIVinfusion <- function(d) {
   }
   d
 }
+attr(OneCompIVinfusion, "cmt") <- 1
+attr(OneCompIVinfusion, "type") <- "infusion"
 
 #' IV infusion- 2 compartment
 #' @param d data
@@ -198,8 +206,8 @@ TwoCompIVinfusion <- function(d) {
   # The loop advances the solution from one time interval to the next.
   # It also calculates the concentration in the central compartment.
   for(i in 2:nrow(d)) {
-    k10 <- d$CL[i]/d$V1[i]
-    k12 <- d$Q[i]/d$V1[i]
+    k10 <- d$CL[i]/d$V[i]
+    k12 <- d$Q[i]/d$V[i]
     k21 <- d$Q[i]/d$V2[i]
     k20 <- 0
     E1 <- k10+k12
@@ -224,11 +232,13 @@ TwoCompIVinfusion <- function(d) {
 
     d$A2[i] <- A2term1+A2term2   #Amount in the peripheral compartment
 
-    d$DV[i] <- d$A1[i]/d$V1[i]   #Concentration in the central compartment
+    d$DV[i] <- d$A1[i]/d$V[i]   #Concentration in the central compartment
 
   }
   d
 }
+attr(TwoCompIVinfusion, "cmt") <- 2
+attr(TwoCompIVinfusion, "type") <- "infusion"
 
 #' IV infusion- 3 compartment
 #' @param d data
@@ -247,11 +257,11 @@ ThreeCompIVinfusion <- function(d) {
   # The loop advances the solution from one time interval to the next.
   # It also calculates the concentration in the central compartment.
   for(i in 2:nrow(d)) {
-    k10 <- d$CL[i]/d$V1[i]
-    k12 <- d$Q12[i]/d$V1[i]
-    k21 <- k12*d$V1[i]/d$V2[i]
-    k13 <- d$Q13[i]/d$V1[i]
-    k31 <- k13*d$V1[i]/d$V3[i]
+    k10 <- d$CL[i]/d$V[i]
+    k12 <- d$Q12[i]/d$V[i]
+    k21 <- k12*d$V[i]/d$V2[i]
+    k13 <- d$Q13[i]/d$V[i]
+    k31 <- k13*d$V[i]/d$V3[i]
     k20 <- 0
     k30 <- 0
     E1 <- k10+k12+k13
@@ -305,11 +315,13 @@ ThreeCompIVinfusion <- function(d) {
 
     d$A3[i] <- A3term1+A3term2+A3term3  #Amount in the second-peripheral compartment
 
-    d$DV[i] <- d$A1[i]/d$V1[i]          #Concentration in the central compartment
+    d$DV[i] <- d$A1[i]/d$V[i]          #Concentration in the central compartment
 
   }
   d
 }
+attr(ThreeCompIVinfusion, "cmt") <- 3
+attr(ThreeCompIVinfusion, "type") <- "infusion"
 
 #' 3-compartment IV infusion with first-order metabolite formation
 #' @param d data
@@ -329,11 +341,11 @@ ThreeCompIVinfusionMetab <- function(d) {
   # The loop advances the solution from one time interval to the next.
   # It also calculates the concentration in the central compartment.
   for(i in 2:nrow(d)) {
-    k10 <- d$CL[i]/d$V1[i]
-    k12 <- d$Q12[i]/d$V1[i]
-    k21 <- k12*d$V1[i]/d$V2[i]
-    k13 <- d$Q13[i]/d$V1[i]
-    k31 <- k13*d$V1[i]/d$V3[i]
+    k10 <- d$CL[i]/d$V[i]
+    k12 <- d$Q12[i]/d$V[i]
+    k21 <- k12*d$V[i]/d$V2[i]
+    k13 <- d$Q13[i]/d$V[i]
+    k31 <- k13*d$V[i]/d$V3[i]
     km  <- d$km[i]
     kme <- d$CLm[i]/d$Vm[i]
     k20 <- 0
@@ -396,11 +408,13 @@ ThreeCompIVinfusionMetab <- function(d) {
 
     d$Am[i] = Amterm1+Amterm2+Amterm3   #Amount in the metabolite compartment
 
-    d$DV[i] <- d$A1[i]/d$V1[i]          #Concentration in the central compartment
+    d$DV[i] <- d$A1[i]/d$V[i]          #Concentration in the central compartment
 
   }
   d
 }
+attr(ThreeCompIVinfusionMetab, "cmt") <- 4
+attr(ThreeCompIVinfusionMetab, "type") <- "infusion"
 
 #' first-order absorption 1 compartment
 #' @param d data
@@ -436,6 +450,8 @@ OneCompOral <- function(d) {
   }
   d
 }
+attr(OneCompOral, "cmt") <- 2
+attr(OneCompOral, "type") <- "oral"
 
 
 #' First-order absorption- 2 compartment
@@ -457,9 +473,9 @@ TwoCompOral <- function(d) {
 
   for(i in 2:nrow(d)) {
 
-    k20 <- d$CL[i]/d$V2[i]
-    k23 <- d$Q[i]/d$V2[i]
-    k32 <- d$Q[i]/d$V3[i]
+    k20 <- d$CL[i]/d$V[i]
+    k23 <- d$Q[i]/d$V[i]
+    k32 <- d$Q[i]/d$V2[i]
   	KA  <- d$KA[i]
 	  k30 <- 0
     E2 <- k20+k23
@@ -485,11 +501,13 @@ TwoCompOral <- function(d) {
     A1last = A1last*exp(-t*KA)
     d$A1[i] = A1last + d$AMT[i]*d$F1[i]  #Amount in the absorption compartment
 
-    d$DV[i] <- d$A2[i]/d$V2[i]    #Concentration in the central compartment
+    d$DV[i] <- d$A2[i]/d$V[i]    #Concentration in the central compartment
 
   }
   d
 }
+attr(TwoCompOral, "cmt") <- 3
+attr(TwoCompOral, "type") <- "oral"
 
 
 #' first-order absorption- 3 compartment
@@ -513,11 +531,11 @@ ThreeCompOral <- function(d) {
   for(i in 2:nrow(d))
   {
 
-    k20 <- d$CL[i]/d$V2[i]
-    k23 <- d$Q3[i]/d$V2[i]
-    k32 <- k23*d$V2[i]/d$V3[i]
-    k24 <- d$Q4[i]/d$V2[i]
-    k42 <- k24*d$V2[i]/d$V4[i]
+    k20 <- d$CL[i]/d$V[i]
+    k23 <- d$Q3[i]/d$V[i]
+    k32 <- k23*d$V[i]/d$V2[i]
+    k24 <- d$Q4[i]/d$V[i]
+    k42 <- k24*d$V[i]/d$V3[i]
 	  KA  <- d$KA[i]
     k30 <- 0
     k40 <- 0
@@ -572,11 +590,13 @@ ThreeCompOral <- function(d) {
     A1last = A1last*exp(-t*KA)
     d$A1[i] = A1last + d$AMT[i]*d$F1[i]        #Amount in the absorption compartment
 
-    d$DV[i] <- d$A2[i]/d$V2[i]         #Concentration in the absorption compartment
+    d$DV[i] <- d$A2[i]/d$V[i]         #Concentration in the absorption compartment
 
   }
   d
 }
+attr(ThreeCompOral, "cmt") <- 4
+attr(ThreeCompOral, "type") <- "oral"
 
 #' first-order absorption- 3 compartment-Metabolite
 #' @param d data
@@ -599,14 +619,14 @@ ThreeCompOralMetab <- function(d) {
 
   for(i in 2:nrow(d)) {
 
-    k20 <- d$CL[i]/d$V2[i]
-    k23 <- d$Q3[i]/d$V2[i]
-    k32 <- k23*d$V2[i]/d$V3[i]
-    k24 <- d$Q4[i]/d$V2[i]
-    k42 <- k24*d$V2[i]/d$V4[i]
+    k20 <- d$CL[i]/d$V[i]
+    k23 <- d$Q3[i]/d$V[i]
+    k32 <- k23*d$V[i]/d$V2[i]
+    k24 <- d$Q4[i]/d$V[i]
+    k42 <- k24*d$V[i]/d$V3[i]
     km  <- d$km[i]
     kme <- d$CLm[i]/d$Vm[i]
-	KA  <- d$KA[i]
+  	KA  <- d$KA[i]
     k30 <- 0
     k40 <- 0
     E2 <- k20+k23+k24+km
@@ -668,12 +688,13 @@ ThreeCompOralMetab <- function(d) {
     A1last = A1last*exp(-t*KA)
     d$A1[i] = A1last + d$AMT[i]*d$F1[i]         #Amount in the absoprtion compartment
 
-    d$DV[i] <- d$A2[i]/d$V2[i]
+    d$DV[i] <- d$A2[i]/d$V[i]
 
   }
   d
 }
-
+attr(ThreeCompOralMetab, "cmt") <- 5
+attr(ThreeCompOralMetab, "type") <- "oral"
 
 advan_funcs <- list(
   "1cmt_iv_bolus" = OneCompIVbolus,
