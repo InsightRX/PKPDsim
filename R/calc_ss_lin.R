@@ -23,7 +23,7 @@
 #'
 #' @export
 calc_ss_lin <- function(
-  f = "TwoCompOral",
+  f = "1cmt_oral",
   dose,
   interval,
   model,
