@@ -5,7 +5,7 @@
 \title{Returns the state of a linear PK system at steady state (trough)}
 \usage{
 calc_ss_lin(
-  f = "TwoCompOral",
+  f = "1cmt_oral",
   dose,
   interval,
   model,
@@ -45,7 +45,7 @@ faster than doing the same using ODEs.
 The function needs to be made a bit more generic, it focused now
 on the TwoCompOral model.
 
-It can also be used for models with transit compartments, however, 
-the assumption is made that at the end of the dosing interval the 
+It can also be used for models with transit compartments, however,
+the assumption is made that at the end of the dosing interval the
 amount in the transit compartments is negligible (0).
 }
