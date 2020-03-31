@@ -1,11 +1,8 @@
 #' Returns the state of a linear PK system at steady state (trough)
+#' using analytics equations (so for linear PK systems only).
 #'
-#' Basically it performs a PK simulation using algebraic equations instead
-#' of ODEs to steady state (n=45 days, increased if needed). This is much
-#' faster than doing the same using ODEs.
-#'
-#' The function needs to be made a bit more generic, it focused now
-#' on the TwoCompOral model.
+#' Basically it performs a PK simulation using analytic equations instead
+#' of ODEs to steady state (n=45 days, increased if needed).
 #'
 #' It can also be used for models with transit compartments, however,
 #' the assumption is made that at the end of the dosing interval the
@@ -22,7 +19,7 @@
 #' @param auc add (empty) AUC compartment at end of state vector?
 #'
 #' @export
-calc_ss_lin <- function(
+calc_ss_analytic <- function(
   f = "1cmt_oral",
   dose,
   interval,
