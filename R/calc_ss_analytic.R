@@ -63,7 +63,8 @@ calc_ss_analytic <- function(
                   Q  = ifelse0(parameters$Q, NA),
                   V2 = ifelse0(parameters$V2, NA),
                   KA = ifelse0(parameters$KA, NA),
-                  A1 = 0, A2 = 0, A3 = 0, F1 = 1)
+                  A1 = 0, A2 = 0, A3 = 0, A4 = 0, A5 = 0, 
+                  F1 = 1)
   obs <- tail(d, 1)
   obs$AMT <- 0
   obs$EVID <- 0
@@ -75,8 +76,8 @@ calc_ss_analytic <- function(
   res$A1 <- res$A1 - dose
 
   ## Return state vector at steady state trough
-  comps <- c("A1", "A2", "A3")
-  A <- as.numeric(res[res$EVID == 0, comps[1:attr(func, "cmt")]])
+  comps <- c("A1", "A2", "A3", "A4", "A5")
+  A <- as.numeric(res[res$EVID == 0, paste0("A", 1:attr(func, "cmt"))])
 
   if(attr(func, "type") == "oral") {
     if(!is.null(n_transit_compartments) && n_transit_compartments > 0) {
