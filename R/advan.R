@@ -97,9 +97,9 @@ ThreeCompIVbolus <- function(d) {
   for(i in 2:nrow(d))
   {
     k10 <- d$CL[i]/d$V[i]
-    k12 <- d$Q12[i]/d$V[i]
+    k12 <- d$Q[i]/d$V[i]
     k21 <- k12*d$V[i]/d$V2[i]
-    k13 <- d$Q13[i]/d$V[i]
+    k13 <- d$Q2[i]/d$V[i]
     k31 <- k13*d$V[i]/d$V3[i]
     k20 <- 0
     k30 <- 0
@@ -150,7 +150,7 @@ ThreeCompIVbolus <- function(d) {
 
     d$A3[i] <- A3term1+A3term2            #Amount in the second-peripheral compartment
 
-    d$DV[i] <- d$A1[i]/d$Vs[i]            #Concentration in the central compartment
+    d$DV[i] <- d$A1[i]/d$V[i]            #Concentration in the central compartment
   }
   d
 }
@@ -253,9 +253,9 @@ ThreeCompIVinfusion <- function(d) {
   # It also calculates the concentration in the central compartment.
   for(i in 2:nrow(d)) {
     k10 <- d$CL[i]/d$V[i]
-    k12 <- d$Q12[i]/d$V[i]
+    k12 <- d$Q[i]/d$V[i]
     k21 <- k12*d$V[i]/d$V2[i]
-    k13 <- d$Q13[i]/d$V[i]
+    k13 <- d$Q2[i]/d$V[i]
     k31 <- k13*d$V[i]/d$V3[i]
     k20 <- 0
     k30 <- 0
