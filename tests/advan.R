@@ -4,6 +4,7 @@ Sys.setenv("R_TESTS" = "")
 
 ## These models are also tested in the unit tests for `calc_ss_analytics()`, so just testing a few example cases here
 
+dose <- 100
 interval <- 12
 n_days <- 5
 parameters <- list(CL = 10, V = 50, KA = 0.5, Q = 5, V2 = 100, Q2 = 3, V3 = 150)
