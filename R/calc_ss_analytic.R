@@ -8,12 +8,13 @@
 #' the assumption is made that at the end of the dosing interval the
 #' amount in the transit compartments is negligible (0).
 #'
+#' @param f analytic equation to use, must be one of `names(advan_funcs)`
 #' @param dose dose
 #' @param interval interval
 #' @param model PKPDsim model
 #' @param parameters parameters list
 #' @param covariates covariates list
-#' @param map list for remapping parameters
+#' @param map list for remapping parameters, ex: `list(CL = "CL", V = "V")`
 #' @param n_days number of days at which to assume steady state. Default is 45.
 #' @param n_transit_compartments number of transit compartments, will insert n compartments between the first (dose) compartment and the second (central) compartment.
 #' @param auc add (empty) AUC compartment at end of state vector?
