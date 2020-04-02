@@ -7,7 +7,10 @@
 OneCompIVinfusion(d)
 }
 \arguments{
-\item{d}{data}
+\item{d}{data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V}
+}
+\value{
+Returns a dataframe with populated columns for A1, and DV
 }
 \description{
 IV infusion- 1 compartment
