@@ -7,7 +7,10 @@
 OneCompOral(d)
 }
 \arguments{
-\item{d}{data}
+\item{d}{data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V, KA & F1}
+}
+\value{
+Returns a dataframe with populated columns for A1, A2 and DV
 }
 \description{
 first-order absorption 1 compartment

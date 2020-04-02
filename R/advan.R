@@ -14,10 +14,9 @@
 
 
 #' IV bolus- 1 compartment
-#' @param d data
+#' @param d data, a NONMEM style data frame for 1 subject with columns for TIME, AMT, MDV, DV, CL, V
+#' @return Returns a dataframe with populated columns for A1, and DV
 OneCompIVbolus <- function(d){
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT, MDV, DV, CL, V
-  # Returns a dataframe with populated columns for A1, and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- d$AMT[d$TIME==0]  # drug amount in the central compartment at time zero.
@@ -39,10 +38,9 @@ attr(OneCompIVbolus, "cmt") <- 1
 attr(OneCompIVbolus, "type") <- "bolus"
 
 #' IV bolus- 2 compartment
-#' @param d data
+#' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, DV, CL, V1, Q, V2
+#' @return Returns a dataframe with populated columns for A1, A2, and DV
 TwoCompIVbolus <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, DV, CL, V1, Q, V2
-  # Returns a dataframe with populated columns for A1, A2, and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- d$AMT[d$TIME==0]  # drug amount in the central compartment at time zero.
@@ -82,10 +80,9 @@ attr(TwoCompIVbolus, "cmt") <- 2
 attr(TwoCompIVbolus, "type") <- "bolus"
 
 #' IV bolus- 3 compartment
-#' @param d data
+#' @param d data, Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V1, Q12, V2, Q13, V3
+#' @return Returns a dataframe with populated columns for A1, A2, A3,and DV
 ThreeCompIVbolus <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V1, Q12, V2, Q13, V3
-  # Returns a dataframe with populated columns for A1, A2, A3,and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- d$AMT[d$TIME==0]  # drug amount in the central compartment at time zero.
@@ -161,10 +158,9 @@ attr(ThreeCompIVbolus, "cmt") <- 3
 attr(ThreeCompIVbolus, "type") <- "bolus"
 
 #' IV infusion- 1 compartment
-#' @param d data
+#' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V
+#' @return Returns a dataframe with populated columns for A1, and DV
 OneCompIVinfusion <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V
-  # Returns a dataframe with populated columns for A1, and DV
 
   #set initial values in the compartments
   d$A1[d$TIME==0] <- 0  # drug amount in the central compartment at time zero.
@@ -191,10 +187,9 @@ attr(OneCompIVinfusion, "cmt") <- 1
 attr(OneCompIVinfusion, "type") <- "infusion"
 
 #' IV infusion- 2 compartment
-#' @param d data
+#' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V1, Q, V2
+#' @return Returns a dataframe with populated columns for A1, A2, and DV
 TwoCompIVinfusion <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V1, Q, V2
-  # Returns a dataframe with populated columns for A1, A2, and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- 0  # drug amount in the central compartment at time zero.
@@ -241,10 +236,9 @@ attr(TwoCompIVinfusion, "cmt") <- 2
 attr(TwoCompIVinfusion, "type") <- "infusion"
 
 #' IV infusion- 3 compartment
-#' @param d data
+#' @param d data, Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,RATE, RATEALL, DV, CL, V1, Q12, V2, Q13, V3
+#' @return Returns a dataframe with populated columns for A1, A2, A3,and DV
 ThreeCompIVinfusion <- function(d) {
-  #Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,RATE, RATEALL, DV, CL, V1, Q12, V2, Q13, V3
-  #Returns a dataframe with populated columns for A1, A2, A3,and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- 0   # drug amount in the central compartment at time zero.
@@ -324,10 +318,9 @@ attr(ThreeCompIVinfusion, "cmt") <- 3
 attr(ThreeCompIVinfusion, "type") <- "infusion"
 
 #' 3-compartment IV infusion with first-order metabolite formation
-#' @param d data
+#' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,RATE, RATEALL, DV, CL, V1, Q12, V2, Q13, V3, CLM,VM,km
+#' @return Returns a dataframe with populated columns for A1, A2, A3,and DV
 ThreeCompIVinfusionMetab <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,RATE, RATEALL, DV, CL, V1, Q12, V2, Q13, V3, CLM,VM,km
-  # Returns a dataframe with populated columns for A1, A2, A3,and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- 0   # drug amount in the central compartment at time zero.
@@ -417,10 +410,9 @@ attr(ThreeCompIVinfusionMetab, "cmt") <- 4
 attr(ThreeCompIVinfusionMetab, "type") <- "infusion"
 
 #' first-order absorption 1 compartment
-#' @param d data
+#' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V, KA & F1
+#' @return Returns a dataframe with populated columns for A1, A2 and DV
 OneCompOral <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V, KA & F1
-  # Returns a dataframe with populated columns for A1, A2 and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- d$AMT[d$TIME==0]*d$F1[1] #drug amount in the absorption compartment at time zero.
@@ -455,11 +447,9 @@ attr(OneCompOral, "type") <- "oral"
 
 
 #' First-order absorption- 2 compartment
-#' @param d data
+#' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q, V3, KA & F1
+#' @return Returns a dataframe with populated columns for A1, A2, A3 and DV
 TwoCompOral <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q, V3, KA & F1
-  # Returns a dataframe with populated columns for A1, A2, A3 and DV
-
   # set initial values in the compartments
   d$A1[d$TIME==0] <- d$AMT[d$TIME==0]*d$F1[1]  # Amount in the absorption compartment at time zero.
   d$A2[d$TIME==0] <- 0                   # Amount in the central compartment at time zero.
@@ -511,10 +501,9 @@ attr(TwoCompOral, "type") <- "oral"
 
 
 #' first-order absorption- 3 compartment
-#' @param d data
+#' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q3, V3, Q4, V4, KA & F1
+#' @return Returns a dataframe with populated columns for A1, A2, A3, A4 and DV
 ThreeCompOral <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q3, V3, Q4, V4, KA & F1
-  # Returns a dataframe with populated columns for A1, A2, A3, A4 and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- d$AMT[d$TIME==0]*d$F1[1]    # Amount in the absorption compartment at time zero.
@@ -599,10 +588,9 @@ attr(ThreeCompOral, "cmt") <- 4
 attr(ThreeCompOral, "type") <- "oral"
 
 #' first-order absorption- 3 compartment-Metabolite
-#' @param d data
+#' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q3, V3, Q4, V4, KA & F1
+#' @return Returns a dataframe with populated columns for A1, A2, A3, A4 and DV
 ThreeCompOralMetab <- function(d) {
-  # Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q3, V3, Q4, V4, KA & F1
-  # Returns a dataframe with populated columns for A1, A2, A3, A4 and DV
 
   # set initial values in the compartments
   d$A1[d$TIME==0] <- d$AMT[d$TIME==0]*d$F1[1]    # Amount in the absorption compartment at time zero.
