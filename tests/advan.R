@@ -44,7 +44,7 @@ assert("2cmt_oral", round(res2_oral[res2_oral$TIME == 23,]$DV, 3) == 0.302)
 assert("2cmt_oral no NA", !any(is.na(res2_oral$DV)))
 
 res2_iv   <- advan_funcs[["2cmt_iv_bolus"]](data)
-assert("2cmt_iv", round(res3_iv[res2_iv$TIME == 23,]$DV, 3) == 0.169)
+assert("2cmt_iv", round(res2_iv[res2_iv$TIME == 23,]$DV, 3) == 0.212)
 assert("2cmt_iv no NA", !any(is.na(res2_iv$DV)))
 
 res3_oral <- advan_funcs[["3cmt_oral"]](data)

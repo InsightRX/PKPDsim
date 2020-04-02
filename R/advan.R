@@ -685,6 +685,9 @@ ThreeCompOralMetab <- function(d) {
 attr(ThreeCompOralMetab, "cmt") <- 5
 attr(ThreeCompOralMetab, "type") <- "oral"
 
+#' ADVAN-style functions to calculate linear PK systems
+#'
+#' @export
 advan_funcs <- list(
   "1cmt_iv_bolus" = OneCompIVbolus,
   "2cmt_iv_bolus" = TwoCompIVbolus,
