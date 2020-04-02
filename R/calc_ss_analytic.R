@@ -62,9 +62,11 @@ calc_ss_analytic <- function(
                   V = parameters$V,
                   Q  = ifelse0(parameters$Q, NA),
                   V2 = ifelse0(parameters$V2, NA),
+                  Q2  = ifelse0(parameters$Q2, NA),
+                  V3 = ifelse0(parameters$V3, NA),
                   KA = ifelse0(parameters$KA, NA),
-                  A1 = 0, A2 = 0, A3 = 0, A4 = 0, A5 = 0, 
-                  F1 = 1)
+                  A1 = 0, A2 = 0, A3 = 0, A4 = 0, A5 = 0,
+                  F1 = ifelse0(parameters$F1, 1))
   obs <- tail(d, 1)
   obs$AMT <- 0
   obs$EVID <- 0

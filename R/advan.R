@@ -173,6 +173,7 @@ OneCompIVinfusion <- function(d) {
   # Rate constants are used in the equations to calculate drug amounts in a compartment.
   # The loop advances the solution from one time interval to the next.
   # It also calculates the concentration in the central compartment.
+  browser()
   for(i in 2:nrow(d)) {
     k10 <- d$CL[i]/d$V[i]
 
@@ -532,9 +533,9 @@ ThreeCompOral <- function(d) {
   {
 
     k20 <- d$CL[i]/d$V[i]
-    k23 <- d$Q3[i]/d$V[i]
+    k23 <- d$Q[i]/d$V[i]
     k32 <- k23*d$V[i]/d$V2[i]
-    k24 <- d$Q4[i]/d$V[i]
+    k24 <- d$Q2[i]/d$V[i]
     k42 <- k24*d$V[i]/d$V3[i]
 	  KA  <- d$KA[i]
     k30 <- 0
@@ -620,9 +621,9 @@ ThreeCompOralMetab <- function(d) {
   for(i in 2:nrow(d)) {
 
     k20 <- d$CL[i]/d$V[i]
-    k23 <- d$Q3[i]/d$V[i]
+    k23 <- d$Q[i]/d$V[i]
     k32 <- k23*d$V[i]/d$V2[i]
-    k24 <- d$Q4[i]/d$V[i]
+    k24 <- d$Q2[i]/d$V[i]
     k42 <- k24*d$V[i]/d$V3[i]
     km  <- d$km[i]
     kme <- d$CLm[i]/d$Vm[i]

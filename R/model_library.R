@@ -47,13 +47,24 @@ model_library <- function(name = NULL) {
       dose = list(cmt = 1),
       size = 3
     ),
+    "pk_3cmt_iv" = list(
+      code = "
+        dAdt[1] = -(CL/V)*A[1] - (Q/V)*A[1] + (Q/V2)*A[2] - (Q2/V)*A[1] + (Q2/V3)*A[3]
+        dAdt[2] = -(Q/V2)*A[2] + (Q/V)*A[1]
+        dAdt[3] = -(Q2/V3)*A[3] + (Q2/V)*A[1]
+      ",
+      obs = list(cmt = 1, scale = "V"),
+      dose = list(cmt = 1),
+      size = 3
+    ),
     "pk_1cmt_oral" = list(
       code = "
         dAdt[1] = -KA*A[1]
         dAdt[2] = KA*A[1] - (CL/V)*A[2]
       ",
-      obs=list(cmt = 2, scale = "V"),
-      dose = list(cmt = 1)
+      obs = list(cmt = 2, scale = "V"),
+      dose = list(cmt = 1),
+      size = 2
     ),
     "pk_2cmt_oral" = list(
       code = "
@@ -61,8 +72,20 @@ model_library <- function(name = NULL) {
         dAdt[2] = KA*A[1] - (CL/V)*A[2] + (Q/V2)*A[3] - (Q/V)*A[2]
         dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2]
       ",
-      obs=list(cmt = 2, scale = "V"),
-      dose = list(cmt = 1)
+      obs = list(cmt = 2, scale = "V"),
+      dose = list(cmt = 1),
+      size = 3
+    ),
+    "pk_3cmt_oral" = list(
+      code = "
+        dAdt[1] = -KA*A[1]
+        dAdt[2] = KA*A[1] - (CL/V)*A[2] + (Q/V2)*A[3] - (Q/V)*A[2] + (Q2/V3)*A[4] - (Q2/V)*A[2]
+        dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2]
+        dAdt[4] = -(Q2/V3)*A[4] + (Q2/V)*A[2]
+      ",
+      obs = list(cmt = 2, scale = "V"),
+      dose = list(cmt = 1),
+      size = 4
     )
 
   )
