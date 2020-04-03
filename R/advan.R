@@ -168,7 +168,6 @@ OneCompIVinfusion <- function(d) {
   # Rate constants are used in the equations to calculate drug amounts in a compartment.
   # The loop advances the solution from one time interval to the next.
   # It also calculates the concentration in the central compartment.
-  browser()
   for(i in 2:nrow(d)) {
     k10 <- d$CL[i]/d$V[i]
 
