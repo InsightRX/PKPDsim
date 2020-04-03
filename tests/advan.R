@@ -32,7 +32,9 @@ for(i in seq(t_obs)) {
 data <- data[order(data$TIME, -data$EVID),]
 
 res1_oral <- advan_funcs[["1cmt_oral"]](data)
+res1_oral_c <- PKPDsim:::pk_1cmt_oral(data)
 assert("1cmt_oral", round(res1_oral[res1_oral$TIME == 23,]$DV, 3) == 0.389)
+assert("1cmt_iv_bolus: exact same output from C function", all(unlist(res1_oral) == unlist(res1_oral_c)))
 assert("1cmt_oral no NA", !any(is.na(res1_oral$DV)))
 
 res1_iv   <- advan_funcs[["1cmt_iv_bolus"]](data)
@@ -42,7 +44,9 @@ assert("1cmt_iv_bolus: exact same output from C function", all(unlist(res1_iv) =
 assert("1cmt_iv_bolus: no NA", !any(is.na(res1_oral$DV)))
 
 res2_oral <- advan_funcs[["2cmt_oral"]](data)
+res2_oral <- PKPDsim:::pk_2cmt_oral(data)
 assert("2cmt_oral", round(res2_oral[res2_oral$TIME == 23,]$DV, 3) == 0.302)
+assert("2cmt_oral: exact same output from C function", all(unlist(res2_oral) == unlist(res2_oral)))
 assert("2cmt_oral no NA", !any(is.na(res2_oral$DV)))
 
 res2_iv   <- advan_funcs[["2cmt_iv_bolus"]](data)

@@ -5,8 +5,16 @@ pk_1cmt_iv_bolus <- function(d) {
     .Call('_PKPDsim_pk_1cmt_iv_bolus', PACKAGE = 'PKPDsim', d)
 }
 
+pk_1cmt_oral <- function(d) {
+    .Call('_PKPDsim_pk_1cmt_oral', PACKAGE = 'PKPDsim', d)
+}
+
 pk_2cmt_iv_bolus <- function(d) {
     .Call('_PKPDsim_pk_2cmt_iv_bolus', PACKAGE = 'PKPDsim', d)
+}
+
+pk_2cmt_oral <- function(d) {
+    .Call('_PKPDsim_pk_2cmt_oral', PACKAGE = 'PKPDsim', d)
 }
 
 pk_3cmt_iv_bolus <- function(d) {
