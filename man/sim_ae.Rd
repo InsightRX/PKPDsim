@@ -21,6 +21,10 @@ sim_ae(
 
 \item{regimen}{PKPDsim regimen}
 
+\item{cov_model}{covariate model}
+
+\item{covariates}{list of covariates created using `new_covariate()`}
+
 \item{t_obs}{vector of observation times}
 }
 \description{

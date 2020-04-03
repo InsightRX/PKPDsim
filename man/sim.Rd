@@ -65,6 +65,8 @@ sim(
 
 \item{regimen}{a regimen object created using the regimen() function}
 
+\item{lagtime}{either a value (numeric) or a parameter (character) or NULL.}
+
 \item{covariates}{list of covariates (for single individual) created using `new_covariate()` function}
 
 \item{covariates_table}{data.frame (or unnamed list of named lists per individual) with covariate values}
