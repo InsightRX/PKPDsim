@@ -12,7 +12,6 @@
 #' - E* : the sum of Exit (elimination) rate constant of the corresponding compartment.
 
 
-
 #' IV bolus- 1 compartment
 #' @param d data, a NONMEM style data frame for 1 subject with columns for TIME, AMT, MDV, DV, CL, V
 #' @return Returns a dataframe with populated columns for A1, and DV

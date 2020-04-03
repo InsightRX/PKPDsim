@@ -36,21 +36,31 @@ assert("1cmt_oral", round(res1_oral[res1_oral$TIME == 23,]$DV, 3) == 0.389)
 assert("1cmt_oral no NA", !any(is.na(res1_oral$DV)))
 
 res1_iv   <- advan_funcs[["1cmt_iv_bolus"]](data)
+res1_iv_c <- PKPDsim:::pk_1cmt_iv_bolus(data)
 assert("1cmt_iv_bolus", round(res1_iv[res1_iv$TIME == 23,]$DV, 3) == 0.242)
-assert("1cmt_iv_bolus no NA", !any(is.na(res1_oral$DV)))
+assert("1cmt_iv_bolus: exact same output from C function", all(unlist(res1_iv) == unlist(res1_iv_c)))
+assert("1cmt_iv_bolus: no NA", !any(is.na(res1_oral$DV)))
 
 res2_oral <- advan_funcs[["2cmt_oral"]](data)
 assert("2cmt_oral", round(res2_oral[res2_oral$TIME == 23,]$DV, 3) == 0.302)
 assert("2cmt_oral no NA", !any(is.na(res2_oral$DV)))
 
 res2_iv   <- advan_funcs[["2cmt_iv_bolus"]](data)
-assert("2cmt_iv", round(res2_iv[res2_iv$TIME == 23,]$DV, 3) == 0.212)
-assert("2cmt_iv no NA", !any(is.na(res2_iv$DV)))
+res2_iv_c <- PKPDsim:::pk_2cmt_iv_bolus(data)
+assert("2cmt_iv_bolus", round(res2_iv[res2_iv$TIME == 23,]$DV, 3) == 0.212)
+assert("2cmt_iv_bolus: exact same output from C function", all(unlist(res2_iv) == unlist(res2_iv_c)))
+assert("2cmt_iv_bolus: no NA", !any(is.na(res2_iv$DV)))
+
+# f1 <- function() {res2_iv   <- advan_funcs[["2cmt_iv_bolus"]](data)}
+# f2 <- function() {res2_iv_c <- pk_2cmt_iv_bolus(data)}
+# microbenchmark::microbenchmark(f1(), f2(), times = 100)
 
 res3_oral <- advan_funcs[["3cmt_oral"]](data)
 assert("3cmt_oral", round(res3_oral[res3_oral$TIME == 23,]$DV, 3) == 0.236)
 assert("3cmt_oral no NA", !any(is.na(res3_oral$DV)))
 
 res3_iv   <- advan_funcs[["3cmt_iv_bolus"]](data)
+res3_iv_c <- PKPDsim:::pk_3cmt_iv_bolus(data)
 assert("3cmt_iv", round(res3_iv[res3_iv$TIME == 23,]$DV, 3) == 0.169)
+assert("3cmt_iv_bolus: exact same output from C function", all(unlist(res3_iv) == unlist(res3_iv_c)))
 assert("3cmt_iv no NA", !any(is.na(res3_iv$DV)))
