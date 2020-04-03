@@ -21,3 +21,7 @@ pk_3cmt_iv_bolus <- function(d) {
     .Call('_PKPDsim_pk_3cmt_iv_bolus', PACKAGE = 'PKPDsim', d)
 }
 
+pk_3cmt_oral <- function(d) {
+    .Call('_PKPDsim_pk_3cmt_oral', PACKAGE = 'PKPDsim', d)
+}
+

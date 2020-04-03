@@ -60,7 +60,9 @@ assert("2cmt_iv_bolus: no NA", !any(is.na(res2_iv$DV)))
 # microbenchmark::microbenchmark(f1(), f2(), times = 100)
 
 res3_oral <- advan_funcs[["3cmt_oral"]](data)
+res3_oral_c <- PKPDsim:::pk_3cmt_oral(data)
 assert("3cmt_oral", round(res3_oral[res3_oral$TIME == 23,]$DV, 3) == 0.236)
+assert("3cmt_oral: exact same output from C function", all(unlist(res3_oral) == unlist(res3_oral_c)))
 assert("3cmt_oral no NA", !any(is.na(res3_oral$DV)))
 
 res3_iv   <- advan_funcs[["3cmt_iv_bolus"]](data)
