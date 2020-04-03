@@ -10,6 +10,8 @@ add_ruv(x, ruv = list(), obs_type = 1)
 \item{x}{dependent value without residual variability}
 
 \item{ruv}{list specifying proportional, additive and/or exponential errors (`prop`, `add`, `exp`)}
+
+\item{obs_type}{vector of observation types}
 }
 \description{
 Add residual variability to the dependent variable

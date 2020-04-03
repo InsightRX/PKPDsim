@@ -13,6 +13,7 @@
 #' @param sequence if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
+#' @param lagtime either a value (numeric) or a parameter (character) or NULL.
 #' @param A_init vector with the initial state of the ODE system
 #' @param covariates list of covariates (for single individual) created using `new_covariate()` function
 #' @param covariates_table data.frame (or unnamed list of named lists per individual) with covariate values

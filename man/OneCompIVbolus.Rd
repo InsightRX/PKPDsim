@@ -7,7 +7,10 @@
 OneCompIVbolus(d)
 }
 \arguments{
-\item{d}{data}
+\item{d}{data, a NONMEM style data frame for 1 subject with columns for TIME, AMT, MDV, DV, CL, V}
+}
+\value{
+Returns a dataframe with populated columns for A1, and DV
 }
 \description{
 Adapted from Abuhelwa et al. JPET 2015

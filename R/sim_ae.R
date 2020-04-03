@@ -4,7 +4,10 @@
 #' @param model model, choose from `pk_1cmt_iv`, `pk_1cmt_oral`, `pk_2cmt_iv`, `pk_2cmt_oral`.
 #' @param parameters list of model parameters
 #' @param regimen PKPDsim regimen
+#' @param cov_model covariate model
+#' @param covariates list of covariates created using `new_covariate()`
 #' @param t_obs vector of observation times
+#'
 #' @export
 sim_ae <- function(
   model = "pk_1cmt_iv",

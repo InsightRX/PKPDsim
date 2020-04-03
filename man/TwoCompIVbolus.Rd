@@ -7,7 +7,10 @@
 TwoCompIVbolus(d)
 }
 \arguments{
-\item{d}{data}
+\item{d}{data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, DV, CL, V1, Q, V2}
+}
+\value{
+Returns a dataframe with populated columns for A1, A2, and DV
 }
 \description{
 IV bolus- 2 compartment

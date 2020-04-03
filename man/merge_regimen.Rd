@@ -7,7 +7,7 @@
 merge_regimen(regimens)
 }
 \arguments{
-\item{regimen}{List of PKPDsim regimens created with `new_regimen`.}
+\item{regimens}{List of PKPDsim regimens created with `new_regimen`.}
 }
 \description{
 In contrast to `join_regimen`, which joins two consecutive regimens together, `merge_regimen` merges two or
