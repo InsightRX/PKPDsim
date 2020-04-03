@@ -79,7 +79,6 @@ calc_ss_analytic <- function(
   res$A1 <- res$A1 - dose
 
   ## Return state vector at steady state trough
-  comps <- c("A1", "A2", "A3", "A4", "A5")
   A <- as.numeric(res[res$EVID == 0, paste0("A", 1:attr(func, "cmt"))])
 
   if(attr(func, "type") == "oral") {
