@@ -7,16 +7,17 @@ DataFrame pk_2cmt_iv_bolus(DataFrame d){
 
   double k10, k20, k12, k21, E1, E2, lambda1, lambda2, t, A1last, A2last, A1term, A2term;
   int i;
+  DataFrame out = clone(d);
 
-  NumericVector A1 = d["A1"];
-  NumericVector A2 = d["A2"];
-  NumericVector DV = d["DV"];
-  NumericVector CL = d["CL"];
-  NumericVector V  = d["V"];
-  NumericVector Q  = d["Q"];
-  NumericVector V2 = d["V2"];
-  NumericVector TIME = d["TIME"];
-  NumericVector AMT = d["AMT"];
+  NumericVector A1 = out["A1"];
+  NumericVector A2 = out["A2"];
+  NumericVector DV = out["DV"];
+  NumericVector CL = out["CL"];
+  NumericVector V  = out["V"];
+  NumericVector Q  = out["Q"];
+  NumericVector V2 = out["V2"];
+  NumericVector TIME = out["TIME"];
+  NumericVector AMT = out["AMT"];
 
   // prepare initial state
   std::vector<int>::iterator it;
@@ -53,9 +54,9 @@ DataFrame pk_2cmt_iv_bolus(DataFrame d){
   }
 
   // Update object
-  d["A1"] = A1;
-  d["A2"] = A2;
-  d["DV"] = DV;
+  out["A1"] = A1;
+  out["A2"] = A2;
+  out["DV"] = DV;
 
-  return(d);
+  return(out);
 }

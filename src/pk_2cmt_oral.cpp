@@ -7,19 +7,20 @@ DataFrame pk_2cmt_oral(DataFrame d){
 
   double ka, k10, k20, k30, k23, k32, E1, E2, E3, lambda1, lambda2, t, A1last, A2last, A3last, A2term1, A2term2, A3term1, A3term2;
   int i;
+  DataFrame out = clone(d);
 
-  NumericVector A1 = d["A1"];
-  NumericVector A2 = d["A2"];
-  NumericVector A3 = d["A3"];
-  NumericVector DV = d["DV"];
-  NumericVector KA = d["KA"];
-  NumericVector CL = d["CL"];
-  NumericVector V  = d["V"];
-  NumericVector Q  = d["Q"];
-  NumericVector V2 = d["V2"];
-  NumericVector TIME = d["TIME"];
-  NumericVector AMT = d["AMT"];
-  NumericVector F1 = d["F1"];
+  NumericVector A1 = out["A1"];
+  NumericVector A2 = out["A2"];
+  NumericVector A3 = out["A3"];
+  NumericVector DV = out["DV"];
+  NumericVector KA = out["KA"];
+  NumericVector CL = out["CL"];
+  NumericVector V  = out["V"];
+  NumericVector Q  = out["Q"];
+  NumericVector V2 = out["V2"];
+  NumericVector TIME = out["TIME"];
+  NumericVector AMT = out["AMT"];
+  NumericVector F1 = out["F1"];
   if(F1==R_NilValue) {
     F1 = rep(1.0, A1.size());
   }
@@ -68,10 +69,10 @@ DataFrame pk_2cmt_oral(DataFrame d){
   }
 
   // Update object
-  d["A1"] = A1;
-  d["A2"] = A2;
-  d["A3"] = A3;
-  d["DV"] = DV;
+  out["A1"] = A1;
+  out["A2"] = A2;
+  out["A3"] = A3;
+  out["DV"] = DV;
 
-  return(d);
+  return(out);
 }

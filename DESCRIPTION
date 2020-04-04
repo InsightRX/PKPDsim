@@ -1,13 +1,13 @@
 Package: PKPDsim
 Type: Package
 Title: Simulate PK-PD models
-Version: 1.0.74
+Version: 1.0.75
 Date: 2020-04-03
 Author: Ron Keizer
 Maintainer: Ron Keizer <ron@insight-rx.com>
 Depends: R (>= 3.0.2)
 Imports: Rcpp (>= 0.12.9), BH, dplyr, data.table, lubridate, stringr,
-        MASS, randtoolbox, jsonlite, stats, httr
+        MASS, randtoolbox, jsonlite, stats, httr, zoo
 LinkingTo: Rcpp (>= 0.12.9)
 Description: Simulate dose regimens for PKPD models described by DE
         systems or analytical equations.

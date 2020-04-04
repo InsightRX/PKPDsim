@@ -6,67 +6,87 @@ Sys.setenv("R_TESTS" = "")
 
 dose <- 100
 interval <- 12
+t_inf <- 1
 n_days <- 5
-parameters <- list(CL = 10, V = 50, KA = 0.5, Q = 5, V2 = 100, Q2 = 3, V3 = 150)
+parameters <- list(CL = 10, V = 50, KA = 0.5, Q = 5, V2 = 100, Q2 = 3, V3 = 150, F1 = 1)
 t_obs <- c(3, 6, 8, 23)
+reg_bolus <- new_regimen(amt = dose,
+                            times = seq(0, interval * n_days * (24/interval), interval),
+                            t_inf = t_inf, type = "bolus")
+data <- advan_create_data(reg_bolus,
+                          parameters = parameters,
+                          cmts = 5,
+                          t_obs = t_obs)
 
-data <- data.frame(ID = 1,
-                TIME = seq(0, interval * n_days * (24/interval), interval),
-                AMT = dose, EVID = 1, DV = 0,
-                CL = parameters$CL,
-                V = parameters$V,
-                Q  = ifelse0(parameters$Q, NA),
-                V2 = ifelse0(parameters$V2, NA),
-                Q2  = ifelse0(parameters$Q2, NA),
-                V3 = ifelse0(parameters$V3, NA),
-                KA = ifelse0(parameters$KA, NA),
-                A1 = 0, A2 = 0, A3 = 0, A4 = 0, A5 = 0,
-                F1 = 1)
-obs <- tail(data, 1)
-obs$AMT <- 0
-obs$EVID <- 0
-for(i in seq(t_obs)) {
-  obs$TIME <- t_obs[i]
-  data <- rbind(data, obs)
-}
-data <- data[order(data$TIME, -data$EVID),]
+## Infusion dataset
+reg_infusion <- new_regimen(amt = dose,
+                            times = seq(0, interval * n_days * (24/interval), interval),
+                            t_inf = t_inf, type = "infusion")
+data_infusion <- advan_create_data(reg_infusion,
+                          parameters = parameters,
+                          cmts = 6,
+                          t_obs = t_obs)
 
-res1_oral <- advan_funcs[["1cmt_oral"]](data)
-res1_oral_c <- PKPDsim:::pk_1cmt_oral(data)
+## One compartment
+res1_iv   <- advan("1cmt_iv_bolus", cpp=FALSE)(data)
+res1_iv_c <- advan("1cmt_iv_bolus", cpp=TRUE)(data)
+assert("1cmt_iv_bolus", round(res1_iv[res1_iv$TIME == 23,]$DV, 3) == 0.242)
+assert("1cmt_iv_bolus: exact same output from C function", all(unlist(res1_iv) == unlist(res1_iv_c)))
+assert("1cmt_iv_bolus: no NA", !any(is.na(res1_iv$DV)))
+
+res1_iv_inf   <- advan("1cmt_iv_infusion", cpp=FALSE)(data_infusion)
+res1_iv_inf_c <- advan("1cmt_iv_infusion", cpp=TRUE)(data_infusion)
+f <- advan("1cmt_iv_infusion", cpp=FALSE)
+f <- advan("1cmt_iv_infusion", cpp=TRUE)
+assert("1cmt_iv_infusion", round(res1_iv_inf[res1_iv_inf$TIME == 23,]$DV, 3) == 0.268)
+assert("1cmt_iv_infusion: exact same output from C function", all(unlist(res1_iv_inf) == unlist(res1_iv_inf_c)))
+assert("1cmt_iv_infusion: no NA", !any(is.na(res1_iv_inf$DV)))
+
+res1_oral <- advan("1cmt_oral", cpp=FALSE)(data)
+res1_oral_c <- advan("1cmt_oral", cpp=TRUE)(data)
 assert("1cmt_oral", round(res1_oral[res1_oral$TIME == 23,]$DV, 3) == 0.389)
 assert("1cmt_iv_bolus: exact same output from C function", all(unlist(res1_oral) == unlist(res1_oral_c)))
 assert("1cmt_oral no NA", !any(is.na(res1_oral$DV)))
 
-res1_iv   <- advan_funcs[["1cmt_iv_bolus"]](data)
-res1_iv_c <- PKPDsim:::pk_1cmt_iv_bolus(data)
-assert("1cmt_iv_bolus", round(res1_iv[res1_iv$TIME == 23,]$DV, 3) == 0.242)
-assert("1cmt_iv_bolus: exact same output from C function", all(unlist(res1_iv) == unlist(res1_iv_c)))
-assert("1cmt_iv_bolus: no NA", !any(is.na(res1_oral$DV)))
-
-res2_oral <- advan_funcs[["2cmt_oral"]](data)
-res2_oral <- PKPDsim:::pk_2cmt_oral(data)
-assert("2cmt_oral", round(res2_oral[res2_oral$TIME == 23,]$DV, 3) == 0.302)
-assert("2cmt_oral: exact same output from C function", all(unlist(res2_oral) == unlist(res2_oral)))
-assert("2cmt_oral no NA", !any(is.na(res2_oral$DV)))
-
-res2_iv   <- advan_funcs[["2cmt_iv_bolus"]](data)
-res2_iv_c <- PKPDsim:::pk_2cmt_iv_bolus(data)
+## Two compartment
+res2_iv   <- advan("2cmt_iv_bolus", cpp=FALSE)(data)
+res2_iv_c <- advan("2cmt_iv_bolus", cpp=TRUE)(data)
 assert("2cmt_iv_bolus", round(res2_iv[res2_iv$TIME == 23,]$DV, 3) == 0.212)
 assert("2cmt_iv_bolus: exact same output from C function", all(unlist(res2_iv) == unlist(res2_iv_c)))
 assert("2cmt_iv_bolus: no NA", !any(is.na(res2_iv$DV)))
 
-# f1 <- function() {res2_iv   <- advan_funcs[["2cmt_iv_bolus"]](data)}
-# f2 <- function() {res2_iv_c <- pk_2cmt_iv_bolus(data)}
+# data_inf <- create_advan_data(regimen = reg_infusion, parameters = parameters)
+res2_iv_inf   <- advan("2cmt_iv_infusion", cpp=FALSE)(data_infusion)
+res2_iv_inf_c <- advan("2cmt_iv_infusion", cpp=TRUE)(data_infusion)
+assert("2cmt_iv_infusion", round(res2_iv_inf[res2_iv_inf$TIME == 23,]$DV, 3) == 0.225)
+assert("2cmt_iv_infusion: exact same output from C function", all(unlist(res2_iv_inf) == unlist(res2_iv_inf_c)))
+assert("2cmt_iv_infusion: no NA", !any(is.na(res2_iv_inf$DV)))
+
+res2_oral <- advan("2cmt_oral", cpp=FALSE)(data)
+res2_oral <- advan("2cmt_oral", cpp=TRUE)(data)
+assert("2cmt_oral", round(res2_oral[res2_oral$TIME == 23,]$DV, 3) == 0.302)
+assert("2cmt_oral: exact same output from C function", all(unlist(res2_oral) == unlist(res2_oral)))
+assert("2cmt_oral no NA", !any(is.na(res2_oral$DV)))
+
+# f1 <- function() {res2_iv   <- advan("2cmt_iv_bolus"]](data)}
+# f2 <- function() {res2_iv_c <- PKPDsim:::pk_2cmt_iv_bolus(data)}
 # microbenchmark::microbenchmark(f1(), f2(), times = 100)
 
-res3_oral <- advan_funcs[["3cmt_oral"]](data)
-res3_oral_c <- PKPDsim:::pk_3cmt_oral(data)
-assert("3cmt_oral", round(res3_oral[res3_oral$TIME == 23,]$DV, 3) == 0.236)
-assert("3cmt_oral: exact same output from C function", all(unlist(res3_oral) == unlist(res3_oral_c)))
-assert("3cmt_oral no NA", !any(is.na(res3_oral$DV)))
-
-res3_iv   <- advan_funcs[["3cmt_iv_bolus"]](data)
-res3_iv_c <- PKPDsim:::pk_3cmt_iv_bolus(data)
+## Three compartment
+res3_iv   <- advan("3cmt_iv_bolus", cpp=FALSE)(data)
+res3_iv_c <- advan("3cmt_iv_bolus", cpp=TRUE)(data)
 assert("3cmt_iv", round(res3_iv[res3_iv$TIME == 23,]$DV, 3) == 0.169)
 assert("3cmt_iv_bolus: exact same output from C function", all(unlist(res3_iv) == unlist(res3_iv_c)))
 assert("3cmt_iv no NA", !any(is.na(res3_iv$DV)))
+
+res3_iv_inf   <- advan("3cmt_iv_infusion", cpp=FALSE)(data_infusion)
+res3_iv_inf_c <- advan("3cmt_iv_infusion", cpp=TRUE)(data_infusion)
+assert("3cmt_iv_infusion", round(res3_iv[res3_iv$TIME == 23,]$DV, 3) == 0.169) ## CHECK this value!!!
+assert("3cmt_iv_infusion: exact same output from C function", all(unlist(res3_iv_inf) == unlist(res3_iv_inf_c)))
+assert("3cmt_iv_infusion no NA", !any(is.na(res3_iv$DV)))
+
+res3_oral <- advan("3cmt_oral", cpp=FALSE)(data)
+res3_oral_c <- advan("3cmt_oral", cpp=TRUE)(data)
+assert("3cmt_oral", round(res3_oral[res3_oral$TIME == 23,]$DV, 3) == 0.236)
+assert("3cmt_oral: exact same output from C function", all(unlist(res3_oral) == unlist(res3_oral_c)))
+assert("3cmt_oral no NA", !any(is.na(res3_oral$DV)))

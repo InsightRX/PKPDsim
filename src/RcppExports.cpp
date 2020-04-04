@@ -16,6 +16,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pk_1cmt_iv_infusion
+DataFrame pk_1cmt_iv_infusion(DataFrame d);
+RcppExport SEXP _PKPDsim_pk_1cmt_iv_infusion(SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(pk_1cmt_iv_infusion(d));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pk_1cmt_oral
 DataFrame pk_1cmt_oral(DataFrame d);
 RcppExport SEXP _PKPDsim_pk_1cmt_oral(SEXP dSEXP) {
@@ -35,6 +46,17 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type d(dSEXP);
     rcpp_result_gen = Rcpp::wrap(pk_2cmt_iv_bolus(d));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pk_2cmt_iv_infusion
+DataFrame pk_2cmt_iv_infusion(DataFrame d);
+RcppExport SEXP _PKPDsim_pk_2cmt_iv_infusion(SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(pk_2cmt_iv_infusion(d));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -60,6 +82,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pk_3cmt_iv_infusion
+DataFrame pk_3cmt_iv_infusion(DataFrame d);
+RcppExport SEXP _PKPDsim_pk_3cmt_iv_infusion(SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(pk_3cmt_iv_infusion(d));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pk_3cmt_oral
 DataFrame pk_3cmt_oral(DataFrame d);
 RcppExport SEXP _PKPDsim_pk_3cmt_oral(SEXP dSEXP) {
@@ -74,10 +107,13 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PKPDsim_pk_1cmt_iv_bolus", (DL_FUNC) &_PKPDsim_pk_1cmt_iv_bolus, 1},
+    {"_PKPDsim_pk_1cmt_iv_infusion", (DL_FUNC) &_PKPDsim_pk_1cmt_iv_infusion, 1},
     {"_PKPDsim_pk_1cmt_oral", (DL_FUNC) &_PKPDsim_pk_1cmt_oral, 1},
     {"_PKPDsim_pk_2cmt_iv_bolus", (DL_FUNC) &_PKPDsim_pk_2cmt_iv_bolus, 1},
+    {"_PKPDsim_pk_2cmt_iv_infusion", (DL_FUNC) &_PKPDsim_pk_2cmt_iv_infusion, 1},
     {"_PKPDsim_pk_2cmt_oral", (DL_FUNC) &_PKPDsim_pk_2cmt_oral, 1},
     {"_PKPDsim_pk_3cmt_iv_bolus", (DL_FUNC) &_PKPDsim_pk_3cmt_iv_bolus, 1},
+    {"_PKPDsim_pk_3cmt_iv_infusion", (DL_FUNC) &_PKPDsim_pk_3cmt_iv_infusion, 1},
     {"_PKPDsim_pk_3cmt_oral", (DL_FUNC) &_PKPDsim_pk_3cmt_oral, 1},
     {NULL, NULL, 0}
 };

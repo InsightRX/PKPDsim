@@ -10,22 +10,23 @@ DataFrame pk_3cmt_oral(DataFrame d){
   double A1last, A2last, A3last, A4last, A1term1, A1term2, A2term1, A2term2, A2term3, A3term1, A3term2, A3term3, A4term1, A4term2, A4term3;
   double a, b, c, m, n, q, B, C, I, J, t;
   int i;
+  DataFrame out = clone(d);
 
-  NumericVector A1 = d["A1"];
-  NumericVector A2 = d["A2"];
-  NumericVector A3 = d["A3"];
-  NumericVector A4 = d["A4"];
-  NumericVector DV = d["DV"];
-  NumericVector KA = d["KA"];
-  NumericVector CL = d["CL"];
-  NumericVector V  = d["V"];
-  NumericVector Q  = d["Q"];
-  NumericVector V2 = d["V2"];
-  NumericVector Q2 = d["Q2"];
-  NumericVector V3 = d["V3"];
-  NumericVector TIME = d["TIME"];
-  NumericVector AMT = d["AMT"];
-  NumericVector F1 = d["F1"];
+  NumericVector A1 = out["A1"];
+  NumericVector A2 = out["A2"];
+  NumericVector A3 = out["A3"];
+  NumericVector A4 = out["A4"];
+  NumericVector DV = out["DV"];
+  NumericVector KA = out["KA"];
+  NumericVector CL = out["CL"];
+  NumericVector V  = out["V"];
+  NumericVector Q  = out["Q"];
+  NumericVector V2 = out["V2"];
+  NumericVector Q2 = out["Q2"];
+  NumericVector V3 = out["V3"];
+  NumericVector TIME = out["TIME"];
+  NumericVector AMT = out["AMT"];
+  NumericVector F1 = out["F1"];
   if(F1==R_NilValue) {
     F1 = rep(1.0, A1.size());
   }
@@ -108,11 +109,11 @@ DataFrame pk_3cmt_oral(DataFrame d){
   }
 
   // Update object
-  d["A1"] = A1;
-  d["A2"] = A2;
-  d["A3"] = A3;
-  d["A4"] = A4;
-  d["DV"] = DV;
+  out["A1"] = A1;
+  out["A2"] = A2;
+  out["A3"] = A3;
+  out["A4"] = A4;
+  out["DV"] = DV;
 
-  return(d);
+  return(out);
 }

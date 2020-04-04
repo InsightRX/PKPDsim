@@ -3,11 +3,11 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-DataFrame pk_3cmt_iv_bolus(DataFrame d){
+DataFrame pk_3cmt_iv_infusion(DataFrame d){
 
   double k10, k20, k12, k21, k13, k31, k30, E1, E2, E3;
-  double lambda1, lambda2, lambda3, alpha, beta, gamma, theta;
-  double A1last, A2last, A3last, A1term1, A1term2, A2term1, A2term2, A3term1, A3term2;
+  double lambda1, lambda2, lambda3, alpha, beta, gamma, theta, Doserate;
+  double A1last, A2last, A3last, A1term1, A1term2, A1term3, A2term1, A2term2, A2term3, A3term1, A3term2, A3term3;
   double a, b, c, m, n, q, B, C, I, J, t;
   int i;
   DataFrame out = clone(d);
@@ -24,12 +24,13 @@ DataFrame pk_3cmt_iv_bolus(DataFrame d){
   NumericVector V3 = out["V3"];
   NumericVector TIME = out["TIME"];
   NumericVector AMT = out["AMT"];
+  NumericVector RATEALL = out["RATEALL"];
 
   // prepare initial state
   std::vector<int>::iterator it;
   i = 0;
   while(TIME[i] == 0) {
-    A1[i] = AMT[i];
+    A1[i] = 0;
     A2[i] = 0;
     A3[i] = 0;
     i++;
@@ -61,14 +62,15 @@ DataFrame pk_3cmt_iv_bolus(DataFrame d){
     gamma = sqrt(pow(beta,2.0)+pow(alpha,2.0));
     theta = atan2(alpha,beta);
 
-    lambda1 = a/3.0 + pow(gamma,(1.0/3.0))*(cos(theta/3.0) + sqrt(3.0)*sin(theta/3.0));
-    lambda2 = a/3.0 + pow(gamma,(1.0/3.0))*(cos(theta/3.0) - sqrt(3.0)*sin(theta/3.0));
-    lambda3 = a/3.0 -(2.0*pow(gamma,(1.0/3.0))*cos(theta/3.0));
+    lambda1 = a/3.0 + pow(gamma,(1.0/3.0))*(cos(theta/3) + sqrt(3)*sin(theta/3));
+    lambda2 = a/3.0 + pow(gamma,(1.0/3.0))*(cos(theta/3) - sqrt(3)*sin(theta/3));
+    lambda3 = a/3.0 -(2.0*pow(gamma,(1.0/3.0))*cos(theta/3));
 
     t = TIME[i]-TIME[i-1];
     A1last = A1[i-1];
     A2last = A2[i-1];
     A3last = A3[i-1];
+    Doserate = RATEALL[i];
 
     B = A2last*k21+A3last*k31;
     C = E3*A2last*k21+E2*A3last*k31;
@@ -77,15 +79,18 @@ DataFrame pk_3cmt_iv_bolus(DataFrame d){
 
     A1term1 = A1last*(exp(-t*lambda1)*(E2-lambda1)*(E3-lambda1)/((lambda2-lambda1)*(lambda3-lambda1))+exp(-t*lambda2)*(E2-lambda2)*(E3-lambda2)/((lambda1-lambda2)*(lambda3-lambda2))+exp(-t*lambda3)*(E2-lambda3)*(E3-lambda3)/((lambda1-lambda3)*(lambda2-lambda3)));
     A1term2 = exp(-t*lambda1)*(C-B*lambda1)/((lambda1-lambda2)*(lambda1-lambda3))+exp(-t*lambda2)*(B*lambda2-C)/((lambda1-lambda2)*(lambda2-lambda3))+exp(-t*lambda3)*(B*lambda3-C)/((lambda1-lambda3)*(lambda3-lambda2));
-    A1[i] = AMT[i]+(A1term1+A1term2);
+    A1term3 = Doserate*((E2*E3)/(lambda1*lambda2*lambda3)-exp(-t*lambda1)*(E2-lambda1)*(E3-lambda1)/(lambda1*(lambda2-lambda1)*(lambda3-lambda1))-exp(-t*lambda2)*(E2-lambda2)*(E3-lambda2)/(lambda2*(lambda1-lambda2)*(lambda3-lambda2))-exp(-t*lambda3)*(E2-lambda3)*(E3-lambda3)/(lambda3*(lambda1-lambda3)*(lambda2-lambda3)));
+    A1[i] = A1term1+A1term2+A1term3;;
 
     A2term1 = A2last*(exp(-t*lambda1)*(E1-lambda1)*(E3-lambda1)/((lambda2-lambda1)*(lambda3-lambda1))+exp(-t*lambda2)*(E1-lambda2)*(E3-lambda2)/((lambda1-lambda2)*(lambda3-lambda2))+exp(-t*lambda3)*(E1-lambda3)*(E3-lambda3)/((lambda1-lambda3)*(lambda2-lambda3)));
     A2term2 = exp(-t*lambda1)*(I-A1last*k12*lambda1)/((lambda1-lambda2)*(lambda1-lambda3))+exp(-t*lambda2)*(A1last*k12*lambda2-I)/((lambda1-lambda2)*(lambda2-lambda3))+exp(-t*lambda3)*(A1last*k12*lambda3-I)/((lambda1-lambda3)*(lambda3-lambda2));
-    A2[i] = A2term1+A2term2;
+    A2term3 = Doserate*k12*(E3/(lambda1*lambda2*lambda3)-exp(-t*lambda1)*(E3-lambda1)/(lambda1*(lambda2-lambda1)*(lambda3-lambda1))-exp(-t*lambda2)*(E3-lambda2)/(lambda2*(lambda1-lambda2)*(lambda3-lambda2))-exp(-t*lambda3)*(E3-lambda3)/(lambda3*(lambda1-lambda3)*(lambda2-lambda3)));
+    A2[i] = A2term1+A2term2+A2term3;
 
     A3term1 = A3last*(exp(-t*lambda1)*(E1-lambda1)*(E2-lambda1)/((lambda2-lambda1)*(lambda3-lambda1))+exp(-t*lambda2)*(E1-lambda2)*(E2-lambda2)/((lambda1-lambda2)*(lambda3-lambda2))+exp(-t*lambda3)*(E1-lambda3)*(E2-lambda3)/((lambda1-lambda3)*(lambda2-lambda3)));
     A3term2 = exp(-t*lambda1)*(J-A1last*k13*lambda1)/((lambda1-lambda2)*(lambda1-lambda3))+exp(-t*lambda2)*(A1last*k13*lambda2-J)/((lambda1-lambda2)*(lambda2-lambda3))+exp(-t*lambda3)*(A1last*k13*lambda3-J)/((lambda1-lambda3)*(lambda3-lambda2));
-    A3[i] = A3term1+A3term2;
+    A3term3 = Doserate*k13*(E2/(lambda1*lambda2*lambda3)-exp(-t*lambda1)*(E2-lambda1)/(lambda1*(lambda2-lambda1)*(lambda3-lambda1))-exp(-t*lambda2)*(E2-lambda2)/(lambda2*(lambda1-lambda2)*(lambda3-lambda2))-exp(-t*lambda3)*(E2-lambda3)/(lambda3*(lambda1-lambda3)*(lambda2-lambda3)));
+    A3[i] = A3term1+A3term2+A3term3;
 
     DV[i] = A1[i]/V[i];
   }
