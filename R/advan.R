@@ -712,6 +712,9 @@ advan <- function(model, cpp = TRUE) {
     )
   }
   m <- mods[[model]]
+  if(is.null(m)) {
+    stop(paste0("Model (", model, ") not found!"))
+  }
   attr(m, "cmt") <- cmt[[model]]
   attr(m, "type") <- type[[model]]
   attr(m, "implementation") <- ifelse0(cpp, "c++", "R")
