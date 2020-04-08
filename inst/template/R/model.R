@@ -13,6 +13,7 @@ model <- function(mod = NULL) {
   attr(ret, "covariates") <- [COVS]
   attr(ret, "lagtime") <- [LAGTIME]
   attr(ret, "ltbs") <- [LTBS]
+  attr(ret, "misc") <- [MISC]
   attr(ret, "int_step_size") <- [INT_STEP_SIZE]
   attr(ret, "iov") <- list([IOV])
   attr(ret, "nonmem") <- "[NONMEM]"

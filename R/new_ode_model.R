@@ -20,6 +20,7 @@
 #' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
 #' @param ruv residual variability, can optionally be added to library
 #' @param ltbs log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).
+#' @param misc a list of miscelleaneous model metadata
 #' @param int_step_size step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`
 #' @param default_parameters population or specific patient values, can optionally be added to library
 #' @param cpp_show_code show generated C++ code
@@ -55,6 +56,7 @@ new_ode_model <- function (model = NULL,
                            omega_matrix = NULL,
                            ruv = NULL,
                            ltbs = NULL,
+                           misc = NULL,
                            int_step_size = NULL,
                            default_parameters = NULL,
                            cpp_show_code = FALSE,
@@ -277,6 +279,7 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "dose") <- dose
       attr(sim_out, "lagtime") <- lagtime
       attr(sim_out, "ltbs") <- ltbs
+      attr(sim_out, "misc") <- misc
       attr(sim_out, "iov") <- iov
       attr(sim_out, "comments") <- paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n")))
       if(!is.null(int_step_size)) {
@@ -372,6 +375,7 @@ new_ode_model <- function (model = NULL,
                        "\\[USE_IOV\\]", as.character(use_iov),
                        "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
                        "\\[LTBS\\]", as.character(ltbs),
+                       "\\[MISC\\]", paste0(deparse(misc), collapse = ""),
                        "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
                        "\\[COMMENTS\\]", paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n"))),
                        "\\[NONMEM\\]", as.character(nonmem)
