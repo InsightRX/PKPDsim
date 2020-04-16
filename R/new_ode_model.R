@@ -25,6 +25,7 @@
 #' @param default_parameters population or specific patient values, can optionally be added to library
 #' @param cpp_show_code show generated C++ code
 #' @param package package name when saving as package
+#' @param test_file optional test file to be included with package
 #' @param install install package after compilation?
 #' @param folder base folder name to create package in
 #' @param lib_location install into folder (`--library` argument)
@@ -61,6 +62,7 @@ new_ode_model <- function (model = NULL,
                            default_parameters = NULL,
                            cpp_show_code = FALSE,
                            package = NULL,
+                           test_file = NULL,
                            install = TRUE,
                            folder = NULL,
                            lib_location = NULL,
@@ -415,6 +417,17 @@ new_ode_model <- function (model = NULL,
       search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)
       file.rename(paste0(new_folder, "/man/modulename-package.Rd"), paste0(new_folder, "/man/", package, ".Rd"))
 
+      ## copy test file into package
+      if(!is.null(test_file)) {
+        if(file.exists(test_file[1])) {
+          t_dir <- paste0(new_folder, "/tests")
+          if(!file.exists(t_dir)) dir.create(t_dir)
+          file.copy(test_file[1], paste0(t_dir, "/", package, ".R"))
+        } else {
+          warning("Specified test file not found.")
+        }
+      }
+
       ## Compile / build / install
       curr <- getwd()
       setwd(new_folder)
@@ -430,7 +443,7 @@ new_ode_model <- function (model = NULL,
         if(!is.null(lib_location)) {
           lib_location_arg <- paste0("--library=", lib_location)
         }
-        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source --pkglock ."))
+        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source --pkglock --install-tests ."))
       } else { # build to zip file
         system(paste0("R CMD build ."))
         pkg_file <- paste0(new_folder, "/", package, "_", version, ".tar.gz")
