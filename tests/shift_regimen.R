@@ -18,5 +18,5 @@ for(key in keys) {
   assert("Amts are taken from front, not end", reg2_s1$dose_amts == c(4,5,6))
   assert("Still a valid PKPDsim regimen", "regimen" %in% class(reg1_s1))
   reg2_s1 <- shift_regimen(reg2, n=10)
-  assert("NULL when no more doses", "regimen" %in% class(reg1_s1))
+  assert("NULL when no more doses", is.null(reg2_s1))
 }

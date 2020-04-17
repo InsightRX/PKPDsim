@@ -1,7 +1,7 @@
 Package: PKPDsim
 Type: Package
 Title: Simulate ODE models
-Version: 1.0.74
+Version: 1.0.75
 Date: 2020-04-16
 Author: Ron Keizer
 Maintainer: Ron Keizer <ron@insight-rx.com>
