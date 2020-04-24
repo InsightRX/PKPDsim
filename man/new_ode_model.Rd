@@ -112,6 +112,8 @@ new_ode_model(
 \item{comments}{comments for model}
 
 \item{version}{number of library}
+
+\item{test_file}{optional test file to be included with package}
 }
 \description{
 Create new ODE model

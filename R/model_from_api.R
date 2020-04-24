@@ -41,6 +41,7 @@ model_from_api <- function(model = NULL,
   }
   validation <- NULL
   custom_parameters <- NULL
+  test_file <- NULL
   if(github) {
     if(verbose) {
       message("Connecting to API at GitHub...")
@@ -74,8 +75,8 @@ model_from_api <- function(model = NULL,
       stringr::str_replace_all("\n", "") %>%
       stringr::str_replace_all("\\\\", "\\\\n")
     def <- jsonlite::fromJSON(lines)
+    test_file <- paste0(url, "/tests/", model, ".R")
     if(run_tests) {
-      test_file <- paste0(url, "/tests/", model, ".R")
       if(file.exists(test_file)) {
         test_txt <- readLines(test_file)
         tmp_file <- tempfile()
@@ -179,6 +180,7 @@ model_from_api <- function(model = NULL,
                                   int_step_size = def$simulation$int_step_size,
                                   comments = stringr::str_replace_all(def$comments, '\\"', ""),
                                   version = ifelse(!is.null(def$version), def$version, "0.1.0"),
+                                  test_file = test_file,
                                   ...)
     if(run_tests) {
       if(file.exists(tmp_file)) {
