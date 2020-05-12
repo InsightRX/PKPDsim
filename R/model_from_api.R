@@ -43,6 +43,7 @@ model_from_api <- function(model = NULL,
   }
   validation <- NULL
   custom_parameters <- NULL
+  test_file <- NULL
   if(github) {
     if(verbose) {
       message("- Connecting to API at GitHub...")
@@ -76,8 +77,8 @@ model_from_api <- function(model = NULL,
       stringr::str_replace_all("\n", "") %>%
       stringr::str_replace_all("\\\\", "\\\\n")
     def <- jsonlite::fromJSON(lines)
+    test_file <- paste0(url, "/tests/", model, ".R")
     if(run_tests) {
-      test_file <- paste0(url, "/tests/", model, ".R")
       if(file.exists(test_file)) {
         test_txt <- readLines(test_file)
         tmp_file <- tempfile()
