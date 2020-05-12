@@ -143,29 +143,7 @@ model_from_api <- function(model = NULL,
     #   stringr::str_replace_all("\n", "") %>%
     #   stringr::str_replace_all("\\\\", "\\\\n")
   }
-  if(is.null(def$comments)) def$comments <- ""
-
-  is_newer <- function(pkg, new_version) {
-    installed_version <- NULL
-    tryCatch({
-      installed_version <- packageVersion(pkg)
-    }, error = function(e) {
-      return(TRUE)
-    })
-    if(is.null(installed_version)) {
-      message(paste0("- Package ", package, " not installed yet."))
-      return(TRUE)
-    } else {
-      if(installed_version == new_version) {
-        return(FALSE)
-        message(paste0("- Installed version is already newest, skipping installation of ", package, "."))
-      } else {
-        return(TRUE)
-        message(paste0("- Installed version is different from current version number, starting installation of ", package, "."))
-      }
-    }
-  }  
-  
+  if(is.null(def$comments)) def$comments <- ""  
   mod <- NULL
   if(def$build || install_all) {
     build <- TRUE
@@ -174,7 +152,7 @@ model_from_api <- function(model = NULL,
       package <- gsub("_", "", def$id)
     }
     if(!force) {
-      build <- is_newer(package, def$version)
+      build <- is_newer_package(package, def$version)
     }
     if(build) {
       if(verbose) {
