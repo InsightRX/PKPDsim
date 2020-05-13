@@ -14,6 +14,7 @@ model_from_api(
   get_definition = FALSE,
   to_package = FALSE,
   force = FALSE,
+  install_all = FALSE,
   run_tests = FALSE,
   ...
 )
@@ -35,7 +36,9 @@ model_from_api(
 
 \item{to_package}{compile to package?}
 
-\item{force}{force install, even if model inactive}
+\item{force}{force install even if same version number of model already installed.}
+
+\item{install_all}{force install all, even if model inactive}
 
 \item{run_tests}{run tests associated with model?}
 
