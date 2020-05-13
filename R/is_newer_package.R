@@ -19,11 +19,11 @@ is_newer_package <- function(package, new_version) {
         return(TRUE)
     } else {
         if(installed_version == new_version) {
-            return(FALSE)
             message(paste0("- Installed version is already newest, skipping installation of ", package, "."))
+            return(FALSE)
         } else {
-            return(TRUE)
             message(paste0("- Installed version is different from current version number, starting installation of ", package, "."))
+            return(TRUE)
         }
     }
 }  

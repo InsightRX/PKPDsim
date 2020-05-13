@@ -188,8 +188,6 @@ model_from_api <- function(model = NULL,
                                     comments = stringr::str_replace_all(def$comments, '\\"', ""),
                                     version = ifelse(!is.null(def$version), def$version, "0.1.0"),
                                     ...)
-    } else {
-      message("- Not building model, newest version already installed.")
     }
     if(run_tests) {
       if(file.exists(tmp_file)) {
