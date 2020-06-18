@@ -13,6 +13,7 @@ new_ode_model(
   func = NULL,
   state_init = NULL,
   parameters = NULL,
+  reparametrization = NULL,
   units = NULL,
   size = NULL,
   lagtime = NULL,
@@ -30,6 +31,7 @@ new_ode_model(
   default_parameters = NULL,
   cpp_show_code = FALSE,
   package = NULL,
+  test_file = NULL,
   install = TRUE,
   folder = NULL,
   lib_location = NULL,
@@ -58,6 +60,8 @@ new_ode_model(
 \item{state_init}{vector of state init}
 
 \item{parameters}{list or vector of parameter values}
+
+\item{reparametrization}{list of parameters with definitions that reparametrize the linear PK model to a 1-, 2- o4 3-compartment PK with standardized parametrization.}
 
 \item{units}{list or vector of parameter units}
 
@@ -93,6 +97,8 @@ new_ode_model(
 
 \item{package}{package name when saving as package}
 
+\item{test_file}{optional test file to be included with package}
+
 \item{install}{install package after compilation?}
 
 \item{folder}{base folder name to create package in}
@@ -112,8 +118,6 @@ new_ode_model(
 \item{comments}{comments for model}
 
 \item{version}{number of library}
-
-\item{test_file}{optional test file to be included with package}
 }
 \description{
 Create new ODE model

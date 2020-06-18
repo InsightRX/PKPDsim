@@ -8,6 +8,7 @@
 #' @param func R function to be used with deSolve library
 #' @param state_init vector of state init
 #' @param parameters list or vector of parameter values
+#' @param reparametrization list of parameters with definitions that reparametrize the linear PK model to a 1-, 2- o4 3-compartment PK with standardized parametrization.
 #' @param units list or vector of parameter units
 #' @param size size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.
 #' @param lagtime lag time
@@ -45,6 +46,7 @@ new_ode_model <- function (model = NULL,
                            func = NULL,
                            state_init = NULL,
                            parameters = NULL,
+                           reparametrization = NULL,
                            units = NULL,
                            size = NULL,
                            lagtime = NULL,
@@ -273,6 +275,7 @@ new_ode_model <- function (model = NULL,
         attr(sim_out, "pk_code") <- pk_code
       }
       attr(sim_out, "parameters") <- reqd
+      attr(sim_out, "reparametrization") <- reparametrization
       attr(sim_out, "covariates") <- cov_names
       attr(sim_out, "variables") <- variables
       attr(sim_out, "cpp")  <- TRUE
@@ -371,6 +374,7 @@ new_ode_model <- function (model = NULL,
                        "\\[DOSE_CODE\\]", dose_code,
                        "\\[STATE_INIT\\]", state_init,
                        "\\[PARS\\]", pars,
+                       "\\[REPARAM\\]", paste0(deparse(reparametrization), collapse = ""),
                        "\\[VARS\\]", vars,
                        "\\[COVS\\]", covs,
                        "\\[LAGTIME\\]", lagtime,
