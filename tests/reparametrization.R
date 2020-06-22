@@ -1,4 +1,7 @@
 library(PKPDsim)
+library(testit)
+Sys.setenv("R_TESTS" = "")
+
 par_orig <- list(
   V = 25.76,
   SCLSlope = 0.036,
