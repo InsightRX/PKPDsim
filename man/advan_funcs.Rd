@@ -4,9 +4,7 @@
 \name{advan_funcs}
 \alias{advan_funcs}
 \title{ADVAN-style functions to calculate linear PK systems}
-\format{
-An object of class \code{list} of length 9.
-}
+\format{An object of class \code{list} of length 9.}
 \usage{
 advan_funcs
 }
