@@ -4,12 +4,14 @@
 \alias{reparametrize}
 \title{Reparametrize model parameters using a reparametrization defined within the model.}
 \usage{
-reparametrize(parameters, model)
+reparametrize(model, parameters, covariates)
 }
 \arguments{
+\item{model}{PKPDsim model, compiled using `reparametrization` argument or in metadata object.}
+
 \item{parameters}{list of model parameters}
 
-\item{model}{PKPDsim model, compiled using `reparametrization` argument or in metadata object.}
+\item{covariates}{covariates list, specified as PKPDsim covariates}
 }
 \description{
 Mostly useful for reparametrizing models into standard parametrizations, e.g. to
