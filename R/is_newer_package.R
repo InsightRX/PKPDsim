@@ -1,12 +1,12 @@
-#' Check if package number is different from currently installed, 
+#' Check if package number is different from currently installed,
 #' and provide some messaging.
-#' 
+#'
 #' Technically it only checks if a package version is different, not necessarily
 #' a higher version number.
-#' 
+#'
 #' @param package R package
-#' @param new_version
-#' 
+#' @param new_version new version number
+#'
 is_newer_package <- function(package, new_version) {
     installed_version <- NULL
     tryCatch({
@@ -26,4 +26,4 @@ is_newer_package <- function(package, new_version) {
             return(TRUE)
         }
     }
-}  
+}

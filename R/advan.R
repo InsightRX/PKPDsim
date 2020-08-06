@@ -688,15 +688,15 @@ advan <- function(model, cpp = TRUE) {
   )
   if(cpp) {
     mods <- list(
-      "1cmt_iv_bolus" = PKPDsim:::pk_1cmt_iv_bolus,
-      "2cmt_iv_bolus" = PKPDsim:::pk_2cmt_iv_bolus,
-      "3cmt_iv_bolus" = PKPDsim:::pk_3cmt_iv_bolus,
-      "1cmt_iv_infusion" = PKPDsim:::pk_1cmt_iv_infusion,
-      "2cmt_iv_infusion" = PKPDsim:::pk_2cmt_iv_infusion,
-      "3cmt_iv_infusion" = PKPDsim:::pk_3cmt_iv_infusion,
-      "1cmt_oral" = PKPDsim:::pk_1cmt_oral,
-      "2cmt_oral" = PKPDsim:::pk_2cmt_oral,
-      "3cmt_oral" = PKPDsim:::pk_3cmt_oral
+      "1cmt_iv_bolus" = pk_1cmt_iv_bolus,
+      "2cmt_iv_bolus" = pk_2cmt_iv_bolus,
+      "3cmt_iv_bolus" = pk_3cmt_iv_bolus,
+      "1cmt_iv_infusion" = pk_1cmt_iv_infusion,
+      "2cmt_iv_infusion" = pk_2cmt_iv_infusion,
+      "3cmt_iv_infusion" = pk_3cmt_iv_infusion,
+      "1cmt_oral" = pk_1cmt_oral,
+      "2cmt_oral" = pk_2cmt_oral,
+      "3cmt_oral" = pk_3cmt_oral
     )
   } else {
     mods <- list(
@@ -712,6 +712,9 @@ advan <- function(model, cpp = TRUE) {
     )
   }
   m <- mods[[model]]
+  if(is.null(m)) {
+    stop(paste0("Model (", model, ") not found!"))
+  }
   attr(m, "cmt") <- cmt[[model]]
   attr(m, "type") <- type[[model]]
   attr(m, "implementation") <- ifelse0(cpp, "c++", "R")

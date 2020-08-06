@@ -4,7 +4,14 @@
 \alias{advan_create_data}
 \title{Create ADVAN-style dataset}
 \usage{
-advan_create_data(regimen, parameters, cmts = 5, t_obs = NULL)
+advan_create_data(
+  regimen,
+  parameters,
+  cmts = 5,
+  t_obs = NULL,
+  covariates = NULL,
+  covariate_model = NULL
+)
 }
 \arguments{
 \item{regimen}{PKPDsim regimen}
@@ -14,6 +21,10 @@ advan_create_data(regimen, parameters, cmts = 5, t_obs = NULL)
 \item{cmts}{number of compartments, minimum is 1. Default is 5, which is enough for most linear PK models. It is OK to have more compartments available than are actually being used.}
 
 \item{t_obs}{add observation timepoints to dataset}
+
+\item{covariates}{covariate list}
+
+\item{covariate_model}{covariate model equations, written in C}
 }
 \description{
 Create ADVAN-style dataset

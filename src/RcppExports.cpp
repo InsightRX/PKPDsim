@@ -16,6 +16,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pk_1cmt_iv_bolus_covariates
+DataFrame pk_1cmt_iv_bolus_covariates(DataFrame data, List parameters, StringVector covariates, Function covariate_model);
+RcppExport SEXP _PKPDsim_pk_1cmt_iv_bolus_covariates(SEXP dataSEXP, SEXP parametersSEXP, SEXP covariatesSEXP, SEXP covariate_modelSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type data(dataSEXP);
+    Rcpp::traits::input_parameter< List >::type parameters(parametersSEXP);
+    Rcpp::traits::input_parameter< StringVector >::type covariates(covariatesSEXP);
+    Rcpp::traits::input_parameter< Function >::type covariate_model(covariate_modelSEXP);
+    rcpp_result_gen = Rcpp::wrap(pk_1cmt_iv_bolus_covariates(data, parameters, covariates, covariate_model));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pk_1cmt_iv_infusion
 DataFrame pk_1cmt_iv_infusion(DataFrame d);
 RcppExport SEXP _PKPDsim_pk_1cmt_iv_infusion(SEXP dSEXP) {
@@ -107,6 +121,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_PKPDsim_pk_1cmt_iv_bolus", (DL_FUNC) &_PKPDsim_pk_1cmt_iv_bolus, 1},
+    {"_PKPDsim_pk_1cmt_iv_bolus_covariates", (DL_FUNC) &_PKPDsim_pk_1cmt_iv_bolus_covariates, 4},
     {"_PKPDsim_pk_1cmt_iv_infusion", (DL_FUNC) &_PKPDsim_pk_1cmt_iv_infusion, 1},
     {"_PKPDsim_pk_1cmt_oral", (DL_FUNC) &_PKPDsim_pk_1cmt_oral, 1},
     {"_PKPDsim_pk_2cmt_iv_bolus", (DL_FUNC) &_PKPDsim_pk_2cmt_iv_bolus, 1},

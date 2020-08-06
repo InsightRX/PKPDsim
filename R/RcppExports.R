@@ -5,6 +5,10 @@ pk_1cmt_iv_bolus <- function(d) {
     .Call('_PKPDsim_pk_1cmt_iv_bolus', PACKAGE = 'PKPDsim', d)
 }
 
+pk_1cmt_iv_bolus_covariates <- function(data, parameters, covariates, covariate_model) {
+    .Call('_PKPDsim_pk_1cmt_iv_bolus_covariates', PACKAGE = 'PKPDsim', data, parameters, covariates, covariate_model)
+}
+
 pk_1cmt_iv_infusion <- function(d) {
     .Call('_PKPDsim_pk_1cmt_iv_infusion', PACKAGE = 'PKPDsim', d)
 }
