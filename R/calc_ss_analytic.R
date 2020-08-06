@@ -11,6 +11,7 @@
 #' @param f analytic equation to use, must be one of `names(advan_funcs)`
 #' @param dose dose
 #' @param interval interval
+#' @param t_inf infusion time
 #' @param model PKPDsim model
 #' @param parameters parameters list
 #' @param covariates covariates list

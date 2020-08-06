@@ -10,7 +10,7 @@ advan_create_data(
   cmts = 5,
   t_obs = NULL,
   covariates = NULL,
-  covariate_model
+  covariate_model = NULL
 )
 }
 \arguments{
@@ -22,7 +22,9 @@ advan_create_data(
 
 \item{t_obs}{add observation timepoints to dataset}
 
-\item{covariates}{}
+\item{covariates}{covariate list}
+
+\item{covariate_model}{covariate model equations, written in C}
 }
 \description{
 Create ADVAN-style dataset

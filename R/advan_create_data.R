@@ -4,7 +4,8 @@
 #' @param parameters list of parameters
 #' @param cmts number of compartments, minimum is 1. Default is 5, which is enough for most linear PK models. It is OK to have more compartments available than are actually being used.
 #' @param t_obs add observation timepoints to dataset
-#' @param covariates
+#' @param covariates covariate list
+#' @param covariate_model covariate model equations, written in C
 #'
 #' @export
 advan_create_data <- function(
@@ -13,7 +14,7 @@ advan_create_data <- function(
   cmts = 5,
   t_obs = NULL,
   covariates = NULL,
-  covariate_model) {
+  covariate_model = NULL) {
 
   ## Set up basic structure
   data <- data.frame(

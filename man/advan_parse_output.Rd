@@ -4,10 +4,18 @@
 \alias{advan_parse_output}
 \title{Internal function to parse the raw output from ADVAN-style functions}
 \usage{
-advan_parse_output(data, cmts = 1)
+advan_parse_output(data, cmts = 1, t_obs, extra_t_obs = TRUE, regimen)
 }
 \arguments{
 \item{data}{simulation output data}
+
+\item{cmts}{number of compartments}
+
+\item{t_obs}{observation times}
+
+\item{extra_t_obs}{leave extra added dose times in dataset?}
+
+\item{regimen}{PKPDsim regimen}
 }
 \description{
 Internal function to parse the raw output from ADVAN-style functions
