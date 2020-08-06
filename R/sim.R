@@ -316,7 +316,7 @@ sim <- function (ode = NULL,
 
   ## Use analytical equations (ADVAN):
   if(!is.null(analytical)) {
-    model <- advan(analytical, cpp = TRUE)
+    ana_model <- advan(analytical, cpp = TRUE)
     simdata <- advan_create_data(regimen = regimen,
                                  parameters = parameters,
                                  cmts = attr(ana_model, "cmt"),
@@ -324,7 +324,12 @@ sim <- function (ode = NULL,
                                  covariates = covariates,
                                  covariate_model = covariate_model)
     res <- ana_model(simdata)
-    out <- advan_parse_output(res, cmts = attr(ana_model, "cmt"))
+    out <- advan_parse_output(
+      res,
+      cmts = attr(ana_model, "cmt"),
+      t_obs = t_obs,
+      extra_t_obs = extra_t_obs,
+      regimen = regimen)
     return(out)
   }
 
