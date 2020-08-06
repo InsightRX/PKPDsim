@@ -24,6 +24,7 @@ calc_ss_analytic <- function(
   f = "1cmt_oral",
   dose,
   interval,
+  t_inf = NULL,
   model,
   parameters,
   covariates = NULL,
@@ -56,8 +57,9 @@ calc_ss_analytic <- function(
   }
 
   ## create dataset as input for TwoCompOral ADVAN function
+  t_dos <- seq(0, interval * n_days * (24/interval), interval)
   d <- data.frame(ID = 1,
-                  TIME = seq(0, interval * n_days * (24/interval), interval),
+                  TIME = t_dos,
                   AMT = dose, EVID = 1, DV = 0,
                   CL = parameters$CL,
                   V = parameters$V,
@@ -68,15 +70,23 @@ calc_ss_analytic <- function(
                   KA = ifelse0(parameters$KA, NA),
                   A1 = 0, A2 = 0, A3 = 0, A4 = 0, A5 = 0,
                   F1 = ifelse0(parameters$F1, 1))
+  if(!is.null(t_inf)) {
+    d$RATE <- d$AMT / t_inf
+    d <- advan_process_infusion_doses(d)
+  }
   obs <- tail(d, 1)
+  obs$TIME <- tail(t_dos,1) + interval
   obs$AMT <- 0
   obs$EVID <- 0
+  if(!is.null(t_inf)) {
+    obs$RATE <- 0
+    obs$RATEALL <- 0
+  }
   d <- rbind(d, obs)
 
   ## simulate to steady state using ADVAN function
-  func <- advan_funcs[[f]]
+  func <- advan(f, cpp = TRUE)
   res <- func(d)
-  res$A1 <- res$A1 - dose
 
   ## Return state vector at steady state trough
   A <- as.numeric(res[res$EVID == 0, paste0("A", 1:attr(func, "cmt"))])
