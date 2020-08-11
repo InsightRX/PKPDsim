@@ -51,7 +51,7 @@ new_regimen <- function(
     if(is.null(reg$type)) {
       reg$type <- "bolus"
     }
-    if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || length(reg$type) == 0 || !(reg$type %in% c("bolus", "oral", "infusion")))) {
+    if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || any(length(reg$type) == 0) || !(all(reg$type %in% c("bolus", "oral", "infusion"))))) {
       if(!is.null(t_inf) || !is.null(rate)) {
         reg$type <- "infusion" # assume all infusions
       } else {
@@ -65,8 +65,12 @@ new_regimen <- function(
     if (is.null(times) && !is.null(interval) && is.null(n)) {
       stop("The number of doses (n) must be specified in the regimen object.")
     }
-    if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0 || is.na(t_inf))) {
-      reg$t_inf = 1
+    if(any(type == "infusion")) {
+      if(is.null(t_inf)) {
+        reg$t_inf = 1
+      } else if(any(is.na(t_inf))) {
+        reg$t_inf[is.na(t_inf)] <- 1
+      }
     }
   }
   if(ss) {
