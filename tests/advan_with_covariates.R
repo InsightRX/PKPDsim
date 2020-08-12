@@ -44,3 +44,18 @@ data_ode <- sim(
 
 assert("Correct size output data.frame", nrow(data_ana) == nrow(data_ode))
 assert("Correct values simulated", all(round(data_ana$y,4) == round(data_ode$y, 4)))
+
+## Using analytic equations model, with reparametrization:
+repar <- list(CL = "CL * (1 + TH_CRCL * (CRCL*16.66667 - 66))",
+              V = "V * WT",
+              Q = "Q",
+              V2 = "V2 * WT")
+data_ana <- sim(
+  analytical = "1cmt_iv_bolus",
+  parameters = parameters,
+  reparametrization = repar,
+  covariates = covariates,
+  regimen = reg_bolus,
+  t_obs = t_obs,
+  covariate_model = "CL = CL * (CRCL / 3)^0.75; V = V * (WT / 70.0)")
+
