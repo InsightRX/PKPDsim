@@ -5,7 +5,7 @@
 #' @param interval dosing interval (requires n as argument)
 #' @param n number of doses (requires interval as argument)
 #' @param times vector describing dosing times. Overrides specified times using interval and n arguments
-#' @param type either "infusion" or "bolus" (default)
+#' @param type either "infusion", "oral" or bolus" (default)
 #' @param t_inf infusion time (if `type`==`infusion`)
 #' @param rate infusion rate (if `type`==`infusion`). `NULL` by default. If specified, overrides `t_inf`
 #' @param t_lag lag time (can be applied to any dose type, not only oral). Will just be added to `times`
