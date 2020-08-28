@@ -42,12 +42,16 @@ parse_regimen <- function(
   dose_cmt <- 1
   if(!is.null(regimen$cmt)) {
     regimen$dose_cmt <- regimen$cmt
+
+  } else if (!is.null(model) && !is.null(attr(model, "cmt_mapping"))) {
+    cmt_mapping <- attr(model, "cmt_mapping")
+    regimen$dose_cmt <- vapply(regimen$type, function(x) cmt_mapping[[x]], FUN.VALUE = numeric(1), USE.NAMES = FALSE)
+
   } else {
-    if(!is.null(model)) {
-      if(!is.null(attr(model, "dose")$cmt)) {
-        dose_cmt <- attr(model, "dose")$cmt
-      }
+    if (!is.null(model) && !is.null(attr(model, "dose")$cmt)) {
+      dose_cmt <- attr(model, "dose")$cmt
     }
+
     regimen$dose_cmt <- rep(dose_cmt, length(regimen$dose_times))
   }
 

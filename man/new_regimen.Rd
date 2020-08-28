@@ -29,7 +29,7 @@ new_regimen(
 
 \item{times}{vector describing dosing times. Overrides specified times using interval and n arguments}
 
-\item{type}{either "infusion" or "bolus" (default)}
+\item{type}{either "infusion", "oral" or bolus" (default)}
 
 \item{t_inf}{infusion time (if `type`==`infusion`)}
 
