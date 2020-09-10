@@ -60,7 +60,7 @@ advan_process_infusion_doses <- function (data) {
 
   # Get rid of extra dose rows
   data <- data[data$DNUM > 0 | is.na(data$DNUM)==T,]
-  data <- data[-c(data$DNUM, data$RATEALLI, data$DNUMI),]
+  data <- data[, ! names(data) %in% (c("DNUM", "RATEALLI", "DNUMI"))]
 
   return(data)
 }
