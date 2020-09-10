@@ -7,7 +7,7 @@ advan_process_infusion_doses <- function (data) {
   ## cleaned up and optimized. Can potentially be optimized more.
 
   # Calculate all amounts
-  doserows <- subset(data, AMT!=0)
+  doserows <- data[data$AMT != 0, ]
   dosecount <- nrow(doserows)  #total number of doses
   doserows$DNUM <- 1:dosecount
 
@@ -36,7 +36,7 @@ advan_process_infusion_doses <- function (data) {
   data <- data[order(data$ID, data$TIME, data$AMT), ]
 
   # Set an extra last row
-  lastrow <- tail(data, 1)
+  lastrow <- utils::tail(data, 1)
   lastrow$TIME <- lastrow$TIME+1
   data <- rbind(data, lastrow)
 
@@ -59,8 +59,8 @@ advan_process_infusion_doses <- function (data) {
   data$RATEALL[data$DNUM > 0] <- 0
 
   # Get rid of extra dose rows
-  data <- subset(data, (DNUM > 0 | is.na(DNUM)==T))
-  data <- subset(data, select = -c(DNUM, RATEALLI, DNUMI))
+  data <- data[data$DNUM > 0 | is.na(data$DNUM)==T,]
+  data <- data[-c(data$DNUM, data$RATEALLI, data$DNUMI),]
 
   return(data)
 }

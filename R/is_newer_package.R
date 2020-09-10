@@ -10,7 +10,7 @@
 is_newer_package <- function(package, new_version) {
     installed_version <- NULL
     tryCatch({
-        installed_version <- packageVersion(package)
+        installed_version <- utils::packageVersion(package)
     }, error = function(e) {
         return(TRUE)
     })

@@ -75,8 +75,8 @@ calc_ss_analytic <- function(
     d$RATE <- d$AMT / t_inf
     d <- advan_process_infusion_doses(d)
   }
-  obs <- tail(d, 1)
-  obs$TIME <- tail(t_dos,1) + interval
+  obs <- utils::tail(d, 1)
+  obs$TIME <- utils::tail(t_dos,1) + interval
   obs$AMT <- 0
   obs$EVID <- 0
   if(!is.null(t_inf)) {

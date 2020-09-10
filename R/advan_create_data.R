@@ -20,13 +20,14 @@ advan_create_data <- function(
   data <- data.frame(
     ID = 1,
     TIME = regimen$dose_times,
-    AMT = dose, EVID = 1, DV = 0,
+    AMT = regimen$dose_amts,
+    EVID = 1, DV = 0,
     RATE = 0,
     TYPE = ifelse(regimen$type == "infusion", 1, 0))
 
   ## Add observation data points.
   if(!is.null(t_obs)) {
-    obs <- tail(data, 1)
+    obs <- utils::tail(data, 1)
     obs$AMT <- 0
     obs$RATE <- 0
     obs$EVID <- 0
