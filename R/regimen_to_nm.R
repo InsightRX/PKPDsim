@@ -31,11 +31,11 @@ regimen_to_nm <- function(
     obs <- data.frame(
       ID = rep(1:n_ind, each = length(t_obs)),
       TIME = rep(t_obs, n_ind))
-    obs <- obs %>% dplyr::mutate("CMT" = obs_cmt, "DV" = 0, "AMT" = 0, "EVID" = 0, "MDV" = 0)
+    obs <- transform(obs, CMT = obs_cmt, DV = 0, AMT = 0, EVID = 0, MDV = 0)
     if(any(reg$type == "infusion")) {
       obs$RATE <- 0
     }
-    dat <- dplyr::bind_rows(dat, obs)
+    dat <- rbind(dat, obs)
     dat <- dat[order(dat$ID, dat$TIME, -dat$EVID, dat$CMT),] # not using arrange due to package check error (NOTE no visible binding etc.)
   }
   return(dat)

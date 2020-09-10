@@ -505,13 +505,11 @@ sim <- function (ode = NULL,
   grid <- expand.grid(paste(t_obs, obs_type, sep="_"), unique(comb$id), unique(comb$comp))
   colnames(grid) <- c("t_obs_type", "id", "comp")
   comb$t_obs_type <- paste(comb$t, comb$obs_type, sep = "_")
-  suppressWarnings(suppressMessages( ## left join is a bit too chatty
-    if(!is.null(all_names) && length(all_names) > 0) {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type", all_names)]
-    } else {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type")]
-    }
-  ))
+  if(!is.null(all_names) && length(all_names) > 0) {
+    comb <- merge(grid, comb, all=FALSE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type", all_names)]
+  } else {
+    comb <- merge(grid, comb, all=FALSE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type")]
+  }
   comb <- comb[,-2]
   if(!is.null(regimen_orig$ss_regimen)) {
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
