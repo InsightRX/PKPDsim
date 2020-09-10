@@ -211,7 +211,7 @@ parse_regimen <- function(
   }
   design <- design[design$t <= max(t_obs),]
   if(!is.null(obs_type)) {
-    design <- merge(design, data.frame(t = t_obs, obs_type), all=FALSE)[,c("t", "dose","type", "dum", "dose_cmt", "t_inf", "evid", "bioav", "rate", "obs_type")]
+    design <- merge(design, data.frame(t = t_obs, obs_type), all=TRUE)
     design$obs_type <- ifelse(is.na(design$obs_type), 0, as.integer(design$obs_type))
   }
   design <- design[order(design$t, design$type, design$dum, decreasing=FALSE),]
