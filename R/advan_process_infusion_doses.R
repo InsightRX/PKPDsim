@@ -41,7 +41,7 @@ advan_process_infusion_doses <- function (data) {
   data <- rbind(data, lastrow)
 
   # Now fill in the gaps for the covariates by locf
-  data[,badcols] <- apply(data[,badcols], 2, na_locf, na.rm=FALSE)
+  data[,badcols] <- apply(data[,badcols], 2, na_locf)
 
   # Process infusion doses in a loop
   data$RATEALL <- 0
@@ -49,7 +49,7 @@ advan_process_infusion_doses <- function (data) {
     data$RATEALLI <- 0
     data$DNUMI <- data$DNUM
     data$DNUMI[abs(data$DNUM) != DCOUNT] <- NA
-    data$DNUMI <- na_locf(data$DNUMI, na.rm=FALSE)
+    data$DNUMI <- na_locf(data$DNUMI)
     data$DNUMI[is.na(data$DNUMI)==T] <- 0
     data$RATEALLI[data$DNUMI==DCOUNT] <- data$RATE[which(data$DNUM==DCOUNT)]
     data$RATEALL <- data$RATEALL+data$RATEALLI
