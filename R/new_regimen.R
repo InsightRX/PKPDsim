@@ -51,7 +51,7 @@ new_regimen <- function(
     if(is.null(reg$type)) {
       reg$type <- "bolus"
     }
-    if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || length(reg$type) == 0 || !all(reg$type %in% c("bolus", "oral", "infusion")))) {
+    if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || any(length(reg$type) == 0) || !(all(reg$type %in% c("bolus", "oral", "infusion"))))) {
       if(!is.null(t_inf) || !is.null(rate)) {
         reg$type <- "infusion" # assume all infusions
       } else {

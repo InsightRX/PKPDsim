@@ -5,5 +5,7 @@
 .Rbuildignore
 .DS_Store
 ..Rcheck
+src/*.o
+src/*.so
 *.pdf
 *.Rout

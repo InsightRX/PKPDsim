@@ -21,6 +21,7 @@ sim(
   covariates = NULL,
   covariates_table = NULL,
   covariates_implementation = list(),
+  covariate_model = NULL,
   A_init = NULL,
   only_obs = FALSE,
   obs_step_size = NULL,
@@ -43,7 +44,7 @@ sim(
 \arguments{
 \item{ode}{function describing the ODE system}
 
-\item{analytical}{analytical equation (function)}
+\item{analytical}{string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.}
 
 \item{parameters}{model parameters}
 
@@ -72,6 +73,8 @@ sim(
 \item{covariates_table}{data.frame (or unnamed list of named lists per individual) with covariate values}
 
 \item{covariates_implementation}{used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`}
+
+\item{covariate_model}{R code used to pre-calculate effective parameters for use in ADVAN-style analytical equations. Not used in ODE simulations.}
 
 \item{A_init}{vector with the initial state of the ODE system}
 

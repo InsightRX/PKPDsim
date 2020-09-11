@@ -2,7 +2,7 @@
 #'
 #' Simulates a specified regimen using ODE system or analytical equation
 #' @param ode function describing the ODE system
-#' @param analytical analytical equation (function)
+#' @param analytical string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.
 #' @param parameters model parameters
 #' @param parameters_table dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
@@ -18,6 +18,7 @@
 #' @param covariates list of covariates (for single individual) created using `new_covariate()` function
 #' @param covariates_table data.frame (or unnamed list of named lists per individual) with covariate values
 #' @param covariates_implementation used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`
+#' @param covariate_model R code used to pre-calculate effective parameters for use in ADVAN-style analytical equations. Not used in ODE simulations.
 #' @param only_obs only return the observations
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
@@ -92,6 +93,7 @@ sim <- function (ode = NULL,
                  covariates = NULL,
                  covariates_table = NULL,
                  covariates_implementation = list(),
+                 covariate_model = NULL,
                  A_init = NULL,
                  only_obs = FALSE,
                  obs_step_size = NULL,
@@ -142,11 +144,6 @@ sim <- function (ode = NULL,
     t_obs <- round(t_obs, 6)
   }
   t_obs_orig <- t_obs + t_init
-  if(is.null(analytical)) {
-    if ("character" %in% class(ode)) {
-      ode <- get(ode)
-    }
-  }
   if(checks) {
     ## test_pointer looks if the model is in memory, will throw error if needs to be recompiled.
     test_pointer(ode)
@@ -181,12 +178,17 @@ sim <- function (ode = NULL,
           size <- attr(get(ode),  "size")
         }
       }
+    } else {
+      size <- attr(analytical, "size")
     }
     if(!is.null(parameters) && !is.null(parameters_table)) {
       stop("Both `parameters` and `parameters_table` are specified!")
     }
-    if(is.null(ode) | (is.null(parameters) && is.null(parameters_table)) ) {
-      stop("Please specify at least the required arguments 'ode' and 'parameters' (or `parameters_table`).")
+    if(is.null(ode) && is.null(analytical)) {
+      stop("Please specify at least the required arguments 'ode' or 'analytical' for simulations.")
+    }
+    if(is.null(parameters) && is.null(parameters_table)) {
+      stop("Please specify 'parameters' (or `parameters_table`) for the model.")
     }
     if(is.null(regimen)) {
       stop("Please specify a regimen created using the `new_regimen()` function.")
@@ -194,8 +196,10 @@ sim <- function (ode = NULL,
     #  if(!is.null(t_tte)) {
     #    stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
     #  }
-    if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
-      stop("Sorry. Non-C++ functions are deprecated.")
+    if(is.null(analytical)) {
+      if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
+        stop("Sorry. Non-C++ functions are deprecated.")
+      }
     }
     if(!is.null(covariates)) {
       if(!is.null(covariates_table)) {
@@ -238,32 +242,34 @@ sim <- function (ode = NULL,
       message(paste0("Simulating ", n_ind, " individuals."))
     }
     ## check parameters specified
-    pars_ode <- attr(ode, "parameters")
-    rates <- paste0("rate[", 0:(size-1), "]")
-    if(!all(pars_ode %in% c(names(p), rates))) {
-      m <- match(c(names(p), names(covariates)), pars_ode)
-      if(length(m) == 0) {
-        missing <- pars_ode
-      } else {
-        missing <- pars_ode[-m[!is.na(m)]]
-      }
-      stop("Not all parameters for this model have been specified. Missing: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
-    }
-    covs_ode <- attr(ode, "covariates")
-    if(!is.null(covs_ode)) {
-      if(!is.null(covariates_table)) {
-        covariates_tmp <- covariates_table[[1]]
-      } else {
-        covariates_tmp <- covariates
-      }
-      if(covs_ode != "" && !all(covs_ode %in% c(names(covariates_tmp)))) {
-        m <- match(names(covariates_tmp), covs_ode)
+    if(is.null(analytical)) {
+      pars_ode <- attr(ode, "parameters")
+      rates <- paste0("rate[", 0:(size-1), "]")
+      if(!all(pars_ode %in% c(names(p), rates))) {
+        m <- match(c(names(p), names(covariates)), pars_ode)
         if(length(m) == 0) {
-          missing <- covs_ode
+          missing <- pars_ode
         } else {
-          missing <- covs_ode[-m[!is.na(m)]]
+          missing <- pars_ode[-m[!is.na(m)]]
         }
-        stop("Not all covariates for this model have been specified. Missing: \n  ", paste(missing, collapse=", "))
+        stop("Not all parameters for this model have been specified. Missing: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
+      }
+      covs_ode <- attr(ode, "covariates")
+      if(!is.null(covs_ode)) {
+        if(!is.null(covariates_table)) {
+          covariates_tmp <- covariates_table[[1]]
+        } else {
+          covariates_tmp <- covariates
+        }
+        if(all(covs_ode != "") && !all(covs_ode %in% c(names(covariates_tmp)))) {
+          m <- match(names(covariates_tmp), covs_ode)
+          if(length(m) == 0) {
+            missing <- covs_ode
+          } else {
+            missing <- covs_ode[-m[!is.na(m)]]
+          }
+          stop("Not all covariates for this model have been specified. Missing: \n  ", paste(missing, collapse=", "))
+        }
       }
     }
     if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
@@ -307,6 +313,27 @@ sim <- function (ode = NULL,
     p$dose_times <- regimen$dose_times
     p$dose_amts  <- regimen$dose_amts
   }
+
+  ## Use analytical equations (ADVAN):
+  if(!is.null(analytical)) {
+    ana_model <- advan(analytical, cpp = TRUE)
+    simdata <- advan_create_data(regimen = regimen,
+                                 parameters = parameters,
+                                 cmts = attr(ana_model, "cmt"),
+                                 t_obs = t_obs,
+                                 covariates = covariates,
+                                 covariate_model = covariate_model)
+    res <- ana_model(simdata)
+    out <- advan_parse_output(
+      res,
+      cmts = attr(ana_model, "cmt"),
+      t_obs = t_obs,
+      extra_t_obs = extra_t_obs,
+      regimen = regimen)
+    return(out)
+  }
+
+  ## Continue with ODE simulation
   if (is.null(A_init)) {
     A_init <- rep(0, size)
   }
@@ -315,7 +342,9 @@ sim <- function (ode = NULL,
   if("regimen_multiple" %in% class(regimen) && !is.null(covariates_table)) {
     stop("Sorry, can't simulate multiple regimens for a population in single call to PKPDsim. Use a loop instead.")
   }
-  ## Overrie integrator step size if precision tied to model
+
+
+  ## Override integrator step size if precision tied to model
   int_step_size <- ifelse(!is.null(attr(ode, "int_step_size")), as.num(attr(ode, "int_step_size")), int_step_size)
   for (i in 1:n_ind) {
     p_i <- p

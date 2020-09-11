@@ -2,7 +2,7 @@
 % Please edit documentation in R/is_newer_package.R
 \name{is_newer_package}
 \alias{is_newer_package}
-\title{Check if package number is different from currently installed, 
+\title{Check if package number is different from currently installed,
 and provide some messaging.}
 \usage{
 is_newer_package(package, new_version)
@@ -10,7 +10,7 @@ is_newer_package(package, new_version)
 \arguments{
 \item{package}{R package}
 
-\item{new_version}{}
+\item{new_version}{new version number}
 }
 \description{
 Technically it only checks if a package version is different, not necessarily

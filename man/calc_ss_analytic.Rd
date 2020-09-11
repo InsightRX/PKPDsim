@@ -9,6 +9,7 @@ calc_ss_analytic(
   f = "1cmt_oral",
   dose,
   interval,
+  t_inf = NULL,
   model,
   parameters,
   covariates = NULL,
@@ -24,6 +25,8 @@ calc_ss_analytic(
 \item{dose}{dose}
 
 \item{interval}{interval}
+
+\item{t_inf}{infusion time}
 
 \item{model}{PKPDsim model}
 
