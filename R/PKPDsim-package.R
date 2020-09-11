@@ -4,7 +4,6 @@
 #'
 #' @docType package
 #' @name PKPDsim-package
-#' @import dplyr Rcpp
 #' @author Ron Keizer \email{ronkeizer@@gmail.com}
 #' @importFrom utils packageVersion tail
 # NULL

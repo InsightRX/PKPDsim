@@ -90,7 +90,6 @@ sim_ae <- function(
 
 #
 # library(PKPDsim)
-# library(dplyr)
 # library(ggplot2)
 # library(PKPDplot)
 # reg <- new_regimen(amt = rep(1000,4),

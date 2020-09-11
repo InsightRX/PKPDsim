@@ -1,4 +1,4 @@
-## Example multiple observation types (e.g. different compartments! not just different residual errors)library(testit)
+## Example multiple observation types (e.g. different compartments! not just different residual errors)
 library(testit)
 library(PKPDsim)
 Sys.setenv("R_TESTS" = "")
@@ -38,8 +38,8 @@ t_same <- sim(ode = pk1,
             t_obs = c(2, 4, 4, 8, 8),
             output_include = list("variables" = TRUE))
 testit::assert("same t", t_same$t[2] == t_same$t[3] && t_same$t[4] == t_same$t[5])
-testit::assert("y correctly outputted", t_same$y[2] == t_same$METAB[2] && t_same$y[3] == t_same$CONC[3])
-testit::assert("y correctly outputted", t_same$y[4] == t_same$METAB2[4] && t_same$y[5] == t_same$CONC[5])
+testit::assert("y correctly outputted", t_same$y[3] == t_same$METAB[3] && t_same$y[2] == t_same$CONC[2])
+testit::assert("y correctly outputted", t_same$y[5] == t_same$METAB2[5] && t_same$y[4] == t_same$CONC[4])
 
 ## check that residual error correctly applied to right var
 set.seed(12345)
