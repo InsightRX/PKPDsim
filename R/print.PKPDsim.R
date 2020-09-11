@@ -21,6 +21,9 @@ print.PKPDsim <- function(x, ...) {
     cat(paste0("Observation compartment: ", paste(attr(x, "obs")$cmt, collapse=", "), "\n"))
   }
   cat(paste0("Observation scaling: ", paste(attr(x, "obs")$scale, collapse=", "), "\n"))
+  if(!is.null(attr(x, "cmt_mapping"))){
+    cat(paste0("Compartment mapping: ", paste0(paste0(names(attr(x, "cmt_mapping")), ": ", attr(x, "cmt_mapping")), collapse = ", ")), "\n")
+  }
   if(!is.null(attr(x, "lagtime"))) {
     if(length(attr(x, "lagtime")) == 1) {
       cat(paste0("Lag time: ", attr(x, "lagtime"), "\n"))

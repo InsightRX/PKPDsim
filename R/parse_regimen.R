@@ -42,12 +42,16 @@ parse_regimen <- function(
   dose_cmt <- 1
   if(!is.null(regimen$cmt)) {
     regimen$dose_cmt <- regimen$cmt
+
+  } else if (!is.null(model) && !is.null(attr(model, "cmt_mapping"))) {
+    cmt_mapping <- attr(model, "cmt_mapping")
+    regimen$dose_cmt <- vapply(regimen$type, function(x) cmt_mapping[[x]], FUN.VALUE = numeric(1), USE.NAMES = FALSE)
+
   } else {
-    if(!is.null(model)) {
-      if(!is.null(attr(model, "dose")$cmt)) {
-        dose_cmt <- attr(model, "dose")$cmt
-      }
+    if (!is.null(model) && !is.null(attr(model, "dose")$cmt)) {
+      dose_cmt <- attr(model, "dose")$cmt
     }
+
     regimen$dose_cmt <- rep(dose_cmt, length(regimen$dose_times))
   }
 
@@ -205,16 +209,12 @@ parse_regimen <- function(
     design <- design[!duplicated(paste0(design$t, "_", design$dose, "_", design$dum)),]
     # design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
   }
-  design <- design %>%
-    dplyr::arrange(t, type, dum) %>%
-    dplyr::filter(t <= max(t_obs))
+  design <- design[design$t <= max(t_obs),]
   if(!is.null(obs_type)) {
-    suppressMessages(suppressWarnings(
-      design <- design %>%
-        dplyr::left_join(data.frame(cbind(t = t_obs, obs_type))) %>%
-        dplyr::mutate(obs_type = ifelse(is.na(obs_type), 0, as.integer(obs_type)))
-    ))
+    design <- merge(design, data.frame(t = t_obs, obs_type), all=TRUE)
+    design$obs_type <- ifelse(is.na(design$obs_type), 0, as.integer(design$obs_type))
   }
+  design <- design[order(design$t, design$type, design$dum, decreasing=FALSE),]
   if(t_init != 0) { # add event line at t=0, to start integration
      design <- design[c(1, 1:nrow(design)),]
      design[1, 1:9] <- c(0, 0, 0, 0, 0, 0, 2, 0, 0)

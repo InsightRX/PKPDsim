@@ -15,8 +15,10 @@ model <- function(mod = NULL) {
   attr(ret, "lagtime") <- [LAGTIME]
   attr(ret, "ltbs") <- [LTBS]
   attr(ret, "misc") <- [MISC]
+  attr(ret, "cmt_mapping") <- [CMT_MAPPING]
   attr(ret, "int_step_size") <- [INT_STEP_SIZE]
   attr(ret, "iov") <- list([IOV])
+  attr(ret, "cmt_mapping") <- [CMT_MAPPING]
   attr(ret, "nonmem") <- "[NONMEM]"
   attr(ret, "comments") <- "[COMMENTS]"
   attr(ret, "version") <- "[VERSION]"

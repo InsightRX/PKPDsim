@@ -79,8 +79,8 @@ sujdos<-320
 param<-list(KA=1.8, V=30, CL=1.7)
 pk1 <- new_ode_model("pk_1cmt_oral")
 regim<-new_regimen(amt=sujdos, times=c(0,12), type= "bolus")
-out<-sim_ode(ode="pk1", parameters=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
-assert("all requested observations in ouput",
+out<-sim_ode(ode=pk1, parameters=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
+assert("all requested observations in output",
        out$t == xtim)
 
 ## tests for bug wrong model size (JeHi 20151204)
@@ -101,7 +101,7 @@ pk  <- new_ode_model(code = "
                      obs = list(cmt=2, scale="V"),
                      dose = list(cmt = 2), cpp_show_code = FALSE)
 r <- new_regimen(amt = 100, times = c(0), type = "infusion")
-dat <- sim_ode (ode = "pk", n_ind = 1,
+dat <- sim_ode (ode = pk, n_ind = 1,
                 omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
                 parameters = p, regimen = r,
                 verbose = FALSE, t_max=48)
@@ -112,7 +112,7 @@ r <- new_regimen(amt = c(100, 100, 100),
                  times = c(0, 6, 12),
                  cmt = c(1,2,3),
                  type = "bolus")
-dat2 <- sim_ode (ode = "pk", n_ind = 1,
+dat2 <- sim_ode (ode = pk, n_ind = 1,
                 parameters = p, regimen = r,
                 t_obs = seq(from=0, to=20, by = .1),
                 verbose = FALSE, t_max=48)
@@ -124,7 +124,7 @@ r <- new_regimen(amt = c(100, 100, 100),
                  times = c(0, 6, 12),
                  cmt = c(1,2,3), t_inf = 3,
                  type = "infusion")
-dat3 <- sim_ode (ode = "pk", n_ind = 1,
+dat3 <- sim_ode (ode = pk, n_ind = 1,
                  parameters = p, regimen = r,
                  t_obs = seq(from=0, to=20, by = .1),
                  verbose = FALSE, t_max=48)

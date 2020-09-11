@@ -24,6 +24,7 @@ s <- PKPDsim::sim(ode = mod,
              regimen = reg,
              only_obs = TRUE,
              t_init = 10)
+
 assert("no NAs", all(!is.na(s$y)))
 assert("correct value", s$y[1] == 500)
 assert("correct value", round(s$y[3]) == 427)

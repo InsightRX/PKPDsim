@@ -138,13 +138,8 @@ model_from_api <- function(model = NULL,
   nonmem <- NULL
   if(!is.null(def$implementations$nonmem)) {
     nonmem <- paste(readLines(paste0(url, "/models/nonmem/", def$implementations$nonmem)), collapse="\n")
-    # %>%
-    #   stringr::str_replace_all("'", "\"") %>%
-    #   stringr::str_replace_all("\\\\n", "\n") %>%
-    #   stringr::str_replace_all("\n", "") %>%
-    #   stringr::str_replace_all("\\\\", "\\\\n")
   }
-  if(is.null(def$comments)) def$comments <- ""  
+  if(is.null(def$comments)) def$comments <- ""
   mod <- NULL
   if(def$build || install_all) {
     build <- TRUE
@@ -178,6 +173,7 @@ model_from_api <- function(model = NULL,
                                     ruv = def$ruv,
                                     ltbs = def$ltbs,
                                     misc = def$misc,
+                                    cmt_mapping = def$cmt_mapping,
                                     lagtime = def$lagtime,
                                     default_parameters = def$parameters,
                                     state_init = def$state_init,

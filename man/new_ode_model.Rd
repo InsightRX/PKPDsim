@@ -27,6 +27,7 @@ new_ode_model(
   ruv = NULL,
   ltbs = NULL,
   misc = NULL,
+  cmt_mapping = NULL,
   int_step_size = NULL,
   default_parameters = NULL,
   cpp_show_code = FALSE,

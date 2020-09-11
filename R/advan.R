@@ -12,7 +12,6 @@
 #' - E* : the sum of Exit (elimination) rate constant of the corresponding compartment.
 
 
-
 #' IV bolus- 1 compartment
 #' @param d data, a NONMEM style data frame for 1 subject with columns for TIME, AMT, MDV, DV, CL, V
 #' @return Returns a dataframe with populated columns for A1, and DV
@@ -34,8 +33,6 @@ OneCompIVbolus <- function(d){
   }
   d
 }
-attr(OneCompIVbolus, "cmt") <- 1
-attr(OneCompIVbolus, "type") <- "bolus"
 
 #' IV bolus- 2 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, DV, CL, V1, Q, V2
@@ -76,8 +73,6 @@ TwoCompIVbolus <- function(d) {
   }
   d
 }
-attr(TwoCompIVbolus, "cmt") <- 2
-attr(TwoCompIVbolus, "type") <- "bolus"
 
 #' IV bolus- 3 compartment
 #' @param d data, Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V1, Q12, V2, Q13, V3
@@ -154,8 +149,6 @@ ThreeCompIVbolus <- function(d) {
   }
   d
 }
-attr(ThreeCompIVbolus, "cmt") <- 3
-attr(ThreeCompIVbolus, "type") <- "bolus"
 
 #' IV infusion- 1 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V
@@ -183,8 +176,6 @@ OneCompIVinfusion <- function(d) {
   }
   d
 }
-attr(OneCompIVinfusion, "cmt") <- 1
-attr(OneCompIVinfusion, "type") <- "infusion"
 
 #' IV infusion- 2 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V1, Q, V2
@@ -232,8 +223,6 @@ TwoCompIVinfusion <- function(d) {
   }
   d
 }
-attr(TwoCompIVinfusion, "cmt") <- 2
-attr(TwoCompIVinfusion, "type") <- "infusion"
 
 #' IV infusion- 3 compartment
 #' @param d data, Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,RATE, RATEALL, DV, CL, V1, Q12, V2, Q13, V3
@@ -314,8 +303,6 @@ ThreeCompIVinfusion <- function(d) {
   }
   d
 }
-attr(ThreeCompIVinfusion, "cmt") <- 3
-attr(ThreeCompIVinfusion, "type") <- "infusion"
 
 #' 3-compartment IV infusion with first-order metabolite formation
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,RATE, RATEALL, DV, CL, V1, Q12, V2, Q13, V3, CLM,VM,km
@@ -406,8 +393,6 @@ ThreeCompIVinfusionMetab <- function(d) {
   }
   d
 }
-attr(ThreeCompIVinfusionMetab, "cmt") <- 4
-attr(ThreeCompIVinfusionMetab, "type") <- "infusion"
 
 #' first-order absorption 1 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V, KA & F1
@@ -442,9 +427,6 @@ OneCompOral <- function(d) {
   }
   d
 }
-attr(OneCompOral, "cmt") <- 2
-attr(OneCompOral, "type") <- "oral"
-
 
 #' First-order absorption- 2 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q, V3, KA & F1
@@ -496,9 +478,6 @@ TwoCompOral <- function(d) {
   }
   d
 }
-attr(TwoCompOral, "cmt") <- 3
-attr(TwoCompOral, "type") <- "oral"
-
 
 #' first-order absorption- 3 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q3, V3, Q4, V4, KA & F1
@@ -584,8 +563,6 @@ ThreeCompOral <- function(d) {
   }
   d
 }
-attr(ThreeCompOral, "cmt") <- 4
-attr(ThreeCompOral, "type") <- "oral"
 
 #' first-order absorption- 3 compartment-Metabolite
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q3, V3, Q4, V4, KA & F1
@@ -681,20 +658,65 @@ ThreeCompOralMetab <- function(d) {
   }
   d
 }
-attr(ThreeCompOralMetab, "cmt") <- 5
-attr(ThreeCompOralMetab, "type") <- "oral"
 
 #' ADVAN-style functions to calculate linear PK systems
-#'
+#' @param model Standard linear PK model, e.g. `pk_1cmt_iv_bolus`.
+#' @param cpp use C++-versions of model (~50x faster than R implementations)
 #' @export
-advan_funcs <- list(
-  "1cmt_iv_bolus" = OneCompIVbolus,
-  "2cmt_iv_bolus" = TwoCompIVbolus,
-  "3cmt_iv_bolus" = ThreeCompIVbolus,
-  "1cmt_iv_infusion" = OneCompIVinfusion,
-  "2cmt_iv_infusion" = TwoCompIVinfusion,
-  "3cmt_iv_infusion" = ThreeCompIVinfusion,
-  "1cmt_oral" = OneCompOral,
-  "2cmt_oral" = TwoCompOral,
-  "3cmt_oral" = ThreeCompOral
-)
+advan <- function(model, cpp = TRUE) {
+  cmt <- list(
+    "1cmt_iv_bolus" = 1,
+    "2cmt_iv_bolus" = 2,
+    "3cmt_iv_bolus" = 3,
+    "1cmt_iv_infusion" = 1,
+    "2cmt_iv_infusion" = 2,
+    "3cmt_iv_infusion" = 3,
+    "1cmt_oral" = 2,
+    "2cmt_oral" = 3,
+    "3cmt_oral" = 4
+  )
+  type <- list(
+    "1cmt_iv_bolus" = "bolus",
+    "2cmt_iv_bolus" = "bolus",
+    "3cmt_iv_bolus" = "bolus",
+    "1cmt_iv_infusion" = "infusion",
+    "2cmt_iv_infusion" = "infusion",
+    "3cmt_iv_infusion" = "infusion",
+    "1cmt_oral" = "oral",
+    "2cmt_oral" = "oral",
+    "3cmt_oral" = "oral"
+  )
+  if(cpp) {
+    mods <- list(
+      "1cmt_iv_bolus" = pk_1cmt_iv_bolus,
+      "2cmt_iv_bolus" = pk_2cmt_iv_bolus,
+      "3cmt_iv_bolus" = pk_3cmt_iv_bolus,
+      "1cmt_iv_infusion" = pk_1cmt_iv_infusion,
+      "2cmt_iv_infusion" = pk_2cmt_iv_infusion,
+      "3cmt_iv_infusion" = pk_3cmt_iv_infusion,
+      "1cmt_oral" = pk_1cmt_oral,
+      "2cmt_oral" = pk_2cmt_oral,
+      "3cmt_oral" = pk_3cmt_oral
+    )
+  } else {
+    mods <- list(
+      "1cmt_iv_bolus" = OneCompIVbolus,
+      "2cmt_iv_bolus" = TwoCompIVbolus,
+      "3cmt_iv_bolus" = ThreeCompIVbolus,
+      "1cmt_iv_infusion" = OneCompIVinfusion,
+      "2cmt_iv_infusion" = TwoCompIVinfusion,
+      "3cmt_iv_infusion" = ThreeCompIVinfusion,
+      "1cmt_oral" = OneCompOral,
+      "2cmt_oral" = TwoCompOral,
+      "3cmt_oral" = ThreeCompOral
+    )
+  }
+  m <- mods[[model]]
+  if(is.null(m)) {
+    stop(paste0("Model (", model, ") not found!"))
+  }
+  attr(m, "cmt") <- cmt[[model]]
+  attr(m, "type") <- type[[model]]
+  attr(m, "implementation") <- ifelse0(cpp, "c++", "R")
+  return(m)
+}
