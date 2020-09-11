@@ -16,7 +16,8 @@ advan_process_infusion_doses <- function (data) {
   doserowslast <- doserows
   doserowslast$TIME <- doserowslast$TIME + doserowslast$AMT/doserowslast$RATE
   doserowslast$DNUM <- -doserowslast$DNUM
-  doserowslast[, which(!names(doserowslast) %in% c("ID","TIME","AMT","RATE","DV","DNUM"))] <- NA
+  badcols <- which(!names(doserowslast) %in% c("ID","TIME","AMT","RATE","DV","DNUM"))
+  doserowslast[, badcols] <- NA
 
   # Are there any doserows without a DV value?  These need to precede the infusion change
   noDVindex <- which(!doserowslast$TIME %in% data$TIME)
@@ -39,7 +40,7 @@ advan_process_infusion_doses <- function (data) {
   data <- rbind(data, lastrow)
 
   # Now fill in the gaps for the covariates by locf
-  data[,badcols] <- apply(data[,badcols], 2, na_locf)
+  data[, badcols] <- apply(data[, badcols], 2, na_locf)
 
   # Process infusion doses in a loop
   data$RATEALL <- 0
