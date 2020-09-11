@@ -12,8 +12,9 @@ advan_parse_output <- function(
   cmts = 1,
   t_obs,
   extra_t_obs = TRUE,
-  regimen) {
-  cmts <- PKPDsim::ifelse0(cmts, 1)
+  regimen
+  ) {
+
   out <- data[, c("ID", "TIME", "DV", paste0("A", 1:cmts))]
   names(out) <- c("id", "t", "y", paste0("A", 1:cmts))
   out$obs_type <- 1
