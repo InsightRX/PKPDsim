@@ -506,7 +506,7 @@ sim <- function (ode = NULL,
   colnames(grid) <- c("t_obs_type", "id", "comp")
   comb$t_obs_type <- paste(comb$t, comb$obs_type, sep = "_")
   comb <- merge(grid, comb, all=FALSE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type", all_names)]
-  comb <- comb[order(comb$comp, comb$t, comb$obs_type, decreasing=FALSE), -2]
+  comb <- comb[order(comb$id, comb$comp, comb$t, comb$obs_type, decreasing=FALSE), -2]
   if(!is.null(regimen_orig$ss_regimen)) {
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
     comb$t <- as.num(comb$t) - t_ss
