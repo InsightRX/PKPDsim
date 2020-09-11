@@ -1,24 +1,22 @@
 #' Add column RATEALL to ADVAN-style dataset to handle infusions
 #'
+#' Function adapted from code from Abuhelwa, Foster, Upton JPET 2015.
+#' cleaned up and somewhat optimized. Can potentially be optimized more.
+#'
 #' @param data ADVAN-style dataset, e.g. created using `advan_create_data`.
 #' @export
 advan_process_infusion_doses <- function (data) {
-  ## derived from code from Abuhelwa, Foster, Upton.
-  ## cleaned up and optimized. Can potentially be optimized more.
 
   # Calculate all amounts
   doserows <- data[data$AMT != 0, ]
   dosecount <- nrow(doserows)  #total number of doses
   doserows$DNUM <- 1:dosecount
 
-  # Need to add times for ending the infusions - these may not be in the database
+  # Need to add times for ending the infusions
   doserowslast <- doserows
-  doserowslast$TIME <- doserowslast$TIME+doserowslast$AMT/doserowslast$RATE
-  doserowslast$DNUM <- doserowslast$DNUM*(-1)
-
-  goodcols <- c("ID","TIME","AMT","RATE","DV","DNUM")
-  badcols <- which(!names(doserowslast) %in% goodcols)
-  doserowslast[,badcols] <- NA
+  doserowslast$TIME <- doserowslast$TIME + doserowslast$AMT/doserowslast$RATE
+  doserowslast$DNUM <- -doserowslast$DNUM
+  doserowslast[, which(!names(doserowslast) %in% c("ID","TIME","AMT","RATE","DV","DNUM"))] <- NA
 
   # Are there any doserows without a DV value?  These need to precede the infusion change
   noDVindex <- which(!doserowslast$TIME %in% data$TIME)
@@ -50,7 +48,7 @@ advan_process_infusion_doses <- function (data) {
     data$DNUMI <- data$DNUM
     data$DNUMI[abs(data$DNUM) != DCOUNT] <- NA
     data$DNUMI <- na_locf(data$DNUMI)
-    data$DNUMI[is.na(data$DNUMI)==T] <- 0
+    data$DNUMI[is.na(data$DNUMI)] <- 0
     data$RATEALLI[data$DNUMI==DCOUNT] <- data$RATE[which(data$DNUM==DCOUNT)]
     data$RATEALL <- data$RATEALL+data$RATEALLI
   }
@@ -59,7 +57,7 @@ advan_process_infusion_doses <- function (data) {
   data$RATEALL[data$DNUM > 0] <- 0
 
   # Get rid of extra dose rows
-  data <- data[data$DNUM > 0 | is.na(data$DNUM)==T,]
+  data <- data[data$DNUM > 0 | is.na(data$DNUM),]
   data <- data[, ! names(data) %in% (c("DNUM", "RATEALLI", "DNUMI"))]
 
   return(data)

@@ -10,5 +10,6 @@ advan_process_infusion_doses(data)
 \item{data}{ADVAN-style dataset, e.g. created using `advan_create_data`.}
 }
 \description{
-Add column RATEALL to ADVAN-style dataset to handle infusions
+Function adapted from code from Abuhelwa, Foster, Upton JPET 2015.
+cleaned up and somewhat optimized. Can potentially be optimized more.
 }
