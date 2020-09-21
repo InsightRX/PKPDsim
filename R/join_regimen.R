@@ -28,13 +28,16 @@ join_regimen <- function(
     }
     if(!is.null(t_dose_update)) { # from a specific time
       keep <- which(regimen1$dose_times < t_dose_update)
+      regimen1$dose_times <- c(regimen1$dose_times[keep], regimen2$dose_times + t_dose_update)
+      regimen1$dose_amts <- c(regimen1$dose_amts[keep], regimen2$dose_amts)
       ## when we join, we don't want the last infusion to overlap with
       ## the 1st one from the 2nd regimen, and should run until then.
       if(regimen1$t_inf[max(keep)] > (t_dose_update - regimen1$dose_times[max(keep)])) {
-        regimen1$t_inf[max(keep)] <- t_dose_update - max(regimen1$dose_times[keep])
+        planned_t_inf <- regimen1$t_inf[max(keep)]
+        new_t_inf <- t_dose_update - max(regimen1$dose_times[keep])
+        regimen1$t_inf[max(keep)] <- new_t_inf
+        regimen1$dose_amts[max(keep)] <- regimen1$dose_amts[max(keep)] * (new_t_inf/planned_t_inf)
       }
-      regimen1$dose_times <- c(regimen1$dose_times[keep], regimen2$dose_times + t_dose_update)
-      regimen1$dose_amts <- c(regimen1$dose_amts[keep], regimen2$dose_amts)
       regimen1$t_inf <- c(regimen1$t_inf[keep], regimen2$t_inf)
       regimen1$interval <- regimen2$interval
       regimen1$type <- c(regimen1$type[keep], regimen2$type)
@@ -74,7 +77,9 @@ join_regimen <- function(
       ## when we join, we don't want the last infusion to overlap with
       ## the 1st one from the 2nd regimen, and should run until then.
       if(tail(regimen1$t_inf,1) > interval) {
-         regimen1$t_inf[length(regimen1$t_inf)] <- interval
+        planned_t_inf <- tail(regimen1$t_inf,1)
+        regimen1$t_inf[length(regimen1$t_inf)] <- interval
+        regimen1$dose_amts[length(regimen1$t_inf)] <- regimen1$dose_amts[length(regimen1$t_inf)] * interval / planned_t_inf
       }
       joint <- new_regimen(
         amt = c(regimen1$dose_amts, regimen2$dose_amts),
