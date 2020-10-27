@@ -6,6 +6,8 @@
 #' @param q quantile
 #' @param ruv list of residual variability (`prop` and `add`)
 #' @param ... passed arguments
+#' 
+#' @export
 add_ruv_to_quantile <- function(
   y,
   sd_y,
