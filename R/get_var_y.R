@@ -22,6 +22,8 @@
 #' @param n_cores if run in parallel, on how many cores?
 #' @param return_all return object with all relevant information?
 #' @param ... passed on to `sim_ode()`
+#' 
+#' @export
 get_var_y <- function(
   model = NULL,
   parameters = list(),
