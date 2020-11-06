@@ -4,8 +4,8 @@ library(PKPDsim)
 library(testit)
 
 ## Test derivative function
-assert("Correct calculation of derivatives", round(PKPDsim::calc_dydP(1:5 + rep(.2, 5), 1:5, .1, FALSE), 3) == rep(2, 5))
-assert("Correct calculation of derivatives, log scale", round(PKPDsim::calc_dydP(1:5 + rep(.2, 5), 1:5, .1, TRUE), 3) == c(1.823, 0.953, 0.645, 0.488, 0.392))
+assert("Correct calculation of derivatives", round(PKPDsim:::calc_dydP(1:5 + rep(.2, 5), 1:5, .1, FALSE), 3) == rep(2, 5))
+assert("Correct calculation of derivatives, log scale", round(PKPDsim:::calc_dydP(1:5 + rep(.2, 5), 1:5, .1, TRUE), 3) == c(1.823, 0.953, 0.645, 0.488, 0.392))
 
 ## Regimen for testing:
 reg <- PKPDsim::new_regimen(amt = 100, n = 3, interval = 12, type = "infusion", t_inf = 2)
