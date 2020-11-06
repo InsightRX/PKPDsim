@@ -16,10 +16,10 @@ get_var_y(
   omega_full = NULL,
   n_ind = NULL,
   ruv = list(prop = 0, add = 0, exp = 0),
+  y = NULL,
   rel_delta = 1e-04,
   method = "delta",
   sequence = NULL,
-  log_y = FALSE,
   auc = FALSE,
   sd = TRUE,
   q = NULL,
@@ -50,13 +50,13 @@ get_var_y(
 
 \item{ruv}{residual varibility (list with `prop`, `add`, and/or `exp` arguments)}
 
+\item{y}{vector of observations. If NULL, then a new simulation will be performed.}
+
 \item{rel_delta}{rel_delta}
 
 \item{method}{method, `delta` or `sim`}
 
 \item{sequence}{for simulations, if not NULL the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.}
-
-\item{log_y}{log-transform y value?}
 
 \item{auc}{is AUC?}
 

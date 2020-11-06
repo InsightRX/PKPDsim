@@ -10,10 +10,10 @@
 #' @param omega triangle omega block
 #' @param omega_full full omega block
 #' @param ruv residual varibility (list with `prop`, `add`, and/or `exp` arguments)
+#' @param y vector of observations. If NULL, then a new simulation will be performed.
 #' @param rel_delta rel_delta
 #' @param method method, `delta` or `sim`
 #' @param sequence for simulations, if not NULL the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
-#' @param log_y log-transform y value?
 #' @param auc is AUC?
 #' @param n_ind number of individuals to simulate with sim method
 #' @param sd return as standard deviation (`TRUE`) or variance (`FALSE`)
@@ -35,10 +35,10 @@ get_var_y <- function(
   omega_full = NULL,
   n_ind = NULL,
   ruv = list(prop = 0, add = 0, exp = 0),
+  y = NULL,
   rel_delta = 0.0001,
   method = "delta",
   sequence = NULL,
-  log_y = FALSE,
   auc = FALSE,
   sd = TRUE,
   q = NULL,
@@ -61,20 +61,22 @@ get_var_y <- function(
     if(!is.null(obs_variable)) {
       output_include <- list(variables = TRUE, parameters = TRUE)
     }
-    res <- PKPDsim::sim_ode(
-      ode = model,
-      regimen = regimen,
-      only_obs = FALSE,
-      t_obs = t_obs,
-      parameters = parameters,
-      checks = TRUE,
-      output_include = output_include,
-      ...)
-    res <- res[res$comp == obs_comp,]
-    if(!is.null(obs_variable)) {
-      y <- res[[obs_variable]]
-    } else {
-      y <- res$y
+    if(is.null(y)) {
+      res <- PKPDsim::sim_ode(
+        ode = model,
+        regimen = regimen,
+        only_obs = FALSE,
+        t_obs = t_obs,
+        parameters = parameters,
+        checks = TRUE,
+        output_include = output_include,
+        ...)
+      res <- res[res$comp == obs_comp,]
+      if(!is.null(obs_variable)) {
+        y <- res[[obs_variable]]
+      } else {
+        y <- res$y
+      }
     }
     if(auc) y <- diff(y)
     nams <- names(parameters_est)
@@ -82,6 +84,9 @@ get_var_y <- function(
     if(!(method %in% c("delta", "sim"))) {
       stop("Requested method not recognized!")
     }
+    types <- c("regular", "log")
+    v <- list()
+    qnt <- list()
     if(method == "delta") {
       sim_func <- function(i, ...) {
         par_tmp <- parameters
@@ -103,13 +108,10 @@ get_var_y <- function(
         if(auc) {
           dy <- diff(dy)
         }
-        if(log_y) {
-          dy[dy <= 0] <- 1e-9
-          y[y <= 0] <- 1e-9
-          dydP <- (log(dy) - log(y)) / rel_delta
-        } else {
-          dydP <- (dy - y) / rel_delta
-        }
+        dydP <- list(
+          regular = calc_dydP(dy, y, rel_delta, log_y = FALSE),
+          log = calc_dydP(dy, y, rel_delta, log_y = TRUE)
+        )
         return(dydP)
       }
       # running in parallel is actually not faster for most simple models. Only for models with larger number of parameters.
@@ -118,20 +120,25 @@ get_var_y <- function(
       } else {
         jac <- matrix(unlist(lapply(seq(along = nams), sim_func, ...)), nrow = ifelse(auc, 1, length(t_obs)))
       }
-      v <- diag(jac %*% omega_full %*% t(jac))
-      if(!is.null(q)) {
-        qnt <- matrix(rep(res$y, each = length(q)) + rep(qnorm(q), length(q)) * rep(v, each = length(q)), ncol=length(q), byrow=TRUE)
-      }
-      if(!is.null(ruv)) {
-        if(!is.null(ruv$exp)) {
-          v <- v * exp(ruv$exp)^2
-        }
-        if(!is.null(ruv$prop)) {
-          v <- v + (res$y * ruv$prop)^2
-        }
-        if(!is.null(ruv$add)) {
-          v <- v + ruv$add^2
-        }
+      for(i in seq(types)) {
+          type <- types[i]
+          idx <- seq(from = i, to = length(nams)*2-(2-i), by = 2)
+          jac_i <- matrix(jac[,idx], nrow=nrow(jac)) # force matrix, also for single row matrices
+          v[[type]] <- diag(jac_i %*% omega_full %*% t(jac_i))
+          if(!is.null(q)) {
+            qnt[[type]] <- matrix(rep(res$y, each = length(q)) + rep(qnorm(q), length(q)) * rep(v[[type]], each = length(q)), ncol=length(q), byrow=TRUE)
+          }
+          if(!is.null(ruv)) {
+            if(!is.null(ruv$exp)) {
+              v[[type]] <- v[[type]] * exp(ruv$exp)^2
+            }
+            if(!is.null(ruv$prop)) {
+              v[[type]] <- v[[type]] + (res$y * ruv$prop)^2
+            }
+            if(!is.null(ruv$add)) {
+              v[[type]] <- v[[type]] + ruv$add^2
+            }
+          }
       }
     }
     if(method == "sim") {
@@ -161,18 +168,31 @@ get_var_y <- function(
           res_sim$y <- res_sim$y * exp(rnorm(length(res_sim$y), 0, ruv$exp))
         }
       }
-      v <- aggregate(res_sim$y, by = list(res_sim$t), FUN = "var")$x
+      v <- list(
+        regular = aggregate(res_sim$y, by = list(res_sim$t), FUN = "var")$x,
+        log = aggregate(log(res_sim$y), by = list(res_sim$t), FUN = "var")$x
+      )
       if(!is.null(q)) {
         tmp <- aggregate(res_sim$y, list(res_sim$t), quantile, q)
-        qnt <- t(tmp[,-1])
-        colnames(qnt) <- tmp[,1]
-        rownames(qnt) <- paste0("p_", q)
+        tmp_log <- aggregate(log(res_sim$y), list(res_sim$t), quantile, q)
+        qnt$regular <- t(tmp[,-1])
+        colnames(qnt$regular) <- tmp[,1]
+        rownames(qnt$regular) <- paste0("p_", q)
+        qnt$log <- t(tmp_log[,-1])
+        colnames(qnt$log) <- tmp_log[,1]
+        rownames(qnt$log) <- paste0("p_", q)
       }
     }
     if(return_all) {
       obj <- list(pred = res,
-                  sd   = sqrt(v),
-                  var  = v)
+                  regular = list(
+                    sd   = sqrt(v$regular),
+                    var  = v$regular
+                  ),
+                  log = list(
+                    sd   = sqrt(v$log),
+                    var  = v$log
+                  ))
       if(!is.null(q)) {
         obj$q = qnt
       }
@@ -183,11 +203,30 @@ get_var_y <- function(
     } else {
       if(is.null(q)) {
         if(sd) {
-          v <- sqrt(v)
+          for(type in types) {
+            v[[type]] <- sqrt(v[[type]])
+          }
         }
         return(v)
       } else {
         return(qnt)
       }
     }
+}
+
+#' Calculate derivative
+#'
+#' @param dy dy
+#' @param y dependent value
+#' @param rel_delta relative delta
+#' @param log_y logical indicating if the dependent variable is log transformed
+calc_dydP <- function(dy, y, rel_delta, log_y) {
+  if(log_y) {
+    dy[dy <= 0] <- 1e-9
+    y[y <= 0] <- 1e-9
+    dydP <- (log(dy) - log(y)) / rel_delta
+  } else {
+    dydP <- (dy - y) / rel_delta
+  }
+  return(dydP)
 }
