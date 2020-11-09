@@ -36,8 +36,7 @@ model <- new_ode_model( # Carreno et al
   )
 )
 pars_covs_comb <- c(par_orig, lapply(covs, function(x) { x$value }))
-pars <- reparametrize(pars_covs_comb,
-                      model)
+pars <- reparametrize(model, pars_covs_comb, covariates = covs)
 
 ## Compare AUC from reparametrized model with ODE-integrated model
 dose <- 1000
