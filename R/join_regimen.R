@@ -12,7 +12,7 @@ join_regimen <- function(
   regimen2 = NULL,
   interval = NULL,
   dose_update = NULL,
-  t_dose_update = NULL, 
+  t_dose_update = NULL,
   continuous = FALSE) {
   if(is.null(regimen1) && is.null(regimen2)) {
     stop("please specify two intervals to this function.")
@@ -27,13 +27,17 @@ join_regimen <- function(
       stop("either interval or dose_update have to be specified as arguments")
     }
     if(!is.null(t_dose_update)) { # from a specific time
-      if(!continuous) {
-        keep <- (regimen1$dose_times + regimen1$t_inf) < t_dose_update
-      } else {
-        keep <- regimen1$dose_times < t_dose_update
-      }
+      keep <- which(regimen1$dose_times < t_dose_update)
       regimen1$dose_times <- c(regimen1$dose_times[keep], regimen2$dose_times + t_dose_update)
       regimen1$dose_amts <- c(regimen1$dose_amts[keep], regimen2$dose_amts)
+      ## when we join, we don't want the last infusion to overlap with
+      ## the 1st one from the 2nd regimen, and should run until then.
+      if(length(keep) > 0 && regimen1$t_inf[max(keep)] > (t_dose_update - regimen1$dose_times[max(keep)])) {
+        planned_t_inf <- regimen1$t_inf[max(keep)]
+        new_t_inf <- t_dose_update - max(regimen1$dose_times[keep])
+        regimen1$t_inf[max(keep)] <- new_t_inf
+        regimen1$dose_amts[max(keep)] <- regimen1$dose_amts[max(keep)] * (new_t_inf/planned_t_inf)
+      }
       regimen1$t_inf <- c(regimen1$t_inf[keep], regimen2$t_inf)
       regimen1$interval <- regimen2$interval
       regimen1$type <- c(regimen1$type[keep], regimen2$type)
@@ -69,6 +73,13 @@ join_regimen <- function(
       if(tmp2[1] == utils::tail(regimen1$dose_times,1)) {
         tmp2[1] <- utils::tail(regimen1$dose_times,1) + 0.01
         message("Dose for second regimen planned at same time as last dose in 1st regimen. Added 0.01 hrs to administration time of 1st dose of 2nd regimen to avoid simulation issues.")
+      }
+      ## when we join, we don't want the last infusion to overlap with
+      ## the 1st one from the 2nd regimen, and should run until then.
+      if(tail(regimen1$t_inf,1) > interval) {
+        planned_t_inf <- tail(regimen1$t_inf,1)
+        regimen1$t_inf[length(regimen1$t_inf)] <- interval
+        regimen1$dose_amts[length(regimen1$t_inf)] <- regimen1$dose_amts[length(regimen1$t_inf)] * interval / planned_t_inf
       }
       joint <- new_regimen(
         amt = c(regimen1$dose_amts, regimen2$dose_amts),
