@@ -13,6 +13,7 @@ new_ode_model(
   func = NULL,
   state_init = NULL,
   parameters = NULL,
+  reparametrization = NULL,
   units = NULL,
   size = NULL,
   lagtime = NULL,
@@ -60,6 +61,8 @@ new_ode_model(
 \item{state_init}{vector of state init}
 
 \item{parameters}{list or vector of parameter values}
+
+\item{reparametrization}{list of parameters with definitions that reparametrize the linear PK model to a 1-, 2- o4 3-compartment PK with standardized parametrization.}
 
 \item{units}{list or vector of parameter units}
 
