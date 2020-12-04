@@ -8,7 +8,7 @@
 pop_regimen <- function(
     regimen,
     n = 1) {
-    if(n >= length(regimen)) {
+    if(n >= length(regimen$dose_amts)) {
         return(NULL)
     }
     idx <- 1:(length(regimen$dose_amts)-n)
