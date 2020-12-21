@@ -1,5 +1,4 @@
 library(PKPDsim)
-library(dplyr)
 library(testit)
 Sys.setenv("R_TESTS" = "")
 
@@ -24,8 +23,9 @@ t_obs <- seq(0, 48, 12)
 sim1 <- sim_ode(mod, parameters = par, regimen = reg, return_design = TRUE,
                 covariates = covs, only_obs = TRUE, t_obs = t_obs)
 sim1 <- sim_ode(mod, parameters = par, regimen = reg,
-        covariates = covs, only_obs = TRUE, t_obs = t_obs) %>%
-  filter(t == 48)
+        covariates = covs, only_obs = TRUE, t_obs = t_obs)
+sim1 <- sim1[sim1$t == 48,]
+
 sim2 <- sim_ode(mod, parameters = par, regimen = reg,
         covariates = covs, only_obs = TRUE, t_obs = 48)
 

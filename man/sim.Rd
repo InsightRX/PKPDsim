@@ -4,22 +4,51 @@
 \alias{sim}
 \title{Simulate ODE or analytical equation}
 \usage{
-sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
-  omega_type = "exponential", res_var = NULL, iov_bins = NULL,
-  seed = NULL, sequence = NULL, n_ind = 1, regimen = NULL,
-  covariates = NULL, covariates_table = NULL,
-  covariates_implementation = list(), A_init = NULL, only_obs = FALSE,
-  obs_step_size = NULL, int_step_size = 0.1, t_max = NULL, t_obs = NULL,
-  t_tte = NULL, t_init = 0, duplicate_t_obs = FALSE, extra_t_obs = TRUE,
-  rtte = FALSE, checks = TRUE, verbose = FALSE, return_design = FALSE,
-  output_include = list(parameters = FALSE, covariates = FALSE), ...)
+sim(
+  ode = NULL,
+  analytical = NULL,
+  parameters = NULL,
+  parameters_table = NULL,
+  omega = NULL,
+  omega_type = "exponential",
+  res_var = NULL,
+  iov_bins = NULL,
+  seed = NULL,
+  sequence = NULL,
+  n_ind = 1,
+  regimen = NULL,
+  lagtime = NULL,
+  covariates = NULL,
+  covariates_table = NULL,
+  covariates_implementation = list(),
+  covariate_model = NULL,
+  A_init = NULL,
+  only_obs = FALSE,
+  obs_step_size = NULL,
+  int_step_size = 0.01,
+  t_max = NULL,
+  t_obs = NULL,
+  t_tte = NULL,
+  t_init = 0,
+  obs_type = NULL,
+  duplicate_t_obs = FALSE,
+  extra_t_obs = TRUE,
+  rtte = FALSE,
+  checks = TRUE,
+  verbose = FALSE,
+  return_design = FALSE,
+  output_include = list(parameters = FALSE, covariates = FALSE),
+  ...
+)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
 
-\item{analytical}{analytical equation (function)}
+\item{analytical}{string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.}
 
 \item{parameters}{model parameters}
+
+\item{parameters_table}{dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
@@ -37,11 +66,15 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{regimen}{a regimen object created using the regimen() function}
 
+\item{lagtime}{either a value (numeric) or a parameter (character) or NULL.}
+
 \item{covariates}{list of covariates (for single individual) created using `new_covariate()` function}
 
 \item{covariates_table}{data.frame (or unnamed list of named lists per individual) with covariate values}
 
 \item{covariates_implementation}{used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`}
+
+\item{covariate_model}{R code used to pre-calculate effective parameters for use in ADVAN-style analytical equations. Not used in ODE simulations.}
 
 \item{A_init}{vector with the initial state of the ODE system}
 
@@ -58,6 +91,8 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 \item{t_tte}{vector of observation times for time-to-event simulation}
 
 \item{t_init}{initialization time before first dose, default 0.}
+
+\item{obs_type}{vector of observation types. Only valid in combination with equal length vector `t_obs`.}
 
 \item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 

@@ -8,6 +8,7 @@
 #' @param func R function to be used with deSolve library
 #' @param state_init vector of state init
 #' @param parameters list or vector of parameter values
+#' @param reparametrization list of parameters with definitions that reparametrize the linear PK model to a 1-, 2- o4 3-compartment PK with standardized parametrization.
 #' @param units list or vector of parameter units
 #' @param size size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.
 #' @param lagtime lag time
@@ -20,10 +21,12 @@
 #' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
 #' @param ruv residual variability, can optionally be added to library
 #' @param ltbs log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).
+#' @param misc a list of miscelleaneous model metadata
 #' @param int_step_size step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`
 #' @param default_parameters population or specific patient values, can optionally be added to library
 #' @param cpp_show_code show generated C++ code
 #' @param package package name when saving as package
+#' @param test_file optional test file to be included with package
 #' @param install install package after compilation?
 #' @param folder base folder name to create package in
 #' @param lib_location install into folder (`--library` argument)
@@ -31,6 +34,8 @@
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @param nonmem add nonmem code as attribute to model object
 #' @param validation path to JSON file with specs for numerical validation
+#' @param custom_parameters path to JSON file with specs for custom parameters
+#' @param comments comments for model
 #' @param version number of library
 #' @export
 new_ode_model <- function (model = NULL,
@@ -41,6 +46,7 @@ new_ode_model <- function (model = NULL,
                            func = NULL,
                            state_init = NULL,
                            parameters = NULL,
+                           reparametrization = NULL,
                            units = NULL,
                            size = NULL,
                            lagtime = NULL,
@@ -53,10 +59,13 @@ new_ode_model <- function (model = NULL,
                            omega_matrix = NULL,
                            ruv = NULL,
                            ltbs = NULL,
+                           misc = NULL,
+                           cmt_mapping = NULL,
                            int_step_size = NULL,
                            default_parameters = NULL,
                            cpp_show_code = FALSE,
                            package = NULL,
+                           test_file = NULL,
                            install = TRUE,
                            folder = NULL,
                            lib_location = NULL,
@@ -64,6 +73,8 @@ new_ode_model <- function (model = NULL,
                            as_is = FALSE,
                            nonmem = NULL,
                            validation = NULL,
+                           custom_parameters = NULL,
+                           comments = NULL,
                            version = "0.1.0"
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
@@ -265,6 +276,7 @@ new_ode_model <- function (model = NULL,
         attr(sim_out, "pk_code") <- pk_code
       }
       attr(sim_out, "parameters") <- reqd
+      attr(sim_out, "reparametrization") <- reparametrization
       attr(sim_out, "covariates") <- cov_names
       attr(sim_out, "variables") <- variables
       attr(sim_out, "cpp")  <- TRUE
@@ -273,7 +285,10 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "dose") <- dose
       attr(sim_out, "lagtime") <- lagtime
       attr(sim_out, "ltbs") <- ltbs
+      attr(sim_out, "misc") <- misc
+      attr(sim_out, "cmt_mapping") <- cmt_mapping
       attr(sim_out, "iov") <- iov
+      attr(sim_out, "comments") <- paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n")))
       if(!is.null(int_step_size)) {
         attr(sim_out, "int_step_size") <- int_step_size
       }
@@ -302,9 +317,20 @@ new_ode_model <- function (model = NULL,
         dir.create(paste0(new_folder, "/inst"))
         dir.create(paste0(new_folder, "/inst/validation"))
         if(file.exists(validation)) {
-          file.copy(from = validation, to = paste0(new_folder, "/inst/validation/"))
+          file.copy(from = validation, to = paste0(new_folder, "/inst/validation/"), overwrite = TRUE)
         } else {
           warning("Specified validation file not found.")
+        }
+      }
+
+      ## Copy custom parameter specs into package
+      if(!is.null(custom_parameters)) {
+        dir.create(paste0(new_folder, "/inst"))
+        dir.create(paste0(new_folder, "/inst/md"))
+        if(file.exists(custom_parameters)) {
+          file.copy(from = custom_parameters, to = paste0(new_folder, "/inst/md/custom_parameters.json"), overwrite = TRUE)
+        } else {
+          warning("Specified vcustom parameters file not found.")
         }
       }
 
@@ -317,7 +343,9 @@ new_ode_model <- function (model = NULL,
       ## Replace module name and other info
       if(is.null(pk_code)) { pk_code <- "" }
       if(is.null(dose_code)) { dose_code <- "" }
-      if(is.null(lagtime)) { lagtime <- "NULL" }
+      if(is.null(lagtime)) { lagtime <- "NULL" } else {
+        lagtime <- paste0("c(", paste(add_quotes(lagtime), collapse = ", "), ")")
+      }
       if(is.null(obs$cmt)) { obs$cmt <- "1" }
       if(is.null(obs$scale)) { obs$scale <- "1" }
       if(is.null(obs$variable)) { obs$variable <- "NULL" } else {
@@ -341,20 +369,24 @@ new_ode_model <- function (model = NULL,
                        "\\[OBS_COMP\\]", obs$cmt,
                        "\\[DOSE_COMP\\]", dose$cmt,
                        "\\[OBS_SCALE\\]", obs$scale,
-                       "\\[OBS_VARIABLE\\]", obs$variable,
+                       "\\[OBS_VARIABLE\\]", deparse(obs$variable),
                        "\\[DOSE_BIOAV\\]", dose$bioav,
                        "\\[CODE\\]", code,
                        "\\[PK_CODE\\]", pk_code,
                        "\\[DOSE_CODE\\]", dose_code,
                        "\\[STATE_INIT\\]", state_init,
                        "\\[PARS\\]", pars,
+                       "\\[REPARAM\\]", paste0(deparse(reparametrization), collapse = ""),
                        "\\[VARS\\]", vars,
                        "\\[COVS\\]", covs,
                        "\\[LAGTIME\\]", lagtime,
                        "\\[USE_IOV\\]", as.character(use_iov),
                        "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
                        "\\[LTBS\\]", as.character(ltbs),
+                       "\\[MISC\\]", paste0(deparse(misc), collapse = ""),
+                       "\\[CMT_MAPPING\\]", paste0(deparse(cmt_mapping), collapse = ""),
                        "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
+                       "\\[COMMENTS\\]", paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n"))),
                        "\\[NONMEM\\]", as.character(nonmem)
       ), ncol=2, byrow=TRUE)
       if(verbose) {
@@ -392,6 +424,17 @@ new_ode_model <- function (model = NULL,
       search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)
       file.rename(paste0(new_folder, "/man/modulename-package.Rd"), paste0(new_folder, "/man/", package, ".Rd"))
 
+      ## copy test file into package
+      if(!is.null(test_file)) {
+        if(file.exists(test_file[1])) {
+          t_dir <- paste0(new_folder, "/tests")
+          if(!file.exists(t_dir)) dir.create(t_dir)
+          file.copy(test_file[1], paste0(t_dir, "/", package, ".R"))
+        } else {
+          warning("Specified test file not found.")
+        }
+      }
+
       ## Compile / build / install
       curr <- getwd()
       setwd(new_folder)
@@ -407,7 +450,7 @@ new_ode_model <- function (model = NULL,
         if(!is.null(lib_location)) {
           lib_location_arg <- paste0("--library=", lib_location)
         }
-        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source --pkglock ."))
+        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source --pkglock --install-tests ."))
       } else { # build to zip file
         system(paste0("R CMD build ."))
         pkg_file <- paste0(new_folder, "/", package, "_", version, ".tar.gz")

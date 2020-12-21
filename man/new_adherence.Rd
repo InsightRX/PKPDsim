@@ -4,8 +4,12 @@
 \alias{new_adherence}
 \title{Adherence function}
 \usage{
-new_adherence(n = 100, type = "markov", markov = list(p11 = 0.75, p01 =
-  0.75), p_binom = 0.7)
+new_adherence(
+  n = 100,
+  type = "markov",
+  markov = list(p11 = 0.75, p01 = 0.75),
+  p_binom = 0.7
+)
 }
 \arguments{
 \item{n}{number of days to simulate}

@@ -28,3 +28,5 @@ res <- sim_ode(ode = mod,
 
 assert("all 10 subjects", length(unique(res$id)) == 10)
 assert("no NAs", any(!is.na(res$y)))
+
+assert("IDs are ordered correctly", length(unique(res$id)) == 10 && all(diff(res$id) >= 0))

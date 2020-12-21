@@ -8,8 +8,8 @@ reg <- new_regimen(amt = c(100, 100, 100, 100),
                    type = "infusion",
                    t_inf = c(2, 2, 2, 2, 2))
 par <- list(CL = 5, V = 50)
-res <- sim_ode(mod, par = par, reg = reg, only_obs = TRUE)
-res <- sim_ode(mod, par = par, reg = reg, only_obs = TRUE) ## RK: needs to be run twice to confirm no memory issues!
+res <- sim_ode(mod, parameters = par, reg = reg, only_obs = TRUE)
+res <- sim_ode(mod, parameters = par, reg = reg, only_obs = TRUE) ## RK: needs to be run twice to confirm no memory issues!
 
 assert(res[res$t == 7,]$y > res[res$t == 6,]$y)
 assert(res[res$t == 8,]$y > res[res$t == 7,]$y)
@@ -21,7 +21,7 @@ reg2 <- new_regimen(amt = c(100, 100, 100, 100),
                    times = c(0, 6, 12, 18),
                    type = "infusion",
                    t_inf = c(2, 6, 2, 6))
-res2 <- sim_ode(mod, par = par, reg = reg2, only_obs = TRUE)
+res2 <- sim_ode(mod, parameters = par, reg = reg2, only_obs = TRUE)
 assert("adjoining infusion simulated correctly",
        res2[res2$t == 12,]$y > res2[res2$t == 6,]$y &&
        res2[res2$t == 14,]$y > res2[res2$t == 12,]$y &&

@@ -28,4 +28,7 @@ print.PKPDsim <- function(x, ...) {
     cat(paste0("IOV CV: ", jsonlite::toJSON(attr(x, "iov")$cv), "\n"))
     cat(paste0("IOV bins: ", attr(x, "iov")$n_bins, "\n"))
   }
+  if(!is.null(attr(x, "comments"))) {
+    cat(paste0("Comments: ", attr(x, "comments")))
+  }
 }

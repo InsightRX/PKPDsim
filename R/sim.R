@@ -2,8 +2,9 @@
 #'
 #' Simulates a specified regimen using ODE system or analytical equation
 #' @param ode function describing the ODE system
-#' @param analytical analytical equation (function)
+#' @param analytical string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.
 #' @param parameters model parameters
+#' @param parameters_table dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
@@ -12,10 +13,12 @@
 #' @param sequence if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
 #' @param regimen a regimen object created using the regimen() function
+#' @param lagtime either a value (numeric) or a parameter (character) or NULL.
 #' @param A_init vector with the initial state of the ODE system
 #' @param covariates list of covariates (for single individual) created using `new_covariate()` function
 #' @param covariates_table data.frame (or unnamed list of named lists per individual) with covariate values
 #' @param covariates_implementation used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`
+#' @param covariate_model R code used to pre-calculate effective parameters for use in ADVAN-style analytical equations. Not used in ODE simulations.
 #' @param only_obs only return the observations
 #' @param obs_step_size the step size between the observations
 #' @param int_step_size the step size for the numerical integrator
@@ -23,6 +26,7 @@
 #' @param t_obs vector of observation times, only output these values (only used when t_obs==NULL)
 #' @param t_tte vector of observation times for time-to-event simulation
 #' @param t_init initialization time before first dose, default 0.
+#' @param obs_type vector of observation types. Only valid in combination with equal length vector `t_obs`.
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
 #' @param extra_t_obs include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.
 #' @param rtte should repeated events be allowed (FALSE by default)
@@ -75,7 +79,8 @@
 #'}
 sim <- function (ode = NULL,
                  analytical = NULL,
-                 parameters = list(),
+                 parameters = NULL,
+                 parameters_table = NULL,
                  omega = NULL,
                  omega_type = "exponential",
                  res_var = NULL,
@@ -84,9 +89,11 @@ sim <- function (ode = NULL,
                  sequence = NULL,
                  n_ind = 1,
                  regimen = NULL,
+                 lagtime = NULL,
                  covariates = NULL,
                  covariates_table = NULL,
                  covariates_implementation = list(),
+                 covariate_model = NULL,
                  A_init = NULL,
                  only_obs = FALSE,
                  obs_step_size = NULL,
@@ -95,6 +102,7 @@ sim <- function (ode = NULL,
                  t_obs = NULL,
                  t_tte = NULL,
                  t_init = 0,
+                 obs_type = NULL,
                  duplicate_t_obs = FALSE,
                  extra_t_obs = TRUE,
                  rtte = FALSE,
@@ -121,17 +129,13 @@ sim <- function (ode = NULL,
     t_ss <- 0
     regimen_orig <- regimen
   }
-  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime") != "undefined" && attr(ode, "lagtime") !=
-    "NULL") {
-    if(class(attr(ode, "lagtime")) %in% c("numeric", "integer")) {
-      regimen$dose_times <- regimen$dose_times + attr(ode, "lagtime")
+  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime") != "undefined" && attr(ode, "lagtime") != "NULL") {
+    if(is.null(lagtime)) { # only override from metadata if not specified by user
+      lagtime <- attr(ode, "lagtime")
     }
-    if(class(attr(ode, "lagtime")) %in% c("character")) {
-      if(is.null(parameters[[attr(ode, "lagtime")]])) {
-        stop(paste0("Lagtime parameter ",parameters[[attr(ode, "lagtime")]], " not specified!"))
-      }
-      regimen$dose_times <- regimen$dose_times + parameters[[attr(ode, "lagtime")]]
-    }
+  }
+  if(!is.null(lagtime)) {
+    regimen <- apply_lagtime(regimen, lagtime, parameters)
   }
   if(t_init != 0) regimen$dose_times <- regimen$dose_times + t_init
   comb <- list()
@@ -140,11 +144,6 @@ sim <- function (ode = NULL,
     t_obs <- round(t_obs, 6)
   }
   t_obs_orig <- t_obs + t_init
-  if(is.null(analytical)) {
-    if ("character" %in% class(ode)) {
-      ode <- get(ode)
-    }
-  }
   if(checks) {
     ## test_pointer looks if the model is in memory, will throw error if needs to be recompiled.
     test_pointer(ode)
@@ -179,9 +178,17 @@ sim <- function (ode = NULL,
           size <- attr(get(ode),  "size")
         }
       }
+    } else {
+      size <- attr(analytical, "size")
     }
-    if(is.null(ode) | is.null(parameters)) {
-      stop("Please specify at least the required arguments 'ode' and 'parameters'.")
+    if(!is.null(parameters) && !is.null(parameters_table)) {
+      stop("Both `parameters` and `parameters_table` are specified!")
+    }
+    if(is.null(ode) && is.null(analytical)) {
+      stop("Please specify at least the required arguments 'ode' or 'analytical' for simulations.")
+    }
+    if(is.null(parameters) && is.null(parameters_table)) {
+      stop("Please specify 'parameters' (or `parameters_table`) for the model.")
     }
     if(is.null(regimen)) {
       stop("Please specify a regimen created using the `new_regimen()` function.")
@@ -189,12 +196,14 @@ sim <- function (ode = NULL,
     #  if(!is.null(t_tte)) {
     #    stop("Please specify possible observation times for time-to-event analysis as 't_tte' argument!")
     #  }
-    if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
-      stop("Sorry. Non-C++ functions are deprecated.")
+    if(is.null(analytical)) {
+      if("function" %in% class(ode) && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
+        stop("Sorry. Non-C++ functions are deprecated.")
+      }
     }
     if(!is.null(covariates)) {
       if(!is.null(covariates_table)) {
-        stop("Both `covariates and `covariates_table` are specified!")
+        stop("Both `covariates` and `covariates_table` are specified!")
       }
       if(class(covariates) != "list") {
         stop("Covariates need to be specified as a list!")
@@ -208,6 +217,18 @@ sim <- function (ode = NULL,
         }
       }
     }
+    if(!is.null(parameters_table)) {
+      if(class(parameters_table) %in% c("data.frame", "data.table")) {
+        parameters_table <- table_to_list(parameters_table)
+      }
+      if(class(parameters_table) != "list") {
+        stop("Sorry, covariates for population seem to be misspecified. See manual for more information.")
+      }
+      if(length(parameters_table) != n_ind) {
+        n_ind <- length(parameters_table)
+      }
+      p <- parameters_table[[1]]
+    }
     if(!is.null(covariates_table)) {
       if(class(covariates_table) %in% c("data.frame", "data.table")) {
         covariates_table <- covariates_table_to_list(covariates_table, covariates_implementation)
@@ -218,35 +239,37 @@ sim <- function (ode = NULL,
       if(length(covariates_table) != n_ind) {
         n_ind <- length(covariates_table)
       }
-      message(paste0("Simulating ", n_ind, " individuals from covariate definitions."))
+      message(paste0("Simulating ", n_ind, " individuals."))
     }
     ## check parameters specified
-    pars_ode <- attr(ode, "parameters")
-    rates <- paste0("rate[", 0:(size-1), "]")
-    if(!all(pars_ode %in% c(names(parameters), rates))) {
-      m <- match(c(names(parameters), names(covariates)), pars_ode)
-      if(length(m) == 0) {
-        missing <- pars_ode
-      } else {
-        missing <- pars_ode[-m[!is.na(m)]]
-      }
-      stop("Not all parameters for this model have been specified. Missing: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
-    }
-    covs_ode <- attr(ode, "covariates")
-    if(!is.null(covs_ode)) {
-      if(!is.null(covariates_table)) {
-        covariates_tmp <- covariates_table[[1]]
-      } else {
-        covariates_tmp <- covariates
-      }
-      if(covs_ode != "" && !all(covs_ode %in% c(names(covariates_tmp)))) {
-        m <- match(names(covariates_tmp), covs_ode)
+    if(is.null(analytical)) {
+      pars_ode <- attr(ode, "parameters")
+      rates <- paste0("rate[", 0:(size-1), "]")
+      if(!all(pars_ode %in% c(names(p), rates))) {
+        m <- match(c(names(p), names(covariates)), pars_ode)
         if(length(m) == 0) {
-          missing <- covs_ode
+          missing <- pars_ode
         } else {
-          missing <- covs_ode[-m[!is.na(m)]]
+          missing <- pars_ode[-m[!is.na(m)]]
         }
-        stop("Not all covariates for this model have been specified. Missing: \n  ", paste(missing, collapse=", "))
+        stop("Not all parameters for this model have been specified. Missing: \n  ", paste(pars_ode[-m[!is.na(m)]], collapse=", "))
+      }
+      covs_ode <- attr(ode, "covariates")
+      if(!is.null(covs_ode)) {
+        if(!is.null(covariates_table)) {
+          covariates_tmp <- covariates_table[[1]]
+        } else {
+          covariates_tmp <- covariates
+        }
+        if(all(covs_ode != "") && !all(covs_ode %in% c(names(covariates_tmp)))) {
+          m <- match(names(covariates_tmp), covs_ode)
+          if(length(m) == 0) {
+            missing <- covs_ode
+          } else {
+            missing <- covs_ode[-m[!is.na(m)]]
+          }
+          stop("Not all covariates for this model have been specified. Missing: \n  ", paste(missing, collapse=", "))
+        }
       }
     }
     if(! any(c("regimen", "regimen_multiple") %in% class(regimen))) {
@@ -278,15 +301,39 @@ sim <- function (ode = NULL,
         regimen, obs_step_size, t_max,
         covariates, extra_t_obs, t_init = t_init)
     }
+    if(is.null(obs_type)) {
+      obs_type <- rep(1, length(t_obs))
+    }
     if(is.null(covariates_table)) {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, ode)
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
     } else {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], ode)
+      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], model = ode, obs_type = obs_type)
     }
     design_i <- design
     p$dose_times <- regimen$dose_times
     p$dose_amts  <- regimen$dose_amts
   }
+
+  ## Use analytical equations (ADVAN):
+  if(!is.null(analytical)) {
+    ana_model <- advan(analytical, cpp = TRUE)
+    simdata <- advan_create_data(regimen = regimen,
+                                 parameters = parameters,
+                                 cmts = attr(ana_model, "cmt"),
+                                 t_obs = t_obs,
+                                 covariates = covariates,
+                                 covariate_model = covariate_model)
+    res <- ana_model(simdata)
+    out <- advan_parse_output(
+      res,
+      cmts = attr(ana_model, "cmt"),
+      t_obs = t_obs,
+      extra_t_obs = extra_t_obs,
+      regimen = regimen)
+    return(out)
+  }
+
+  ## Continue with ODE simulation
   if (is.null(A_init)) {
     A_init <- rep(0, size)
   }
@@ -295,7 +342,9 @@ sim <- function (ode = NULL,
   if("regimen_multiple" %in% class(regimen) && !is.null(covariates_table)) {
     stop("Sorry, can't simulate multiple regimens for a population in single call to PKPDsim. Use a loop instead.")
   }
-  ## Overrie integrator step size if precision tied to model
+
+
+  ## Override integrator step size if precision tied to model
   int_step_size <- ifelse(!is.null(attr(ode, "int_step_size")), as.num(attr(ode, "int_step_size")), int_step_size)
   for (i in 1:n_ind) {
     p_i <- p
@@ -305,11 +354,17 @@ sim <- function (ode = NULL,
     } else {
       covariates_tmp <- covariates
     }
+    if(!is.null(parameters_table)) {
+      parameters <- parameters_table[[i]]
+    }
     if("regimen_multiple" %in% class(regimen)) {
       if(is.null(t_obs)) { # find reasonable default to output
         t_obs <- get_t_obs_from_regimen(
           regimen[[i]], obs_step_size, t_max,
           covariates, extra_t_obs)
+      }
+      if(is.null(obs_type)) {
+        obs_type <- rep(1, length(t_obs))
       }
       design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_tmp)
       if("regimen_multiple" %in% class(regimen)) {
@@ -319,10 +374,21 @@ sim <- function (ode = NULL,
     }
     t_obs <- round(t_obs + t_init, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
     if (!is.null(omega)) {
-      if (omega_type == "exponential") {
-        p_i[1:nrow(omega_mat)] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,]))
+      n_om <- nrow(omega_mat)
+      if(length(omega_type) == 1) {
+        omega_type <- rep(omega_type, n_om)
       } else {
-        p_i[1:nrow(omega_mat)] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])
+        if(length(omega_type) != n_om) {
+          warning("Length of `omega_type` vector is not equal to expected number of omega's. This could lead to errors or unexpected results.")
+        }
+      }
+      if (any(omega_type == "exponential")) {
+        idx <- (omega_type == "exponential")[1:n_om]
+        p_i[(1:nrow(omega_mat))[idx]] <- (utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) * exp(etas[i,])))[idx]
+      }
+      if(any(omega_type == "normal")) {
+        idx <- (omega_type == "normal")[1:n_om]
+        p_i[(1:nrow(omega_mat))[idx]] <- utils::relist(unlist(utils::as.relistable(p_i[1:nrow(omega_mat)])) + etas[i,])[idx]
       }
     }
     tmp <- c()
@@ -349,6 +415,7 @@ sim <- function (ode = NULL,
         int_step_size = int_step_size,
         t_obs = t_obs,
         t_obs_orig = t_obs_orig,
+        obs_type = obs_type,
         iov_bins = iov_bins
       ))
     }
@@ -368,16 +435,16 @@ sim <- function (ode = NULL,
     if(!is.null(obs) && length(obs$cmt) > 1) {
       for(j in 1:length(obs$cmt)) {
         lab <- ifelse(!is.null(obs$label[j]), obs$label[j], paste0("obs",j))
-        dat_obs <- rbind(dat_obs, cbind(id=i, t=tmp$time, comp=lab, y=unlist(tmp[[paste0("obs",j)]])))
+        dat_obs <- rbind(dat_obs, cbind(id=i, t=tmp$time, comp=lab, y=unlist(tmp[[paste0("obs",j)]]), obs_type = tmp$obs_type))
       }
     } else {
-      dat_obs <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs))
+      dat_obs <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs), obs_type = tmp$obs_type)
     }
     if(only_obs || !is.null(analytical)) {
       dat_ind <- dat_obs
     } else {
       for (j in 1:length(A_init)) {
-        dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j]))
+        dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j], obs_type = tmp$obs_type))
       }
       dat_ind <- rbind(dat_ind, dat_obs)
     }
@@ -414,7 +481,7 @@ sim <- function (ode = NULL,
         l_mat <- length(dat_ind[,1])
         comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
       }
-      comb[((i-1)*l_mat)+(1:l_mat),1:length(dat_ind[1,])] <- dat_ind
+      comb[((i-1)*l_mat)+(1:l_mat), 1:length(dat_ind[1,])] <- dat_ind
     }
   }
 
@@ -425,27 +492,21 @@ sim <- function (ode = NULL,
     par_names <- names(p_i)[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]
   }
   all_names <- unique(c(par_names, cov_names, var_names))
-  colnames(comb) <- c("id", "t", "comp", "y", all_names)
-  col_names <- c("id", "t", "y", all_names)
-  for(key in col_names) {
+  colnames(comb) <- c("id", "t", "comp", "y", "obs_type", all_names)
+  for(key in c("id", "t", "y", "obs_type", all_names)) {
     comb[[key]] <- as.num(comb[[key]])
   }
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
-    comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, sep="_")),]
+    comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_")),]
   } else { # only remove duplicates at t=0
-    comb <- comb[!(duplicated(paste(comb$id, comb$comp, comb$t, sep="_")) & comb$t == 0),]
+    comb <- comb[!(duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_")) & comb$t == 0),]
   }
-  grid <- expand.grid(t_obs, unique(comb$id), unique(comb$comp))
-  colnames(grid) <- c("t", "id", "comp")
-  suppressWarnings(suppressMessages( ## left join is a bit too chatty
-    if(!is.null(all_names) && length(all_names) > 0) {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y", all_names)]
-    } else {
-      comb <- dplyr::left_join(grid, comb, copy=TRUE)[, c("id", "t", "comp", "y")]
-    }
-  ))
-
+  grid <- expand.grid(paste(t_obs, obs_type, sep="_"), unique(comb$id), unique(comb$comp))
+  colnames(grid) <- c("t_obs_type", "id", "comp")
+  comb$t_obs_type <- paste(comb$t, comb$obs_type, sep = "_")
+  comb <- merge(grid, comb, all=FALSE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type", all_names)]
+  comb <- comb[order(comb$id, comb$comp, comb$t, comb$obs_type, decreasing=FALSE), -2]
   if(!is.null(regimen_orig$ss_regimen)) {
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
     comb$t <- as.num(comb$t) - t_ss
@@ -454,7 +515,10 @@ sim <- function (ode = NULL,
 
   ## add residual variability
   if(!is.null(res_var)) {
-    comb[comb$comp == 'obs',]$y <- add_ruv(comb[comb$comp == 'obs',]$y, res_var)
+    comb[comb$comp == 'obs',]$y <- add_ruv(
+      x = comb[comb$comp == 'obs',]$y,
+      ruv = res_var,
+      obs_type = comb[comb$comp == 'obs',]$obs_type)
   }
   comb$t <- comb$t - t_init
 

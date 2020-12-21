@@ -9,13 +9,18 @@ model <- function(mod = NULL) {
   attr(ret, "pk_code") <- "[PK_CODE]"
   attr(ret, "state_init") <- [STATE_INIT]
   attr(ret, "parameters") <- [PARS]
+  attr(ret, "reparametrization") <- [REPARAM]
   attr(ret, "variables") <- [VARS]
   attr(ret, "covariates") <- [COVS]
-  attr(ret, "lagtime") <- "[LAGTIME]"
+  attr(ret, "lagtime") <- [LAGTIME]
   attr(ret, "ltbs") <- [LTBS]
+  attr(ret, "misc") <- [MISC]
+  attr(ret, "cmt_mapping") <- [CMT_MAPPING]
   attr(ret, "int_step_size") <- [INT_STEP_SIZE]
   attr(ret, "iov") <- list([IOV])
+  attr(ret, "cmt_mapping") <- [CMT_MAPPING]
   attr(ret, "nonmem") <- "[NONMEM]"
+  attr(ret, "comments") <- "[COMMENTS]"
   attr(ret, "version") <- "[VERSION]"
   class(ret) <- c("PKPDsim", class(ret))
   return(ret)

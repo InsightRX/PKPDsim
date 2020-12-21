@@ -4,8 +4,17 @@
 \alias{parse_regimen}
 \title{Parse regimen}
 \usage{
-parse_regimen(regimen, t_max = NULL, t_obs = NULL, t_tte = NULL,
-  t_init = 0, p, covariates, model = NULL)
+parse_regimen(
+  regimen,
+  t_max = NULL,
+  t_obs = NULL,
+  t_tte = NULL,
+  t_init = 0,
+  p,
+  covariates,
+  model = NULL,
+  obs_type = NULL
+)
 }
 \arguments{
 \item{regimen}{regimen}
@@ -23,6 +32,8 @@ parse_regimen(regimen, t_max = NULL, t_obs = NULL, t_tte = NULL,
 \item{covariates}{covariates}
 
 \item{model}{model}
+
+\item{obs_type}{observation type}
 }
 \description{
 Parse regimen
