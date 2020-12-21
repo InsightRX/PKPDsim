@@ -21,7 +21,7 @@ calculate_parameters <- function(
   include_variables = TRUE,
   ...
 ) {
-  reg <- new_regimen(amt = 0, times = 0, type = "bolus")
+  reg <- new_regimen(amt = 0, times = 0, cmt = 1, type = "bolus")
   incl <- list(parameters = FALSE, variables = FALSE)
   if(!is.null(covariates)) covariates <- covariate_last_obs_only(covariates) # make sure only single value!
   if(include_parameters) incl$parameters <- TRUE

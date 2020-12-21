@@ -4,8 +4,14 @@
 \alias{calculate_parameters}
 \title{Calculate model-specific variables using a dummy call to sim_ode()}
 \usage{
-calculate_parameters(ode = NULL, parameters = NULL, covariates = NULL,
-  include_parameters = TRUE, include_variables = TRUE, ...)
+calculate_parameters(
+  ode = NULL,
+  parameters = NULL,
+  covariates = NULL,
+  include_parameters = TRUE,
+  include_variables = TRUE,
+  ...
+)
 }
 \arguments{
 \item{ode}{PKPDsim model object}

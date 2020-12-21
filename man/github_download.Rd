@@ -4,8 +4,14 @@
 \alias{github_download}
 \title{Download a single file from GitHub, or get list of files}
 \usage{
-github_download(repo, path = "/README.md", branch = "master",
-  auth_token = NULL, raw = FALSE, action = "download")
+github_download(
+  repo,
+  path = "/README.md",
+  branch = "master",
+  auth_token = NULL,
+  raw = FALSE,
+  action = "download"
+)
 }
 \arguments{
 \item{repo}{repository, specified as `"owner/repo"`}

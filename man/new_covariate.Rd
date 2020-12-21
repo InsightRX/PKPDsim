@@ -4,9 +4,16 @@
 \alias{new_covariate}
 \title{New covariate}
 \usage{
-new_covariate(value = NULL, times = NULL, implementation = "interpolate",
-  unit = NULL, interpolation_join_limit = 1, remove_negative_times = TRUE,
-  comments = NULL, verbose = TRUE)
+new_covariate(
+  value = NULL,
+  times = NULL,
+  implementation = "interpolate",
+  unit = NULL,
+  interpolation_join_limit = 1,
+  remove_negative_times = TRUE,
+  comments = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{value}{a numeric vector}

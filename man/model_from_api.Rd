@@ -4,10 +4,20 @@
 \alias{model_from_api}
 \title{Load model definition from API, and compile to R library}
 \usage{
-model_from_api(model = NULL, url = "http://localhost:8080/api",
-  github = FALSE, repo = NULL, auth_token = NULL, verbose = TRUE,
-  get_definition = FALSE, to_package = FALSE, force = FALSE,
-  run_tests = FALSE, ...)
+model_from_api(
+  model = NULL,
+  url = "http://localhost:8080/api",
+  github = FALSE,
+  repo = NULL,
+  auth_token = NULL,
+  verbose = TRUE,
+  get_definition = FALSE,
+  to_package = FALSE,
+  force = FALSE,
+  install_all = FALSE,
+  run_tests = FALSE,
+  ...
+)
 }
 \arguments{
 \item{model}{model id}
@@ -26,7 +36,9 @@ model_from_api(model = NULL, url = "http://localhost:8080/api",
 
 \item{to_package}{compile to package?}
 
-\item{force}{force install, even if model inactive}
+\item{force}{force install even if same version number of model already installed.}
+
+\item{install_all}{force install all, even if model inactive}
 
 \item{run_tests}{run tests associated with model?}
 

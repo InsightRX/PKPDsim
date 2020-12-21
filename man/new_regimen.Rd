@@ -4,10 +4,21 @@
 \alias{new_regimen}
 \title{Dose regimen for sim_ode}
 \usage{
-new_regimen(amt = 100, interval = NULL, n = 3, times = NULL,
-  type = NULL, t_inf = NULL, rate = NULL, t_lag = NULL, cmt = NULL,
-  checks = TRUE, ss = FALSE, n_ss = NULL,
-  first_dose_time = lubridate::now())
+new_regimen(
+  amt = 100,
+  interval = NULL,
+  n = 3,
+  times = NULL,
+  type = NULL,
+  t_inf = NULL,
+  rate = NULL,
+  t_lag = NULL,
+  cmt = NULL,
+  checks = TRUE,
+  ss = FALSE,
+  n_ss = NULL,
+  first_dose_time = lubridate::now()
+)
 }
 \arguments{
 \item{amt}{dosing amount, either a single value (which will repeated for multiple doses), or a vector with doses for each administration}
@@ -18,7 +29,7 @@ new_regimen(amt = 100, interval = NULL, n = 3, times = NULL,
 
 \item{times}{vector describing dosing times. Overrides specified times using interval and n arguments}
 
-\item{type}{either "infusion" or "bolus" (default)}
+\item{type}{either "infusion", "oral" or bolus" (default)}
 
 \item{t_inf}{infusion time (if `type`==`infusion`)}
 
