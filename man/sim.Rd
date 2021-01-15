@@ -122,18 +122,19 @@ library(ggplot2)
 library(PKPDsim)
 p <- list(CL = 38.48,
          V  = 7.4,
-         Q2 = 7.844,
+         Q  = 7.844,
          V2 = 5.19,
-         Q3 = 9.324,
+         Q2  = 9.324,
          V3 = 111)
 
 r1 <- new_regimen(amt = 100,
              times = c(0, 24, 36),
              type = "infusion")
 
-dat <- sim_ode (ode = "pk_3cmt_iv",
-               par = p,
-               regimen = r1)
+mod <- new_ode_model("pk_3cmt_iv")
+dat <- sim(ode = mod,
+          parameters = p,
+          regimen = r1)
 
 ggplot(dat, aes(x=t, y=y)) +
  geom_line() +
@@ -144,11 +145,11 @@ ggplot(dat, aes(x=t, y=y)) +
 omega <- c(0.3,       # IIV CL
           0.1, 0.3)  # IIV V
 
-dat <- sim (ode = "pk_3cmt_iv",
-               par = p,
-               omega = omega,
-               n_ind = 20,
-               regimen = r1)
+dat <- sim (ode = mod,
+           parameters = p,
+           omega = omega,
+           n_ind = 20,
+           regimen = r1)
 
 ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) +
  geom_line() +
