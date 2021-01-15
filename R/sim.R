@@ -46,7 +46,7 @@
 #'          V  = 7.4,
 #'          Q  = 7.844,
 #'          V2 = 5.19,
-#'          Q  = 9.324,
+#'          Q2  = 9.324,
 #'          V3 = 111)
 #'
 #'r1 <- new_regimen(amt = 100,
@@ -55,7 +55,7 @@
 #'
 #'mod <- new_ode_model("pk_3cmt_iv")
 #'dat <- sim(ode = mod,
-#'           par = p,
+#'           parameters = p,
 #'           regimen = r1)
 #'
 #'ggplot(dat, aes(x=t, y=y)) +
