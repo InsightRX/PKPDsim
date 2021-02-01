@@ -5,7 +5,7 @@
 #' @param interval dosing interval (requires n as argument)
 #' @param n number of doses (requires interval as argument)
 #' @param times vector describing dosing times. Overrides specified times using interval and n arguments
-#' @param type either "infusion", "oral" or bolus" (default)
+#' @param type either "infusion", "oral" or "bolus".
 #' @param t_inf infusion time (if `type`==`infusion`)
 #' @param rate infusion rate (if `type`==`infusion`). `NULL` by default. If specified, overrides `t_inf`
 #' @param t_lag lag time (can be applied to any dose type, not only oral). Will just be added to `times`
@@ -52,6 +52,9 @@ new_regimen <- function(
       if(!is.null(reg$t_inf)) {
         reg$type <- rep("infusion", length(reg$t_inf))
         reg$type[reg$t_inf == 0] <- "bolus"
+        if(any(reg$t_inf > 0)) {
+          warning("Please specify regimen `type` explicitly (either 'infusion', 'bolus', or 'oral'). Will assume `type='infusion'` for doses with `t_inf` > 0.")
+        }
       } else {
         reg$type <- "bolus"
       }
