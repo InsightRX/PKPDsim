@@ -49,7 +49,12 @@ new_regimen <- function(
       warning("Some doses were < 0, setting to 0.")
     }
     if(is.null(reg$type)) {
-      reg$type <- "bolus"
+      if(!is.null(reg$t_inf)) {
+        reg$type <- rep("infusion", length(reg$t_inf))
+        reg$type[reg$t_inf == 0] <- "bolus"
+      } else {
+        reg$type <- "bolus"
+      }
     }
     if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || any(length(reg$type) == 0) || !(all(reg$type %in% c("bolus", "oral", "infusion"))))) {
       if(!is.null(t_inf) || !is.null(rate)) {
