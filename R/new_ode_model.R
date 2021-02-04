@@ -450,7 +450,7 @@ new_ode_model <- function (model = NULL,
         if(!is.null(lib_location)) {
           lib_location_arg <- paste0("--library=", lib_location)
         }
-        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-multiarch --with-keep.source --pkglock --install-tests ."))
+        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-docs --no-demo --no-help --no-multiarch --with-keep.source --pkglock --no-staged-install ."))
       } else { # build to zip file
         system(paste0("R CMD build ."))
         pkg_file <- paste0(new_folder, "/", package, "_", version, ".tar.gz")
