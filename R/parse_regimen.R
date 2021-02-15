@@ -33,7 +33,7 @@ parse_regimen <- function(
   if(t_init != 0) {
     t_obs <- c(0, t_obs + t_init)
     if(length(obs_type) > 0) {
-      obs_type <- c(as.numeric(sort(table(obs_type), decreasing=TRUE)[1]), obs_type) # Temporary: assume pre-TDM is most common observed type. Should be specified in argument ideally, but edge-case so leaving for now.
+      obs_type <- c(as.numeric(names(sort(table(obs_type), decreasing=TRUE)[1])), obs_type) # Temporary: assume pre-TDM is most common observed type. Should be specified in argument ideally, but edge-case so leaving for now.
     } else {
       obs_type <- 1
     }
@@ -129,6 +129,7 @@ parse_regimen <- function(
   }
   design <- dos[order(dos$t, -dos$dose),]
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
+    t_obs <- round(t_obs, 6)
     t_diff <- setdiff(t_obs, design$t)
     if(length(t_diff) > 0) {
       design[(length(design[,1])+1) : (length(design[,1])+length(t_diff)),] <- cbind(
