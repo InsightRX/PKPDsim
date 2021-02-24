@@ -25,6 +25,7 @@ DataFrame pk_3cmt_iv_infusion(DataFrame d){
   NumericVector TIME = out["TIME"];
   NumericVector AMT = out["AMT"];
   NumericVector RATEALL = out["RATEALL"];
+  NumericVector AUC = out["AUC"];
 
   // prepare initial state
   std::vector<int>::iterator it;
@@ -93,6 +94,14 @@ DataFrame pk_3cmt_iv_infusion(DataFrame d){
     A3[i] = A3term1+A3term2+A3term3;
 
     DV[i] = A1[i]/V[i];
+
+    if(Doserate > 0) {
+      // AUC during infusion is total AUC of dose (A/CL) minus the AUC still to be eliminated (Amount from dose at EOI/CL)
+      AUC[i] = AUC[i-1] + (Doserate*t)/CL[i] - (A1[i]-A1last)/CL[i];
+    } else {
+      AUC[i] = AUC[i-1] + (A1[i-1] - A1[i])/CL[i];
+    }
+
   }
 
   // Update object
@@ -100,6 +109,7 @@ DataFrame pk_3cmt_iv_infusion(DataFrame d){
   out["A2"] = A2;
   out["A3"] = A3;
   out["DV"] = DV;
+  out["AUC"] = AUC;
 
   return(out);
 }

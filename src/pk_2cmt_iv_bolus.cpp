@@ -18,6 +18,7 @@ DataFrame pk_2cmt_iv_bolus(DataFrame d){
   NumericVector V2 = out["V2"];
   NumericVector TIME = out["TIME"];
   NumericVector AMT = out["AMT"];
+  NumericVector AUC = out["AUC"];
 
   // prepare initial state
   std::vector<int>::iterator it;
@@ -51,6 +52,9 @@ DataFrame pk_2cmt_iv_bolus(DataFrame d){
     A2term = (((A2last*E1+A1last*k12)-A2last*lambda1)*exp(-t*lambda1)-((A2last*E1+A1last*k12)-A2last*lambda2)*exp(-t*lambda2))/(lambda2-lambda1);
     A2[i] = A2term;
     DV[i] = A1[i]/V[i];
+
+    AUC[i] = AUC[i-1] + (A1[i-1] - A1term)/CL[i];
+
   }
 
   // Update object

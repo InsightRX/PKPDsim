@@ -30,6 +30,8 @@ OneCompIVbolus <- function(d){
 
     d$A1[i] = d$AMT[i]+ A1last*exp(-t*k10)   # Amount in the central compartment
     d$DV[i] = d$A1[i]/d$V[i]                 # Concentration in the central compartment
+
+    d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - A1last*exp(-t*k10))/d$CL[i]
   }
   d
 }
@@ -69,7 +71,11 @@ TwoCompIVbolus <- function(d) {
 
     A2term = (((A2last*E1+A1last*k12)-A2last*lambda1)*exp(-t*lambda1)-((A2last*E1+A1last*k12)-A2last*lambda2)*exp(-t*lambda2))/(lambda2-lambda1)
     d$A2[i] = A2term            #Amount in the peripheral compartment
-    d$DV[i] <- d$A1[i]/d$V[i]  #Concentartion in the central compartment
+
+    d$DV[i] <- d$A1[i]/d$V[i]  #Concentration in the central compartment
+
+    d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - A1term)/d$CL[i]
+
   }
   d
 }
@@ -145,6 +151,8 @@ ThreeCompIVbolus <- function(d) {
 
     d$A3[i] <- A3term1+A3term2            #Amount in the second-peripheral compartment
 
+    d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - (A1term1+A1term2))/d$CL[i]
+
     d$DV[i] <- d$A1[i]/d$V[i]            #Concentration in the central compartment
   }
   d
@@ -172,6 +180,13 @@ OneCompIVinfusion <- function(d) {
     d$A1[i] = Doserate/k10*(1-exp(-t*k10))+A1last*exp(-t*k10)       #Amount in the central compartment
 
     d$DV[i] <- d$A1[i]/d$V[i]                                       #Concentration in the central compartment
+
+    if(Doserate > 0) {
+      # AUC during infusion is total AUC of dose (A/CL) minus the AUC still to be eliminated (Amount from dose at EOI/CL)
+      d$AUC[i] <- d$AUC[i-1] + (Doserate*t)/d$CL[i] - (d$A1[i]-A1last)/d$CL[i]
+    } else {
+      d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - d$A1[i])/d$CL[i]
+    }
 
   }
   d
@@ -219,6 +234,13 @@ TwoCompIVinfusion <- function(d) {
     d$A2[i] <- A2term1+A2term2   #Amount in the peripheral compartment
 
     d$DV[i] <- d$A1[i]/d$V[i]   #Concentration in the central compartment
+
+    if(Doserate > 0) {
+      # AUC during infusion is total AUC of dose (A/CL) minus the AUC still to be eliminated (Amount from dose at EOI/CL)
+      d$AUC[i] <- d$AUC[i-1] + (Doserate*t)/d$CL[i] - (d$A1[i]-A1last)/d$CL[i]
+    } else {
+      d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - d$A1[i])/d$CL[i]
+    }
 
   }
   d
@@ -299,6 +321,13 @@ ThreeCompIVinfusion <- function(d) {
     d$A3[i] <- A3term1+A3term2+A3term3  #Amount in the second-peripheral compartment
 
     d$DV[i] <- d$A1[i]/d$V[i]          #Concentration in the central compartment
+
+    if(Doserate > 0) {
+      # AUC during infusion is total AUC of dose (A/CL) minus the AUC still to be eliminated (Amount from dose at EOI/CL)
+      d$AUC[i] <- d$AUC[i-1] + (Doserate*t)/d$CL[i] - (d$A1[i]-A1last)/d$CL[i]
+    } else {
+      d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - d$A1[i])/d$CL[i]
+    }
 
   }
   d
@@ -389,6 +418,13 @@ ThreeCompIVinfusionMetab <- function(d) {
     d$Am[i] = Amterm1+Amterm2+Amterm3   #Amount in the metabolite compartment
 
     d$DV[i] <- d$A1[i]/d$V[i]          #Concentration in the central compartment
+
+    if(Doserate > 0) {
+      # AUC during infusion is total AUC of dose (A/CL) minus the AUC still to be eliminated (Amount from dose at EOI/CL)
+      d$AUC[i] <- d$AUC[i-1] + (Doserate*t)/d$CL[i] - (d$A1[i]-A1last)/d$CL[i]
+    } else {
+      d$AUC[i] <- d$AUC[i-1] + ((A1last * (1-exp(-t*k10)))/k10)/d$V[i]  # regular AUC calculation
+    }
 
   }
   d
