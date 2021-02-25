@@ -6,6 +6,7 @@ rdelta <- function(x, y) { (x - y) / x }
 dose <- 100
 interval <- 12
 n_days <- 5
+t_inf <- 1.5
 parameters <- list(CL = 10, V = 50, KA = 0.5, Q = 5, V2 = 100, Q2 = 3, V3 = 150, F1 = 1)
 t_obs <- c(3, 6, 8, 23, 48)
 
@@ -24,7 +25,7 @@ data_bolus <- advan_create_data(reg_bolus,
 ## Infusion dataset
 reg_infusion <- new_regimen(amt = dose,
                             times = seq(0, interval * n_days * (24/interval), interval),
-                            t_inf = 1, type = "infusion")
+                            t_inf = t_inf, type = "infusion")
 data_infusion <- advan_create_data(reg_infusion,
                                    parameters = parameters,
                                    cmts = 6, t_obs = t_obs)
