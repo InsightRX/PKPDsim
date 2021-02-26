@@ -43,6 +43,7 @@ advan_create_data <- function(
   for(i in 1:cmts) {
     data[[paste0("A", i)]] <- 0
   }
+  data$AUC <- 0
 
   ## Add parameters
   for(key in names(parameters)) {

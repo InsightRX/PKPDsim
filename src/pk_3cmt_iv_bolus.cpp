@@ -24,6 +24,7 @@ DataFrame pk_3cmt_iv_bolus(DataFrame d){
   NumericVector V3 = out["V3"];
   NumericVector TIME = out["TIME"];
   NumericVector AMT = out["AMT"];
+  NumericVector AUC = out["AUC"];
 
   // prepare initial state
   std::vector<int>::iterator it;
@@ -88,6 +89,9 @@ DataFrame pk_3cmt_iv_bolus(DataFrame d){
     A3[i] = A3term1+A3term2;
 
     DV[i] = A1[i]/V[i];
+
+    AUC[i] = AUC[i-1] + (A1[i-1] - (A1term1+A1term2))/CL[i];
+
   }
 
   // Update object
@@ -95,6 +99,7 @@ DataFrame pk_3cmt_iv_bolus(DataFrame d){
   out["A2"] = A2;
   out["A3"] = A3;
   out["DV"] = DV;
+  out["AUC"] = AUC;
 
   return(out);
 }

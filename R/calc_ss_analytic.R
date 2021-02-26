@@ -84,6 +84,7 @@ calc_ss_analytic <- function(
     obs$RATEALL <- 0
   }
   d <- rbind(d, obs)
+  d$AUC <- 0
 
   ## simulate to steady state using ADVAN function
   func <- advan(f, cpp = TRUE)
