@@ -17,7 +17,7 @@ new_regimen(
   checks = TRUE,
   ss = FALSE,
   n_ss = NULL,
-  first_dose_time = lubridate::now()
+  first_dose_time = lubridate::now(tzone = "UTC")
 )
 }
 \arguments{
