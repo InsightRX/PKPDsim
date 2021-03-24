@@ -90,6 +90,8 @@ new_ode_model(
 
 \item{misc}{a list of miscelleaneous model metadata}
 
+\item{cmt_mapping}{list indicating which administration routes apply to which compartments. Example: `list("oral" = 1, "infusion" = 2)`}
+
 \item{int_step_size}{step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`}
 
 \item{default_parameters}{population or specific patient values, can optionally be added to library}
