@@ -3,7 +3,7 @@ library(testit)
 
 assert(
   "Non posiitive definite matrix returns false",
-  isFALSE(PKPDsim::is_positive_definite(matrix(c(1, 2, 2, 4), nrow = 2)))
+  !(PKPDsim::is_positive_definite(matrix(c(1, 2, 2, 4), nrow = 2)))
 )
 
 assert(
@@ -18,7 +18,7 @@ assert(
 
 assert(
   "Matrix with complex eigen values returns FALSE",
-  isFALSE(PKPDsim::is_positive_definite(matrix(c(1, 2, -1, -4), nrow = 2)))
+  !(PKPDsim::is_positive_definite(matrix(c(1, 2, -1, -4), nrow = 2)))
 )
 
 assert(
