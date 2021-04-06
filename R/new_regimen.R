@@ -98,7 +98,7 @@ new_regimen <- function(
     reg$ss_regimen <- pre_reg
   }
   if(is.null(times)) {
-    reg$dose_times <- c(0:(n-1)) * interval
+    reg$dose_times <- c(0:max(0, n-1)) * interval
   } else {
     reg$dose_times <- times
     if(length(reg$dose_times) > 1) {

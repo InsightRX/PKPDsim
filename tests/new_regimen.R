@@ -24,3 +24,10 @@ assert("t_inf = 0: no warning", !has_warning(new_regimen(amt=100, n=4, interval=
 assert("t_inf = 1: infusion", all(reg2$type == "infusion"))
 assert("t_inf = 1: has warning", has_warning(new_regimen(amt=100, n=4, interval=4, t_inf=1)))
 assert("t_inf = mixed: mixed", all(reg3$type == c("bolus", "infusion", "bolus", "infusion")))
+
+# n = 0 doses does not create doses at negative times
+reg0 <- new_regimen(amt = 200, n = 0, interval = 24, t_inf = 2, type = "infusion")
+assert(
+  "do not return doses at negative times when 0 doses requested",
+  !any(reg0$dose_times < 0)
+)
