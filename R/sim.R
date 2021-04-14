@@ -356,7 +356,7 @@ sim <- function (ode = NULL,
       covariates_tmp <- covariates
     }
     if(!is.null(parameters_table)) {
-      parameters <- parameters_table[[i]]
+      p_i <- parameters_table[[i]]
     }
     if("regimen_multiple" %in% class(regimen)) {
       if(is.null(t_obs)) { # find reasonable default to output
