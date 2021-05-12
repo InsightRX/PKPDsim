@@ -1,5 +1,6 @@
 library(testit)
 library(PKPDsim)
+Sys.setenv("R_TESTS" = "")
 
 ## Test to confirm that model with IOV works, all IOV bins are properly activated.
 iov_bins <- c(0, 12, 24, 36, 48, 9999)
@@ -15,7 +16,7 @@ mod <- new_ode_model(
 )
 reg <- new_regimen(amt = 100, n = 12, interval = 12, t_inf = 1, type = "infusion")
 res <- sim(
-  mod, 
+  mod,
   regimen = reg,
   parameters = list(
     CL = 1,
