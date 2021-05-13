@@ -124,7 +124,7 @@ compile_sim_cpp <- function(
   pars <- paste0(pars, "double bioav = 1;\n")
   if(!is.null(iov) && !is.null(iov$n_bins)) {
     pars <- paste0(pars, paste0("Rcpp::NumericVector iov_bin(", (iov$n_bins+1) ,");\n"))
-    par_def <- paste0('  for(int i = 0; i < (iov_bin.size()-1); i++) { iov_bin[i] = iov_bins[i]; };\n', par_def);
+    par_def <- paste0('  for(int i = 0; i < (iov_bin.size()); i++) { iov_bin[i] = iov_bins[i]; };\n', par_def);
   }
   for(i in seq(p_def)) { # actual parameters for model
     par_def <- paste0(par_def, '  ', p_def[i], ' = par["', p_def[i], '"];\n')
