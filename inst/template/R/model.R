@@ -9,6 +9,7 @@ model <- function(mod = NULL) {
   attr(ret, "pk_code") <- "[PK_CODE]"
   attr(ret, "state_init") <- [STATE_INIT]
   attr(ret, "parameters") <- [PARS]
+  attr(ret, "fixed") <- [FIXED]
   attr(ret, "reparametrization") <- [REPARAM]
   attr(ret, "variables") <- [VARS]
   attr(ret, "covariates") <- [COVS]
