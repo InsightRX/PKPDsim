@@ -416,9 +416,6 @@ new_ode_model <- function (model = NULL,
       if(is.null(default_parameters)) { default_parameters <- "" } else {
         default_parameters <- PKPDsim::print_list(default_parameters, FALSE)
       }
-      # if(is.null(fixed)) { fixed <- "" } else {
-      #   fixed <- PKPDsim::print_list(fixed, FALSE)
-      # }
       if(is.null(units)) { units <- "''" } else {
         units <- PKPDsim::print_list(units, TRUE, TRUE)
       }
