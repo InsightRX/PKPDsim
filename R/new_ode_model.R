@@ -282,6 +282,7 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "reparametrization") <- reparametrization
       attr(sim_out, "covariates") <- cov_names
       attr(sim_out, "variables") <- variables
+      attr(sim_out, "fixed") <- fixed
       attr(sim_out, "cpp")  <- TRUE
       attr(sim_out, "size")  <- size
       attr(sim_out, "obs")  <- obs
