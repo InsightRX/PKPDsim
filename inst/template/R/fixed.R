@@ -1,0 +1,4 @@
+#' @export
+fixed <- function() {
+  [FIXED]
+}
