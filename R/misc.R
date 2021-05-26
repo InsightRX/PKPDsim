@@ -25,10 +25,10 @@ as.num <- function(x) {
 
 cleanup_code <- function(code) {
   if(!is.null(code)) {
-    code <- gsub("\\r\\n", "\n", code)
-    code <- gsub("\\n", ";\n", code)
-    code <- gsub("$", ";\n", code)
-    code <- gsub("^;", "", code)
+    code <- gsub("\\r\\n", "\n", code, useBytes = TRUE)
+    code <- gsub("\\n", ";\n", code, useBytes = TRUE)
+    code <- gsub("$", ";\n", code, useBytes = TRUE)
+    code <- gsub("^;", "", code, useBytes = TRUE)
   }
   return(code)
 }
