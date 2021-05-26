@@ -367,7 +367,11 @@ new_ode_model <- function (model = NULL,
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
-      fixed <- paste0("c(", paste(add_quotes(fixed), collapse = ", "), ")")
+      fixed <- ifelse(
+        is.null(fixed),
+        "NULL",
+        paste0("c(", paste(add_quotes(fixed), collapse = ", "), ")")
+      )
       vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
       repl <- matrix(c("\\[MODULE\\]", package,
                        "\\[N_COMP\\]", size,
