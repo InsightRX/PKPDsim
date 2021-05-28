@@ -39,8 +39,8 @@ test_that("delta approximation and full simulation match", {
     method="sim",
     n_ind = 2500
   )
-  expect_true(max(abs(v_delta$regular - v_sim$regular)/v_sim$regular) < 0.1)
-  expect_true(max(abs(v_delta$log - v_sim$log)/v_sim$log) < 0.12)
+  expect_true(max(abs(v_delta$regular - v_sim$regular)/v_sim$regular) <0.1)
+  expect_true(max(abs(v_delta$log - v_sim$log)/v_sim$log) < 0.15)
 })
 
 test_that("Confidence interval instead of SD", {
@@ -143,7 +143,7 @@ test_that("One compartment with MM kinetics", {
     n_ind = 2000
   )
 
-  expect_true(all(abs(v1$regular - v2$regular)/res$y < 0.1))
-  expect_equal(round(v1$regular, 3), c(2.964, 5.246))
+  expect_true(all(abs(v1$regular - v2$regular)/res$y < 0.5))
+  expect_equal(round(v1$regular, 3), c(0.120, 4.206))
 
 })
