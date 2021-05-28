@@ -55,7 +55,7 @@ test_that("One compartment IV infusion", {
   expect_equal(attr(f1, "type"), "infusion")
   expect_equal(attr(f2, "type"), "infusion")
   expect_equal(attr(f1, "implementation"), FALSE)
-  expect_equal(attr(f1, "implementation"), TRUE)
+  expect_equal(attr(f2, "implementation"), TRUE)
   expect_equal(attr(f1, "cmt"), 1)
   expect_equal(attr(f2, "cmt"), 1)
 })
