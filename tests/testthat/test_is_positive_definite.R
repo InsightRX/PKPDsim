@@ -1,28 +1,21 @@
-library(PKPDsim)
-library(testit)
 
-assert(
-  "Non posiitive definite matrix returns false",
-  !(PKPDsim::is_positive_definite(matrix(c(1, 2, 2, 4), nrow = 2)))
-)
+test_that("Non positive definite matrix returns false", {
+  expect_false(is_positive_definite(matrix(c(1, 2, 2, 4), nrow = 2)))
+})
 
-assert(
-  "Posiitive definite matrix returns true",
-  PKPDsim::is_positive_definite(matrix(c(1, 2, 1, 4), nrow = 2))
-)
+test_that("Positive definite matrix returns true", {
+  expect_true(is_positive_definite(matrix(c(1, 2, 1, 4), nrow = 2)))
+})
 
-assert(
-  "Posiitive definite matrix in triangle form returns true",
-  PKPDsim::is_positive_definite(c(1, 0, 2, 0, 0, 3.7))
-)
+test_that("Positive definite matrix in triangle form returns true", {
+  expect_true(is_positive_definite(c(1, 0, 2, 0, 0, 3.7)))
+})
 
-assert(
-  "Matrix with complex eigen values returns FALSE",
-  !(PKPDsim::is_positive_definite(matrix(c(1, 2, -1, -4), nrow = 2)))
-)
+test_that("Matrix with complex eigen values returns FALSE", {
+  expect_false(is_positive_definite(matrix(c(1, 2, -1, -4), nrow = 2)))
+})
 
-assert(
-  "Matrix where numerical solver issues result in very tiny complex components", {
+test_that("Matrix where numerical solver issues result in very tiny complex components", {
   x <- matrix(c(
     0.00552725632651592, 0.000302539251435238, 0.00703631214091069,
     0.00151961733931534, -0.00469749056857785, -3.62684481388847e-12,
@@ -112,6 +105,9 @@ assert(
   ),
   nrow = 16
   )
-
-  PKPDsim::is_positive_definite(x)
+  expect_warning(
+    is_x_positive_def <- is_positive_definite(x),
+    "imaginary parts discarded in coercion"
+  )
+  expect_true(is_x_positive_def)
 })
