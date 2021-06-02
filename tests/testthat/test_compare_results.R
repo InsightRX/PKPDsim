@@ -194,6 +194,14 @@ test_that("Duplicate obs returned when specified in arg", {
 
 test_that("Custom t_obs is returned", {
   t_obs <- seq(from = 0, to = 24, by = .1)
+  p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
+  r <- new_regimen(
+    amt = c(100, 100, 100, 100),
+    times = c(0, 6, 12, 18),
+    cmt = c(2, 2, 1, 1),
+    t_inf = c(1, 1, 1, 1),
+    type = c("bolus", "bolus", "infusion", "infusion")
+  )
   dat <- sim_ode(
     ode = pk1cmt_oral_lib,
     n_ind = 1,

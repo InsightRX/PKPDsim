@@ -76,6 +76,7 @@ test_that("Confidence interval instead of SD", {
 
 
 test_that("Two compartment model", {
+  set.seed(80)
   mod2 <- new_ode_model("pk_2cmt_iv")
   par2 <- list(CL = 1, V = 10, Q = 1, V2 = 10)
   omega2 <- c(0.118,
