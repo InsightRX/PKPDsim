@@ -1,6 +1,3 @@
-library(PKPDsim)
-library(testit)
-Sys.setenv("R_TESTS" = "")
 
 mod <- new_ode_model(code = "
   dAdt[1] = -KA * A[1];

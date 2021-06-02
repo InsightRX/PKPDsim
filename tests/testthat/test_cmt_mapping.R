@@ -29,3 +29,29 @@ test_that("Admin route is interpreted and simulated correctly", {
   expect_true(res$y[res$comp == 2 & res$t == 25] >= 100)
 })
 
+test_that("multiple scaling types on one compartment works", {
+  mod <- new_ode_model(
+    code = "
+      dAdt[1] = -KA * A[1];
+      dAdt[2] = -(CL/V) * A[2] + KA*A[1];
+    ",
+    obs = list(
+      cmt = c(2, 2),
+      scale = c(1, "V"),
+      label = c("abs", "conc")
+    ),
+    cpp_show_code = FALSE
+  )
+  par <- list(CL = 5, V = 50, KA = .5)
+  reg <- new_regimen(amt = 100, n = 5, interval = 12)
+  res <- sim_ode(
+    ode = mod,
+    parameters = par,
+    regimen = reg,
+    only_obs = TRUE
+  )
+  dat <- cbind(res[res$comp == "abs",]$y, res[res$comp == "conc",]$y)
+  expect_true("PKPDsim" %in% class(mod))
+  expect_equal(length(unique(res$comp)), 2)
+  expect_equal(round(dat[,1],1), round(dat[,2]*par$V,1))
+})
