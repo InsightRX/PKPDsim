@@ -1,4 +1,4 @@
-context("Example multiple observation types (e.g. different compartments! not just different residual errors)")
+# Example multiple observation types (e.g. different compartments! not just different residual errors)
 
 ## define parameters
 vars <- c("CONC", "METAB", "METAB2")

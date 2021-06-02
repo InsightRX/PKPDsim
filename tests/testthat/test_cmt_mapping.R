@@ -1,5 +1,3 @@
-context("Compartment mapping")
-
 pk1cmt_oral_code <- new_ode_model(
   code = "dAdt[1] = -KA*A[1]; dAdt[2] = KA*A[1] - (CL/V)*A[2];",
   obs = list(cmt = 2, scale="V"),

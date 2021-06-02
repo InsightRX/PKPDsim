@@ -1,4 +1,4 @@
-context("rounding time should not produce NAs in sim")
+# rounding time should not produce NAs in sim
 ## time-rounding bug 20170804
 
 test_that("No NAs related to rounding", {

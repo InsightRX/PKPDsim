@@ -1,5 +1,3 @@
-context("test time-varying covariates")
-
 test_that("timevarying covariates handled", {
   # CLi changes by several orders of magnitude after
   # steady state is achieved, which should produce

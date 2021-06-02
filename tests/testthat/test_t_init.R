@@ -1,4 +1,4 @@
-context("Test t_init functionality")
+# Test t_init functionality
 
 ## e.g. TDM before first dose:
 ## at t=-8, conc=10000
