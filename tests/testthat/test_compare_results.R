@@ -170,3 +170,31 @@ dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
                 t_obs = t_obs,
                 only_obs = T)
 assert("custom t_obs works", mean(diff(t_obs)) == mean(diff(dat$t)))
+
+test_that("Covariate table simulation runs", {
+  # this test used to be in the covariate_table_to_list file but
+  # makes more sense here.
+  skip("See RXR-316")
+  p <- list(CL = 5, V = 50)
+  reg <- new_regimen (amt = 100, n = 4, interval = 12, type = "bolus",  cmt=1)
+  om <- c(0.01, 1, 0.01)
+  cov_table <- data.frame(
+    id=c(1, 1, 2, 3),
+    WT = c(40, 45, 50, 60),
+    SCR = c(50, 150, 90,110),
+    t = c(0, 5, 0, 0)
+  )
+
+  dat <- sim(
+    pk1cmt_iv,
+    parameters = p,
+    regimen = reg,
+    covariates_table = cov_table,
+    covariates_implementation = list(SCR = "interpolate"),
+    omega = NULL,
+    n_ind = 3,
+    only_obs = T,
+    output_include = list(parameters = TRUE, covariates=TRUE)
+  )
+  expect_equal(length(unique(dat$id)), 3)
+})

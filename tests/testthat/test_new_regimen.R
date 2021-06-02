@@ -30,3 +30,20 @@ test_that("n = 0 doses does not create doses at negative times", {
   expect_false(min(reg0$dose_times) < 0)
 })
 
+test_that("Rate argument creates valid PKPD regimen", {
+  reg1 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36, 48),
+    type = "infusion",
+    rate = c(1,2,3,4,5)
+  )
+  expect_equal(round(reg1$t_inf), c(100, 50, 33, 25, 20))
+
+  reg2 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36, 48),
+    type = "infusion",
+    rate = c(5)
+  )
+  expect_equal(round(reg2$t_inf), rep(20, 5))
+})
