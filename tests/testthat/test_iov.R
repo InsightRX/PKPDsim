@@ -53,7 +53,7 @@ test_that("IOV is added to parameters", {
   )
   expect_equal(signif(dat$kappa_CL[dat$t == 12], 4), signif(dat$kappa_CL_1[dat$t == 1], 4))
   expect_equal(signif(dat$kappa_CL[dat$t == 36], 4), signif(dat$kappa_CL_2[dat$t == 1], 4))
-  expect_equal(signif(dat$kappa_CL[dat$t == 48], 4), signif(dat$kappa_CL_2[dat$t == 1], 4))
+  expect_equal(signif(dat$kappa_CL[dat$t == 48], 4), signif(dat$kappa_CL_3[dat$t == 1], 4))
   expect_equal(signif(exp(dat$kappa_CL + dat$eta_CL) * dat$CL, 4), signif(dat$CL_iov, 4))
 })
 

@@ -31,6 +31,7 @@ test_that("obs types are output by `sim`", {
 
 
 test_that("check obs at same timepoint but with different obs_type", {
+  obs_type <- c(1,2,1,3,1)
   t_same <- sim(
     ode = pk1,
     parameters = list(CL = 20, V = 200),
@@ -51,6 +52,7 @@ test_that("check obs at same timepoint but with different obs_type", {
 
 
 test_that("check that residual error correctly applied to right var", {
+  obs_type <- c(1,2,1,3,1)
   set.seed(12345)
   ruv_term3 <- list(prop = c(0, 0, 0.1), add = c(0, 0, 0.1))
   ruv_term1 <- list(prop = c(.1, 0, 0), add = c(1, 0, 0))
@@ -92,6 +94,7 @@ test_that("check that residual error correctly applied to right var", {
 
 
 test_that("specifying ruv as multi-type when only 1 obs_type", {
+  obs_type <- c(1,2,1,3,1)
   ruv_single <- list(prop = 0.1, add = 1)
   ruv_multi <- list(prop = c(0.1, 1), add = c(1, 20))
 

@@ -64,6 +64,7 @@ test_that("1-cmt iv bolus", {
 })
 
 test_that("1-cmt iv infusion", {
+  par <- list(CL = 5, V = 100, KA = 1)
   res_ana <- calc_ss_analytic(f = "1cmt_iv_infusion", dose = dose, interval = interval, t_inf = 1, parameters = par)
   res_ode <- sim(pk_1cmt_iv, parameters = par, regimen = reg_inf, t_obs = t_obs, only_obs = F)$y
   expect_equal(attr(advan("1cmt_iv_bolus"), "cmt"), 1)
@@ -87,6 +88,7 @@ test_that("2-cmt iv bolus", {
 })
 
 test_that("2-cmt infusion", {
+  par <- list(CL = 5, V = 100, Q = 3, V2 = 150)
   res_ana <- calc_ss_analytic(f = "2cmt_iv_infusion", dose = dose, interval = interval, parameters = par, t_inf = 1)
   res_ode <- sim(pk_2cmt_iv, parameters = par, regimen = reg_inf, t_obs = t_obs, only_obs = F)$y
   expect_equal(attr(advan("2cmt_iv_bolus"), "cmt"), 2)

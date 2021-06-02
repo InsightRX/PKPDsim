@@ -1,175 +1,234 @@
-# Test: numeric accuracy
-# compare with analytic equations
-
-library(PKPDsim)
-library(testit)
-
-Sys.setenv("R_TESTS" = "")
-
-###########################################################################
-## Regimens
-###########################################################################
-
-tmp <- new_regimen(amt = c(-1,-2,3,4), times = c(0,24,48,72), type = "infusion")
-assert("Doses <0  set to 0", all(tmp$dose_amts >= 0))
-
-###########################################################################
-## Simulations
-###########################################################################
-
-p <- list(KA = 1, CL = 5, V = 50)
-t_obs <- c(0:72)
-t_obs2 <- t_obs + 0.1234 # also needs to be producing results with non-integer times
-dose <- 100
-t_dose <- c(0)
-regimen <- new_regimen(amt=dose, times = t_dose, type="oral")
-
-## models:
+## models: shared between tests and take a while to compile
+#  - oral models
 pk1cmt_oral_anal = function(t, dose, KA, V, CL) {
   dose*KA/(V*(KA-CL/V))*(exp(-(CL/V) * t)-exp(-KA * t))
 }
 pk1cmt_oral_lib  <- new_ode_model("pk_1cmt_oral")
-pk1cmt_oral_code <- new_ode_model(code = "
-                                  dAdt[1] = -KA*A[1];
-                                  dAdt[2] = KA*A[1] - (CL/V)*A[2];", obs=list(cmt = 2, scale="V")
+pk1cmt_oral_code <- new_ode_model(
+  code = "dAdt[1] = -KA*A[1]; dAdt[2] = KA*A[1] - (CL/V)*A[2];",
+  obs=list(cmt = 2, scale="V")
 )
 
-res <- list()
-res$pk1cmt_oral_lib <- sim_ode(
-  ode = pk1cmt_oral_lib,
-  parameters = p,
-  regimen = regimen,
-  t_obs = t_obs,
-  int_step_size = 0.1,
-  duplicate_t_obs = TRUE,
-  only_obs=TRUE)
-res$pk1cmt_oral_code <- sim_ode(ode = pk1cmt_oral_code,
-                                parameters=p,
-                                duplicate_t_obs = TRUE,
-                                regimen=regimen,
-                                t_obs=t_obs,
-                                int_step_size = 0.1,
-                                only_obs=TRUE)
-res$pk1cmt_oral_anal <- pk1cmt_oral_anal(t_obs, dose, p$KA, p$V, p$CL)
-
-## basic testing
-assert('library C++ ODE equals analytical function',
-       all.equal(round(res$pk1cmt_oral_lib$y, 3), round(res$pk1cmt_oral_anal, 3)))
-assert('custom C++ ODE equals analytical function',
-       all.equal(round(res$pk1cmt_oral_code$y, 3), round(res$pk1cmt_oral_anal, 3)))
-
-## test precision in time axis
-library(PKPDsim)
-regimen_mult <- new_regimen(amt=rep(12.8, 3),
-                            times = c(0, 6, 12), type="infusion", t_inf = 2)
+#   - iv models
 pk1cmt_iv <- new_ode_model("pk_1cmt_iv")
-t_obs <- c(11.916, 14.000, 16.000, 17.000, 30)
-tmp <- sim_ode(ode = pk1cmt_iv,
-                          parameters = list(CL = 5, V = 50),
-                          regimen = regimen_mult,
-                          # int_step_size = 1,
-                          t_obs = t_obs,
-                          only_obs = TRUE)
-assert('correct number of observations returned (bug precision time-axis)',
-       tmp$t == t_obs)
 
-## test bug EmCo 20150925
-xtim<-c(0,2,4,8,12,24)
-sujdos<-320
-param<-list(KA=1.8, V=30, CL=1.7)
-pk1 <- new_ode_model("pk_1cmt_oral")
-regim<-new_regimen(amt=sujdos, times=c(0,12), type= "bolus")
-out<-sim_ode(ode=pk1, parameters=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
-assert("all requested observations in output",
-       out$t == xtim)
-
-## tests for bug wrong model size (JeHi 20151204)
-pk3cmt <- new_ode_model(code = "
-                     dAdt[1] = -KA*A[1];
-                     dAdt[2] = KA*A[1] -(Q/V)*A[2] + (Q/V2)*A[3] -(CL/V)*A[2];
-                     dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2];
-                     ", obs = list (cmt = 2, scale = "V"))
-assert("3cmt model has state vector of 3", attr(pk3cmt, "size") == 3)
-
-## dose in  cmt <> 1, set using model
-p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
-pk  <- new_ode_model(code = "
-                     dAdt[1] = -KA * A[1];
-                     dAdt[2] = KA*A[1] -(CL/V) * A[2]
-                     dAdt[3] = S2*(A[2]-A[3])
-                     ",
-                     obs = list(cmt=2, scale="V"),
-                     dose = list(cmt = 2), cpp_show_code = FALSE)
-r <- new_regimen(amt = 100, times = c(0), type = "infusion")
-dat <- sim_ode (ode = pk, n_ind = 1,
-                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
-                parameters = p, regimen = r,
-                verbose = FALSE, t_max=48)
-assert("dose in comp 2", sum(dat[dat$comp == 1,]$y) == 0 && sum(dat[dat$comp == 2,]$y) > 0)
-
-## dose in  cmt <> 1, set using regimen
-r <- new_regimen(amt = c(100, 100, 100),
-                 times = c(0, 6, 12),
-                 cmt = c(1,2,3),
-                 type = "bolus")
-dat2 <- sim_ode (ode = pk, n_ind = 1,
-                parameters = p, regimen = r,
-                t_obs = seq(from=0, to=20, by = .1),
-                verbose = FALSE, t_max=48)
-assert("dose in comp 2 and 3 as well", max(diff(dat2[dat2$comp == 2,]$y)) > 95 && max(diff(dat2[dat2$comp == 2,]$y)) > 95)
+#   - model with dose cmt specified
+dose_in_cmt_2  <- new_ode_model(
+  code = "
+      dAdt[1] = -KA * A[1];
+      dAdt[2] = KA*A[1] -(CL/V) * A[2]
+      dAdt[3] = S2*(A[2]-A[3])
+    ",
+  obs = list(cmt=2, scale="V"),
+  dose = list(cmt = 2),
+  cpp_show_code = FALSE
+)
 
 
-## allow infusions from all compartemnts too
-r <- new_regimen(amt = c(100, 100, 100),
-                 times = c(0, 6, 12),
-                 cmt = c(1,2,3), t_inf = 3,
-                 type = "infusion")
-dat3 <- sim_ode (ode = pk, n_ind = 1,
-                 parameters = p, regimen = r,
-                 t_obs = seq(from=0, to=20, by = .1),
-                 verbose = FALSE, t_max=48)
-assert("dose in comp 2 and 3 as well", ((max(dat3[dat3$comp == 2,]$y)-142.4)/142.4 < 0.01) && ((max(dat3[dat3$comp == 3,]$y)-157.2)/157.2) < 0.01)
+test_that("Library and custom C++ and code matches analytic soln", {
+  p <- list(KA = 1, CL = 5, V = 50)
+  t_obs <- c(0:72)
+  t_obs2 <- t_obs + 0.1234 # also needs to be producing results with non-integer times
+  dose <- 100
+  t_dose <- c(0)
+  regimen <- new_regimen(amt=dose, times = t_dose, type = "oral")
 
-## test duplicate obs (e.g. for optimal design purposes)
-p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
-r <- new_regimen(amt = c(100, 100, 100, 100),
-                 times = c(0, 6, 12, 18),
-                 cmt = c(2, 2, 1, 1),
-                 t_inf = c(1, 1, 1, 1), # for first 2 doses, infusion time will just be ignored, but a value has to be specified in the vector
-                 type = c("bolus", "bolus", "infusion", "infusion"))
-dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
-                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
-                parameters = p, regimen = r,
-                t_obs = c(1,2,3,4,4,4,6),
-                duplicate_t_obs = T,
-                only_obs = F)
-assert("some observations duplicated", length(dat[dat$t == 4,]$y) == 9)
-assert("all observations included", length(dat$y) == 21)
-assert("no NA", any(is.na(dat$y)) == FALSE)
+  pk1cmt_oral_lib <- sim_ode(
+    ode = pk1cmt_oral_lib,
+    parameters = p,
+    regimen = regimen,
+    t_obs = t_obs,
+    int_step_size = 0.1,
+    duplicate_t_obs = TRUE,
+    only_obs=TRUE
+  )
 
-## bug reported by JF, if covariate time conincides with end of infusion,
-## end of infusion is not recorded
-pop_est <- list(CL = 1.08, V = 0.98)
-regimen <- PKPDsim::new_regimen(amt = c(1500, 1000, 1500, 1500, 1500, 1500, 1500),
-                                type = "infusion", t_inf = c(2, 1, 2, 2, 1, 1, 1),
-                                times = c(0, 10.8666666666667, 20.4333333333333, 32.0666666666667, 46.9, 54.9, 62.9 ))
-covs <- list(WT = new_covariate(value = c(60, 65), times = c(0, 47.9)), CRCL = new_covariate(8), CVVH = new_covariate(0))
-pksim <- sim(ode = pk1cmt_iv,
-             parameters = pop_est,
-             covariates = covs,
-             regimen = regimen,
-             checks = TRUE,
-             only_obs = TRUE)
-testit::assert("infusion ends properly", all(pksim$y < 1000))
+  pk1cmt_oral_code <- sim_ode(
+    ode = pk1cmt_oral_code,
+    parameters = p,
+    duplicate_t_obs = TRUE,
+    regimen=regimen,
+    t_obs=t_obs,
+    int_step_size = 0.1,
+    only_obs=TRUE
+  )
 
-## Check custom t_obs
-t_obs <- seq(from=0, to = 24, by = .1)
-dat <- sim_ode (ode = pk1cmt_oral_lib, n_ind = 1,
-                omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
-                parameters = p, regimen = r,
-                t_obs = t_obs,
-                only_obs = T)
-assert("custom t_obs works", mean(diff(t_obs)) == mean(diff(dat$t)))
+  pk1cmt_oral_anal_res <- pk1cmt_oral_anal(t_obs, dose, p$KA, p$V, p$CL)
+  expect_equal(round(pk1cmt_oral_lib$y, 3), round(pk1cmt_oral_anal_res, 3))
+  expect_equal(round(pk1cmt_oral_code$y, 3), round(pk1cmt_oral_anal_res, 3))
+})
+
+
+test_that("precision in time does not impact # obs returned", {
+  regimen_mult <- new_regimen(
+    amt = rep(12.8, 3),
+    times = c(0, 6, 12),
+    type="infusion",
+    t_inf = 2
+  )
+  t_obs <- c(11.916, 14.000, 16.000, 17.000, 30)
+  tmp <- sim_ode(
+    ode = pk1cmt_iv,
+    parameters = list(CL = 5, V = 50),
+    regimen = regimen_mult,
+    t_obs = t_obs,
+    only_obs = TRUE
+  )
+  expect_equal(tmp$t, t_obs)
+})
+
+test_that("test bug EmCo 20150925", {
+  xtim <- c(0, 2, 4, 8, 12, 24)
+  sujdos <- 320
+  param <- list(KA = 1.8, V = 30, CL = 1.7)
+  regim <- new_regimen(amt = sujdos, times = c(0, 12), type= "bolus")
+  out <- sim_ode(ode = pk1cmt_oral_lib, parameters=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
+  expect_equal(out$t, xtim)
+})
+
+test_that("model size is appropriate (bug: JeHi 20151204)", {
+  pk3cmt <- new_ode_model(
+    code = "
+      dAdt[1] = -KA*A[1];
+      dAdt[2] = KA*A[1] -(Q/V)*A[2] + (Q/V2)*A[3] -(CL/V)*A[2];
+      dAdt[3] = -(Q/V2)*A[3] + (Q/V)*A[2];
+      ",
+    obs = list(cmt = 2, scale = "V")
+  )
+  expect_equal( attr(pk3cmt, "size"), 3)
+})
+
+test_that("Dose is added to correct compartment: specified by model", {
+  set.seed(90)
+  p <- list(CL = 1, V  = 10, KA = 0.5, S2 = .1)
+  r <- new_regimen(amt = 100, times = c(0), type = "infusion")
+  dat <- sim_ode(
+    ode = dose_in_cmt_2,
+    n_ind = 1,
+    omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+    parameters = p,
+    regimen = r,
+    verbose = FALSE,
+    t_max = 48
+  )
+  # Dose should be in cmt 2
+  expect_equal(dat$y[dat$comp == 1], rep(0, 50))
+  expect_true(all(dat$y[dat$comp == 2][-1] > 0))
+})
+
+test_that("Dose is added to correct compartment: override model by regimen", {
+  set.seed(60)
+  p <- list(CL = 1, V  = 10, KA = 0.5, S2 = .1)
+  r <- new_regimen(
+    amt = c(100, 100, 100),
+    times = c(0, 6, 12),
+    cmt = c(1,2,3),
+    type = "bolus"
+  )
+  dat <- sim_ode(
+    ode = dose_in_cmt_2,
+    n_ind = 1,
+    omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+    parameters = p,
+    regimen = r,
+    verbose = FALSE,
+    t_max = 48
+  )
+  # Dose should be in cmt 1, 2 and 3
+  expect_true(all(dat$y[dat$comp == 1 & dat$t > 0] > 0))
+  expect_true(max(diff(dat$y[dat$comp == 2])) > 95)
+  expect_true(max(diff(dat$y[dat$comp == 3])) > 95)
+})
+
+test_that("Infusion works for all compartments", {
+  set.seed(44)
+  # Part 1: Specify cmt only with model
+  p <- list(CL = 1, V  = 10, KA = 0.5, S2 = .1)
+  r <- new_regimen(
+    amt = c(100, 100, 100),
+    times = c(0, 6, 12),
+    cmt = c(1,2,3),
+    t_inf = 3,
+    type = "infusion"
+  )
+  dat <- sim_ode(
+    ode = dose_in_cmt_2,
+    n_ind = 1,
+    omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+    parameters = p,
+    regimen = r,
+    verbose = FALSE,
+    t_max = 48
+  )
+  expect_true(all(dat$y[dat$comp == 1 & dat$t > 0 ] > 0))
+  expect_true(max(diff(dat$y[dat$comp == 2])) > 25)
+  expect_true(max(diff(dat$y[dat$comp == 3])) > 25)
+  expect_equal(round(max(dat$y[dat$comp == 2]), 1), 131.2)
+  expect_equal(round(max(dat$y[dat$comp == 3]), 1), 148.4)
+})
+
+test_that("Duplicate obs returned when specified in arg", {
+  # for first 2 doses, infusion time will just be ignored, but a value has to be specified in the vector
+  p <- list(CL = 1, V  = 10, KA = 0.5, S2=.1)
+  r <- new_regimen(
+    amt = c(100, 100, 100, 100),
+    times = c(0, 6, 12, 18),
+    cmt = c(2, 2, 1, 1),
+    t_inf = c(1, 1, 1, 1),
+    type = c("bolus", "bolus", "infusion", "infusion")
+  )
+  dat <- sim_ode(
+    ode = pk1cmt_oral_lib,
+    n_ind = 1,
+    omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+    parameters = p,
+    regimen = r,
+    t_obs = c(1, 2, 3, 4, 4, 4, 6), ## see duplicate obs here
+    duplicate_t_obs = T,
+    only_obs = FALSE
+  )
+  expect_equal(length(dat[dat$t == 4,]$y),  9)
+  expect_equal(length(dat$y), 21)
+  expect_equal(sum(is.na(dat$y)), 0)
+})
+
+test_that("Custom t_obs is returned", {
+  t_obs <- seq(from = 0, to = 24, by = .1)
+  dat <- sim_ode(
+    ode = pk1cmt_oral_lib,
+    n_ind = 1,
+    omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
+    parameters = p,
+    regimen = r,
+    t_obs = t_obs,
+    only_obs = T
+  )
+  expect_equal(mean(diff(t_obs)), mean(diff(dat$t)))
+})
+
+test_that("if covariate time is at end of infusion, end of infusion is still recorded", {
+  # Bug reported by JF
+  pop_est <- list(CL = 1.08, V = 0.98)
+  regimen <- new_regimen(
+    amt = c(1500, 1000, 1500, 1500, 1500, 1500, 1500),
+    type = "infusion",
+    t_inf = c(2, 1, 2, 2, 1, 1, 1),
+    times = c(0, 10.8666666666667, 20.4333333333333, 32.0666666666667, 46.9, 54.9, 62.9 )
+  )
+  covs <- list(
+    WT = new_covariate(value = c(60, 65), times = c(0, 47.9)),
+    CRCL = new_covariate(8), CVVH = new_covariate(0)
+  )
+  pksim <- sim(
+    ode = pk1cmt_iv,
+    parameters = pop_est,
+    covariates = covs,
+    regimen = regimen,
+    checks = TRUE,
+    only_obs = TRUE
+  )
+  expect_true(all(pksim$y < 1000))
+})
 
 test_that("Covariate table simulation runs", {
   # this test used to be in the covariate_table_to_list file but

@@ -47,3 +47,10 @@ test_that("Rate argument creates valid PKPD regimen", {
   )
   expect_equal(round(reg2$t_inf), rep(20, 5))
 })
+
+test_that("Doses < 0 set to 0", {
+  expect_warning(
+    tmp <- new_regimen(amt = c(-1, -2, 3, 4), times = c(0, 24, 48, 72), type = "infusion")
+  )
+  expect_true(all(tmp$dose_amts >= 0))
+})

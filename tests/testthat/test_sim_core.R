@@ -7,7 +7,7 @@ test_that("sim core works", {
     obs = list(cmt = 2)
   )
 
-  reg <- new_regimen(amt = 100, n = 5, interval = 12, t_inf = 1)
+  reg <- new_regimen(amt = 100, n = 5, interval = 12, t_inf = 1, type = "infusion")
   par <- list(KA = 1, CL = 5, V = 50)
 
   ## have to be explicit about t_obs with sim_core!
