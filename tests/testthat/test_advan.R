@@ -16,9 +16,6 @@ data <- advan_create_data(
   cmts = 5,
   t_obs = t_obs
 )
-check_equal <- function(data1, data2, tol = 1e-6) {
-  all(abs(as.numeric(unlist(data1)) - as.numeric(unlist(data2))) < tol)
-}
 
 ## Infusion dataset
 reg_infusion <- new_regimen(
