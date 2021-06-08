@@ -14,6 +14,7 @@ new_ode_model(
   state_init = NULL,
   parameters = NULL,
   reparametrization = NULL,
+  mixture = NULL,
   units = NULL,
   size = NULL,
   lagtime = NULL,
@@ -64,6 +65,8 @@ new_ode_model(
 \item{parameters}{list or vector of parameter values}
 
 \item{reparametrization}{list of parameters with definitions that reparametrize the linear PK model to a 1-, 2- o4 3-compartment PK with standardized parametrization.}
+
+\item{mixture}{for mixture models, provide a list of the parameter associated with the mixture and it's possible values and probabilities (of the first value), e.g. `list(CL = list(value = c(10, 20), probability = 0.3)`.}
 
 \item{units}{list or vector of parameter units}
 

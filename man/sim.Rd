@@ -9,6 +9,7 @@ sim(
   analytical = NULL,
   parameters = NULL,
   parameters_table = NULL,
+  mixture_group = NULL,
   omega = NULL,
   omega_type = "exponential",
   res_var = NULL,
@@ -49,6 +50,8 @@ sim(
 \item{parameters}{model parameters}
 
 \item{parameters_table}{dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.}
+
+\item{mixture_group}{mixture group for models containing mixtures. Should be either `1` or `2`, since only two groups are currently allowed.}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 

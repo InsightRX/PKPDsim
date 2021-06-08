@@ -353,11 +353,13 @@ sim <- function (ode = NULL,
     mixture_obj <- attr(ode, "mixture")[[1]]
     mixture_obj$parameter <- names(attr(ode, "mixture"))[[1]]
     if(!is.null(parameters_table)) {
-      if(nrow(parameters_table) != length(mixture_group)) {
+      if(length(parameters_table) != length(mixture_group)) {
         stop("Length of `mixture_group` vector should be same as length of `parameters_table`.")
       }
-      if(nrow(covariates_table) != length(mixture_group)) {
-        stop("Length of `mixture_group` vector should be same as length of `parameters_table`.")
+    }
+    if(!is.null(covariates_table)) {
+      if(length(covariates_table) != length(mixture_group)) {
+        stop("Length of `mixture_group` vector should be same as length of `covariates_table`.")
       }
     }
   }
