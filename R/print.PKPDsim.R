@@ -12,6 +12,12 @@ print.PKPDsim <- function(x, ...) {
     cat(paste("State init: \n", attr(x, "state_init"), "\n"))
   }
   cat(paste0("Required parameters: ", paste(attr(x, "parameters"), collapse=", ")), "\n")
+  if(!is.null(attr(x, "mixture"))) {
+    cat(paste0("Mixture model (", names(attr(x, "mixture")),"): \n", 
+      "  Parameter values: ", paste(attr(x, "mixture")[[1]]$values, collapse=", "), "\n",
+      "  Probabilities: ", paste(c(attr(x, "mixture")[[1]]$probability, 1-attr(x, "mixture")[[1]]$probability), collapse=", "), 
+      "\n"))
+  }
   cat(paste0("Covariates: ", paste(attr(x, "covariates"), collapse=", ")), "\n")
   cat(paste0("Variables: ", paste(attr(x, "variables"), collapse=", ")), "\n")
   cat(paste0("Number of compartments: ", attr(x, "size")), "\n")

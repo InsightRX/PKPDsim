@@ -10,6 +10,7 @@ model <- function(mod = NULL) {
   attr(ret, "state_init") <- [STATE_INIT]
   attr(ret, "parameters") <- [PARS]
   attr(ret, "reparametrization") <- [REPARAM]
+  attr(ret, "mixture") <- [MIXTURE]
   attr(ret, "variables") <- [VARS]
   attr(ret, "covariates") <- [COVS]
   attr(ret, "lagtime") <- [LAGTIME]
