@@ -10,7 +10,7 @@ pk1cmt_oral_code <- new_ode_model(
 )
 
 #   - iv models
-pk1cmt_iv <- new_ode_model("pk_1cmt_iv")
+## Uses model defined in setup.R
 
 #   - model with dose cmt specified
 dose_in_cmt_2  <- new_ode_model(
@@ -68,7 +68,7 @@ test_that("precision in time does not impact # obs returned", {
   )
   t_obs <- c(11.916, 14.000, 16.000, 17.000, 30)
   tmp <- sim_ode(
-    ode = pk1cmt_iv,
+    ode = mod_1cmt_iv,
     parameters = list(CL = 5, V = 50),
     regimen = regimen_mult,
     t_obs = t_obs,
@@ -228,7 +228,7 @@ test_that("if covariate time is at end of infusion, end of infusion is still rec
     CRCL = new_covariate(8), CVVH = new_covariate(0)
   )
   pksim <- sim(
-    ode = pk1cmt_iv,
+    ode = mod_1cmt_iv,
     parameters = pop_est,
     covariates = covs,
     regimen = regimen,
@@ -253,7 +253,7 @@ test_that("Covariate table simulation runs", {
   )
 
   dat <- sim(
-    pk1cmt_iv,
+    mod_1cmt_iv,
     parameters = p,
     regimen = reg,
     covariates_table = cov_table,

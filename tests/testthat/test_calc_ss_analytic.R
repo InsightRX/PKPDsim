@@ -6,7 +6,7 @@ reg_oral <- new_regimen(amt = dose, interval = interval, n = n_ss, type = "oral"
 reg_bolus <- new_regimen(amt = dose, interval = interval, n = n_ss, type = "bolus")
 reg_inf <- new_regimen(amt = dose, interval = interval, n = n_ss, type = "infusion")
 t_obs <- max(reg_oral$dose_times) + interval
-pk_1cmt_iv <- new_ode_model("pk_1cmt_iv")
+# Uses model defined in setup.R
 pk_1cmt_oral <- new_ode_model("pk_1cmt_oral")
 pk_2cmt_oral <- new_ode_model("pk_2cmt_oral")
 pk_2cmt_iv <- new_ode_model("pk_2cmt_iv")
@@ -58,7 +58,7 @@ test_that("Transit compartments can be added", {
 test_that("1-cmt iv bolus", {
   par <- list(CL = 5, V = 100)
   res_ana <- calc_ss_analytic(f = "1cmt_iv_bolus", dose = dose, interval = interval, parameters = par)
-  res_ode <- sim(pk_1cmt_iv, parameters = par, regimen = reg_bolus, t_obs = t_obs, only_obs = F, duplicate_t_obs = FALSE)$y
+  res_ode <- sim(mod_1cmt_iv, parameters = par, regimen = reg_bolus, t_obs = t_obs, only_obs = F, duplicate_t_obs = FALSE)$y
   expect_equal(attr(advan("1cmt_iv_bolus"), "cmt"), 1)
   expect_equal(res_ana[1], res_ode[1])
 })
@@ -66,7 +66,7 @@ test_that("1-cmt iv bolus", {
 test_that("1-cmt iv infusion", {
   par <- list(CL = 5, V = 100, KA = 1)
   res_ana <- calc_ss_analytic(f = "1cmt_iv_infusion", dose = dose, interval = interval, t_inf = 1, parameters = par)
-  res_ode <- sim(pk_1cmt_iv, parameters = par, regimen = reg_inf, t_obs = t_obs, only_obs = F)$y
+  res_ode <- sim(mod_1cmt_iv, parameters = par, regimen = reg_inf, t_obs = t_obs, only_obs = F)$y
   expect_equal(attr(advan("1cmt_iv_bolus"), "cmt"), 1)
   expect_equal(res_ana[1], res_ode[1])
 })
