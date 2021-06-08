@@ -25,6 +25,7 @@ test_that("TDM INIT expression for 2-cmt iv", {
   expect_equal(def2a$parameters$TDM_INIT, 0)
   expect_true("state_init" %in% names(def2a))
   expect_false(grepl("Vi", def2a$state_init))
+  expect_false(grepl("Qi", def2a$state_init))
 
   def2$variables <- c("Vi", "CLi")
   def2b <- PKPDsim:::define_tdm_init_model(def2)
@@ -40,7 +41,17 @@ test_that("TDM INIT expression for 2-cmt iv", {
   expect_true("state_init" %in% names(def2c))
   expect_true(grepl("Vi", def2c$state_init))
   expect_true(grepl("V2i", def2c$state_init))
+  expect_false(grepl("Qi", def2c$state_init))
   expect_true(grepl("A\\[1\\]", def2c$state_init))
+
+  def2$variables <- c("Vi", "CLi", "V2i", "Qi")
+  def2d <- PKPDsim:::define_tdm_init_model(def2)
+  expect_equal(def2d$parameters$TDM_INIT, 0)
+  expect_true("state_init" %in% names(def2d))
+  expect_true(grepl("Vi", def2d$state_init))
+  expect_true(grepl("V2i", def2d$state_init))
+  expect_true(grepl("Qi", def2d$state_init))
+  expect_true(grepl("A\\[1\\]", def2d$state_init))
 })
 
 test_that("Error if unsupported models", {
