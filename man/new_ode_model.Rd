@@ -30,6 +30,7 @@ new_ode_model(
   cmt_mapping = NULL,
   int_step_size = NULL,
   default_parameters = NULL,
+  fixed = NULL,
   cpp_show_code = FALSE,
   package = NULL,
   test_file = NULL,
@@ -88,13 +89,15 @@ new_ode_model(
 
 \item{ltbs}{log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).}
 
-\item{misc}{a list of miscelleaneous model metadata}
+\item{misc}{a list of miscellaneous model metadata}
 
 \item{cmt_mapping}{list indicating which administration routes apply to which compartments. Example: `list("oral" = 1, "infusion" = 2)`}
 
 \item{int_step_size}{step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`}
 
 \item{default_parameters}{population or specific patient values, can optionally be added to library}
+
+\item{fixed}{parameters that should not have iiv added.}
 
 \item{cpp_show_code}{show generated C++ code}
 

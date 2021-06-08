@@ -17,12 +17,13 @@
 #' @param dose specify default dose compartment, e.g. list(cmt = 1)
 #' @param covariates specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)
 #' @param declare_variables declare variables
+#' @param fixed parameters that should not have iiv added.
 #' @param iiv inter-individual variability, can optionally be added to library
 #' @param iov inter-occasion variability, can optionally be added to library
 #' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
 #' @param ruv residual variability, can optionally be added to library
 #' @param ltbs log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).
-#' @param misc a list of miscelleaneous model metadata
+#' @param misc a list of miscellaneous model metadata
 #' @param cmt_mapping list indicating which administration routes apply to which compartments. Example: `list("oral" = 1, "infusion" = 2)`
 #' @param int_step_size step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`
 #' @param default_parameters population or specific patient values, can optionally be added to library
@@ -66,6 +67,7 @@ new_ode_model <- function (model = NULL,
                            cmt_mapping = NULL,
                            int_step_size = NULL,
                            default_parameters = NULL,
+                           fixed = NULL,
                            cpp_show_code = FALSE,
                            package = NULL,
                            test_file = NULL,
@@ -304,6 +306,7 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "reparametrization") <- reparametrization
       attr(sim_out, "covariates") <- cov_names
       attr(sim_out, "variables") <- variables
+      attr(sim_out, "fixed") <- fixed
       attr(sim_out, "cpp")  <- TRUE
       attr(sim_out, "size")  <- size
       attr(sim_out, "obs")  <- obs
@@ -388,6 +391,11 @@ new_ode_model <- function (model = NULL,
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
       covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
+      fixed <- ifelse(
+        is.null(fixed),
+        "NULL",
+        paste0("c(", paste(add_quotes(fixed), collapse = ", "), ")")
+      )
       vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
       repl <- matrix(c("\\[MODULE\\]", package,
                        "\\[N_COMP\\]", size,
@@ -405,6 +413,7 @@ new_ode_model <- function (model = NULL,
                        "\\[MIXTURE\\]", paste0(deparse(mixture), collapse = ""),
                        "\\[VARS\\]", vars,
                        "\\[COVS\\]", covs,
+                       "\\[FIXED\\]", fixed,
                        "\\[LAGTIME\\]", lagtime,
                        "\\[USE_IOV\\]", as.character(use_iov),
                        "\\[IOV\\]", PKPDsim::print_list(iov, FALSE),
@@ -443,6 +452,7 @@ new_ode_model <- function (model = NULL,
       search_replace_in_file(paste0(new_folder, "/R/iov.R"), "\\[IOV\\]", iov)
       search_replace_in_file(paste0(new_folder, "/R/omega_matrix.R"), "\\[OMEGA_MATRIX\\]", omega_matrix)
       search_replace_in_file(paste0(new_folder, "/R/parameters.R"), c("\\[PARAMETERS\\]", "\\[UNITS\\]"), c(default_parameters, units))
+      search_replace_in_file(paste0(new_folder, "/R/fixed.R"), "\\[FIXED\\]", fixed)
       search_replace_in_file(paste0(new_folder, "/R/ruv.R"), "\\[RUV\\]", ruv)
       search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[MODULE\\]", package)
       search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[VERSION\\]", version)

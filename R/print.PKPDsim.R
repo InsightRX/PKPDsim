@@ -20,6 +20,7 @@ print.PKPDsim <- function(x, ...) {
   }
   cat(paste0("Covariates: ", paste(attr(x, "covariates"), collapse=", ")), "\n")
   cat(paste0("Variables: ", paste(attr(x, "variables"), collapse=", ")), "\n")
+  cat(paste0("Fixed parameters: ", paste(attr(x, "fixed"), collapse=", ")), "\n")
   cat(paste0("Number of compartments: ", attr(x, "size")), "\n")
   if(!is.null(paste(attr(x, "obs")$variable))) {
     cat(paste0("Observation variable: ", paste(attr(x, "obs")$variable, collapse=", "), "\n"))
