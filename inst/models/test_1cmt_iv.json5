@@ -12,7 +12,7 @@
   "misc": {
     "model_type": "1cmt_iv",
     "linearity": "linear",
-    "init_parameter": false
+    "init_parameter": true
   },
   "build": true,
   "validation": {
