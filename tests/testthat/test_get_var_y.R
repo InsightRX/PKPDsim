@@ -1,5 +1,6 @@
 
 ## Set up simulations to test variance:
+## Uses model defined in setup.R
 reg <- new_regimen(
   amt = 100,
   n = 3,
@@ -7,12 +8,12 @@ reg <- new_regimen(
   type = "infusion",
   t_inf = 2
 )
-mod <- new_ode_model("pk_1cmt_iv")
+
 par <- list(CL = 5, V = 50)
 omega <- c(0.1, 0.0, 0.1)
 t_obs <- c(2, 48)
 res <- sim_ode(
-  mod,
+  mod_1cmt_iv,
   parameters = par,
   regimen = reg,
   t_obs = t_obs,
@@ -22,7 +23,7 @@ res <- sim_ode(
 ## 1 compartment model
 test_that("delta approximation and full simulation match", {
   v_delta <- get_var_y(
-    model = mod,
+    model = mod_1cmt_iv,
     parameters = par,
     t_obs = t_obs,
     regimen = reg,
@@ -30,7 +31,7 @@ test_that("delta approximation and full simulation match", {
     method = "delta"
   )
   v_sim <- get_var_y(
-    model = mod,
+    model = mod_1cmt_iv,
     parameters = par,
     t_obs = t_obs,
     auc = FALSE,
@@ -46,7 +47,7 @@ test_that("delta approximation and full simulation match", {
 test_that("Confidence interval instead of SD", {
   t_obs2 <- c(2, 12)
   v1_delta <- get_var_y(
-      model = mod,
+      model = mod_1cmt_iv,
       parameters = par,
       t_obs = t_obs2,
       regimen = reg,
@@ -54,7 +55,7 @@ test_that("Confidence interval instead of SD", {
       q = c(0.05, 0.95)
     )
   v2_sim <- get_var_y(
-    model = mod,
+    model = mod_1cmt_iv,
     parameters = par,
     t_obs = t_obs2,
     regimen = reg,
@@ -77,14 +78,14 @@ test_that("Confidence interval instead of SD", {
 
 test_that("Two compartment model", {
   set.seed(80)
-  mod2 <- new_ode_model("pk_2cmt_iv")
+  # Uses models defined in setup.R
   par2 <- list(CL = 1, V = 10, Q = 1, V2 = 10)
   omega2 <- c(0.118,
               0.05, 0.143,
               0.01, 0.01, .29,
               0.01, 0.01, 0.07, .102)
   res <- sim_ode(
-    mod2,
+    mod_2cmt_iv,
     parameters = par2,
     t_obs = t_obs,
     regimen = reg,
@@ -92,14 +93,14 @@ test_that("Two compartment model", {
   )
 
   v1 <- get_var_y(
-    model = mod2,
+    model = mod_2cmt_iv,
     parameters = par2,
     t_obs = t_obs,
     regimen = reg,
     mega = omega2
   )
   v2 <- get_var_y(
-    model = mod2,
+    model = mod_2cmt_iv,
     parameters = par2,
     t_obs = t_obs,
     regimen = reg,

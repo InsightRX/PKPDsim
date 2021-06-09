@@ -1,4 +1,5 @@
 test_that("multiple regimens for multiple individuals can be simulated", {
+  # Uses a model defined in `setup.R`
   cov_table <- data.frame(WT = rnorm(10, 70, 5))
   multi_regs <- list()
   for(i in seq(cov_table$WT)) {
@@ -6,15 +7,11 @@ test_that("multiple regimens for multiple individuals can be simulated", {
   }
   class(multi_regs) <- "regimen_multiple"
 
-  mod <- new_ode_model(code = "dAdt[1] = -(CL/V) * A[1];", obs = list(cmt = 1, scale = "V"),
-                       covariates = list(WT = new_covariate(70)),
-                       cpp_show_code=F
-  )
   par <- list(CL = 5, V = 50)
   reg <- new_regimen(amt = 2000, interval = 24, type = "infusion")
   covariates = list(WT = new_covariate(1))
   res <- sim_ode(
-    ode = mod,
+    ode = mod_1cmt_iv,
     parameters = par,
     covariates = covariates,
     regimen = multi_regs,

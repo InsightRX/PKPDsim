@@ -1,16 +1,16 @@
 ## models: shared between tests and take a while to compile
 #  - oral models
+## Uses model defined in setup.R
 pk1cmt_oral_anal = function(t, dose, KA, V, CL) {
   dose*KA/(V*(KA-CL/V))*(exp(-(CL/V) * t)-exp(-KA * t))
 }
-pk1cmt_oral_lib  <- new_ode_model("pk_1cmt_oral")
 pk1cmt_oral_code <- new_ode_model(
   code = "dAdt[1] = -KA*A[1]; dAdt[2] = KA*A[1] - (CL/V)*A[2];",
   obs=list(cmt = 2, scale="V")
 )
 
 #   - iv models
-pk1cmt_iv <- new_ode_model("pk_1cmt_iv")
+## Uses model defined in setup.R
 
 #   - model with dose cmt specified
 dose_in_cmt_2  <- new_ode_model(
@@ -34,7 +34,7 @@ test_that("Library and custom C++ and code matches analytic soln", {
   regimen <- new_regimen(amt=dose, times = t_dose, type = "oral")
 
   pk1cmt_oral_lib <- sim_ode(
-    ode = pk1cmt_oral_lib,
+    ode = mod_1cmt_oral,
     parameters = p,
     regimen = regimen,
     t_obs = t_obs,
@@ -68,7 +68,7 @@ test_that("precision in time does not impact # obs returned", {
   )
   t_obs <- c(11.916, 14.000, 16.000, 17.000, 30)
   tmp <- sim_ode(
-    ode = pk1cmt_iv,
+    ode = mod_1cmt_iv,
     parameters = list(CL = 5, V = 50),
     regimen = regimen_mult,
     t_obs = t_obs,
@@ -82,7 +82,7 @@ test_that("test bug EmCo 20150925", {
   sujdos <- 320
   param <- list(KA = 1.8, V = 30, CL = 1.7)
   regim <- new_regimen(amt = sujdos, times = c(0, 12), type= "bolus")
-  out <- sim_ode(ode = pk1cmt_oral_lib, parameters=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
+  out <- sim_ode(ode = mod_1cmt_oral, parameters=param, regimen=regim, t_obs = xtim, only_obs = TRUE)
   expect_equal(out$t, xtim)
 })
 
@@ -178,7 +178,7 @@ test_that("Duplicate obs returned when specified in arg", {
     type = c("bolus", "bolus", "infusion", "infusion")
   )
   dat <- sim_ode(
-    ode = pk1cmt_oral_lib,
+    ode = mod_1cmt_oral,
     n_ind = 1,
     omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
     parameters = p,
@@ -203,7 +203,7 @@ test_that("Custom t_obs is returned", {
     type = c("bolus", "bolus", "infusion", "infusion")
   )
   dat <- sim_ode(
-    ode = pk1cmt_oral_lib,
+    ode = mod_1cmt_oral,
     n_ind = 1,
     omega = cv_to_omega(par_cv = list("CL"=0.1, "V"=0.1, "KA" = .1), p),
     parameters = p,
@@ -228,7 +228,7 @@ test_that("if covariate time is at end of infusion, end of infusion is still rec
     CRCL = new_covariate(8), CVVH = new_covariate(0)
   )
   pksim <- sim(
-    ode = pk1cmt_iv,
+    ode = mod_1cmt_iv,
     parameters = pop_est,
     covariates = covs,
     regimen = regimen,
@@ -253,7 +253,7 @@ test_that("Covariate table simulation runs", {
   )
 
   dat <- sim(
-    pk1cmt_iv,
+    mod_1cmt_iv,
     parameters = p,
     regimen = reg,
     covariates_table = cov_table,
