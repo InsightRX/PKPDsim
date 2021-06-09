@@ -78,14 +78,14 @@ test_that("Confidence interval instead of SD", {
 
 test_that("Two compartment model", {
   set.seed(80)
-  mod2 <- new_ode_model("pk_2cmt_iv")
+  # Uses models defined in setup.R
   par2 <- list(CL = 1, V = 10, Q = 1, V2 = 10)
   omega2 <- c(0.118,
               0.05, 0.143,
               0.01, 0.01, .29,
               0.01, 0.01, 0.07, .102)
   res <- sim_ode(
-    mod2,
+    mod_2cmt_iv,
     parameters = par2,
     t_obs = t_obs,
     regimen = reg,
@@ -93,14 +93,14 @@ test_that("Two compartment model", {
   )
 
   v1 <- get_var_y(
-    model = mod2,
+    model = mod_2cmt_iv,
     parameters = par2,
     t_obs = t_obs,
     regimen = reg,
     mega = omega2
   )
   v2 <- get_var_y(
-    model = mod2,
+    model = mod_2cmt_iv,
     parameters = par2,
     t_obs = t_obs,
     regimen = reg,
