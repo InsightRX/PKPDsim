@@ -362,6 +362,12 @@ sim <- function (ode = NULL,
         stop("Length of `mixture_group` vector should be same as length of `covariates_table`.")
       }
     }
+    if(is.null(mixture_group)) {
+      warning(paste0(
+        "No `mixture_group` supplied, using most likely parameter value for ",
+        mixture_obj$parameter, "."
+      ))
+    }
   }
 
   ## Override integrator step size if precision tied to model
@@ -380,7 +386,6 @@ sim <- function (ode = NULL,
     if(use_mixture) {
       if(is.null(mixture_group)) {
         p_i[[mixture_obj$parameter]] <- mixture_obj$values[ifelse(mixture_obj$probability > 0.5, 1, 2)]
-        if(i == 1) warning(paste0("No `mixture_group` supplied, using most likely parameter value (", p_i[[mixture_obj$parameter]], ") for ", mixture_obj$name,"."))
       } else {
         p_i[[mixture_obj$parameter]] <- mixture_obj$values[mixture_group[i]]
       }
