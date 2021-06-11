@@ -363,8 +363,8 @@ sim <- function (ode = NULL,
       }
     }
     if(is.null(mixture_group)) {
-      warning(paste0(
-        "No `mixture_group` supplied, using most likely parameter value for ",
+      if(verbose) message(paste0(
+        "No `mixture_group` supplied, using value specified in `parameters` for ",
         mixture_obj$parameter, "."
       ))
     }
@@ -384,9 +384,7 @@ sim <- function (ode = NULL,
       p_i <- parameters_table[[i]]
     }
     if(use_mixture) {
-      if(is.null(mixture_group)) {
-        p_i[[mixture_obj$parameter]] <- mixture_obj$values[ifelse(mixture_obj$probability > 0.5, 1, 2)]
-      } else {
+      if(!is.null(mixture_group)) {
         p_i[[mixture_obj$parameter]] <- mixture_obj$values[mixture_group[i]]
       }
     }
