@@ -26,7 +26,43 @@ test_that("Gap in regimen is ok", {
   expect_equal(res3$dose_amts, c(100, 100, 100, 200, 200, 200))
 })
 
-test_that("Update from dose 0", {
+test_that("Update from time = 0", {
   res4 <- join_regimen(reg1, reg2, t_dose_update = 0)
   expect_equal(res4$dose_amts,reg2$dose_amts)
 })
+
+
+test_that("Early update of a regimen works when mixed routes", {
+  reg3 <- new_regimen(
+    amt = c(100, 100, 100),
+    t_inf = c(0, 0, 0),
+    time = c(0, 24, 48),
+    type = "oral"
+  )
+  res0 <- join_regimen(reg3, reg2, dose_update = 1)
+  expect_equal(res0$type, rep("infusion", 3))
+
+  res1 <- join_regimen(reg3, reg2, dose_update = 3)
+  expect_equal(res1$type, c(rep("oral", 2), rep("infusion", 3)))
+
+  res2 <- join_regimen(reg3, reg2, dose_update = 4, interval = 24)
+  expect_equal(res2$type, c(rep("oral", 3), rep("infusion", 3)))
+})
+
+test_that("insufficient join timing throws errors", {
+  expect_error(
+    join_regimen(reg1, reg2)
+  )
+})
+
+test_that("dose_update longer than reg 1 length without interval specified throws error", {
+  expect_error(
+    join_regimen(reg1, reg2, dose_update = 4)
+  )
+})
+
+test_that("one null regimen returns the other", {
+  expect_equal(join_regimen(NULL, reg2), reg2)
+  expect_equal(join_regimen(reg1, NULL), reg1)
+})
+

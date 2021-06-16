@@ -23,7 +23,7 @@ join_regimen <- function(
     if(is.null(regimen2)) {
       return(regimen1)
     }
-    if(is.null(interval) && is.null(dose_update) && is.null(t_dose_update)) {
+    if(is.null(interval) && isFALSE(dose_update <= length(regimen1$dose_times)) && is.null(t_dose_update)) {
       stop("either interval or dose_update have to be specified as arguments")
     }
     if(!is.null(t_dose_update)) { # from a specific time
@@ -51,18 +51,21 @@ join_regimen <- function(
         if(dose_update <= length(regimen1$dose_times)) {
           t <- c(regimen1$dose_times[1:(dose_update-1)], regimen2$dose_times + regimen1$dose_times[dose_update])
           amt <- c(regimen1$dose_amts[1:(dose_update-1)], regimen2$dose_amts)
+          types <- c(regimen1$type[1:(dose_update-1)], regimen2$type)
           t_inf <- c(regimen1$t_inf[1:(dose_update-1)], regimen2$t_inf)
         } else { # just add to regimen
           t <- c(regimen1$dose_times, regimen2$dose_times + utils::tail(regimen1$dose_times,1) + interval)
           amt <- c(regimen1$dose_amts, regimen2$dose_amts)
+          types <- c(regimen1$type, regimen2$type)
           t_inf <- c(regimen1$t_inf, regimen2$t_inf)
         }
       } else {
         t <- c(regimen2$dose_times + regimen1$dose_times[dose_update])
         amt <- c(regimen2$dose_amts)
+        types <- c(regimen2$type)
         t_inf <- c(regimen2$t_inf)
       }
-      joint <- new_regimen(amt = amt, times = t, t_inf = t_inf, type = regimen1$type, interval = interval)
+      joint <- new_regimen(amt = amt, times = t, t_inf = t_inf, type = types, interval = interval)
       if(!is.null(regimen1$ss_regimen)) {
         joint$ss_regimen <- regimen1$ss_regimen
       }
