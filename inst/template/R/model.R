@@ -11,6 +11,7 @@ model <- function(mod = NULL) {
   attr(ret, "parameters") <- [PARS]
   attr(ret, "fixed") <- [FIXED]
   attr(ret, "reparametrization") <- [REPARAM]
+  attr(ret, "mixture") <- [MIXTURE]
   attr(ret, "variables") <- [VARS]
   attr(ret, "covariates") <- [COVS]
   attr(ret, "lagtime") <- [LAGTIME]

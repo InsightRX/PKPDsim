@@ -5,6 +5,7 @@
 #' @param analytical string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.
 #' @param parameters model parameters
 #' @param parameters_table dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.
+#' @param mixture_group mixture group for models containing mixtures. Should be either `1` or `2`, since only two groups are currently allowed.
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
@@ -82,6 +83,7 @@ sim <- function (ode = NULL,
                  analytical = NULL,
                  parameters = NULL,
                  parameters_table = NULL,
+                 mixture_group = NULL,
                  omega = NULL,
                  omega_type = "exponential",
                  res_var = NULL,
@@ -344,19 +346,49 @@ sim <- function (ode = NULL,
     stop("Sorry, can't simulate multiple regimens for a population in single call to PKPDsim. Use a loop instead.")
   }
 
+  ## Set up mixture model
+  use_mixture <- FALSE
+  if(!is.null(attr(ode, "mixture"))) {
+    use_mixture <- TRUE
+    mixture_obj <- attr(ode, "mixture")[[1]]
+    mixture_obj$parameter <- names(attr(ode, "mixture"))[[1]]
+    if(!is.null(parameters_table)) {
+      if(length(parameters_table) != length(mixture_group)) {
+        stop("Length of `mixture_group` vector should be same as length of `parameters_table`.")
+      }
+    }
+    if(!is.null(covariates_table)) {
+      if(length(covariates_table) != length(mixture_group)) {
+        stop("Length of `mixture_group` vector should be same as length of `covariates_table`.")
+      }
+    }
+    if(is.null(mixture_group)) {
+      warning(paste0(
+        "No `mixture_group` supplied, using most likely parameter value for ",
+        mixture_obj$parameter, "."
+      ))
+    }
+  }
 
   ## Override integrator step size if precision tied to model
   int_step_size <- ifelse(!is.null(attr(ode, "int_step_size")), as.num(attr(ode, "int_step_size")), int_step_size)
   for (i in 1:n_ind) {
     p_i <- p
     if(!is.null(covariates_table)) {
-      covariates_tmp <- covariates_table[[1]]
+      covariates_tmp <- covariates_table[[i]]
       design_i <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]])
     } else {
       covariates_tmp <- covariates
     }
     if(!is.null(parameters_table)) {
       p_i <- parameters_table[[i]]
+    }
+    if(use_mixture) {
+      if(is.null(mixture_group)) {
+        p_i[[mixture_obj$parameter]] <- mixture_obj$values[ifelse(mixture_obj$probability > 0.5, 1, 2)]
+      } else {
+        p_i[[mixture_obj$parameter]] <- mixture_obj$values[mixture_group[i]]
+      }
     }
     if("regimen_multiple" %in% class(regimen)) {
       if(is.null(t_obs)) { # find reasonable default to output

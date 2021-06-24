@@ -9,6 +9,7 @@
 #' @param state_init vector of state init
 #' @param parameters list or vector of parameter values
 #' @param reparametrization list of parameters with definitions that reparametrize the linear PK model to a 1-, 2- o4 3-compartment PK with standardized parametrization.
+#' @param mixture for mixture models, provide a list of the parameter associated with the mixture and it's possible values and probabilities (of the first value), e.g. `list(CL = list(value = c(10, 20), probability = 0.3)`.
 #' @param units list or vector of parameter units
 #' @param size size of state vector for model. Size will be extracted automatically from supplied code, use this argument to override.
 #' @param lagtime lag time
@@ -49,6 +50,7 @@ new_ode_model <- function (model = NULL,
                            state_init = NULL,
                            parameters = NULL,
                            reparametrization = NULL,
+                           mixture = NULL,
                            units = NULL,
                            size = NULL,
                            lagtime = NULL,
@@ -212,6 +214,9 @@ new_ode_model <- function (model = NULL,
         parameters <- names(parameters)
       }
     }
+
+    check_mixture_model(mixture, parameters)
+
     if(is.null(obs$scale)) { obs$scale <- 1 }
     if(is.null(obs$cmt))   { obs$cmt <- 1 }
     if(is.null(dose$cmt))  { dose$cmt <- 1 }
@@ -279,6 +284,7 @@ new_ode_model <- function (model = NULL,
         attr(sim_out, "pk_code") <- pk_code
       }
       attr(sim_out, "parameters") <- reqd
+      attr(sim_out, "mixture") <- mixture
       attr(sim_out, "reparametrization") <- reparametrization
       attr(sim_out, "covariates") <- cov_names
       attr(sim_out, "variables") <- variables
@@ -386,6 +392,7 @@ new_ode_model <- function (model = NULL,
                        "\\[STATE_INIT\\]", state_init,
                        "\\[PARS\\]", pars,
                        "\\[REPARAM\\]", paste0(deparse(reparametrization), collapse = ""),
+                       "\\[MIXTURE\\]", paste0(deparse(mixture), collapse = ""),
                        "\\[VARS\\]", vars,
                        "\\[COVS\\]", covs,
                        "\\[FIXED\\]", fixed,
