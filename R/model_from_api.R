@@ -111,29 +111,9 @@ model_from_api <- function(model = NULL,
   if(!def$build && !install_all) {
     message(paste0("- Model ", model, " not flagged for building, skipping compilation. Use `install_all=TRUE` to force build."))
   }
-  if(!is.null(def$misc$init_parameter) && !is.null(def$misc$model_type)) {
+  if(isTRUE(def$misc$init_parameter) && !is.null(def$misc$model_type)) {
     ## Add a parameter and initialization code for setting the initial concentration based on a TDM value
-    if(def$misc$init_parameter) {
-      def$parameters$TDM_INIT <- 0
-      if(!is.null(def$state_init)) {
-        stop("Sorry, state init already specified. Cannot override for TDM-based initializiaton.")
-      }
-      if(! def$misc$model_type %in% c("1cmt_iv", "2cmt_iv")) {
-        stop("Sorry, TDM initialization not supported for this model type yet.")
-      } else {
-        if(def$misc$model_type == "1cmt_iv") {
-          def$state_init <- "\
-              A[0] = TDM_INIT * Vi;\
-          "
-        }
-        if(def$misc$model_type == "2cmt_iv") {
-          def$state_init <- "\
-              A[0] = TDM_INIT * Vi;\
-              A[1] = (Qi/Vi)*(TDM_INIT * Vi) / (Qi/V2i);\
-          "
-        }
-      }
-    }
+    def <- define_tdm_init_model(def)
   }
   nonmem <- NULL
   if(!is.null(def$implementations$nonmem)) {
@@ -192,7 +172,10 @@ model_from_api <- function(model = NULL,
       if(file.exists(tmp_file)) {
         if(verbose) message("- Running test(s)...")
         source(tmp_file, local=TRUE)
-        detach(paste0("package:", package), unload=TRUE, character.only=TRUE)
+        pkg_str <- paste0("package:", package)
+        if(any(grepl(pkg_str, search()))) {
+          detach(paste0("package:", package), unload=TRUE, character.only=TRUE)
+        }
       }
     }
   }
