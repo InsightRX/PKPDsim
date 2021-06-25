@@ -44,7 +44,8 @@ new_ode_model(
   validation = NULL,
   custom_parameters = NULL,
   comments = NULL,
-  version = "0.1.0"
+  version = "0.1.0",
+  quiet = ""
 )
 }
 \arguments{
@@ -127,6 +128,10 @@ new_ode_model(
 \item{comments}{comments for model}
 
 \item{version}{number of library}
+
+\item{quiet}{passed on to `system2` as setting for stderr and stdout; how to
+output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
+TRUE captures the output and saves as a file.}
 }
 \description{
 Create new ODE model

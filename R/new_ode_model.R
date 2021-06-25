@@ -40,6 +40,9 @@
 #' @param custom_parameters path to JSON file with specs for custom parameters
 #' @param comments comments for model
 #' @param version number of library
+#' @param quiet passed on to `system2` as setting for stderr and stdout; how to
+#' output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
+#' TRUE captures the output and saves as a file.
 #' @export
 new_ode_model <- function (model = NULL,
                            code = NULL,
@@ -80,7 +83,8 @@ new_ode_model <- function (model = NULL,
                            validation = NULL,
                            custom_parameters = NULL,
                            comments = NULL,
-                           version = "0.1.0"
+                           version = "0.1.0",
+                           quiet = ""
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -313,9 +317,9 @@ new_ode_model <- function (model = NULL,
       }
 
       ## Copy template files
-      new_folder <- paste0(folder, "/", package)
-      templ_folder <- paste0(system.file(package="PKPDsim"), "/template")
-      templ_folder <- paste0(templ_folder, "/", dir(templ_folder))
+      new_folder <- file.path(folder, package)
+      templ_folder <- file.path(system.file(package="PKPDsim"), "template")
+      templ_folder <- file.path(templ_folder, dir(templ_folder))
       if(!file.exists(new_folder)) {
         dir.create(new_folder)
       }
@@ -324,10 +328,10 @@ new_ode_model <- function (model = NULL,
 
       ## Copy validation specs into package
       if(!is.null(validation)) {
-        dir.create(paste0(new_folder, "/inst"))
-        dir.create(paste0(new_folder, "/inst/validation"))
+        dir.create(file.path(new_folder, "inst"))
+        dir.create(file.path(new_folder, "inst", "validation"))
         if(file.exists(validation)) {
-          file.copy(from = validation, to = paste0(new_folder, "/inst/validation/"), overwrite = TRUE)
+          file.copy(from = validation, to = file.path(new_folder, "inst", "validation"), overwrite = TRUE)
         } else {
           warning("Specified validation file not found.")
         }
@@ -335,18 +339,21 @@ new_ode_model <- function (model = NULL,
 
       ## Copy custom parameter specs into package
       if(!is.null(custom_parameters)) {
-        dir.create(paste0(new_folder, "/inst"))
-        dir.create(paste0(new_folder, "/inst/md"))
+        dir.create(file.path(new_folder, "inst"))
+        dir.create(file.path(new_folder, "inst", "md"))
         if(file.exists(custom_parameters)) {
-          file.copy(from = custom_parameters, to = paste0(new_folder, "/inst/md/custom_parameters.json"), overwrite = TRUE)
+          file.copy(
+            from = custom_parameters,
+            to = file.path(new_folder, "inst", "md", "custom_parameters.json"),
+            overwrite = TRUE
+          )
         } else {
           warning("Specified vcustom parameters file not found.")
         }
       }
 
       ## Write new source file
-      # message(cmp$cpp)
-      fileConn <- file(paste0(new_folder, "/src/sim_wrapper_cpp.cpp"))
+      fileConn <- file(file.path(new_folder, "src", "sim_wrapper_cpp.cpp"))
       writeLines(cmp$cpp, fileConn)
       close(fileConn)
 
@@ -430,24 +437,27 @@ new_ode_model <- function (model = NULL,
       if(is.null(units)) { units <- "''" } else {
         units <- PKPDsim::print_list(units, TRUE, TRUE)
       }
-      search_replace_in_file(paste0(new_folder, "/R/iiv.R"), "\\[IIV\\]", iiv)
-      search_replace_in_file(paste0(new_folder, "/R/iov.R"), "\\[IOV\\]", iov)
-      search_replace_in_file(paste0(new_folder, "/R/omega_matrix.R"), "\\[OMEGA_MATRIX\\]", omega_matrix)
-      search_replace_in_file(paste0(new_folder, "/R/parameters.R"), c("\\[PARAMETERS\\]", "\\[UNITS\\]"), c(default_parameters, units))
-      search_replace_in_file(paste0(new_folder, "/R/fixed.R"), "\\[FIXED\\]", fixed)
-      search_replace_in_file(paste0(new_folder, "/R/ruv.R"), "\\[RUV\\]", ruv)
-      search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[MODULE\\]", package)
-      search_replace_in_file(paste0(new_folder, "/DESCRIPTION"), "\\[VERSION\\]", version)
-      search_replace_in_file(paste0(new_folder, "/NAMESPACE"), "\\[MODULE\\]", package)
-      search_replace_in_file(paste0(new_folder, "/man/modulename-package.Rd"), "\\[MODULE\\]", package)
-      file.rename(paste0(new_folder, "/man/modulename-package.Rd"), paste0(new_folder, "/man/", package, ".Rd"))
+      search_replace_in_file(file.path(new_folder, "R", "iiv.R"), "\\[IIV\\]", iiv)
+      search_replace_in_file(file.path(new_folder, "R", "iov.R"), "\\[IOV\\]", iov)
+      search_replace_in_file(file.path(new_folder, "R", "omega_matrix.R"), "\\[OMEGA_MATRIX\\]", omega_matrix)
+      search_replace_in_file(file.path(new_folder, "R", "parameters.R"), c("\\[PARAMETERS\\]", "\\[UNITS\\]"), c(default_parameters, units))
+      search_replace_in_file(file.path(new_folder, "R", "fixed.R"), "\\[FIXED\\]", fixed)
+      search_replace_in_file(file.path(new_folder, "R", "ruv.R"), "\\[RUV\\]", ruv)
+      search_replace_in_file(file.path(new_folder, "DESCRIPTION"), "\\[MODULE\\]", package)
+      search_replace_in_file(file.path(new_folder, "DESCRIPTION"), "\\[VERSION\\]", version)
+      search_replace_in_file(file.path(new_folder, "NAMESPACE"), "\\[MODULE\\]", package)
+      search_replace_in_file(file.path(new_folder, "man", "modulename-package.Rd"), "\\[MODULE\\]", package)
+      file.rename(
+        file.path(new_folder, "man", "modulename-package.Rd"),
+        file.path(new_folder, "man", paste0(package, ".Rd"))
+      )
 
       ## copy test file into package
       if(!is.null(test_file)) {
         if(file.exists(test_file[1])) {
-          t_dir <- paste0(new_folder, "/tests")
+          t_dir <- file.path(new_folder, "tests")
           if(!file.exists(t_dir)) dir.create(t_dir)
-          file.copy(test_file[1], paste0(t_dir, "/", package, ".R"))
+          file.copy(test_file[1], file.path(t_dir, paste0(package, ".R")))
         } else {
           warning("Specified test file not found.")
         }
@@ -456,23 +466,43 @@ new_ode_model <- function (model = NULL,
       ## Compile / build / install
       curr <- getwd()
       setwd(new_folder)
-      if(file.exists(paste0(new_folder, "/R/RcppExports.R"))) {
-        file.remove(paste0(new_folder, "/R/RcppExports.R"))
+      if(file.exists(file.path(new_folder, "R", "RcppExports.R"))) {
+        file.remove(paste0(new_folder, "R", "RcppExports.R"))
       }
-      if(file.exists(paste0(new_folder, "/src/RcppExports.cpp"))) {
-        file.remove(paste0(new_folder, "/src/RcppExports.cpp"))
+      if(file.exists(file.path(new_folder, "src", "RcppExports.cpp"))) {
+        file.remove(file.path(new_folder, "src", "RcppExports.cpp"))
       }
       Rcpp::compileAttributes(".", )
-      if(install) { # install into R
+
+      cmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
+      if (install) { # install into R
         lib_location_arg <- ""
+
         if(!is.null(lib_location)) {
           lib_location_arg <- paste0("--library=", lib_location)
         }
-        system(paste0("R CMD INSTALL ", lib_location_arg, " --no-docs --no-demo --no-help --no-multiarch --with-keep.source --pkglock --no-staged-install ."))
-      } else { # build to zip file
-        system(paste0("R CMD build ."))
-        pkg_file <- paste0(new_folder, "/", package, "_", version, ".tar.gz")
-        pkg_newfile <- paste0(curr, "/", package, "_", version, ".tar.gz")
+
+        # Run R CMD INSTALL with appropriate settings
+        args <- c("CMD", "INSTALL",
+          lib_location_arg,
+          "--no-docs",
+          "--no-demo",
+          "--no-help",
+          "--no-multiarch",
+          "--with-keep.source",
+          "--pkglock",
+          "--no-staged-install",
+          normalizePath(file.path(folder, package))
+        )
+
+        system2(cmd, args, stdout = quiet, stderr = quiet)
+
+      } else {
+        # Run R CMD BUILD to zip file
+        args <- c("CMD", "BUILD", normalizePath(file.path(folder, package)))
+        system2(cmd, args, stdout = quiet, stderr = quiet)
+        pkg_file <- paste0(new_folder, .Platform$file.sep, package, "_", version, ".tar.gz")
+        pkg_newfile <- paste0(curr, .Platform$file.sep, package, "_", version, ".tar.gz")
         if(file.exists(pkg_file)) {
           file.copy(pkg_file, pkg_newfile)
           message(paste0("Package built in: ", pkg_newfile))
