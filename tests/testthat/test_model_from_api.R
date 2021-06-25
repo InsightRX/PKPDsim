@@ -10,10 +10,11 @@ test_that("Can specify a package from json", {
 })
 
 test_that("Can install and test a package from json", {
-  # model_from_api will stop if test fails/can't be found
-  # this test specifies tmp directories explicitly during install
-  # environment settings for tmp directories change from system to system
-  # and so this approach ensures consistency
+  # model_from_api will stop if test fails/can't be found.
+  #
+  # This test specifies tmp directories explicitly during install.
+  # Environment settings for tmp directories change from system to system
+  # and so this approach ensures consistency.
   instloc <- tempfile("package")
   on.exit(add = TRUE, {
     unlink(instloc, recursive = TRUE)
