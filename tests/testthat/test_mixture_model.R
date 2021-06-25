@@ -14,12 +14,10 @@ reg <- new_regimen(amt = 250, n = 5, interval = 6, type = 'infusion', t_inf = 1)
 t_obs <- seq(0, 36, 4)
 
 test_that("mixture model works properly for single patient", {
-  expect_warning({
-    res0 <- sim_ode(mod, parameters = par, regimen = reg, covariates = covs, t_obs = t_obs, only_obs=T) # mixture_group not supplied
-  })
+  res0 <- sim_ode(mod, parameters = par, regimen = reg, covariates = covs, t_obs = t_obs, only_obs=T) # mixture_group not supplied
   res1 <- sim(mod, parameters = par, regimen = reg, t_obs = t_obs, covariates = covs, mixture_group = 1, only_obs=T)
   res2 <- sim(mod, parameters = par, regimen = reg, t_obs = t_obs, covariates = covs, mixture_group = 2, only_obs=T)
-  expect_equal(round(res0[res0$t == 24,]$y, 2), 1.15) # should peak most likely value
+  expect_equal(round(res0[res0$t == 24,]$y, 2), 9.07) # should use whatever is in `parameters`
   expect_equal(round(res1[res1$t == 24,]$y, 2), 5.82)
   expect_equal(round(res2[res2$t == 24,]$y, 2), 1.15)
 })
