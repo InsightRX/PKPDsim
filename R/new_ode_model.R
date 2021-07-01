@@ -499,7 +499,7 @@ new_ode_model <- function (model = NULL,
 
       } else {
         # Run R CMD BUILD to zip file
-        args <- c("CMD", "BUILD", normalizePath(file.path(folder, package)))
+        args <- c("CMD", "build", normalizePath(file.path(folder, package)))
         system2(cmd, args, stdout = quiet, stderr = quiet)
         pkg_file <- paste0(new_folder, .Platform$file.sep, package, "_", version, ".tar.gz")
         pkg_newfile <- paste0(curr, .Platform$file.sep, package, "_", version, ".tar.gz")
