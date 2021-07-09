@@ -1,16 +1,7 @@
 parameters <- list(KA = 0.5, CL = 5, V = 50)
 covs <- list(WT = new_covariate(50))
 reg <- new_regimen(amt = 100, n = 1, interval = 12, type = "bolus")
-mod1 <- new_ode_model(
-  code = "
-    CLi = CL * pow(WT/70, 0.75)
-    dAdt[1] = -KA * A[1]
-    dAdt[2] = KA*A[1] - (CLi/V)*A[2]
-  ",
-  dose = list(cmt = 1, bioav = 1),
-  covariates = covs,
-  parameters = parameters
-)
+mod1 <- oral_1cmt_allometric # defined in setup.R using same covs and pars as above
 mod2 <- new_ode_model(
   code = "
     CLi = CL * pow(WT/70, 0.75)
@@ -19,6 +10,7 @@ mod2 <- new_ode_model(
   ",
   dose = list(cmt = 1, bioav = 0.5),
   covariates = covs,
+  declare_variables = "CLi",
   parameters = parameters
 )
 mod3 <- new_ode_model(
@@ -29,6 +21,7 @@ mod3 <- new_ode_model(
   ",
   dose = list(cmt = 1, bioav = "WT/70"),
   covariates = covs,
+  declare_variables = "CLi",
   parameters = parameters
 )
 
