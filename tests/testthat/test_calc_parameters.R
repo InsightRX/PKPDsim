@@ -35,8 +35,8 @@ test_that("Returned object can be customized.", {
 
   expect_true(all(expect_vars %in% names(eff_no_par)))
   expect_true(all(expect_pars %in% names(eff_no_var)))
-  expect_true(!any(expect_pars %in% names(eff_no_par)))
-  expect_true(!any(expect_vars %in% names(eff_no_var)))
+  expect_false(any(expect_pars %in% names(eff_no_par)))
+  expect_false(any(expect_vars %in% names(eff_no_var)))
 })
 
 test_that("Works if no covariates", {
