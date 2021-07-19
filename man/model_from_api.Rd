@@ -7,9 +7,6 @@
 model_from_api(
   model = NULL,
   url = "http://localhost:8080/api",
-  github = FALSE,
-  repo = NULL,
-  auth_token = NULL,
   verbose = TRUE,
   get_definition = FALSE,
   to_package = FALSE,
@@ -23,12 +20,6 @@ model_from_api(
 \item{model}{model id}
 
 \item{url}{URL of API}
-
-\item{github}{not a custom API but GitHub}
-
-\item{repo}{GH repository specified as `owner/repo`}
-
-\item{auth_token}{for private repositories}
 
 \item{verbose}{verbosity (T/F)}
 
