@@ -2,9 +2,6 @@
 #'
 #' @param model model id
 #' @param url URL of API
-#' @param github not a custom API but GitHub
-#' @param repo GH repository specified as `owner/repo`
-#' @param auth_token for private repositories
 #' @param verbose verbosity (T/F)
 #' @param get_definition return only the model definition, do not compile
 #' @param to_package compile to package?
@@ -15,9 +12,6 @@
 #' @export
 model_from_api <- function(model = NULL,
                            url = "http://localhost:8080/api",
-                           github = FALSE,
-                           repo = NULL,
-                           auth_token = NULL,
                            verbose = TRUE,
                            get_definition = FALSE,
                            to_package = FALSE,
@@ -26,17 +20,10 @@ model_from_api <- function(model = NULL,
                            run_tests = FALSE,
                            ...) {
   if(is.null(model)) {
-    if(github) {
-      mods <- github_download(repo = "InsightRX/models", action = "ls",
-                              path = "models",
-                              auth_token = auth_token)
-      defs <- mods$name %>% stringr::str_replace_all(".json[5].?", "")
+    if(length(grep("http", url)) > 0) { ## if internet
+      defs <- jsonlite::fromJSON(paste0(url, "/models"))
     } else {
-      if(length(grep("http", url)) > 0) { ## if internet
-        defs <- jsonlite::fromJSON(paste0(url, "/models"))
-      } else {
-        defs <- jsonlite::fromJSON(readLines(paste0(url, "/models")))
-      }
+      defs <- jsonlite::fromJSON(readLines(paste0(url, "/models")))
     }
     message("- No `model` specified, returning available PKPDsim models.")
     return(defs)
@@ -44,61 +31,46 @@ model_from_api <- function(model = NULL,
   validation <- NULL
   custom_parameters <- NULL
   test_file <- NULL
-  if(github) {
+
+  postfix <- ".json5"
+  if(length(grep("http", url)) > 0) { # if API and not local, don't add json5 extension
+    postfix <- ""
     if(verbose) {
-      message("- Connecting to API at GitHub...")
+      message("- Connecting to API...")
     }
-    if(is.null(repo)) stop("Please specify GitHub repository!")
-    def <- github_download(repo = repo, path = paste0("models/", model, ".json5"),
-                                 auth_token = auth_token, raw = FALSE)
-    if(run_tests) {
-      test_txt <- github_download(repo = repo, path = paste0("tests/", model, ".R"),
-                                  auth_token = auth_token, raw = TRUE)
+  } else {
+    if(verbose) {
+      message("- Reading from local repository...")
+    }
+  }
+  lines <- paste(readLines(paste0(url, "/models/", model, postfix)), collapse="\n") %>%
+    stringr::str_replace_all("'", "\"") %>%
+    stringr::str_replace_all("\\\\n", "\n") %>%
+    stringr::str_replace_all("\n", "") %>%
+    stringr::str_replace_all("\\\\", "\\\\n")
+  def <- jsonlite::fromJSON(lines)
+  test_file <- paste0(url, "/tests/", model, ".R")
+  if(run_tests) {
+    if(file.exists(test_file)) {
+      test_txt <- readLines(test_file)
       tmp_file <- tempfile()
       fileConn <- file(tmp_file)
       writeLines(test_txt, fileConn)
       close(fileConn)
-    }
-  } else {
-    postfix <- ".json5"
-    if(length(grep("http", url)) > 0) { # if API and not local, don't add json5 extension
-      postfix <- ""
-      if(verbose) {
-        message("- Connecting to API...")
-      }
     } else {
-      if(verbose) {
-        message("- Reading from local repository...")
+      if(def$build || install_all) {
+        stop(paste0("Test file (", test_file,") not found!"))
       }
-    }
-    lines <- paste(readLines(paste0(url, "/models/", model, postfix)), collapse="\n") %>%
-      stringr::str_replace_all("'", "\"") %>%
-      stringr::str_replace_all("\\\\n", "\n") %>%
-      stringr::str_replace_all("\n", "") %>%
-      stringr::str_replace_all("\\\\", "\\\\n")
-    def <- jsonlite::fromJSON(lines)
-    test_file <- paste0(url, "/tests/", model, ".R")
-    if(run_tests) {
-      if(file.exists(test_file)) {
-        test_txt <- readLines(test_file)
-        tmp_file <- tempfile()
-        fileConn <- file(tmp_file)
-        writeLines(test_txt, fileConn)
-        close(fileConn)
-      } else {
-        if(def$build || install_all) {
-          stop(paste0("Test file (", test_file,") not found!"))
-        }
-      }
-    }
-    if(file.exists(paste0(url, "/validation/", model, ".json"))) {
-      validation <- paste0(url, "/validation/", model, ".json")
-    }
-    ## Parameter sets:
-    if(file.exists(paste0(url, "/parameters/", model, ".json"))) {
-      custom_parameters <- paste0(url, "/parameters/", model, ".json")
     }
   }
+  if(file.exists(paste0(url, "/validation/", model, ".json"))) {
+    validation <- paste0(url, "/validation/", model, ".json")
+  }
+  ## Parameter sets:
+  if(file.exists(paste0(url, "/parameters/", model, ".json"))) {
+    custom_parameters <- paste0(url, "/parameters/", model, ".json")
+  }
+
   if(verbose) {
     message("- Retrieving model definition (", model, ")...")
   }
