@@ -141,7 +141,6 @@ sim <- function (ode = NULL,
     regimen <- apply_lagtime(regimen, lagtime, parameters)
   }
   if(t_init != 0) regimen$dose_times <- regimen$dose_times + t_init
-  comb <- list()
   p <- as.list(parameters)
   if(!is.null(t_obs)) {
     t_obs <- round(t_obs, 6)
@@ -341,7 +340,6 @@ sim <- function (ode = NULL,
     A_init <- rep(0, size)
   }
   events <- c() # only for tte
-  comb <- c()
   if("regimen_multiple" %in% class(regimen) && !is.null(covariates_table)) {
     stop("Sorry, can't simulate multiple regimens for a population in single call to PKPDsim. Use a loop instead.")
   }
@@ -548,7 +546,7 @@ sim <- function (ode = NULL,
     }
 
     if("regimen_multiple" %in% class(regimen) || !is.null(covariates_table)) {
-      comb <- data.table::rbindlist(list(comb, data.table::as.data.table(dat_ind)))
+      comb <- dat_ind
     } else {
       if(i == 1) { ## faster way: data.frame with prespecified length
         l_mat <- length(dat_ind[,1])
