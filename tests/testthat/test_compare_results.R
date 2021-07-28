@@ -241,7 +241,6 @@ test_that("if covariate time is at end of infusion, end of infusion is still rec
 test_that("Covariate table simulation runs", {
   # this test used to be in the covariate_table_to_list file but
   # makes more sense here.
-  skip("See RXR-316")
   p <- list(CL = 5, V = 50)
   reg <- new_regimen (amt = 100, n = 4, interval = 12, type = "bolus",  cmt=1)
   om <- c(0.01, 1, 0.01)
