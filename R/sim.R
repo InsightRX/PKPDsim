@@ -459,38 +459,80 @@ sim <- function (ode = NULL,
     }
     #####################################################################
 
-    des_out <- matrix(unlist(tmp$y), nrow=length(tmp$time), byrow = TRUE)
-    dat_ind <- c()
+    des_out <- matrix(unlist(tmp$y), nrow = length(tmp$time), byrow = TRUE)
     obs <- attr(ode, "obs")
-    dat_obs <- c()
     if(!is.null(obs) && length(obs$cmt) > 1) {
+      dat_obs <- vector(mode = "list", length = length(obs$cmt))
       for(j in 1:length(obs$cmt)) {
         lab <- ifelse(!is.null(obs$label[j]), obs$label[j], paste0("obs",j))
-        dat_obs <- rbind(dat_obs, cbind(id=i, t=tmp$time, comp=lab, y=unlist(tmp[[paste0("obs",j)]]), obs_type = tmp$obs_type))
+        dat_obs[[j]] <- data.frame(
+          id = i,
+          t = tmp$time,
+          comp = lab,
+          y = unlist(tmp[[paste0("obs", j)]]),
+          obs_type = tmp$obs_type
+        )
       }
+      dat_obs <- data.table::rbindlist(dat_obs)
     } else {
-      dat_obs <- cbind(id=i, t=tmp$time, comp="obs", y=unlist(tmp$obs), obs_type = tmp$obs_type)
+      dat_obs <- data.frame(
+        id = i,
+        t = tmp$time,
+        comp = "obs",
+        y = tmp$obs,
+        obs_type = tmp$obs_type
+      )
     }
     if(only_obs || !is.null(analytical)) {
       dat_ind <- dat_obs
     } else {
-      for (j in 1:length(A_init)) {
-        dat_ind <- rbind(dat_ind, cbind(id=i, t=tmp$time, comp=j, y=des_out[,j], obs_type = tmp$obs_type))
-      }
-      dat_ind <- rbind(dat_ind, dat_obs)
+      dat_ind_list <- lapply(seq_along(A_init), function(x) {
+        data.frame(
+          id = i,
+          t = tmp$time,
+          comp = x,
+          y = des_out[, x],
+          obs_type = tmp$obs_type
+        )
+      })
+      dat_ind <- data.table::rbindlist(dat_ind_list)
+      dat_ind <- data.table::rbindlist(list(dat_ind, dat_obs))
     }
 
     ## Add parameters, variables and/or covariates, if needed. Implementation is slow, can be improved.
+    ## Parameters
     if(!is.null(output_include$parameters) && output_include$parameters) {
-      dat_ind <- as.matrix(merge(dat_ind, p_i[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]))
+      dat_ind <- cbind(
+        dat_ind,
+        # These should be single values, so ok to repeat them for every row in
+        # the data
+        as.data.frame(p_i[!names(p_i) %in% c("dose_times", "dose_amts", "rate")])
+      )
     }
+    ## Covariates
     cov_names <- NULL
     if(!is.null(output_include$covariates) && output_include$covariates && (!is.null(covariates) || !is.null(covariates_table))) {
       cov_names <- names(covariates_tmp)
-      for(key in cov_names) {
-        dat_ind <- cbind(dat_ind, design_i[[paste0("cov_", key)]] + (design_i$t - design_i[[paste0("cov_t_", key)]]) * design_i[[paste0("gradients_", key)]] )
-      }
+      # List of data frames for each covariate
+      calculated_covs <- lapply(cov_names, function(key) {
+        calculated_cov <- unique(
+          data.frame(
+            t = design_i$t,
+            # calculate covariate values based on time and gradient
+            design_i[[paste0("cov_", key)]] + (design_i$t - design_i[[paste0("cov_t_", key)]]) * design_i[[paste0("gradients_", key)]]
+          )
+        )
+        names(calculated_cov) <- c("t", key)
+        calculated_cov
+      })
+      calculated_covs <- Reduce(
+        function(x, y) merge(x, y, by = "t"),
+        calculated_covs
+      )
+      dat_ind <- merge(dat_ind, calculated_covs, by = "t", all.x = TRUE)
     }
+
+    ## Variables
     var_names <- NULL
     if(!is.null(output_include$variables) && output_include$variables && !is.null(attr(ode, "variables"))) {
       var_names <- attr(ode, "variables")
@@ -500,9 +542,9 @@ sim <- function (ode = NULL,
       var_names <- var_names[var_names != "NULL"]
     }
     if(!is.null(var_names) && length(var_names) > 0) {
-      for(key in var_names) {
-        dat_ind <- cbind(dat_ind, tmp[[key]])
-      }
+      vars <- as.data.frame(tmp[c("time", var_names)])
+      names(vars)[names(vars) == "time"] <- "t"
+      dat_ind <- merge(dat_ind, vars)
     }
 
     if("regimen_multiple" %in% class(regimen) || !is.null(covariates_table)) {
