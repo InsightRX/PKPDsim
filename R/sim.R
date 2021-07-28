@@ -546,11 +546,7 @@ sim <- function (ode = NULL,
       dat_ind <- merge(dat_ind, vars)
     }
 
-    if("regimen_multiple" %in% class(regimen) || !is.null(covariates_table)) {
-      comb <- dat_ind
-    } else {
-      comb[[i]] <- dat_ind
-    }
+    comb[[i]] <- dat_ind
   }
 
   # Add concentration to dataset, and perform scaling and/or transformation:
