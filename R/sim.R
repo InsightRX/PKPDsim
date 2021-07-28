@@ -370,6 +370,7 @@ sim <- function (ode = NULL,
 
   ## Override integrator step size if precision tied to model
   int_step_size <- ifelse(!is.null(attr(ode, "int_step_size")), as.num(attr(ode, "int_step_size")), int_step_size)
+  comb <- vector(mode = "list", length = n_ind)
   for (i in 1:n_ind) {
     p_i <- p
     if(!is.null(covariates_table)) {
@@ -548,24 +549,18 @@ sim <- function (ode = NULL,
     if("regimen_multiple" %in% class(regimen) || !is.null(covariates_table)) {
       comb <- dat_ind
     } else {
-      if(i == 1) { ## faster way: data.frame with prespecified length
-        l_mat <- length(dat_ind[,1])
-        comb <- matrix(nrow = l_mat*n_ind, ncol=ncol(dat_ind)) # don't grow but define upfront
-      }
-      comb[((i-1)*l_mat)+(1:l_mat), 1:length(dat_ind[1,])] <- dat_ind
+      comb[[i]] <- dat_ind
     }
   }
 
   # Add concentration to dataset, and perform scaling and/or transformation:
-  comb <- data.frame(comb)
   par_names <- NULL
   if(!is.null(output_include$parameters) && output_include$parameters) {
     par_names <- names(p_i)[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]
   }
   all_names <- unique(c(par_names, cov_names, var_names))
-  colnames(comb) <- c("id", "t", "comp", "y", "obs_type", all_names)
-  for(key in c("id", "t", "y", "obs_type", all_names)) {
-    comb[[key]] <- as.num(comb[[key]])
+  if (!inherits(comb, "data.frame")) {
+    comb <- data.table::rbindlist(comb)
   }
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
