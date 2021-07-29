@@ -458,45 +458,57 @@ sim <- function (ode = NULL,
     }
     #####################################################################
 
-    des_out <- matrix(unlist(tmp$y), nrow = length(tmp$time), byrow = TRUE)
+    tmp$y <- matrix(unlist(tmp$y), nrow = length(tmp$time), byrow = TRUE)
+    tmp <- as.data.frame(tmp)
+
     obs <- attr(ode, "obs")
     if(!is.null(obs) && length(obs$cmt) > 1) {
-      dat_obs <- vector(mode = "list", length = length(obs$cmt))
-      for(j in 1:length(obs$cmt)) {
-        lab <- ifelse(!is.null(obs$label[j]), obs$label[j], paste0("obs",j))
-        dat_obs[[j]] <- data.frame(
-          id = i,
-          t = tmp$time,
-          comp = lab,
-          y = unlist(tmp[[paste0("obs", j)]]),
-          obs_type = tmp$obs_type
-        )
-      }
-      dat_obs <- data.table::rbindlist(dat_obs)
-    } else {
-      dat_obs <- data.frame(
-        id = i,
-        t = tmp$time,
-        comp = "obs",
-        y = tmp$obs,
-        obs_type = tmp$obs_type
+      lab <- vapply(seq_along(obs$cmt), function(x) {
+        ifelse(!is.null(obs$label[x]), obs$label[x], paste0("obs", x))
+      }, FUN.VALUE = character(1))
+
+      obs_cols <- grep("^obs\\d", colnames(tmp))
+      dat_obs <- reshape(
+        tmp,
+        direction = "long",
+        varying = obs_cols,
+        v.names = "y",
+        times = lab,
+        timevar = "comp"
       )
+      dat_obs$id <- i
+      dat_obs[, grep("^y\\.", colnames(dat_obs))] <- NULL # drop y cols
+    } else {
+      dat_obs <- tmp
+      dat_obs$id <- i
+      dat_obs$comp <- "obs"
+      dat_obs$y <- dat_obs$obs
+      dat_obs[, grep("^y\\.", colnames(dat_obs))] <- NULL # drop y cols
     }
     if(only_obs || !is.null(analytical)) {
       dat_ind <- dat_obs
     } else {
-      dat_ind_list <- lapply(seq_along(A_init), function(x) {
-        data.frame(
-          id = i,
-          t = tmp$time,
-          comp = x,
-          y = des_out[, x],
-          obs_type = tmp$obs_type
-        )
-      })
-      dat_ind <- data.table::rbindlist(dat_ind_list)
-      dat_ind <- data.table::rbindlist(list(dat_ind, dat_obs))
+      y_cols <- grep("^y", colnames(tmp))
+      comp_labels <- gsub("y\\.", "", colnames(tmp)[y_cols])
+      # If there's just one y column it's called y, not y.1; make sure it gets
+      # labeled 1
+      comp_labels <- gsub("y", "1", comp_labels)
+
+      dat_ind <- reshape(
+        tmp,
+        direction = "long",
+        varying = list(y_cols),
+        v.names = "y",
+        times = comp_labels,
+        timevar = "comp"
+      )
+      dat_ind$id <- i
+      dat_ind <- data.table::rbindlist(
+        list(dat_ind, dat_obs),
+        use.names = TRUE
+      )
     }
+    names(dat_ind)[names(dat_ind) == "time"] <- "t"
 
     ## Add parameters, variables and/or covariates, if needed. Implementation is slow, can be improved.
     ## Parameters
@@ -532,22 +544,18 @@ sim <- function (ode = NULL,
     }
 
     ## Variables
-    var_names <- NULL
-    if(!is.null(output_include$variables) && output_include$variables && !is.null(attr(ode, "variables"))) {
-      var_names <- attr(ode, "variables")
-      if(!is.null(cov_names)) {
-        var_names <- var_names[!var_names %in% cov_names]
-      }
-      var_names <- var_names[var_names != "NULL"]
-    }
-    if(!is.null(var_names) && length(var_names) > 0) {
-      vars <- as.data.frame(tmp[c("time", var_names)])
-      names(vars)[names(vars) == "time"] <- "t"
-      dat_ind <- merge(dat_ind, vars)
+    var_names <- attr(ode, "variables")
+    var_names <- setdiff(var_names, cov_names)
+    var_names <- var_names[var_names != "NULL"]
+    if(is.null(output_include$variables) || isFALSE(output_include$variables)) {
+      ## Drop variable names if not requested
+      dat_ind[names(dat_ind) %in% var_names] <- NULL
     }
 
     comb[[i]] <- dat_ind
   }
+
+  comb <- data.table::rbindlist(comb, use.names = TRUE)
 
   # Add concentration to dataset, and perform scaling and/or transformation:
   par_names <- NULL
@@ -555,7 +563,8 @@ sim <- function (ode = NULL,
     par_names <- names(p_i)[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]
   }
   all_names <- unique(c(par_names, cov_names, var_names))
-  comb <- data.table::rbindlist(comb)
+  all_names <- intersect(all_names, names(comb)) # only cols that appear in data
+
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_")),]
