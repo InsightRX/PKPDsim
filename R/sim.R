@@ -555,9 +555,7 @@ sim <- function (ode = NULL,
     par_names <- names(p_i)[!names(p_i) %in% c("dose_times", "dose_amts", "rate")]
   }
   all_names <- unique(c(par_names, cov_names, var_names))
-  if (!inherits(comb, "data.frame")) {
-    comb <- data.table::rbindlist(comb)
-  }
+  comb <- data.table::rbindlist(comb)
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_")),]
