@@ -126,7 +126,11 @@ get_var_y <- function(
           jac_i <- matrix(jac[,idx], nrow=nrow(jac)) # force matrix, also for single row matrices
           v[[type]] <- diag(jac_i %*% omega_full %*% t(jac_i))
           if(!is.null(q)) {
-            qnt[[type]] <- matrix(rep(res$y, each = length(q)) + rep(qnorm(q), length(q)) * rep(v[[type]], each = length(q)), ncol=length(q), byrow=TRUE)
+            qnt[[type]] <- matrix(
+              rep(res$y, each = length(q)) + rep(qnorm(q), length(q)) * rep(v[[type]], each = length(q)),
+              nrow = length(q),
+              byrow = FALSE
+            )
           }
           if(!is.null(ruv)) {
             if(!is.null(ruv$exp)) {
