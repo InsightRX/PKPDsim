@@ -477,14 +477,13 @@ sim <- function (ode = NULL,
         timevar = "comp"
       )
       dat_obs$id <- i
-      dat_obs[, grep("^y\\.", colnames(dat_obs))] <- NULL # drop y cols
     } else {
       dat_obs <- tmp
       dat_obs$id <- i
       dat_obs$comp <- "obs"
       dat_obs$y <- dat_obs$obs
-      dat_obs[, grep("^y\\.", colnames(dat_obs))] <- NULL # drop y cols
     }
+    dat_obs[, grep("^y\\.", colnames(dat_obs))] <- NULL # drop y.[number] cols
     if(only_obs || !is.null(analytical)) {
       dat_ind <- dat_obs
     } else {
