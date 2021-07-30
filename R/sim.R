@@ -461,29 +461,12 @@ sim <- function (ode = NULL,
     tmp$y <- matrix(unlist(tmp$y), nrow = length(tmp$time), byrow = TRUE)
     tmp <- as.data.frame(tmp)
 
-    obs <- attr(ode, "obs")
-    if(!is.null(obs) && length(obs$cmt) > 1) {
-      lab <- vapply(seq_along(obs$cmt), function(x) {
-        ifelse(!is.null(obs$label[x]), obs$label[x], paste0("obs", x))
-      }, FUN.VALUE = character(1))
+    dat_obs <- create_obs_data(
+      ode_data = tmp,
+      obs_attr = attr(ode, "obs"),
+      id = i
+    )
 
-      obs_cols <- grep("^obs\\d", colnames(tmp))
-      dat_obs <- reshape(
-        tmp,
-        direction = "long",
-        varying = obs_cols,
-        v.names = "y",
-        times = lab,
-        timevar = "comp"
-      )
-      dat_obs$id <- i
-    } else {
-      dat_obs <- tmp
-      dat_obs$id <- i
-      dat_obs$comp <- "obs"
-      dat_obs$y <- dat_obs$obs
-    }
-    dat_obs[, grep("^y\\.", colnames(dat_obs))] <- NULL # drop y.[number] cols
     if(only_obs || !is.null(analytical)) {
       dat_ind <- dat_obs
     } else {
