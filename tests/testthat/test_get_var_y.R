@@ -68,6 +68,9 @@ test_that("Confidence interval instead of SD", {
   expect_equal(dim(v2_sim$regular), c(2, 2))
   expect_equal(dim(v1_delta$log), c(2, 2))
   expect_equal(dim(v2_sim$log), c(2, 2))
+  # Ensure correct output format
+  expect_true(all(v1_delta$regular[1, ] < v1_delta$regular[2, ]))
+  expect_true(all(v2_sim$regular[1, ] < v2_sim$regular[2, ]))
 
   skip("See RXR-314")
   v1_delta_v <- as.vector(v1_delta$regular)
