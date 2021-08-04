@@ -118,29 +118,6 @@ new_ode_model <- function (model = NULL,
       state_init <- gsub("\\n", ";\n", state_init) # make sure each line has a line ending
       code_init_text <- paste0(state_init, ";\n")
     }
-    if(class(code) == "list") {
-      code_tmp <- code
-      code <- "" # write new code, combining all list elements
-      n <- 0
-      for(i in seq(names(code_tmp))) {
-        idx <- names(code_tmp)[i]
-        tmp <- code_tmp[[idx]]
-        tmp <- gsub("dadt", "dAdt", tmp)
-        tmp <- gsub("DADT", "dAdt", tmp)
-        # tmp <- gsub("^\\n", "", tmp)
-        # tmp <- gsub("^(\\s)*", "", tmp)
-        if (i > 1) {
-          code_tmp[[idx]] <- shift_state_indices(code_tmp[[idx]], n)
-          if(class(state_init) == "list" && !is.null(state_init[[idx]])) {
-            state_init[[idx]] <- gsub("(#).*?\\n", "\n", state_init[[idx]]) # remove comments
-            state_init[[idx]] <- gsub("\\n", ";\n", state_init[[idx]]) # make sure each line has a line ending
-            code_init_text <- paste(code_init_text, shift_state_indices(unlist(state_init[[idx]]), n), ";\n");
-          }
-        }
-        code <- paste(code, paste0(code_tmp[[idx]]), sep = "\n")
-        n <- n + get_ode_model_size(tmp)
-      }
-    }
     if(is.null(size) && !is.null(code)) {
       size <- get_ode_model_size(code)
       if(size == 0) {
