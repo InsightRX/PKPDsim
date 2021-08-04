@@ -15,7 +15,7 @@ get_var_y(
   omega = c(0.1, 0.05, 0.1),
   omega_full = NULL,
   n_ind = NULL,
-  ruv = list(prop = 0, add = 0, exp = 0),
+  ruv = NULL,
   y = NULL,
   rel_delta = 1e-04,
   method = "delta",
@@ -48,7 +48,7 @@ get_var_y(
 
 \item{n_ind}{number of individuals to simulate with sim method}
 
-\item{ruv}{residual varibility (list with `prop`, `add`, and/or `exp` arguments)}
+\item{ruv}{residual variability, supplied as a named list, ex: `list(prop = 0, add = 0, exp = 0)`}
 
 \item{y}{vector of observations. If NULL, then a new simulation will be performed.}
 

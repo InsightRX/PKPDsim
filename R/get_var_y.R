@@ -9,7 +9,7 @@
 #' @param obs_variable observation variable. If NULL, will be ignored, otherwise will override `obs_comp`.
 #' @param omega triangle omega block
 #' @param omega_full full omega block
-#' @param ruv residual varibility (list with `prop`, `add`, and/or `exp` arguments)
+#' @param ruv residual variability, supplied as a named list, ex: `list(prop = 0, add = 0, exp = 0)`
 #' @param y vector of observations. If NULL, then a new simulation will be performed.
 #' @param rel_delta rel_delta
 #' @param method method, `delta` or `sim`
@@ -34,7 +34,7 @@ get_var_y <- function(
   omega = c(0.1, 0.05, 0.1),
   omega_full = NULL,
   n_ind = NULL,
-  ruv = list(prop = 0, add = 0, exp = 0),
+  ruv = NULL,
   y = NULL,
   rel_delta = 0.0001,
   method = "delta",
