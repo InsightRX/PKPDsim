@@ -45,24 +45,33 @@ test_that("delta approximation and full simulation match", {
 })
 
 test_that("Confidence interval instead of SD", {
+  CI_range <- c(0.1, 0.9)
+  reg2 <- new_regimen(
+    amt = 2000,
+    n = 3,
+    interval = 12,
+    type = "infusion",
+    t_inf = 2
+  )
   t_obs2 <- c(2, 12)
   v1_delta <- get_var_y(
       model = mod_1cmt_iv,
       parameters = par,
       t_obs = t_obs2,
-      regimen = reg,
+      regimen = reg2,
       omega = omega,
-      q = c(0.05, 0.95)
+      method = "delta",
+      q = CI_range
     )
   v2_sim <- get_var_y(
     model = mod_1cmt_iv,
     parameters = par,
     t_obs = t_obs2,
-    regimen = reg,
+    regimen = reg2,
     omega = omega,
     method ="sim",
     n_ind = 2500,
-    q = c(0.05, 0.95)
+    q = CI_range
   )
   expect_equal(dim(v1_delta$regular), c(2, 2))
   expect_equal(dim(v2_sim$regular), c(2, 2))
@@ -72,7 +81,6 @@ test_that("Confidence interval instead of SD", {
   expect_true(all(v1_delta$regular[1, ] < v1_delta$regular[2, ]))
   expect_true(all(v2_sim$regular[1, ] < v2_sim$regular[2, ]))
 
-  skip("See RXR-314")
   v1_delta_v <- as.vector(v1_delta$regular)
   v2_sim_v <- as.vector(v2_sim$regular)
   expect_true(max(abs(v1_delta_v - v2_sim_v )/v2_sim_v) < 0.1)

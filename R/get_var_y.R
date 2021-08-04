@@ -22,7 +22,7 @@
 #' @param n_cores if run in parallel, on how many cores?
 #' @param return_all return object with all relevant information?
 #' @param ... passed on to `sim_ode()`
-#' 
+#'
 #' @export
 get_var_y <- function(
   model = NULL,
@@ -127,7 +127,7 @@ get_var_y <- function(
           v[[type]] <- diag(jac_i %*% omega_full %*% t(jac_i))
           if(!is.null(q)) {
             qnt[[type]] <- matrix(
-              rep(res$y, each = length(q)) + rep(qnorm(q), length(q)) * rep(v[[type]], each = length(q)),
+              rep(res$y, each = length(q)) + rep(qnorm(q), length(q)) * rep(sqrt(v[[type]]), each = length(q)),
               nrow = length(q),
               byrow = FALSE
             )
