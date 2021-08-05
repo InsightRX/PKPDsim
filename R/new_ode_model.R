@@ -139,16 +139,9 @@ new_ode_model <- function (model = NULL,
     ## IOV
     use_iov <- FALSE
     if(!is.null(iov)) {
-      if(is.null(iov$cv) || class(iov$cv) != "list" || is.null(iov$n_bins)) {
-        stop("IOV misspecified.")
-      }
+      check_iov_specification(iov, code, pk_code)
       # add parameters
       for(i in rev(seq(iov$cv))) {
-        test1 <- stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))
-        test2 <- stringr::str_detect(pk_code, paste0("kappa_", names(iov$cv)[i]))
-        if(!(test1 || test2)) {
-          message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE or PK code. Please see documentation for more info."))
-        }
         txt <- paste0("    kappa_", names(iov$cv)[i], " = 1e-6;\ \n")
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), code)) > 0) {
           for(j in 1:iov$n_bins) {
