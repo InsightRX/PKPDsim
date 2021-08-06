@@ -118,29 +118,6 @@ new_ode_model <- function (model = NULL,
       state_init <- gsub("\\n", ";\n", state_init) # make sure each line has a line ending
       code_init_text <- paste0(state_init, ";\n")
     }
-    if(class(code) == "list") {
-      code_tmp <- code
-      code <- "" # write new code, combining all list elements
-      n <- 0
-      for(i in seq(names(code_tmp))) {
-        idx <- names(code_tmp)[i]
-        tmp <- code_tmp[[idx]]
-        tmp <- gsub("dadt", "dAdt", tmp)
-        tmp <- gsub("DADT", "dAdt", tmp)
-        # tmp <- gsub("^\\n", "", tmp)
-        # tmp <- gsub("^(\\s)*", "", tmp)
-        if (i > 1) {
-          code_tmp[[idx]] <- shift_state_indices(code_tmp[[idx]], n)
-          if(class(state_init) == "list" && !is.null(state_init[[idx]])) {
-            state_init[[idx]] <- gsub("(#).*?\\n", "\n", state_init[[idx]]) # remove comments
-            state_init[[idx]] <- gsub("\\n", ";\n", state_init[[idx]]) # make sure each line has a line ending
-            code_init_text <- paste(code_init_text, shift_state_indices(unlist(state_init[[idx]]), n), ";\n");
-          }
-        }
-        code <- paste(code, paste0(code_tmp[[idx]]), sep = "\n")
-        n <- n + get_ode_model_size(tmp)
-      }
-    }
     if(is.null(size) && !is.null(code)) {
       size <- get_ode_model_size(code)
       if(size == 0) {
@@ -162,16 +139,9 @@ new_ode_model <- function (model = NULL,
     ## IOV
     use_iov <- FALSE
     if(!is.null(iov)) {
-      if(is.null(iov$cv) || class(iov$cv) != "list" || is.null(iov$n_bins)) {
-        stop("IOV misspecified.")
-      }
+      check_iov_specification(iov, code, pk_code)
       # add parameters
       for(i in rev(seq(iov$cv))) {
-        test1 <- stringr::str_detect(code, paste0("kappa_", names(iov$cv)[i]))
-        test2 <- stringr::str_detect(pk_code, paste0("kappa_", names(iov$cv)[i]))
-        if(!(test1 || test2)) {
-          message(paste0("IOV requested for parameter ", names(iov$cv)[i], " but no `", paste0("kappa_", names(iov$cv)[i]), "` found in ODE or PK code. Please see documentation for more info."))
-        }
         txt <- paste0("    kappa_", names(iov$cv)[i], " = 1e-6;\ \n")
         if(length(grep(paste0("kappa_", names(iov$cv)[i]), code)) > 0) {
           for(j in 1:iov$n_bins) {
