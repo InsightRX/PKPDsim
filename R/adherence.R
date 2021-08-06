@@ -1,48 +1,69 @@
-#' Adherence function
-#' @param n number of days to simulate
+#' Probabilistically model adherence
+#'
+#' Model the drug adherence using either a binomial probability distribution or
+#' a markov chain model based on the probability of staying adherent and of
+#' becoming adherent once non-adherent.
+#'
+#' @param n number of occasions to simulate
 #' @param type type of adherence simulation, either "markov" or "binomial"
-#' @param markov if markov-type, specify a list with markov transition probabilities
+#' @param p_markov_remain_ad markov probability of staying adherent
+#' @param p_markov_become_ad markov probability of going from non-adherent
+#'   to adherent state
 #' @param p_binom binomial probability of being adherent
+#' @return Returns a vector of length `n`
+#'   containing values 0 (non-adherent) or 1 (adherent).
 #' @export
 new_adherence <- function(n = 100,
-                          type = "markov",
-                          markov = list(p11 = 0.75, p01 = 0.75),
+                          type = c("markov", "binomial"),
+                          p_markov_remain_ad = 0.75,
+                          p_markov_become_ad = 0.75,
                           p_binom = 0.7) {
-  if(type == "markov") {
-    return(adherence_markov(n = n, p11 = markov$p11, p01 = markov$p01))
-  } else {
-    return(adherence_binomial(n = n, p = p_binom))
-  }
+  type <- match.arg(type)
+  switch(
+    type,
+    "markov" = adherence_markov(n, p_markov_remain_ad, p_markov_become_ad),
+    "binomial" = adherence_binomial(n, p_binom)
+  )
 }
 
-#' Markov adherence'
-#' @param n number of days
+#' Markov adherence model
+#'
+#' Model adherence as a markov chain model, based on the probability of staying
+#' adherent and of becoming adherent once non-adherent. Assumes all patients
+#' start adherent.
+#'
+#' @param n number of occasions
 #' @param p11 probability of staying adherent
 #' @param p01 probability of going from non-adherent to adherent state
+#' @return Returns a vector of length `n`
+#'   containing values 0 (non-adherent) or 1 (adherent).
 #' @export
-adherence_markov <- function (n = 100, p11 = 0.9, p01 = 0.7) {
-  adh <- c(1) # all patients adherent for first dose
-  dos <- 1
-  if(n > 1) {
-    for (i in 2:n) {
-      if (dos == 1) {
-        prob <- p11
-      } else {
-        prob <- p01
-      }
-      dos <- stats::rbinom(1, 1, prob)
-      adh <- c(adh,dos)
-    }
-  } else {
-    adh <- 1
+adherence_markov <- function(n = 100, p11 = 0.9, p01 = 0.7) {
+  adh <- 1
+  dos <- 1 # all patients adherent for first dose
+
+  if (n < 2) {
+    return(adh)
   }
-  return(adh)
+
+  for (i in seq(2, n)) {
+    prob <- ifelse(dos == 1, p11, p01)
+    dos <- stats::rbinom(1, 1, prob)
+    adh <- c(adh, dos)
+  }
+
+  adh
 }
 
-#' Binomial adherence'
-#' @param n number of days
-#' @param p binomial probability
+#' Binomial adherence
+#'
+#' Model adherence as a binomial probability at the time of each occasion.
+#'
+#' @param n number of occasions
+#' @param prob binomial probability
+#' @return Returns a vector of length `n`
+#'   containing values 0 (non-adherent) or 1 (adherent).
 #' @export
-adherence_binomial <- function (n = 100, p = 0.5) {
-  return(stats::rbinom (n, 1, prob=p))
+adherence_binomial <- function(n = 100, prob) {
+  stats::rbinom(n, 1, prob)
 }

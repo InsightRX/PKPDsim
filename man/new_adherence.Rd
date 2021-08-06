@@ -2,24 +2,34 @@
 % Please edit documentation in R/adherence.R
 \name{new_adherence}
 \alias{new_adherence}
-\title{Adherence function}
+\title{Probabilistically model adherence}
 \usage{
 new_adherence(
   n = 100,
-  type = "markov",
-  markov = list(p11 = 0.75, p01 = 0.75),
+  type = c("markov", "binomial"),
+  p_markov_remain_ad = 0.75,
+  p_markov_become_ad = 0.75,
   p_binom = 0.7
 )
 }
 \arguments{
-\item{n}{number of days to simulate}
+\item{n}{number of occasions to simulate}
 
 \item{type}{type of adherence simulation, either "markov" or "binomial"}
 
-\item{markov}{if markov-type, specify a list with markov transition probabilities}
+\item{p_markov_remain_ad}{markov probability of staying adherent}
+
+\item{p_markov_become_ad}{markov probability of going from non-adherent
+to adherent state}
 
 \item{p_binom}{binomial probability of being adherent}
 }
+\value{
+Returns a vector of length `n` containing either 0 (non-adherent)
+  or 1 (adherent).
+}
 \description{
-Adherence function
+Model the drug adherence using either a binomial probability distribution or
+a markov chain model based on the probability of staying adherent and of
+becoming adherent once non-adherent.
 }

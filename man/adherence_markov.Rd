@@ -2,17 +2,23 @@
 % Please edit documentation in R/adherence.R
 \name{adherence_markov}
 \alias{adherence_markov}
-\title{Markov adherence'}
+\title{Markov adherence model}
 \usage{
 adherence_markov(n = 100, p11 = 0.9, p01 = 0.7)
 }
 \arguments{
-\item{n}{number of days}
+\item{n}{number of occasions}
 
 \item{p11}{probability of staying adherent}
 
 \item{p01}{probability of going from non-adherent to adherent state}
 }
+\value{
+Returns a vector of length `n` containing either 0 (non-adherent)
+  or 1 (adherent).
+}
 \description{
-Markov adherence'
+Model adherence as a markov chain model, based on the probability of staying
+adherent and of becoming adherent once non-adherent. Assumes all patients
+start adherent.
 }
