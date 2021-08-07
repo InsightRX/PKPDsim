@@ -1,4 +1,3 @@
-
 dose <- 100
 interval <- 12
 n_days <- 5
@@ -21,7 +20,11 @@ mod_1cmt <- new_ode_model(
   parameters = parameters
 )
 mod_2cmt <- new_ode_model(
-  code="dAdt[1] = -(CL/V)*A[1] - (Q/V)*A[1] + (Q/V2)*A[2]; dAdt[2] = +(Q/V)*A[1] - (Q/V2)*A[2]; dAdt[3] = A[1]/V;",
+  code="
+    dAdt[1] = -(CL/V)*A[1] - (Q/V)*A[1] + (Q/V2)*A[2];
+    dAdt[2] = +(Q/V)*A[1] - (Q/V2)*A[2];
+    dAdt[3] = A[1]/V;
+  ",
   parameters = parameters
 )
 
@@ -66,28 +69,47 @@ test_that("One compartment bolus ADVAN runs", {
 })
 
 test_that("Two compartment bolus ADVAN runs", {
-  res2_iv_r <- advan("2cmt_iv_bolus", cpp=FALSE)(data_infusion)
-  res2_iv_c <- advan("2cmt_iv_bolus", cpp=TRUE)(data_infusion)
+  res2_iv_r <- advan("2cmt_iv_bolus", cpp=FALSE)(data_bolus)
+  res2_iv_c <- advan("2cmt_iv_bolus", cpp=TRUE)(data_bolus)
   res2_iv_ode <- sim(ode = mod_2cmt, regimen = reg_bolus, parameters = parameters, t_obs = t_obs)
-  skip("Skipped, see RXR-311")
+  expect_equal(
+    round(res2_iv_r[res2_iv_r$TIME %in% t_obs,]$AUC, 5),
+    round(res2_iv_c[res2_iv_c$TIME %in% t_obs,]$AUC, 5)
+  )
   # AUC R
-  expect_equal(round(res2_iv_r[res2_iv_r$TIME %in% t_obs,]$AUC, 5), round(res2_iv_ode[res2_iv_ode$comp == 3,]$y, 5))
+  expect_equal(
+    round(res2_iv_r[res2_iv_r$TIME %in% t_obs,]$AUC, 5),
+    round(res2_iv_ode[res2_iv_ode$comp == 3,]$y, 5)
+  )
 
   #AUC-C
-  expect_equal(round(res2_iv_c[res2_iv_c$TIME %in% t_obs,]$AUC, 5), round(res2_iv_ode[res2_iv_ode$comp == 3,]$y, 5))
+  expect_equal(
+    round(res2_iv_c[res2_iv_c$TIME %in% t_obs,]$AUC, 5),
+    round(res2_iv_ode[res2_iv_ode$comp == 3,]$y, 5)
+  )
 })
 
 test_that("Two compartment infusion ADVAN runs", {
   res2_inf_r <- advan("2cmt_iv_infusion", cpp=FALSE)(data_infusion)
   res2_inf_c <- advan("2cmt_iv_infusion", cpp=TRUE)(data_infusion)
   res2_inf_ode <- sim(ode = mod_2cmt, regimen = reg_infusion, parameters = parameters, t_obs = t_obs)
-  skip("Skipped, see RXR-311")
+
+  expect_equal(
+    round(res2_inf_r[res2_inf_r$TIME %in% t_obs,]$AUC, 5),
+    round(res2_inf_c[res2_inf_c$TIME %in% t_obs,]$AUC, 5)
+  )
 
   # AUC R
-  expect_equal(round(res2_inf_r[res2_inf_r$TIME %in% t_obs,]$AUC, 5), round(res2_inf_ode[res2_inf_ode$comp == 3,]$y, 5))
+  expect_equal(
+    round(res2_inf_r[res2_inf_r$TIME %in% t_obs,]$AUC, 5),
+    round(res2_inf_ode[res2_inf_ode$comp == 3,]$y, 5)
+  )
 
   #AUC-C
-  expect_equal(round(res2_inf_c[res2_inf_c$TIME %in% t_obs,]$AUC, 5), round(res2_inf_ode[res2_inf_ode$comp == 3,]$y, 5))
+  expect_equal(
+    round(res2_inf_c[res2_inf_c$TIME %in% t_obs,]$AUC, 5),
+    round(res2_inf_ode[res2_inf_ode$comp == 3,]$y, 5)
+  )
 
 })
 
