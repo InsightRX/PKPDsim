@@ -53,7 +53,7 @@ DataFrame pk_2cmt_iv_bolus(DataFrame d){
     A2[i] = A2term;
     DV[i] = A1[i]/V[i];
 
-    AUC[i] = AUC[i-1] + (A1[i-1] - A1term)/CL[i];
+    AUC[i] = AUC[i-1] + (A1[i-1] + A2[i-1] - A1term - A2term)/CL[i];
 
   }
 
