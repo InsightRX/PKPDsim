@@ -9,7 +9,7 @@
 #' @param obs_variable observation variable. If NULL, will be ignored, otherwise will override `obs_comp`.
 #' @param omega triangle omega block
 #' @param omega_full full omega block
-#' @param ruv residual varibility (list with `prop`, `add`, and/or `exp` arguments)
+#' @param ruv residual variability, supplied as a named list, ex: `list(prop = 0, add = 0, exp = 0)`
 #' @param y vector of observations. If NULL, then a new simulation will be performed.
 #' @param rel_delta rel_delta
 #' @param method method, `delta` or `sim`
@@ -22,7 +22,7 @@
 #' @param n_cores if run in parallel, on how many cores?
 #' @param return_all return object with all relevant information?
 #' @param ... passed on to `sim_ode()`
-#' 
+#'
 #' @export
 get_var_y <- function(
   model = NULL,
@@ -34,7 +34,7 @@ get_var_y <- function(
   omega = c(0.1, 0.05, 0.1),
   omega_full = NULL,
   n_ind = NULL,
-  ruv = list(prop = 0, add = 0, exp = 0),
+  ruv = NULL,
   y = NULL,
   rel_delta = 0.0001,
   method = "delta",
@@ -126,7 +126,11 @@ get_var_y <- function(
           jac_i <- matrix(jac[,idx], nrow=nrow(jac)) # force matrix, also for single row matrices
           v[[type]] <- diag(jac_i %*% omega_full %*% t(jac_i))
           if(!is.null(q)) {
-            qnt[[type]] <- matrix(rep(res$y, each = length(q)) + rep(qnorm(q), length(q)) * rep(v[[type]], each = length(q)), ncol=length(q), byrow=TRUE)
+            qnt[[type]] <- matrix(
+              rep(res$y, each = length(q)) + rep(qnorm(q), length(q)) * rep(sqrt(v[[type]]), each = length(q)),
+              nrow = length(q),
+              byrow = FALSE
+            )
           }
           if(!is.null(ruv)) {
             if(!is.null(ruv$exp)) {
