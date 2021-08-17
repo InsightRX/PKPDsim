@@ -62,9 +62,9 @@ DataFrame pk_2cmt_iv_infusion(DataFrame d){
 
     if(Doserate > 0) {
       // AUC during infusion is total AUC of dose (A/CL) minus the AUC still to be eliminated (Amount from dose at EOI/CL)
-      AUC[i] = AUC[i-1] + (Doserate*t)/CL[i] - (A1[i]-A1last)/CL[i];
+      AUC[i] = AUC[i-1] + (Doserate*t)/CL[i] - (A1[i]-A1last + A2[i] - A2last)/CL[i];
     } else {
-      AUC[i] = AUC[i-1] + (A1[i-1] - A1[i])/CL[i];
+      AUC[i] = AUC[i-1] + (A1[i-1] + A2[i-1]- A1[i] - A2[i])/CL[i];
     }
 
   }
