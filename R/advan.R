@@ -74,7 +74,7 @@ TwoCompIVbolus <- function(d) {
 
     d$DV[i] <- d$A1[i]/d$V[i]  #Concentration in the central compartment
 
-    d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] + d$A2[i-1] - (A1term + A2term))/d$CL[i]
+    d$AUC[i] = d$AUC[i-1] + ((d$A1[i-1]-A1term) + (d$A2[i-1] - A2term))/d$CL[i]
 
   }
   d
