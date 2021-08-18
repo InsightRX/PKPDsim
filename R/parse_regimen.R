@@ -72,10 +72,6 @@ parse_regimen <- function(
             time = covariates[[i]]$times,
             value = covariates[[i]]$value,
             implementation = covariates[[i]]$implementation))
-      suppressWarnings({
-        covt$time <- as.numeric(as.character(covt$time))
-        covt$value <- as.numeric(as.character(covt$value))
-      })
 
       # Converting type isn't super fast and the time adds up, so only do it
       # if needed
