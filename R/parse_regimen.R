@@ -64,29 +64,32 @@ parse_regimen <- function(
 
   ## first, add covariates to regimen to be incorporated in design
   if(!is.null(covariates)) {
-    covt <- c()
-    for (i in 1:length(covariates)) {
-      covt <- rbind(covt,
-          data.frame(
-            name = names(covariates)[i],
-            time = covariates[[i]]$times,
-            value = covariates[[i]]$value,
-            implementation = covariates[[i]]$implementation))
+    cov_dfs <- lapply(
+      names(covariates),
+      function(name, covariates) {
+        data.frame(
+          name = name,
+          time = covariates[[name]]$times,
+          value = covariates[[name]]$value,
+          implementation = covariates[[name]]$implementation
+        )
+      },
+      covariates = covariates
+    )
+    covt <- data.table::rbindlist(cov_dfs)
 
-      # Converting type isn't super fast and the time adds up, so only do it
-      # if needed
-      if (!is.numeric(covt$time)) {
-        suppressWarnings({
-          covt$time <- as.numeric(as.character(covt$time))
-        })
-      }
-      if (!is.numeric(covt$value)) {
-        suppressWarnings({
-          covt$value<- as.numeric(as.character(covt$value))
-        })
-      }
+    # Converting type isn't super fast and the time adds up, so only do it
+    # if needed
+    if (!is.numeric(covt$time)) {
+      suppressWarnings({
+        covt$time <- as.numeric(as.character(covt$time))
+      })
     }
-    covt <- data.frame(covt)
+    if (!is.numeric(covt$value)) {
+      suppressWarnings({
+        covt$value<- as.numeric(as.character(covt$value))
+      })
+    }
 
     # add covariate update times as dummy dose
     regimen$evid <- c(rep(1, length(regimen$dose_times)), rep(2, length(covt$time)))
