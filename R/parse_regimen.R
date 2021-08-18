@@ -77,12 +77,16 @@ parse_regimen <- function(
         covt$value <- as.numeric(as.character(covt$value))
       })
 
-      if (!is.numeric(covt$time) || !is.numeric(covt$value)) {
-        # Converting type isn't super fast and the time adds up, so only do it
-        # if needed
+      # Converting type isn't super fast and the time adds up, so only do it
+      # if needed
+      if (!is.numeric(covt$time)) {
         suppressWarnings({
           covt$time <- as.numeric(as.character(covt$time))
-          covt$value <- as.numeric(as.character(covt$value))
+        })
+      }
+      if (!is.numeric(covt$value)) {
+        suppressWarnings({
+          covt$value<- as.numeric(as.character(covt$value))
         })
       }
     }
