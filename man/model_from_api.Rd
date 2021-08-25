@@ -13,7 +13,6 @@ model_from_api(
   to_package = FALSE,
   force = FALSE,
   install_all = FALSE,
-  run_tests = FALSE,
   ...
 )
 }
@@ -33,8 +32,6 @@ model_from_api(
 \item{force}{force install even if same version number of model already installed.}
 
 \item{install_all}{force install all, even if model inactive}
-
-\item{run_tests}{run tests associated with model?}
 
 \item{...}{arguments passed to `new_ode_model()` function}
 }
