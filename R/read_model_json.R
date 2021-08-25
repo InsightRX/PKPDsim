@@ -5,6 +5,7 @@
 #'
 #' @param path Path to JSON file
 #' @md
+#' @export
 read_model_json <- function(path) {
   lines <- paste(readLines(path), collapse = "\n") %>%
     stringr::str_replace_all("'", "\"") %>%
