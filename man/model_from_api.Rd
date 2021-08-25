@@ -5,8 +5,9 @@
 \title{Load model definition from API, and compile to R library}
 \usage{
 model_from_api(
+  url,
   model = NULL,
-  url = "http://localhost:8080/api",
+  nonmem = NULL,
   verbose = TRUE,
   get_definition = FALSE,
   to_package = FALSE,
@@ -17,9 +18,11 @@ model_from_api(
 )
 }
 \arguments{
+\item{url}{URL or file path to JSON representation of model}
+
 \item{model}{model id}
 
-\item{url}{URL of API}
+\item{nonmem}{URL or file path to NONMEM file}
 
 \item{verbose}{verbosity (T/F)}
 
