@@ -19,12 +19,7 @@ model_from_api <- function(url,
                            force = FALSE,
                            install_all = FALSE,
                            ...) {
-  lines <- paste(readLines(url), collapse = "\n") %>%
-    stringr::str_replace_all("'", "\"") %>%
-    stringr::str_replace_all("\\\\n", "\n") %>%
-    stringr::str_replace_all("\n", "") %>%
-    stringr::str_replace_all("\\\\", "\\\\n")
-  def <- jsonlite::fromJSON(lines)
+  def <- read_model_json(url)
   if(verbose) {
     message("- Retrieving model definition (", model, ")...")
   }
