@@ -1,0 +1,15 @@
+test_that("test_model runs code in test file", {
+  test_file1 <- tempfile()
+  test_file2 <- tempfile()
+  model <- tempfile()
+  on.exit(add = TRUE, {
+    unlink(test_file1)
+    unlink(test_file2)
+    unlink(model)
+  })
+  writeLines("testthat::expect_true(TRUE)", test_file1)
+  writeLines("testthat::expect_true(FALSE)", test_file2)
+  writeLines("{\"build\": true}", model)
+  expect_error(test_model(model, test_file1, package = "foo"), NA)
+  expect_error(test_model(model, test_file2, package = "foo"))
+})
