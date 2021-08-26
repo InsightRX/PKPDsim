@@ -1,7 +1,7 @@
 #' Load model definition from API, and compile to R library
 #'
 #' @param url URL or file path to JSON representation of model
-#' @param model model id
+#' @param model model id (used in messages)
 #' @param nonmem URL or file path to NONMEM file
 #' @param verbose verbosity (T/F)
 #' @param get_definition return only the model definition, do not compile

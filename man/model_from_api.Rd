@@ -19,7 +19,7 @@ model_from_api(
 \arguments{
 \item{url}{URL or file path to JSON representation of model}
 
-\item{model}{model id}
+\item{model}{model id (used in messages)}
 
 \item{nonmem}{URL or file path to NONMEM file}
 
