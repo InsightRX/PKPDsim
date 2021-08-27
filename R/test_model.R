@@ -8,7 +8,7 @@
 #' @export
 test_model <- function(url, test_file, package, force = FALSE) {
   def <- read_model_json(url)
-  if (isTRUE(def$build)) {
+  if (isTRUE(def$build) || isTRUE(force)) {
     if (!file.exists(test_file)) {
       stop(paste0("Test file (", test_file,") not found!"))
     }
