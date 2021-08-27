@@ -12,12 +12,7 @@ test_model <- function(url, test_file, package, force = FALSE) {
     if (!file.exists(test_file)) {
       stop(paste0("Test file (", test_file,") not found!"))
     }
-    test_txt <- readLines(test_file)
-    tmp_file <- tempfile()
-    fileConn <- file(tmp_file)
-    writeLines(test_txt, fileConn)
-    close(fileConn)
-    source(tmp_file, local = TRUE)
+    source(test_file, local = TRUE)
     pkg_str <- paste0("package:", package)
     if (any(grepl(pkg_str, search()))) {
       detach(pkg_str, unload = TRUE, character.only = TRUE)
