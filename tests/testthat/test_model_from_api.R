@@ -1,7 +1,7 @@
 test_that("Can specify a package from json", {
   mod <- model_from_api(
     model = "test_1cmt_iv",
-    url = system.file("models", "test_1cmt_iv.json5", package = "PKPDsim"),
+    url = test_path("sample_json", "test_1cmt_iv.json5"),
     to_package = FALSE,
     verbose = FALSE,
     force = TRUE
@@ -30,7 +30,7 @@ test_that("Can install a package from json", {
     suppressMessages(
       mod <- model_from_api(
         model = "test_1cmt_iv",
-        url = system.file("models", "test_1cmt_iv.json5", package = "PKPDsim"),
+        url = test_path("sample_json", "test_1cmt_iv.json5"),
         lib_location = instloc,
         folder = copyloc,
         to_package = TRUE,
