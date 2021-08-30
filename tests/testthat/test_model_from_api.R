@@ -1,7 +1,7 @@
 test_that("Can specify a package from json", {
   mod <- model_from_api(
     model = "test_1cmt_iv",
-    url = system.file(package = "PKPDsim"),
+    url = test_path("sample_json", "test_1cmt_iv.json5"),
     to_package = FALSE,
     verbose = FALSE,
     force = TRUE
@@ -9,9 +9,7 @@ test_that("Can specify a package from json", {
   expect_true("PKPDsim" %in% class(mod))
 })
 
-test_that("Can install and test a package from json", {
-  # model_from_api will stop if test fails/can't be found.
-  #
+test_that("Can install a package from json", {
   # This test specifies tmp directories explicitly during install.
   # Environment settings for tmp directories change from system to system
   # and so this approach ensures consistency.
@@ -32,12 +30,11 @@ test_that("Can install and test a package from json", {
     suppressMessages(
       mod <- model_from_api(
         model = "test_1cmt_iv",
-        url = system.file(package = "PKPDsim"),
+        url = test_path("sample_json", "test_1cmt_iv.json5"),
         lib_location = instloc,
         folder = copyloc,
         to_package = TRUE,
         verbose = FALSE,
-        run_tests = TRUE,
         quiet = NULL
       )
     )

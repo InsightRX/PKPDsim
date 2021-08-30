@@ -5,21 +5,23 @@
 \title{Load model definition from API, and compile to R library}
 \usage{
 model_from_api(
+  url,
   model = NULL,
-  url = "http://localhost:8080/api",
+  nonmem = NULL,
   verbose = TRUE,
   get_definition = FALSE,
   to_package = FALSE,
   force = FALSE,
   install_all = FALSE,
-  run_tests = FALSE,
   ...
 )
 }
 \arguments{
-\item{model}{model id}
+\item{url}{URL or file path to JSON representation of model}
 
-\item{url}{URL of API}
+\item{model}{model id (used in messages)}
+
+\item{nonmem}{URL or file path to NONMEM file}
 
 \item{verbose}{verbosity (T/F)}
 
@@ -30,8 +32,6 @@ model_from_api(
 \item{force}{force install even if same version number of model already installed.}
 
 \item{install_all}{force install all, even if model inactive}
-
-\item{run_tests}{run tests associated with model?}
 
 \item{...}{arguments passed to `new_ode_model()` function}
 }

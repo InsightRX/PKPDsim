@@ -36,8 +36,6 @@
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @param nonmem add nonmem code as attribute to model object
-#' @param validation path to JSON file with specs for numerical validation
-#' @param custom_parameters path to JSON file with specs for custom parameters
 #' @param comments comments for model
 #' @param version number of library
 #' @param quiet passed on to `system2` as setting for stderr and stdout; how to
@@ -80,8 +78,6 @@ new_ode_model <- function (model = NULL,
                            verbose = FALSE,
                            as_is = FALSE,
                            nonmem = NULL,
-                           validation = NULL,
-                           custom_parameters = NULL,
                            comments = NULL,
                            version = "0.1.0",
                            quiet = ""
@@ -295,32 +291,6 @@ new_ode_model <- function (model = NULL,
       }
       file.copy(from = templ_folder, to = new_folder,
                 overwrite = TRUE, recursive = TRUE, copy.mode = FALSE)
-
-      ## Copy validation specs into package
-      if(!is.null(validation)) {
-        dir.create(file.path(new_folder, "inst"))
-        dir.create(file.path(new_folder, "inst", "validation"))
-        if(file.exists(validation)) {
-          file.copy(from = validation, to = file.path(new_folder, "inst", "validation"), overwrite = TRUE)
-        } else {
-          warning("Specified validation file not found.")
-        }
-      }
-
-      ## Copy custom parameter specs into package
-      if(!is.null(custom_parameters)) {
-        dir.create(file.path(new_folder, "inst"))
-        dir.create(file.path(new_folder, "inst", "md"))
-        if(file.exists(custom_parameters)) {
-          file.copy(
-            from = custom_parameters,
-            to = file.path(new_folder, "inst", "md", "custom_parameters.json"),
-            overwrite = TRUE
-          )
-        } else {
-          warning("Specified vcustom parameters file not found.")
-        }
-      }
 
       ## Write new source file
       fileConn <- file(file.path(new_folder, "src", "sim_wrapper_cpp.cpp"))

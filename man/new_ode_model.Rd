@@ -41,8 +41,6 @@ new_ode_model(
   verbose = FALSE,
   as_is = FALSE,
   nonmem = NULL,
-  validation = NULL,
-  custom_parameters = NULL,
   comments = NULL,
   version = "0.1.0",
   quiet = ""
@@ -120,10 +118,6 @@ new_ode_model(
 \item{as_is}{use C-code as-is, don't substitute line-endings or shift indices}
 
 \item{nonmem}{add nonmem code as attribute to model object}
-
-\item{validation}{path to JSON file with specs for numerical validation}
-
-\item{custom_parameters}{path to JSON file with specs for custom parameters}
 
 \item{comments}{comments for model}
 

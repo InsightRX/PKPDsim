@@ -21,4 +21,4 @@ echo "======================================================="
 # Publish sns topic with json of relevant build info
 printf "{\"committer\":\""$slack_id"\", \"job\":\""$JOB_NAME"\", \"branch\":\""$GIT_BRANCH"\", \"build_number\":\""$BUILD_NUMBER"\", \"build_url\":\""$BUILD_URL"\", \"build_status\":\""$STATUS"\"}" >> /$ruby_workspace/build/slack_notification.json
 
-aws sns publish --topic-arn $JENKINS_SLACKBOT --message file:///$ruby_workspace/build/slack_notification.json --region us-west-1
+aws sns publish --topic-arn $JENKINS_SLACKBOT --message file://$ruby_workspace/build/slack_notification.json --region us-west-1
