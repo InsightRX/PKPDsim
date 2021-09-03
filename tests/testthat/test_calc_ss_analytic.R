@@ -116,3 +116,26 @@ test_that("3-cmt infusion", {
   expect_equal(attr(advan("3cmt_iv_bolus"), "cmt"), 3)
   expect_equal(signif(res_ana[1], 3), signif(res_ode[1], 3))
 })
+
+test_that("covariate re-map", {
+  par <- list(Ke = 5, V = 100)
+  expect_error(
+    calc_ss_analytic(
+      f = "1cmt_iv_bolus",
+      dose = dose,
+      interval = interval,
+      parameters = par,
+      map = NULL
+    )
+  )
+  expect_error(
+    calc_ss_analytic(
+      f = "1cmt_iv_bolus",
+      dose = dose,
+      interval = interval,
+      parameters = par,
+      map = list("CL" = "Ke")
+    ),
+    NA
+  )
+})
