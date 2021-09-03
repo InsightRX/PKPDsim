@@ -143,3 +143,24 @@ test_that("Three compartment bolus ADVAN runs", {
   )
 })
 
+test_that("Three compartment iv ADVAN runs", {
+  res3_iv_r <- advan("3cmt_iv_infusion", cpp=FALSE)(data_infusion)
+  res3_iv_c <- advan("3cmt_iv_infusion", cpp=TRUE)(data_infusion)
+  res3_iv_ode <- sim(ode = mod_3cmt, regimen = reg_infusion, parameters = parameters, t_obs = t_obs)
+  expect_equal(
+    round(res3_iv_r[res3_iv_r$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_c[res3_iv_c$TIME %in% t_obs,]$AUC, 5)
+  )
+  # AUC R
+  expect_equal(
+    round(res3_iv_r[res3_iv_r$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_ode[res3_iv_ode$comp == 4,]$y, 5)
+  )
+
+  #AUC-C
+  expect_equal(
+    round(res3_iv_c[res3_iv_c$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_ode[res3_iv_ode$comp == 4,]$y, 5)
+  )
+})
+
