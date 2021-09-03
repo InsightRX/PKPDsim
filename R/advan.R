@@ -151,7 +151,7 @@ ThreeCompIVbolus <- function(d) {
 
     d$A3[i] <- A3term1+A3term2            #Amount in the second-peripheral compartment
 
-    d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - (A1term1+A1term2))/d$CL[i]
+    d$AUC[i] = d$AUC[i-1] + (d$A1[i-1]-(A1term1+A1term2) + d$A2[i-1]-(A2term1+A2term2) + d$A3[i-1]-(A3term1+A3term2))/d$CL[i]
 
     d$DV[i] <- d$A1[i]/d$V[i]            #Concentration in the central compartment
   }
