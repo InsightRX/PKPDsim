@@ -15,9 +15,7 @@ check_mixture_model <- function(mixture, parameters) {
       stop("Mixture needs to be specified by `values` and `probability.`")
     }
     if(length(mixture[[1]]$values) != 2) {
-      if(length(names(mixture)) > 1) {
-        stop("Currently only mixture models for two groups are allowed. Please provide only 2 values for the mixture model.")
-      }
+      stop("Currently only mixture models for two groups are allowed. Please provide only 2 values for the mixture model.")
     }
     if(mixture[[1]]$probability < 0 || mixture[[1]]$probability > 1) {
       stop("Mixture probability needs to be between 0 and 1.`")

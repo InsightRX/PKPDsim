@@ -151,7 +151,7 @@ ThreeCompIVbolus <- function(d) {
 
     d$A3[i] <- A3term1+A3term2            #Amount in the second-peripheral compartment
 
-    d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - (A1term1+A1term2))/d$CL[i]
+    d$AUC[i] = d$AUC[i-1] + (d$A1[i-1]-(A1term1+A1term2) + d$A2[i-1]-(A2term1+A2term2) + d$A3[i-1]-(A3term1+A3term2))/d$CL[i]
 
     d$DV[i] <- d$A1[i]/d$V[i]            #Concentration in the central compartment
   }
@@ -324,9 +324,9 @@ ThreeCompIVinfusion <- function(d) {
 
     if(Doserate > 0) {
       # AUC during infusion is total AUC of dose (A/CL) minus the AUC still to be eliminated (Amount from dose at EOI/CL)
-      d$AUC[i] <- d$AUC[i-1] + (Doserate*t)/d$CL[i] - (d$A1[i]-A1last)/d$CL[i]
+      d$AUC[i] <- d$AUC[i-1] + (Doserate*t)/d$CL[i] - (d$A1[i]-A1last + d$A2[i]-A2last + d$A3[i]-A3last)/d$CL[i]
     } else {
-      d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - d$A1[i])/d$CL[i]
+      d$AUC[i] = d$AUC[i-1] + (d$A1[i-1] - d$A1[i] + d$A2[i-1] - d$A2[i] + d$A3[i-1] - d$A3[i])/d$CL[i]
     }
 
   }

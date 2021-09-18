@@ -90,7 +90,7 @@ DataFrame pk_3cmt_iv_bolus(DataFrame d){
 
     DV[i] = A1[i]/V[i];
 
-    AUC[i] = AUC[i-1] + (A1[i-1] - (A1term1+A1term2))/CL[i];
+    AUC[i] = AUC[i-1] + (A1[i-1] - (A1term1+A1term2) + A2[i-1] - (A2term1+A2term2) + A3[i-1] - (A3term1+A3term2))/CL[i];
 
   }
 

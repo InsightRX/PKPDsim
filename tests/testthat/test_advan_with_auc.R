@@ -27,6 +27,15 @@ mod_2cmt <- new_ode_model(
   ",
   parameters = parameters
 )
+mod_3cmt <- new_ode_model(
+  code="
+    dAdt[1] = -(CL/V)*A[1] - (Q/V)*A[1] + (Q/V2)*A[2] - (Q2/V)*A[1] + (Q2/V3)*A[3];
+    dAdt[2] =                (Q/V)*A[1]  -(Q/V2)*A[2]                             ;
+    dAdt[3] =                                           (Q2/V)*A[1] - (Q2/V3)*A[3];
+    dAdt[4] = A[1]/V;
+  ",
+  parameters = parameters
+)
 
 ## bolus dataset
 reg_bolus <- new_regimen(
@@ -111,5 +120,47 @@ test_that("Two compartment infusion ADVAN runs", {
     round(res2_inf_ode[res2_inf_ode$comp == 3,]$y, 5)
   )
 
+})
+
+test_that("Three compartment bolus ADVAN runs", {
+  res3_iv_r <- advan("3cmt_iv_bolus", cpp=FALSE)(data_bolus)
+  res3_iv_c <- advan("3cmt_iv_bolus", cpp=TRUE)(data_bolus)
+  res3_iv_ode <- sim(ode = mod_3cmt, regimen = reg_bolus, parameters = parameters, t_obs = t_obs)
+  expect_equal(
+    round(res3_iv_r[res3_iv_r$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_c[res3_iv_c$TIME %in% t_obs,]$AUC, 5)
+  )
+  # AUC R
+  expect_equal(
+    round(res3_iv_r[res3_iv_r$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_ode[res3_iv_ode$comp == 4,]$y, 5)
+  )
+
+  #AUC-C
+  expect_equal(
+    round(res3_iv_c[res3_iv_c$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_ode[res3_iv_ode$comp == 4,]$y, 5)
+  )
+})
+
+test_that("Three compartment iv ADVAN runs", {
+  res3_iv_r <- advan("3cmt_iv_infusion", cpp=FALSE)(data_infusion)
+  res3_iv_c <- advan("3cmt_iv_infusion", cpp=TRUE)(data_infusion)
+  res3_iv_ode <- sim(ode = mod_3cmt, regimen = reg_infusion, parameters = parameters, t_obs = t_obs)
+  expect_equal(
+    round(res3_iv_r[res3_iv_r$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_c[res3_iv_c$TIME %in% t_obs,]$AUC, 5)
+  )
+  # AUC R
+  expect_equal(
+    round(res3_iv_r[res3_iv_r$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_ode[res3_iv_ode$comp == 4,]$y, 5)
+  )
+
+  #AUC-C
+  expect_equal(
+    round(res3_iv_c[res3_iv_c$TIME %in% t_obs,]$AUC, 5),
+    round(res3_iv_ode[res3_iv_ode$comp == 4,]$y, 5)
+  )
 })
 
