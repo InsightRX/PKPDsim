@@ -91,6 +91,7 @@ sim <- function (ode = NULL,
                  seed = NULL,
                  sequence = NULL,
                  n_ind = 1,
+                 design = NULL,
                  regimen = NULL,
                  lagtime = NULL,
                  covariates = NULL,
@@ -115,6 +116,7 @@ sim <- function (ode = NULL,
                  output_include = list(parameters = FALSE, covariates = FALSE),
                  ...
                  ) {
+
   if(!is.null(t_obs)) {
     extra_t_obs <- FALSE # when t_obs specified manually, we want to return the exact requested timepoints without any duplicates
   }
@@ -306,10 +308,12 @@ sim <- function (ode = NULL,
     if(is.null(obs_type)) {
       obs_type <- rep(1, length(t_obs))
     }
-    if(is.null(covariates_table)) {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
-    } else {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], model = ode, obs_type = obs_type)
+    if(is.null(design)) {
+      if(is.null(covariates_table)) {
+        design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
+      } else {
+        design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], model = ode, obs_type = obs_type)
+      }
     }
     design_i <- design
     p$dose_times <- regimen$dose_times
