@@ -17,6 +17,7 @@ sim(
   seed = NULL,
   sequence = NULL,
   n_ind = 1,
+  design = NULL,
   regimen = NULL,
   lagtime = NULL,
   covariates = NULL,
@@ -66,6 +67,8 @@ sim(
 \item{sequence}{if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.}
 
 \item{n_ind}{number of individuals to simulate}
+
+\item{design}{use a previously created `design` object used for ODE simulation instead of calling parse_regimen() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.}
 
 \item{regimen}{a regimen object created using the regimen() function}
 

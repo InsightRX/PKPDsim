@@ -13,6 +13,7 @@
 #' @param seed set seed for reproducible results
 #' @param sequence if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
+#' @param design use a previously created `design` object used for ODE simulation instead of calling parse_regimen() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.
 #' @param regimen a regimen object created using the regimen() function
 #' @param lagtime either a value (numeric) or a parameter (character) or NULL.
 #' @param A_init vector with the initial state of the ODE system
