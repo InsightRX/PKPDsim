@@ -1,4 +1,5 @@
-#' Parse regimen
+#' Create an event table
+#'
 #' @param regimen regimen
 #' @param t_max t_max
 #' @param t_obs t_obs
@@ -9,7 +10,7 @@
 #' @param model model
 #' @param obs_type observation type
 #' @export
-parse_regimen <- function(
+create_event_table <- function(
   regimen,
   t_max = NULL,
   t_obs = NULL,

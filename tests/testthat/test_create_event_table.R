@@ -18,7 +18,7 @@ test_that("Expected parsed regimen structure", {
       implementation = "interpolate"
       )
     )
-  res <- parse_regimen(
+  res <- create_event_table(
     reg_bolus,
     covariates = covs,
     t_obs = seq(0, 100, 5)
@@ -65,7 +65,7 @@ test_that("Rounding-related index matching issues in time col", {
            1,      1.5,       23,
           24,       25,      168
   )
-  res2 <- parse_regimen(
+  res2 <- create_event_table(
     test_reg,
     t_init = 145.217,
     t_obs = t_obs,

@@ -69,7 +69,7 @@ sim(
 
 \item{n_ind}{number of individuals to simulate}
 
-\item{event_table}{use a previously created `design` object used for ODE simulation instead of calling parse_regimen() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.}
+\item{event_table}{use a previously created `design` object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.}
 
 \item{regimen}{a regimen object created using the regimen() function}
 
