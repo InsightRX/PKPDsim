@@ -9,7 +9,6 @@
 #' @param covariates covariates
 #' @param model model
 #' @param obs_type observation type
-#' @export
 create_event_table <- function(
   regimen,
   t_max = NULL,
