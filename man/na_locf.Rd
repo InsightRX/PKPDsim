@@ -2,7 +2,7 @@
 % Please edit documentation in R/na_locf.R
 \name{na_locf}
 \alias{na_locf}
-\title{Adapted from zoo::na.locf0}
+\title{Fill in NAs with the previous non-missing value}
 \usage{
 na_locf(object, fromLast = FALSE)
 }
@@ -12,5 +12,5 @@ na_locf(object, fromLast = FALSE)
 \item{fromLast}{logical. Causes observations to be carried backward rather than forward. Default is FALSE. With a value of TRUE this corresponds to NOCB (next observation carried backward). It is not supported if x or xout is specified.}
 }
 \description{
-Adapted from zoo::na.locf0
+Inspired by zoo::na.locf0
 }
