@@ -7,7 +7,8 @@
 OneCompIVbolus(d)
 }
 \arguments{
-\item{d}{data, a NONMEM style data frame for 1 subject with columns for TIME, AMT, MDV, DV, CL, V}
+\item{d}{data, a NONMEM style data frame for 1 subject with columns for TIME,
+AMT, MDV, DV, CL, V}
 }
 \value{
 Returns a dataframe with populated columns for A1, and DV
@@ -25,4 +26,9 @@ and first-order absorption models)
   of a corresponding compartment (i.e. drug amount at the end of the last time interval)
 - E* : the sum of Exit (elimination) rate constant of the corresponding compartment.
 IV bolus- 1 compartment
+}
+\references{
+Abuhelwa, A. Y., Foster, D. J. R., Upton, R. N. (2015)
+  ADVAN-style analytical solutions for common pharmacokinetic models. J
+  Pharmacol Toxicol Methods 73:42-8. DOI: 10.1016/j.vascn.2015.03.004
 }
