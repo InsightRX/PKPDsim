@@ -17,6 +17,7 @@ sim(
   seed = NULL,
   sequence = NULL,
   n_ind = 1,
+  event_table = NULL,
   regimen = NULL,
   lagtime = NULL,
   covariates = NULL,
@@ -37,6 +38,7 @@ sim(
   rtte = FALSE,
   checks = TRUE,
   verbose = FALSE,
+  return_event_table = FALSE,
   return_design = FALSE,
   output_include = list(parameters = FALSE, covariates = FALSE),
   ...
@@ -66,6 +68,8 @@ sim(
 \item{sequence}{if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.}
 
 \item{n_ind}{number of individuals to simulate}
+
+\item{event_table}{use a previously created `design` object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.}
 
 \item{regimen}{a regimen object created using the regimen() function}
 
@@ -107,7 +111,9 @@ sim(
 
 \item{verbose}{show more output}
 
-\item{return_design}{Useful for iterative functions like estimation. Only prepares the design (event table) for the simulation, does not run the actual simulation.}
+\item{return_event_table}{return the event table for the simulation only, does not run the actual simulation. Useful for iterative use of sim().}
+
+\item{return_design}{returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with `sim_core()`, e.g. for estimation and optimal design.}
 
 \item{output_include}{list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.}
 

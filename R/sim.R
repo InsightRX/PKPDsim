@@ -13,6 +13,7 @@
 #' @param seed set seed for reproducible results
 #' @param sequence if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
+#' @param event_table use a previously created `design` object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.
 #' @param regimen a regimen object created using the regimen() function
 #' @param lagtime either a value (numeric) or a parameter (character) or NULL.
 #' @param A_init vector with the initial state of the ODE system
@@ -33,7 +34,8 @@
 #' @param rtte should repeated events be allowed (FALSE by default)
 #' @param output_include list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.
 #' @param checks perform input checks? Default is TRUE. For calculations where sim_ode is invoked many times (e.g. population estimation, optimal design) it makes sense to switch this to FALSE (after confirming the input is correct) to improve speed.
-#' @param return_design Useful for iterative functions like estimation. Only prepares the design (event table) for the simulation, does not run the actual simulation.
+#' @param return_event_table return the event table for the simulation only, does not run the actual simulation. Useful for iterative use of sim().
+#' @param return_design returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with `sim_core()`, e.g. for estimation and optimal design.
 #' @param verbose show more output
 #' @param ... extra parameters
 #' @return a data frame of compartments with associated concentrations at requested times
@@ -91,6 +93,7 @@ sim <- function (ode = NULL,
                  seed = NULL,
                  sequence = NULL,
                  n_ind = 1,
+                 event_table = NULL,
                  regimen = NULL,
                  lagtime = NULL,
                  covariates = NULL,
@@ -111,10 +114,12 @@ sim <- function (ode = NULL,
                  rtte = FALSE,
                  checks = TRUE,
                  verbose = FALSE,
+                 return_event_table = FALSE,
                  return_design = FALSE,
                  output_include = list(parameters = FALSE, covariates = FALSE),
                  ...
                  ) {
+
   if(!is.null(t_obs)) {
     extra_t_obs <- FALSE # when t_obs specified manually, we want to return the exact requested timepoints without any duplicates
   }
@@ -306,10 +311,17 @@ sim <- function (ode = NULL,
     if(is.null(obs_type)) {
       obs_type <- rep(1, length(t_obs))
     }
-    if(is.null(covariates_table)) {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
+    if(is.null(event_table)) {
+      if(is.null(covariates_table)) {
+        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
+      } else {
+        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], model = ode, obs_type = obs_type)
+      }
+      if(return_event_table) {
+        return(design)
+      }
     } else {
-      design <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], model = ode, obs_type = obs_type)
+      design <- event_table
     }
     design_i <- design
     p$dose_times <- regimen$dose_times
@@ -375,7 +387,7 @@ sim <- function (ode = NULL,
     p_i <- p
     if(!is.null(covariates_table)) {
       covariates_tmp <- covariates_table[[i]]
-      design_i <- parse_regimen(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]])
+      design_i <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]])
     } else {
       covariates_tmp <- covariates
     }
@@ -396,7 +408,7 @@ sim <- function (ode = NULL,
       if(is.null(obs_type)) {
         obs_type <- rep(1, length(t_obs))
       }
-      design_i <- parse_regimen(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_tmp)
+      design_i <- create_event_table(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_tmp)
       if("regimen_multiple" %in% class(regimen)) {
         p_i$dose_times <- regimen[[i]]$dose_times
         p_i$dose_amts <- regimen[[i]]$dose_amts

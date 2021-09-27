@@ -61,6 +61,16 @@ get_var_y <- function(
     if(!is.null(obs_variable)) {
       output_include <- list(variables = TRUE, parameters = TRUE)
     }
+    event_table <- sim_ode(
+      ode = model,
+      regimen = regimen,
+      t_obs = t_obs,
+      only_obs = FALSE,
+      parameters = parameters,
+      output_include = output_include,
+      return_event_table = TRUE,
+      ...
+    )
     if(is.null(y)) {
       res <- PKPDsim::sim_ode(
         ode = model,
@@ -68,6 +78,7 @@ get_var_y <- function(
         only_obs = FALSE,
         t_obs = t_obs,
         parameters = parameters,
+        event_table = event_table,
         checks = TRUE,
         output_include = output_include,
         ...)
@@ -92,13 +103,16 @@ get_var_y <- function(
         par_tmp <- parameters
         dP <- rel_delta * par_tmp[[nams[i]]]
         par_tmp[[nams[i]]] <- par_tmp[[nams[i]]] + dP
-        res_dP <- PKPDsim::sim_ode(ode = model,
-                          regimen = regimen,
-                          t_obs = t_obs,
-                          only_obs = FALSE,
-                          parameters = par_tmp,
-                          output_include = output_include,
-                          ...)
+        res_dP <- PKPDsim::sim_ode(
+          ode = model,
+          regimen = regimen,
+          t_obs = t_obs,
+          only_obs = FALSE,
+          parameters = par_tmp,
+          output_include = output_include,
+          event_table = event_table,
+          ...
+        )
         res_dP <- res_dP[res_dP$comp == obs_comp,]
         if(!is.null(obs_variable)) {
           dy <- res_dP[[obs_variable]]

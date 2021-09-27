@@ -1,4 +1,5 @@
-#' Parse regimen
+#' Create an event table
+#'
 #' @param regimen regimen
 #' @param t_max t_max
 #' @param t_obs t_obs
@@ -8,8 +9,7 @@
 #' @param covariates covariates
 #' @param model model
 #' @param obs_type observation type
-#' @export
-parse_regimen <- function(
+create_event_table <- function(
   regimen,
   t_max = NULL,
   t_obs = NULL,
@@ -194,12 +194,10 @@ parse_regimen <- function(
 
   # now add the covariate values to the design dataset
   if(!is.null(covariates)) {
-    for(i in seq(names(covariates))) {
-      design[[paste0("cov_", names(covariates)[i])]] <- 0
-      design[[paste0("cov_t_", names(covariates)[i])]] <- 0
-      design[[paste0("gradients_", names(covariates)[i])]] <- 0
-    }
     for(j in seq(names(covariates))) {
+      design[[paste0("cov_", names(covariates)[j])]] <- 0
+      design[[paste0("cov_t_", names(covariates)[j])]] <- 0
+      design[[paste0("gradients_", names(covariates)[j])]] <- 0
       nam <- names(covariates)[j]
       tmp <- covt[covt$name == nam,]
       for(i in 1:length(tmp[,1])) {
