@@ -8,7 +8,7 @@ Maintainer: Ron Keizer <ron@insight-rx.com>
 Depends: R (>= 3.0.2)
 Imports: Rcpp (>= 0.12.9), BH, data.table, lubridate, stringr, MASS,
         randtoolbox, jsonlite, stats, parallel
-Suggests: httr, testit, testthat (>= 3.0.0)
+Suggests: httr, testthat (>= 3.0.0)
 LinkingTo: Rcpp (>= 0.12.9)
 Description: Simulate dose regimens for PKPD models described by DE
         systems or analytical equations.
