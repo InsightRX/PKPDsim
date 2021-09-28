@@ -2,15 +2,19 @@
 % Please edit documentation in R/adherence.R
 \name{adherence_binomial}
 \alias{adherence_binomial}
-\title{Binomial adherence'}
+\title{Binomial adherence}
 \usage{
-adherence_binomial(n = 100, p = 0.5)
+adherence_binomial(n = 100, prob)
 }
 \arguments{
-\item{n}{number of days}
+\item{n}{number of occasions}
 
-\item{p}{binomial probability}
+\item{prob}{binomial probability}
+}
+\value{
+Returns a vector of length `n`
+  containing values 0 (non-adherent) or 1 (adherent).
 }
 \description{
-Binomial adherence'
+Model adherence as a binomial probability at the time of each occasion.
 }

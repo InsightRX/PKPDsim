@@ -1,0 +1,27 @@
+{
+  "id": "test_1cmt_iv",
+  "description": "One compartment PK model with linear elimination",
+  "equations": [
+    "\\frac{dA_1}{dt} = -(CL/V) \\cdot A_1"
+  ],
+  "ode_code": "\
+    dAdt[0] = -(CL/V)*A[0];",
+  "n_comp": 1,
+  "obs": { "cmt": 1, "scale": "V" },
+  "dose": { "cmt": 1, "bioav": 1 },
+  "parameters": { "CL": 5, "V": 50 },
+  "covariates": [],
+  "variables": [],
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "build": true,
+  "validation": {
+    "implementation": true,
+    "numerical": true,
+    "clinical": false
+  },
+  "version": "0.2.0"
+}

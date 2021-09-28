@@ -5,7 +5,7 @@
 #' @param interval dosing interval (requires n as argument)
 #' @param n number of doses (requires interval as argument)
 #' @param times vector describing dosing times. Overrides specified times using interval and n arguments
-#' @param type either "infusion" or "bolus" (default)
+#' @param type either "infusion", "oral" or "bolus".
 #' @param t_inf infusion time (if `type`==`infusion`)
 #' @param rate infusion rate (if `type`==`infusion`). `NULL` by default. If specified, overrides `t_inf`
 #' @param t_lag lag time (can be applied to any dose type, not only oral). Will just be added to `times`
@@ -36,7 +36,7 @@ new_regimen <- function(
     checks = TRUE,
     ss = FALSE,
     n_ss = NULL,
-    first_dose_time = lubridate::now()) {
+    first_dose_time = lubridate::now(tzone = "UTC")) {
 
   reg <- structure(list(amt = amt,
                         interval = interval,
@@ -49,9 +49,17 @@ new_regimen <- function(
       warning("Some doses were < 0, setting to 0.")
     }
     if(is.null(reg$type)) {
-      reg$type <- "bolus"
+      if(!is.null(reg$t_inf)) {
+        reg$type <- rep("infusion", length(reg$t_inf))
+        reg$type[reg$t_inf == 0] <- "bolus"
+        if(any(reg$t_inf > 0)) {
+          warning("Please specify regimen `type` explicitly (either 'infusion', 'bolus', or 'oral'). Will assume `type='infusion'` for doses with `t_inf` > 0.")
+        }
+      } else {
+        reg$type <- "bolus"
+      }
     }
-    if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || length(reg$type) == 0 || !(reg$type %in% c("bolus", "oral", "infusion")))) {
+    if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || any(length(reg$type) == 0) || !(all(reg$type %in% c("bolus", "oral", "infusion"))))) {
       if(!is.null(t_inf) || !is.null(rate)) {
         reg$type <- "infusion" # assume all infusions
       } else {
@@ -65,8 +73,10 @@ new_regimen <- function(
     if (is.null(times) && !is.null(interval) && is.null(n)) {
       stop("The number of doses (n) must be specified in the regimen object.")
     }
-    if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0 || is.na(t_inf))) {
+    if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0)) {
       reg$t_inf = 1
+    } else if (any(is.na(t_inf))) {
+      t_inf[is.na(t_inf)] <- 1
     }
   }
   if(ss) {
@@ -88,7 +98,7 @@ new_regimen <- function(
     reg$ss_regimen <- pre_reg
   }
   if(is.null(times)) {
-    reg$dose_times <- c(0:(n-1)) * interval
+    reg$dose_times <- c(0:max(0, n-1)) * interval
   } else {
     reg$dose_times <- times
     if(length(reg$dose_times) > 1) {
@@ -144,5 +154,8 @@ new_regimen <- function(
   reg$dose_amts <- reg$dose_amts[!is.na(reg$dose_amts)]
   reg$amt <- NULL
   reg$first_dose_time <- first_dose_time
+  if(!is.null(t_lag)) {
+    reg$dose_times <- reg$dose_times + t_lag
+  }
   return(reg)
 }

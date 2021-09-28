@@ -4,21 +4,24 @@
 \alias{model_from_api}
 \title{Load model definition from API, and compile to R library}
 \usage{
-model_from_api(model = NULL, url = "http://localhost:8080/api",
-  github = FALSE, repo = NULL, auth_token = NULL, verbose = TRUE,
-  get_definition = FALSE, to_package = FALSE, force = FALSE,
-  run_tests = FALSE, ...)
+model_from_api(
+  url,
+  model = NULL,
+  nonmem = NULL,
+  verbose = TRUE,
+  get_definition = FALSE,
+  to_package = FALSE,
+  force = FALSE,
+  install_all = FALSE,
+  ...
+)
 }
 \arguments{
-\item{model}{model id}
+\item{url}{URL or file path to JSON representation of model}
 
-\item{url}{URL of API}
+\item{model}{model id (used in messages)}
 
-\item{github}{not a custom API but GitHub}
-
-\item{repo}{GH repository specified as `owner/repo`}
-
-\item{auth_token}{for private repositories}
+\item{nonmem}{URL or file path to NONMEM file}
 
 \item{verbose}{verbosity (T/F)}
 
@@ -26,9 +29,9 @@ model_from_api(model = NULL, url = "http://localhost:8080/api",
 
 \item{to_package}{compile to package?}
 
-\item{force}{force install, even if model inactive}
+\item{force}{force install even if same version number of model already installed.}
 
-\item{run_tests}{run tests associated with model?}
+\item{install_all}{force install all, even if model inactive}
 
 \item{...}{arguments passed to `new_ode_model()` function}
 }

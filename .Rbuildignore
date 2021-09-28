@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+slack_notification.sh
+git-hooks
+Jenkinsfile
+\.travis\.yml$

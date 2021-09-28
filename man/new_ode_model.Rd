@@ -4,15 +4,47 @@
 \alias{new_ode_model}
 \title{Create new ODE model}
 \usage{
-new_ode_model(model = NULL, code = NULL, pk_code = NULL,
-  dose_code = NULL, file = NULL, func = NULL, state_init = NULL,
-  parameters = NULL, units = NULL, size = NULL, lagtime = NULL,
-  obs = list(cmt = 1, scale = 1), dose = list(cmt = 1), covariates = NULL,
-  declare_variables = NULL, iiv = NULL, iov = NULL, omega_matrix = NULL,
-  ruv = NULL, ltbs = NULL, int_step_size = NULL,
-  default_parameters = NULL, cpp_show_code = FALSE, package = NULL,
-  install = TRUE, folder = NULL, lib_location = NULL, verbose = FALSE,
-  as_is = FALSE, nonmem = NULL, validation = NULL)
+new_ode_model(
+  model = NULL,
+  code = NULL,
+  pk_code = NULL,
+  dose_code = NULL,
+  file = NULL,
+  func = NULL,
+  state_init = NULL,
+  parameters = NULL,
+  reparametrization = NULL,
+  mixture = NULL,
+  units = NULL,
+  size = NULL,
+  lagtime = NULL,
+  obs = list(cmt = 1, scale = 1),
+  dose = list(cmt = 1),
+  covariates = NULL,
+  declare_variables = NULL,
+  iiv = NULL,
+  iov = NULL,
+  omega_matrix = NULL,
+  ruv = NULL,
+  ltbs = NULL,
+  misc = NULL,
+  cmt_mapping = NULL,
+  int_step_size = NULL,
+  default_parameters = NULL,
+  fixed = NULL,
+  cpp_show_code = FALSE,
+  package = NULL,
+  test_file = NULL,
+  install = TRUE,
+  folder = NULL,
+  lib_location = NULL,
+  verbose = FALSE,
+  as_is = FALSE,
+  nonmem = NULL,
+  comments = NULL,
+  version = "0.1.0",
+  quiet = ""
+)
 }
 \arguments{
 \item{model}{model name from model library}
@@ -30,6 +62,10 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 \item{state_init}{vector of state init}
 
 \item{parameters}{list or vector of parameter values}
+
+\item{reparametrization}{list of parameters with definitions that reparametrize the linear PK model to a 1-, 2- o4 3-compartment PK with standardized parametrization.}
+
+\item{mixture}{for mixture models, provide a list of the parameter associated with the mixture and it's possible values and probabilities (of the first value), e.g. `list(CL = list(value = c(10, 20), probability = 0.3)`.}
 
 \item{units}{list or vector of parameter units}
 
@@ -55,13 +91,21 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 
 \item{ltbs}{log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).}
 
+\item{misc}{a list of miscellaneous model metadata}
+
+\item{cmt_mapping}{list indicating which administration routes apply to which compartments. Example: `list("oral" = 1, "infusion" = 2)`}
+
 \item{int_step_size}{step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`}
 
 \item{default_parameters}{population or specific patient values, can optionally be added to library}
 
+\item{fixed}{parameters that should not have iiv added.}
+
 \item{cpp_show_code}{show generated C++ code}
 
 \item{package}{package name when saving as package}
+
+\item{test_file}{optional test file to be included with package}
 
 \item{install}{install package after compilation?}
 
@@ -75,7 +119,13 @@ new_ode_model(model = NULL, code = NULL, pk_code = NULL,
 
 \item{nonmem}{add nonmem code as attribute to model object}
 
-\item{validation}{path to JSON file with specs for numerical validation}
+\item{comments}{comments for model}
+
+\item{version}{number of library}
+
+\item{quiet}{passed on to `system2` as setting for stderr and stdout; how to
+output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
+TRUE captures the output and saves as a file.}
 }
 \description{
 Create new ODE model

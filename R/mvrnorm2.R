@@ -10,6 +10,7 @@
 #' @param exponential exponential distribution (i.e. multiply mu by exponential of sampled numbers)
 #' @param sequence any sequence available in the randtoolbox, e.g. `halton`, or `sobol`
 #' @param ... parameters passed to mvrnorm or randtoolbox sequence generator
+#' @export
 mvrnorm2 <- function(n, mu, Sigma, exponential = FALSE, sequence = NULL, ...) {
   if(!is.null(sequence)) {
     func <- getExportedValue('randtoolbox', sequence)

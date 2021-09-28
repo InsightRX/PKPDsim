@@ -4,22 +4,56 @@
 \alias{sim}
 \title{Simulate ODE or analytical equation}
 \usage{
-sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
-  omega_type = "exponential", res_var = NULL, iov_bins = NULL,
-  seed = NULL, sequence = NULL, n_ind = 1, regimen = NULL,
-  covariates = NULL, covariates_table = NULL,
-  covariates_implementation = list(), A_init = NULL, only_obs = FALSE,
-  obs_step_size = NULL, int_step_size = 0.1, t_max = NULL, t_obs = NULL,
-  t_tte = NULL, t_init = 0, duplicate_t_obs = FALSE, extra_t_obs = TRUE,
-  rtte = FALSE, checks = TRUE, verbose = FALSE, return_design = FALSE,
-  output_include = list(parameters = FALSE, covariates = FALSE), ...)
+sim(
+  ode = NULL,
+  analytical = NULL,
+  parameters = NULL,
+  parameters_table = NULL,
+  mixture_group = NULL,
+  omega = NULL,
+  omega_type = "exponential",
+  res_var = NULL,
+  iov_bins = NULL,
+  seed = NULL,
+  sequence = NULL,
+  n_ind = 1,
+  event_table = NULL,
+  regimen = NULL,
+  lagtime = NULL,
+  covariates = NULL,
+  covariates_table = NULL,
+  covariates_implementation = list(),
+  covariate_model = NULL,
+  A_init = NULL,
+  only_obs = FALSE,
+  obs_step_size = NULL,
+  int_step_size = 0.01,
+  t_max = NULL,
+  t_obs = NULL,
+  t_tte = NULL,
+  t_init = 0,
+  obs_type = NULL,
+  duplicate_t_obs = FALSE,
+  extra_t_obs = TRUE,
+  rtte = FALSE,
+  checks = TRUE,
+  verbose = FALSE,
+  return_event_table = FALSE,
+  return_design = FALSE,
+  output_include = list(parameters = FALSE, covariates = FALSE),
+  ...
+)
 }
 \arguments{
 \item{ode}{function describing the ODE system}
 
-\item{analytical}{analytical equation (function)}
+\item{analytical}{string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.}
 
 \item{parameters}{model parameters}
+
+\item{parameters_table}{dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.}
+
+\item{mixture_group}{mixture group for models containing mixtures. Should be either `1` or `2`, since only two groups are currently allowed.}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
@@ -35,13 +69,19 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{n_ind}{number of individuals to simulate}
 
+\item{event_table}{use a previously created `design` object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.}
+
 \item{regimen}{a regimen object created using the regimen() function}
+
+\item{lagtime}{either a value (numeric) or a parameter (character) or NULL.}
 
 \item{covariates}{list of covariates (for single individual) created using `new_covariate()` function}
 
 \item{covariates_table}{data.frame (or unnamed list of named lists per individual) with covariate values}
 
 \item{covariates_implementation}{used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`}
+
+\item{covariate_model}{R code used to pre-calculate effective parameters for use in ADVAN-style analytical equations. Not used in ODE simulations.}
 
 \item{A_init}{vector with the initial state of the ODE system}
 
@@ -59,6 +99,8 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{t_init}{initialization time before first dose, default 0.}
 
+\item{obs_type}{vector of observation types. Only valid in combination with equal length vector `t_obs`.}
+
 \item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 
 \item{extra_t_obs}{include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.}
@@ -69,7 +111,9 @@ sim(ode = NULL, analytical = NULL, parameters = list(), omega = NULL,
 
 \item{verbose}{show more output}
 
-\item{return_design}{Useful for iterative functions like estimation. Only prepares the design (event table) for the simulation, does not run the actual simulation.}
+\item{return_event_table}{return the event table for the simulation only, does not run the actual simulation. Useful for iterative use of sim().}
+
+\item{return_design}{returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with `sim_core()`, e.g. for estimation and optimal design.}
 
 \item{output_include}{list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.}
 
@@ -87,18 +131,19 @@ library(ggplot2)
 library(PKPDsim)
 p <- list(CL = 38.48,
          V  = 7.4,
-         Q2 = 7.844,
+         Q  = 7.844,
          V2 = 5.19,
-         Q3 = 9.324,
+         Q2  = 9.324,
          V3 = 111)
 
 r1 <- new_regimen(amt = 100,
              times = c(0, 24, 36),
              type = "infusion")
 
-dat <- sim_ode (ode = "pk_3cmt_iv",
-               par = p,
-               regimen = r1)
+mod <- new_ode_model("pk_3cmt_iv")
+dat <- sim(ode = mod,
+          parameters = p,
+          regimen = r1)
 
 ggplot(dat, aes(x=t, y=y)) +
  geom_line() +
@@ -109,11 +154,11 @@ ggplot(dat, aes(x=t, y=y)) +
 omega <- c(0.3,       # IIV CL
           0.1, 0.3)  # IIV V
 
-dat <- sim (ode = "pk_3cmt_iv",
-               par = p,
-               omega = omega,
-               n_ind = 20,
-               regimen = r1)
+dat <- sim (ode = mod,
+           parameters = p,
+           omega = omega,
+           n_ind = 20,
+           regimen = r1)
 
 ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) +
  geom_line() +

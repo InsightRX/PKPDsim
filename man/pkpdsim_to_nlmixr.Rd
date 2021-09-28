@@ -4,9 +4,18 @@
 \alias{pkpdsim_to_nlmixr}
 \title{Convert a model generated with PKPDsim to an object for nlmixr}
 \usage{
-pkpdsim_to_nlmixr(model = NULL, parameters = NULL, omega = NULL,
-  res_var = NULL, fixed = c(), ini_code = NULL, model_code = NULL,
-  model_par_code = NULL, verbose = FALSE, ...)
+pkpdsim_to_nlmixr(
+  model = NULL,
+  parameters = NULL,
+  omega = NULL,
+  res_var = NULL,
+  fixed = c(),
+  ini_code = NULL,
+  model_code = NULL,
+  model_par_code = NULL,
+  verbose = FALSE,
+  ...
+)
 }
 \arguments{
 \item{model}{PKPDsim model}
