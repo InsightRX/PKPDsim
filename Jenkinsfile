@@ -21,7 +21,7 @@ pipeline {
     }
     stage('Build & test PKPDsim') {
       steps {
-        echo 'Installing and checking irxtools'
+        echo 'Installing and checking PKPDsim'
         /*
         The command to Sys.setlocale('LC_ALL','C') is required due to a bug in processx, which has
         already been fixed in the dev version as of May 26th 2021, but is not yet in the CRAN version.
