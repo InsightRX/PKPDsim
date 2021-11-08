@@ -305,9 +305,6 @@ new_ode_model <- function (model = NULL,
       }
       if(is.null(obs$cmt)) { obs$cmt <- "1" }
       if(is.null(obs$scale)) { obs$scale <- "1" }
-      if(is.null(obs$variable)) { obs$variable <- "NULL" } else {
-        obs$variable <- paste0('\\"', obs$variable, '\\"')
-      }
       if(is.null(dose$cmt)) { dose$cmt <- "1" }
       if(is.null(dose$bioav)) { dose$bioav <- "1" }
       if(class(dose$bioav) == "character") {
