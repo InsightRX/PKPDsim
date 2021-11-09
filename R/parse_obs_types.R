@@ -1,8 +1,8 @@
 #' Parse observation types to simulation code
 #'
 #' @param obs specified observation object including at least a description of 
-       which variable(s) are associated with a particular compartment, e.g. 
-       `list(variable="CONC", scale="1")`.
+#'       which variable(s) are associated with a particular compartment, e.g. 
+#'       `list(variable="CONC", scale="1")`.
 parse_obs_types <- function(obs) {
   if(is.null(obs$scale)) obs$scale <- "1.0"
   if(length(obs$variable) == 1) {

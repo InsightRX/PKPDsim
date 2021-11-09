@@ -7,7 +7,9 @@
 parse_obs_types(obs)
 }
 \arguments{
-\item{obs}{specified observation object, e.g. `list(variable="CONC", scale="1")` or `list(cmt=1, scale="V/1000.0")`.}
+\item{obs}{specified observation object including at least a description of 
+which variable(s) are associated with a particular compartment, e.g. 
+`list(variable="CONC", scale="1")`.}
 }
 \description{
 Parse observation types to simulation code
