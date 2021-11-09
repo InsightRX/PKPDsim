@@ -24,8 +24,11 @@ test_that("multiple observation type, scale is single", {
     variable = c("CONC", "CONCM", "PD"),
     scale = 1
   )
+  expect_warning(
+    res <- PKPDsim:::parse_obs_types(obs3a)
+  )
   expect_equal(
-    parse_obs_types(obs3a),
+    res,
     "      if (obs_type[i+1]==1) { obs.insert(obs.end(), CONC/(1)); } else if \n         (obs_type[i+1]==2) { obs.insert(obs.end(), CONCM/(1)); } else if \n         (obs_type[i+1]==3) { obs.insert(obs.end(), PD/(1)); } else \n         { obs.insert(obs.end(), CONC/(1)); }"
   )
 })
