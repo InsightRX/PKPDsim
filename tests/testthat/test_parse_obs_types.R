@@ -25,7 +25,8 @@ test_that("multiple observation type, scale is single", {
     scale = 1
   )
   expect_warning(
-    res <- PKPDsim:::parse_obs_types(obs3a)
+    res <- parse_obs_types(obs3a),
+    "Provided `scale` vector not same length as `variable` vector."
   )
   expect_equal(
     res,
