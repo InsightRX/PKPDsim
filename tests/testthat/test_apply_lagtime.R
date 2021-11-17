@@ -20,3 +20,13 @@ test_that("lagtime applied to regimens using lagtime arg", {
   expect_true("regimen" %in% class(lag2))
   expect_equal(lag2$dose_times, reg1$dose_times + 0.75)
 })
+
+test_that("lagtime applied when multiple compartments and no compartment specified in regimen", {
+  lag3 <- apply_lagtime(
+    regimen = reg1,
+    lagtime = c("TLAG", 0, 0),
+    parameters = list(CL = 5, V = 50, TLAG = .5)
+  )
+  expect_true("regimen" %in% class(lag3))
+  expect_equal(lag3$dose_times, reg1$dose_times + 0.5)
+})
