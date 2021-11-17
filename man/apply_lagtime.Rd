@@ -4,7 +4,7 @@
 \alias{apply_lagtime}
 \title{Apply lagtime to a regimen}
 \usage{
-apply_lagtime(regimen, lagtime, parameters)
+apply_lagtime(regimen, lagtime, parameters, cmt_mapping)
 }
 \arguments{
 \item{regimen}{PKPDsim regimen}
@@ -12,6 +12,8 @@ apply_lagtime(regimen, lagtime, parameters)
 \item{lagtime}{lagtime object, either single value / parameter name or vector of values/parameter names for all compartments.}
 
 \item{parameters}{parameter list, required if parameters are specified.}
+
+\item{cmt_mapping}{map of administration types to compartments, e.g. `list("oral" = 1, "infusion" = 2, "bolus" = 2)`.}
 }
 \description{
 Apply lagtime to a regimen
