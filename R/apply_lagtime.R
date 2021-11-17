@@ -6,7 +6,12 @@
 #' @param cmt_mapping map of administration types to compartments, e.g. `list("oral" = 1, "infusion" = 2, "bolus" = 2)`.
 #'
 #' @export
-apply_lagtime <- function(regimen, lagtime, parameters, cmt_mapping) {
+apply_lagtime <- function(
+  regimen,
+  lagtime,
+  parameters,
+  cmt_mapping = NULL
+) {
     if(class(lagtime) %in% c("numeric", "integer")) {
       if(length(lagtime) == 1) {
         regimen$dose_times <- regimen$dose_times + lagtime

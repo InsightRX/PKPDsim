@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // pk_1cmt_iv_bolus
 DataFrame pk_1cmt_iv_bolus(DataFrame d);
 RcppExport SEXP _PKPDsim_pk_1cmt_iv_bolus(SEXP dSEXP) {
