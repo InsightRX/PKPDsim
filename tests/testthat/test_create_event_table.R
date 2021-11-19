@@ -73,3 +73,22 @@ test_that("Rounding-related index matching issues in time col", {
   )
   expect_equal(sum(is.na(res2$cov_PMA)), 0)
 })
+
+test_that("Multiple obs_types does not add erroneuous infusion stop events", {
+  reg <- new_regimen(
+    amt = c(100, 100, 100, 100),
+    times = c(0, 336, 672, 1008),
+    t_inf = 3,
+    type = "infusion"
+  )
+  res <- create_event_table(
+    regimen = reg,
+    t_max = NULL,
+    t_obs = c(3, 3.5, 4, 6, 8, 12, 16, 330, 340, 670, 676, 1005, 1200,
+              3, 3.5, 4, 6, 8, 12, 16, 330, 340, 670, 676, 1005, 1200),
+    obs_type = c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2),
+    covariates = list(WT = new_covariate(70)),
+    model = NULL
+  )
+  expect_true(all(cumsum(res$rate) >= 0)) # cumulative dose rate should never be lower than zero
+})
