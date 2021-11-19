@@ -224,6 +224,11 @@ create_event_table <- function(
   if(!is.null(obs_type)) {
     design <- merge(design, data.frame(t = t_obs, obs_type), all=TRUE)
     design$obs_type <- ifelse(is.na(design$obs_type), 0, as.integer(design$obs_type))
+    # merging can induce multiple infusion stop events, should reset those:
+    duplicate_stop <- design$evid == 2 & duplicated(design$t)
+    if(any(duplicate_stop)) {
+      design$rate[duplicate_stop] <- 0
+    }
   }
   design <- design[order(design$t, design$type, design$dum, decreasing=FALSE),]
   if(t_init != 0) { # add event line at t=0, to start integration

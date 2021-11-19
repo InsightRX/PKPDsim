@@ -387,7 +387,7 @@ sim <- function (ode = NULL,
     p_i <- p
     if(!is.null(covariates_table)) {
       covariates_tmp <- covariates_table[[i]]
-      design_i <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]])
+      design_i <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]], model = ode, obs_type = obs_type)
     } else {
       covariates_tmp <- covariates
     }
