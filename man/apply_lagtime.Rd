@@ -4,7 +4,7 @@
 \alias{apply_lagtime}
 \title{Apply lagtime to a regimen}
 \usage{
-apply_lagtime(regimen, lagtime, parameters, cmt_mapping)
+apply_lagtime(regimen, lagtime, parameters, cmt_mapping = NULL)
 }
 \arguments{
 \item{regimen}{PKPDsim regimen}

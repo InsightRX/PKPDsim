@@ -225,7 +225,7 @@ create_event_table <- function(
     design <- merge(design, data.frame(t = t_obs, obs_type), all=TRUE)
     design$obs_type <- ifelse(is.na(design$obs_type), 0, as.integer(design$obs_type))
     # merging can induce multiple infusion stop events, should reset those:
-    duplicate_stop <- design$evid == 2 & duplicated(design$t)
+    duplicate_stop <- design$evid == 2 & duplicated(paste(design$t, design$evid))
     if(any(duplicate_stop)) {
       design$rate[duplicate_stop] <- 0
     }
