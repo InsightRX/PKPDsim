@@ -6,4 +6,5 @@
 #' @name PKPDsim-package
 #' @author Ron Keizer \email{ronkeizer@@gmail.com}
 #' @importFrom utils packageVersion tail
-# NULL
+#' @importFrom stats aggregate qnorm quantile reshape rnorm
+NULL
