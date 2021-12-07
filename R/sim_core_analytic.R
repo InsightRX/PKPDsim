@@ -2,16 +2,17 @@
 #' Mostly useful for estimations / optimal design. Has no checks (for speed)!
 #' This is separate function for analytic equations only. See `sim_core()` for ODE function.`
 #'
+#' @inheritParams sim
 #' @param sim_object list with design and simulation parameters
 #' @param model model object
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
 #' @param t_init time of initization of the ODE system. Usually 0.
 #' @export
-sim_core_analytic <- function(
-  sim_object = NULL,
-  model,
-  duplicate_t_obs = FALSE,
-  t_init = 0) {
+sim_core_analytic <- function(ode,
+                              sim_object = NULL,
+                              model,
+                              duplicate_t_obs = FALSE,
+                              t_init = 0) {
   tmp <- ode(A = sim_object$A_init,
              design = sim_object$design,
              par = sim_object$p,
