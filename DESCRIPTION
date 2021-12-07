@@ -10,10 +10,10 @@ Authors@R: c(
         person("Kara", "Woo", email = "kara@insight-rx.com", role = c("aut")),
         person("InsightRX", role = c("cph", "fnd")))
 Depends: R (>= 3.0.2)
-Imports: Rcpp (>= 0.12.9), BH, data.table, lubridate, stringr, MASS,
+Imports: Rcpp (>= 0.12.9), data.table, lubridate, stringr, MASS,
         randtoolbox, jsonlite, stats, parallel, magrittr
 Suggests: httr, testthat (>= 3.0.0)
-LinkingTo: Rcpp (>= 0.12.9)
+LinkingTo: BH, Rcpp (>= 0.12.9)
 Description: Simulate dose regimens for PKPD models described by DE
         systems or analytical equations.
 License: MIT + file LICENSE
