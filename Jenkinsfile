@@ -31,7 +31,7 @@ pipeline {
         docker cp . ${BUILD_TAG}:/src/PKPDsim
         # Install newer Rcpp. Otherwise will error because BH is only in
         # LinkingTo, not Imports or Depends.
-        docker exec -i ${BUILD_TAG} Rscript -e "install.packages('Rcpp')"
+        docker exec -i ${BUILD_TAG} Rscript -e "install.packages('Rcpp', repos = 'https://cloud.r-project.org')"
         docker exec -i ${BUILD_TAG} Rscript -e "Sys.setlocale('LC_ALL','C'); devtools::check('PKPDsim')"
         """
       }
