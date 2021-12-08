@@ -1,18 +1,23 @@
 Package: PKPDsim
 Type: Package
-Title: Simulate ODE models
+Title: Simulate ODE Models
 Version: 1.0.124
-Date: 2021-06-08
-Author: Ron Keizer
-Maintainer: Ron Keizer <ron@insight-rx.com>
+Date: 2021-12-06
+Authors@R: c(
+        person("Ron", "Keizer", email = "ron@insight-rx.com", role = c("aut", "cre")),
+        person("Jasmine", "Hughes", email = "jasmine@insight-rx.com", role = "aut"),
+        person("Dominic", "Tong", email = "dominic@insight-rx.com", role = "aut"),
+        person("Kara", "Woo", email = "kara@insight-rx.com", role = c("aut")),
+        person("InsightRX", role = c("cph", "fnd")))
 Depends: R (>= 3.0.2)
 Imports: Rcpp (>= 0.12.9), BH, data.table, lubridate, stringr, MASS,
-        randtoolbox, jsonlite, stats, parallel
+        randtoolbox, jsonlite, stats, parallel, magrittr
 Suggests: httr, testthat (>= 3.0.0)
-LinkingTo: Rcpp (>= 0.12.9)
+LinkingTo: BH, Rcpp (>= 0.12.9)
 Description: Simulate dose regimens for PKPD models described by DE
         systems or analytical equations.
 License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 7.1.2
 Config/testthat/edition: 3
+Encoding: UTF-8

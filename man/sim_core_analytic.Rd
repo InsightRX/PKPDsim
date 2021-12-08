@@ -7,6 +7,7 @@ Mostly useful for estimations / optimal design. Has no checks (for speed)!
 This is separate function for analytic equations only. See `sim_core()` for ODE function.`}
 \usage{
 sim_core_analytic(
+  ode,
   sim_object = NULL,
   model,
   duplicate_t_obs = FALSE,
@@ -14,6 +15,8 @@ sim_core_analytic(
 )
 }
 \arguments{
+\item{ode}{function describing the ODE system}
+
 \item{sim_object}{list with design and simulation parameters}
 
 \item{model}{model object}
