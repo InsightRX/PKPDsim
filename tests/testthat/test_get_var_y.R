@@ -22,6 +22,7 @@ res <- sim_ode(
 
 ## 1 compartment model
 test_that("delta approximation and full simulation match", {
+  skip_on_cran()
   v_delta <- get_var_y(
     model = mod_1cmt_iv,
     parameters = par,
@@ -45,6 +46,7 @@ test_that("delta approximation and full simulation match", {
 })
 
 test_that("Confidence interval instead of SD", {
+  skip_on_cran()
   CI_range <- c(0.1, 0.9)
   reg2 <- new_regimen(
     amt = 2000,
@@ -88,6 +90,7 @@ test_that("Confidence interval instead of SD", {
 
 
 test_that("Two compartment model", {
+  skip_on_cran()
   set.seed(80)
   # Uses models defined in setup.R
   par2 <- list(CL = 1, V = 10, Q = 1, V2 = 10)
@@ -126,6 +129,7 @@ test_that("Two compartment model", {
 })
 
 test_that("One compartment with MM kinetics", {
+  skip_on_cran()
   mod3 <- new_ode_model("pk_1cmt_iv_mm")
   par3 <- list(VMAX = 5, KM = 5, V = 10)
   omega3 <- c(0.1,

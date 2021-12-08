@@ -5,6 +5,7 @@
 ## Use this as true value in the simulations
 
 test_that("TDM before first dose is considered a true initial value", {
+  skip_on_cran()
   par   <- list(CL = 7.67, V = 97.7, TDM_INIT = 500)
   mod <- new_ode_model(
     code = "dAdt[1] = -(CL/V)*A[1];",
