@@ -1,4 +1,5 @@
 test_that("timevarying covariates handled", {
+  skip_on_cran()
   # CLi changes by several orders of magnitude after
   # steady state is achieved, which should produce
   # a new steady state that is much lower

@@ -28,6 +28,7 @@ test_that("Admin route is interpreted and simulated correctly", {
 })
 
 test_that("multiple scaling types on one compartment works", {
+  skip_on_cran()
   mod <- new_ode_model(
     code = "
       dAdt[1] = -KA * A[1];

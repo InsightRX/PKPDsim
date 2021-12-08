@@ -1,4 +1,5 @@
 test_that("IOV is added to parameters", {
+  skip_on_cran()
   set.seed(32)
   pars <- list(
     "kappa_CL_1" = 0,
