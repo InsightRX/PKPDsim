@@ -43,44 +43,54 @@
 #' @seealso \link{sim_ode_shiny}
 #' @examples
 #' \dontrun{
-#'library(ggplot2)
-#'library(PKPDsim)
-#'p <- list(CL = 38.48,
-#'          V  = 7.4,
-#'          Q  = 7.844,
-#'          V2 = 5.19,
-#'          Q2  = 9.324,
-#'          V3 = 111)
+#' p <- list(
+#'   CL = 38.48,
+#'   V  = 7.4,
+#'   Q  = 7.844,
+#'   V2 = 5.19,
+#'   Q2  = 9.324,
+#'   V3 = 111
+#' )
 #'
-#'r1 <- new_regimen(amt = 100,
-#'              times = c(0, 24, 36),
-#'              type = "infusion")
+#' r1 <- new_regimen(
+#'   amt = 100,
+#'   times = c(0, 24, 36),
+#'   type = "infusion"
+#' )
 #'
-#'mod <- new_ode_model("pk_3cmt_iv")
-#'dat <- sim(ode = mod,
-#'           parameters = p,
-#'           regimen = r1)
+#' mod <- new_ode_model("pk_3cmt_iv")
+#' dat <- sim(
+#'   ode = mod,
+#'   parameters = p,
+#'   regimen = r1
+#' )
 #'
-#'ggplot(dat, aes(x=t, y=y)) +
-#'  geom_line() +
-#'  scale_y_log10() +
-#'  facet_wrap(~comp)
+#' dat_wide <- reshape(
+#'   dat,
+#'   direction = "wide",
+#'   timevar = "comp",
+#'   idvar = "t"
+#' )
 #'
-#'# repeat with IIV:
-#'omega <- c(0.3,       # IIV CL
-#'           0.1, 0.3)  # IIV V
+#' matplot(
+#'   dat_wide[, grepl("^y", names(dat_wide))],
+#'   type = "b",
+#'   pch = 1,
+#'   log = "y"
+#' )
 #'
-#'dat <- sim (ode = mod,
-#'            parameters = p,
-#'            omega = omega,
-#'            n_ind = 20,
-#'            regimen = r1)
+#' # repeat with IIV:
+#' omega <- c(0.3,       # IIV CL
+#'            0.1, 0.3)  # IIV V
 #'
-#'ggplot(dat, aes(x=t, y=y, colour=factor(id), group=id)) +
-#'  geom_line() +
-#'  scale_y_log10() +
-#'  facet_wrap(~comp)
-#'}
+#' dat <- sim(
+#'   ode = mod,
+#'   parameters = p,
+#'   omega = omega,
+#'   n_ind = 20,
+#'   regimen = r1
+#' )
+#' }
 sim <- function (ode = NULL,
                  analytical = NULL,
                  parameters = NULL,
