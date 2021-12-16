@@ -17,6 +17,9 @@ regimen_to_nm(reg = NULL, dose_cmt = 1, n_ind = 1, t_obs = NULL, obs_cmt = 1)
 
 \item{obs_cmt}{observation compartment for added observation time(s)}
 }
+\value{
+Data frame containing doses
+}
 \description{
 Convert PKPDsim regimen to NONMEM table (doses only)
 }

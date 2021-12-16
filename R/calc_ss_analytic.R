@@ -21,6 +21,7 @@
 #' @param auc add (empty) AUC compartment at end of state vector?
 #'
 #' @export
+#' @return State vector of a linear pharmacokinetic system at steady state
 calc_ss_analytic <- function(
   f = "1cmt_oral",
   dose,

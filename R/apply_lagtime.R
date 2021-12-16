@@ -6,6 +6,7 @@
 #' @param cmt_mapping map of administration types to compartments, e.g. `list("oral" = 1, "infusion" = 2, "bolus" = 2)`.
 #'
 #' @export
+#' @return Original regimen with lagtime added
 apply_lagtime <- function(
   regimen,
   lagtime,

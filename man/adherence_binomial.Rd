@@ -14,6 +14,8 @@ adherence_binomial(n = 100, prob)
 \value{
 Returns a vector of length `n`
   containing values 0 (non-adherent) or 1 (adherent).
+
+Numeric vector of length n
 }
 \description{
 Model adherence as a binomial probability at the time of each occasion.

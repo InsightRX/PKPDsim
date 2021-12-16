@@ -16,6 +16,9 @@ test_model(url, test_file, package, force = FALSE)
 \item{force}{Run tests even if model is not flagged for building? Defaults to
 FALSE}
 }
+\value{
+Runs test file for a model but does not return a value
+}
 \description{
 Test a model
 }

@@ -5,6 +5,8 @@
 #' @param allow_null can the alternative be NULL?
 #'
 #' @export
+#' @return `value` if non-NULL; `alternative` otherwise
+#' @md
 ifelse0 <- function(value = NULL, alternative = NULL, allow_null = FALSE) {
   if(is.null(alternative) && !allow_null) {
     stop("No alternative specified")

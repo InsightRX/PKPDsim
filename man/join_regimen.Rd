@@ -26,6 +26,9 @@ join_regimen(
 
 \item{continuous}{for joining continuous infusions}
 }
+\value{
+Joined regimen
+}
 \description{
 Join two dosing regimens
 }

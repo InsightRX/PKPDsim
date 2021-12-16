@@ -7,6 +7,7 @@
 #' @param log_transform log-transform estimated parameters in nlmixr?
 #' @param ... passed on
 #' @export
+#' @return List of parameters that can be used by nlmixr
 nlmixr_parse_parameters <- function(
   parameters = list(CL = 5, V = 50),
   omega = c(0.1, 0.05, 0.1),

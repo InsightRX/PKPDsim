@@ -11,6 +11,9 @@ advan(model, cpp = TRUE)
 
 \item{cpp}{use C++-versions of model (~50x faster than R implementations)}
 }
+\value{
+Model function
+}
 \description{
 ADVAN-style functions to calculate linear PK systems
 }

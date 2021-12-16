@@ -3,6 +3,7 @@
 #' @param model covariate model specified as list
 #'
 #' @export
+#' @return List containing model function(s)
 new_covariate_model <- function(model = list()) {
   new_model <- list()
   for (i in seq(names(model))) {

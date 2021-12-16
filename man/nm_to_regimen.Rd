@@ -2,7 +2,7 @@
 % Please edit documentation in R/nm_to_regimen.R
 \name{nm_to_regimen}
 \alias{nm_to_regimen}
-\title{Create a regimen from NM data}
+\title{Create a regimen from NONMEM data}
 \usage{
 nm_to_regimen(data, reset_time = TRUE, first_only = FALSE)
 }
@@ -12,6 +12,9 @@ nm_to_regimen(data, reset_time = TRUE, first_only = FALSE)
 \item{reset_time}{start time for each simulated patient at 0, irrespective of design in dataset}
 
 \item{first_only}{use only design from first individual in dataset}
+}
+\value{
+Regimen object
 }
 \description{
 Create a regimen based on a NONMEM, or NONMEM-like dataset

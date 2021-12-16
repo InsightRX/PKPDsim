@@ -24,6 +24,8 @@
 #' @param ... passed on to `sim_ode()`
 #'
 #' @export
+#' @return Standard deviation or variance (or quantiles thereof) for dependent
+#'   variable
 get_var_y <- function(
   model = NULL,
   parameters = list(),

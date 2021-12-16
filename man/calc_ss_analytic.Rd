@@ -42,6 +42,9 @@ calc_ss_analytic(
 
 \item{auc}{add (empty) AUC compartment at end of state vector?}
 }
+\value{
+State vector of a linear pharmacokinetic system at steady state
+}
 \description{
 Basically it performs a PK simulation using analytic equations instead
 of ODEs to steady state (n=45 days, increased if needed).

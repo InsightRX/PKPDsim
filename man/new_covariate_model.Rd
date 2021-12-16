@@ -9,6 +9,9 @@ new_covariate_model(model = list())
 \arguments{
 \item{model}{covariate model specified as list}
 }
+\value{
+List containing model function(s)
+}
 \description{
 covariate model function
 }

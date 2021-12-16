@@ -9,8 +9,12 @@ sim_ode_shiny(...)
 \arguments{
 \item{...}{arguments passed to PKPDsimShiny::sim_ode_shiny()}
 }
+\value{
+No return value
+}
 \description{
-Simulate ODE and create a Shiny app
+This function has been deprecated and moved to a separate package at
+https://github.com/ronkeizer/PKPDsimshiny.
 }
 \seealso{
 \link{sim_ode}

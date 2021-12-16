@@ -6,6 +6,7 @@
 #' @param force Run tests even if model is not flagged for building? Defaults to
 #'   FALSE
 #' @export
+#' @return Runs test file for a model but does not return a value
 test_model <- function(url, test_file, package, force = FALSE) {
   def <- read_model_json(url)
   if (isTRUE(def$build) || isTRUE(force)) {

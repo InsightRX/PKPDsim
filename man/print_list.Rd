@@ -13,6 +13,9 @@ print_list(x, wrapper = TRUE, quote = FALSE)
 
 \item{quote}{add quotes to values in list definition?}
 }
+\value{
+Original list in R syntax
+}
 \description{
 Return a list in R syntax
 }

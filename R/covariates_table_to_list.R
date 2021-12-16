@@ -1,9 +1,11 @@
 #' Convert covariate table specified as data.frame
+#'
 #' Can handle time-varying data too, if `t` or `time` is specified as column
 #'
 #' @param covariates_table `data.frame`` with covariates in columns. Potentially with `id` and `t` columns
 #' @param covariates_implementation `list` with implementation method per covariate
 #' @export
+#' @return List of covariates
 covariates_table_to_list <- function(covariates_table, covariates_implementation = list()) {
   covs_obj <- list()
   names(covariates_table)[names(covariates_table) == "ID"] <- "id" # NONMEM syntax

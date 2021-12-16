@@ -3,6 +3,7 @@
 #' @param state_init state init vector
 #' @param declare_variables declared variables
 #' @export
+#' @return Vector of parameter names
 get_parameters_from_code <- function (code, state_init, declare_variables = NULL) {
   ## find newly defined parameters in code
   if(!is.null(state_init)) {

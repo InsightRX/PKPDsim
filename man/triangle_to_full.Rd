@@ -9,6 +9,9 @@ triangle_to_full(vect)
 \arguments{
 \item{vect}{vector specifying triangle omega matrix}
 }
+\value{
+Omega matrix
+}
 \description{
 Convert triangle omega matrix to full omega matrix
 }

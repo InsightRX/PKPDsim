@@ -1,6 +1,7 @@
 #' Simulate ODE or analytical equation
 #'
 #' Simulates a specified regimen using ODE system or analytical equation
+#'
 #' @param ode function describing the ODE system
 #' @param analytical string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.
 #' @param parameters model parameters
@@ -41,6 +42,7 @@
 #' @return a data frame of compartments with associated concentrations at requested times
 #' @export
 #' @seealso \link{sim_ode_shiny}
+#' @return Simulated regimen
 #' @examples
 #' \dontrun{
 #' p <- list(

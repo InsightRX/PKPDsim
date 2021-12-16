@@ -121,6 +121,8 @@ sim(
 }
 \value{
 a data frame of compartments with associated concentrations at requested times
+
+Simulated regimen
 }
 \description{
 Simulates a specified regimen using ODE system or analytical equation

@@ -1,6 +1,6 @@
 #' More powerful multivariate normal sampling function
 #'
-#' Besides standard mutlivariate normal sampling (mvrnorm), allows exponential
+#' Besides standard multivariate normal sampling (mvrnorm), allows exponential
 #' multivarate normal and quasi-random multivariate normal (using the randtoolbox)
 #' all using the same interface.
 #'
@@ -11,6 +11,7 @@
 #' @param sequence any sequence available in the randtoolbox, e.g. `halton`, or `sobol`
 #' @param ... parameters passed to mvrnorm or randtoolbox sequence generator
 #' @export
+#' @return Multivariate normal samples
 mvrnorm2 <- function(n, mu, Sigma, exponential = FALSE, sequence = NULL, ...) {
   if(!is.null(sequence)) {
     func <- getExportedValue('randtoolbox', sequence)

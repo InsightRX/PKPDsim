@@ -10,6 +10,8 @@
 #' @param install_all force install all, even if model inactive
 #' @param ... arguments passed to `new_ode_model()` function
 #' @export
+#' @return Model object created with [PKPDsim::new_ode_model()]
+#' @md
 model_from_api <- function(url,
                            model = NULL,
                            nonmem = NULL,

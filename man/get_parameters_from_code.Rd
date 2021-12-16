@@ -13,6 +13,9 @@ get_parameters_from_code(code, state_init, declare_variables = NULL)
 
 \item{declare_variables}{declared variables}
 }
+\value{
+Vector of parameter names
+}
 \description{
 Get model parameters from code
 }

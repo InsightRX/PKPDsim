@@ -127,6 +127,10 @@ new_ode_model(
 output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
 TRUE captures the output and saves as a file.}
 }
+\value{
+If package name is NULL, returns the model object. Otherwise has no
+  return value.
+}
 \description{
 Create new ODE model
 }

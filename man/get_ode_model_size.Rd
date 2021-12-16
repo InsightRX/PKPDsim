@@ -10,6 +10,9 @@ get_ode_model_size(code)
 \arguments{
 \item{code}{C++ code}
 }
+\value{
+Number of states in the ODE model
+}
 \description{
 Get the number of states in the ODE from the code
 code C++ code for model

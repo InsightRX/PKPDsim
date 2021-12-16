@@ -9,6 +9,9 @@ advan_process_infusion_doses(data)
 \arguments{
 \item{data}{ADVAN-style dataset, e.g. created using `advan_create_data`.}
 }
+\value{
+Data frame containing additional RATEALL column.
+}
 \description{
 Function adapted from code from Abuhelwa, Foster, Upton JPET 2015.
 cleaned up and somewhat optimized. Can potentially be optimized more.

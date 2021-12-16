@@ -2,6 +2,8 @@
 #'
 #' @param x matrix, specified either as `vector` of lower triangle, or full matrix (as `matrix` class)
 #' @export
+#' @return TRUE if `x` is positive definite; FALSE otherwise.
+#' @md
 is_positive_definite <- function(x) {
   if(! "matrix" %in% class(x)) x <- triangle_to_full(x)
   eig <- eigen(x, only.values = TRUE)

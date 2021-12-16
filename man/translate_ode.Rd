@@ -17,6 +17,9 @@ translate_ode(code, auto = TRUE, from = NULL, to = NULL, verbose = TRUE)
 
 \item{verbose}{verbose, `TRUE` or `FALSE`}
 }
+\value{
+Translated PKPDsim or RxODE model
+}
 \description{
 Currently only supports PKDPsim <--> RxODE
 }

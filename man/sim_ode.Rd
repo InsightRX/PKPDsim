@@ -2,13 +2,19 @@
 % Please edit documentation in R/sim_ode.R
 \name{sim_ode}
 \alias{sim_ode}
-\title{Deprecated function, renamed to `sim()`}
+\title{Deprecated function, renamed to \code{sim()}}
 \usage{
 sim_ode(...)
 }
 \arguments{
-\item{...}{parameters passed to `sim()` function}
+\item{...}{parameters passed to \code{sim()} function}
+}
+\value{
+Output from \code{\link[=sim]{sim()}}
 }
 \description{
-Deprecated function, renamed to `sim()`
+Deprecated function, renamed to \code{sim()}
+}
+\seealso{
+sim
 }

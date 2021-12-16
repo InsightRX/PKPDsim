@@ -2,8 +2,7 @@
 % Please edit documentation in R/pop_regimen.R
 \name{pop_regimen}
 \alias{pop_regimen}
-\title{Remove n doses (from tail) of PKPDsim regimen
-Opposite of shift_regimen()}
+\title{Remove n doses (from tail) of PKPDsim regimen}
 \usage{
 pop_regimen(regimen, n = 1)
 }
@@ -12,7 +11,12 @@ pop_regimen(regimen, n = 1)
 
 \item{n}{number of doses to pop from regimen}
 }
+\value{
+Input regiment minus selected number of doses
+}
 \description{
-Remove n doses (from tail) of PKPDsim regimen
 Opposite of shift_regimen()
+}
+\seealso{
+shift_regimen
 }

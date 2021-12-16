@@ -7,6 +7,7 @@
 #' @param t_dose_update dose time from which to update regimen
 #' @param continuous for joining continuous infusions
 #' @export
+#' @return Joined regimen
 join_regimen <- function(
   regimen1 = NULL,
   regimen2 = NULL,

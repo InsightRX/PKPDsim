@@ -6,6 +6,7 @@
 #' @param regimens List of PKPDsim regimens created with `new_regimen`.
 #'
 #' @export
+#' @return Merged regimens
 merge_regimen <- function(regimens) {
   cols <- c("interval", "n", "type", "t_inf", "dose_times", "dose_amts", "first_dose_time")
   reg <- data.frame(regimens[[1]], stringsAsFactors = FALSE)[, cols]

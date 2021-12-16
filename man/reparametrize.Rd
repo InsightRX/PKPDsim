@@ -13,6 +13,9 @@ reparametrize(model, parameters, covariates)
 
 \item{covariates}{covariates list, specified as PKPDsim covariates}
 }
+\value{
+Reparameterized model parameters
+}
 \description{
 Mostly useful for reparametrizing models into standard parametrizations, e.g. to
 NONMEM TRANS or clinPK parametrizations.

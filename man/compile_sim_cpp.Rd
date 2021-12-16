@@ -59,6 +59,9 @@ compile_sim_cpp(
 
 \item{as_is}{use C-code as-is, don't substitute line-endings or shift indices}
 }
+\value{
+List containing ODE definition in C++ code and simulation function
+}
 \description{
 Compile ODE model to c++ function
 }

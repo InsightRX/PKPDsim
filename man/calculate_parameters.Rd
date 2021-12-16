@@ -26,6 +26,9 @@ calculate_parameters(
 
 \item{...}{arguments to pass on to simulation function}
 }
+\value{
+List of model-specific variables
+}
 \description{
 This is a convenience function for PKPDsim users, it is not used inside the `sim_ode()``
 function in any way.
