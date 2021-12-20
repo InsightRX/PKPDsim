@@ -10,6 +10,7 @@ test_that("Can specify a package from json", {
 })
 
 test_that("Can install a package from json", {
+  skip_on_cran()
   # This test specifies tmp directories explicitly during install.
   # Environment settings for tmp directories change from system to system
   # and so this approach ensures consistency.
