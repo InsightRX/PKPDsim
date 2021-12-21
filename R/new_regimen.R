@@ -36,7 +36,7 @@ new_regimen <- function(
     checks = TRUE,
     ss = FALSE,
     n_ss = NULL,
-    first_dose_time = lubridate::now(tzone = "UTC")) {
+    first_dose_time = now_utc()) {
 
   reg <- structure(list(amt = amt,
                         interval = interval,

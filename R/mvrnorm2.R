@@ -13,7 +13,12 @@
 #' @export
 mvrnorm2 <- function(n, mu, Sigma, exponential = FALSE, sequence = NULL, ...) {
   if(!is.null(sequence)) {
-    func <- getExportedValue('randtoolbox', sequence)
+    func <- switch(
+      sequence,
+      halton = randtoolbox::halton,
+      sobol = randtoolbox::sobol,
+      torus = randtoolbox::torus
+    )
   }
   if(is.null(dim(Sigma))) { # specified as lower triangle?
     if(class(Sigma) == "numeric") {
