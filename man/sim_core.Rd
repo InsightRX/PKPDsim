@@ -17,7 +17,7 @@ sim_core(sim_object = NULL, ode, duplicate_t_obs = FALSE, t_init = 0)
 \item{t_init}{time of initization of the ODE system. Usually 0.}
 }
 \value{
-Data frame of observations
+Data frame with simulation results
 }
 \description{
 Only core function of the simulation function, always just returns observations.

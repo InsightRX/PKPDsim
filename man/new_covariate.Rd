@@ -33,7 +33,7 @@ new_covariate(
 \item{verbose}{verbosity}
 }
 \value{
-Object of class `"covariate"
+Object of class \code{"covariate"}
 }
 \description{
 Describe data for a covariate, either fixed or time-variant

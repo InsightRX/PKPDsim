@@ -73,7 +73,7 @@ get_var_y(
 \item{...}{passed on to `sim_ode()`}
 }
 \value{
-Standard deviation or variance (or quantiles thereof) for dependent
+Vector of standard deviations or variances (or quantiles thereof) for dependent value
   variable
 }
 \description{

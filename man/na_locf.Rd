@@ -13,7 +13,7 @@ na_locf(object, fromLast = FALSE)
 than forward. Default is FALSE.}
 }
 \value{
-Original object iwth NAs filled in
+Original object with NAs filled in
 }
 \description{
 Inspired by zoo::na.locf0
