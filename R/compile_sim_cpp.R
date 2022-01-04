@@ -1,4 +1,5 @@
 #' Compile ODE model to c++ function
+#'
 #' @param code C++ code ODE system
 #' @param dose_code C++ code per dose event
 #' @param pk_code C++ code per any event (similar to $PK)
@@ -17,6 +18,7 @@
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @export
+#' @return List containing ODE definition in C++ code and simulation function
 compile_sim_cpp <- function(
   code,
   dose_code,

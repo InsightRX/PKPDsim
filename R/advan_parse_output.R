@@ -7,6 +7,7 @@
 #' @param regimen PKPDsim regimen
 #'
 #' @export
+#' @return Data frame containing parsed simulation data
 advan_parse_output <- function(
   data,
   cmts = 1,

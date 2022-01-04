@@ -9,6 +9,9 @@ model_library(name = NULL)
 \arguments{
 \item{name}{name of model in library. If none specified, will show list of available models.}
 }
+\value{
+List containing information about the named model
+}
 \description{
 Model library
 }

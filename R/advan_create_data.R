@@ -8,6 +8,7 @@
 #' @param covariate_model covariate model equations, written in C
 #'
 #' @export
+#' @return Data frame of ADVAN-style data
 advan_create_data <- function(
   regimen,
   parameters,

@@ -1,10 +1,11 @@
-#' Create a regimen from NM data
+#' Create a regimen from NONMEM data
 #'
 #' Create a regimen based on a NONMEM, or NONMEM-like dataset
 #' @param data NONMEM-type dataset
 #' @param reset_time start time for each simulated patient at 0, irrespective of design in dataset
 #' @param first_only use only design from first individual in dataset
 #' @export
+#' @return Regimen object
 nm_to_regimen <- function(data,
                           reset_time = TRUE,
                           first_only = FALSE) {

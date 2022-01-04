@@ -9,6 +9,9 @@ table_to_list(table)
 \arguments{
 \item{table}{data.frame}
 }
+\value{
+List containing original table contents
+}
 \description{
 Convert a table to a list
 }

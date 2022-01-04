@@ -9,6 +9,9 @@ covariate_last_obs_only(covariates)
 \arguments{
 \item{covariates}{covariates object}
 }
+\value{
+List containing same elements as input covariate object but including only the last value for each covariate
+}
 \description{
 Use only last observed covariate values
 }

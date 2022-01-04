@@ -72,6 +72,10 @@ get_var_y(
 
 \item{...}{passed on to `sim_ode()`}
 }
+\value{
+Vector of standard deviations or variances (or quantiles thereof) for dependent value
+  variable
+}
 \description{
 Get expected variance/sd/ci of dependent variable
 based on PKPDsim model, parameters, and regimen

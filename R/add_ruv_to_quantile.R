@@ -8,6 +8,7 @@
 #' @param ... passed arguments
 #' 
 #' @export
+#' @return Numeric vector of y values with residual variability
 add_ruv_to_quantile <- function(
   y,
   sd_y,

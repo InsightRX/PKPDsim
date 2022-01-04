@@ -8,6 +8,7 @@
 #' @param covariates covariates list, specified as PKPDsim covariates
 #'
 #' @export
+#' @return Reparameterized model parameters
 reparametrize <- function(model, parameters, covariates) {
   reparametrization <- attr(model, "reparametrization")
   if(is.null(reparametrization)) {

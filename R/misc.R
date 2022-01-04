@@ -3,6 +3,7 @@
 #' @param ... parameters to pass to cov
 #'
 #' @export
+#' @return Covariate function
 f_cov <- function (...) {
   substitute( with(cov, { ... } ) )
 }
@@ -39,6 +40,7 @@ cleanup_code <- function(code) {
 #' @param find find what string, vector of character
 #' @param replacement replace with what, vector of character, should be equal in lenght to `find`
 #' @export
+#' @return Function does not return a value but edits files on disk
 search_replace_in_file <- function(files = c(), find = NULL, replacement = NULL) {
   for(file in files) {
     x <- readLines(file)
@@ -58,6 +60,7 @@ search_replace_in_file <- function(files = c(), find = NULL, replacement = NULL)
 #' @param x vector of string / numeric
 #' @param quote what type of quotes (`double` or `single`)
 #' @export
+#' @return Character vector of input with quotation marks around each value
 add_quotes <- function(x, quote = "double") {
   q <- '"'
   if(quote == "single") {
@@ -75,6 +78,7 @@ add_quotes <- function(x, quote = "double") {
 #' @param wrapper wrap in list object?
 #' @param quote add quotes to values in list definition?
 #' @export
+#' @return Original list in R syntax
 print_list <- function(x, wrapper = TRUE, quote = FALSE) {
   if(is.null(x)) return("")
   if(!quote) {

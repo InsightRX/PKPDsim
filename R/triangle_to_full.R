@@ -2,6 +2,7 @@
 #'
 #' @param vect vector specifying triangle omega matrix
 #' @export
+#' @return Omega matrix
 triangle_to_full <- function (vect) {
   lower_triangle_mat_size <- function (mat) {
     x <- length(mat)

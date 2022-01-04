@@ -11,6 +11,9 @@ join_cov_and_par(covs, pars)
 
 \item{pars}{model parameters, such as the output of the `parameters()` call frmo a model library.}
 }
+\value{
+List containing covariates and parameters
+}
 \description{
 Combines covariates and parameters into a single list, useful for reparametrization of the model.
 }

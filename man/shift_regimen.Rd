@@ -2,8 +2,7 @@
 % Please edit documentation in R/shift_regimen.R
 \name{shift_regimen}
 \alias{shift_regimen}
-\title{Remove n doses (from start) of PKPDsim regimen
-Opposite of pop_regimen()}
+\title{Remove n doses (from start) of PKPDsim regimen}
 \usage{
 shift_regimen(regimen, n = 1, reset_time = TRUE)
 }
@@ -14,7 +13,12 @@ shift_regimen(regimen, n = 1, reset_time = TRUE)
 
 \item{reset_time}{reset the remaining doses to start at t=0?}
 }
+\value{
+Regimen with selected number of doses removed from start
+}
 \description{
-Remove n doses (from start) of PKPDsim regimen
 Opposite of pop_regimen()
+}
+\seealso{
+pop_regimen
 }

@@ -13,6 +13,9 @@ add_ruv(x, ruv = list(), obs_type = 1)
 
 \item{obs_type}{vector of observation types}
 }
+\value{
+Input vector with residual variability added
+}
 \description{
 Add residual variability to the dependent variable
 }

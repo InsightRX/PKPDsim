@@ -13,6 +13,9 @@ search_replace_in_file(files = c(), find = NULL, replacement = NULL)
 
 \item{replacement}{replace with what, vector of character, should be equal in lenght to `find`}
 }
+\value{
+Function does not return a value but edits files on disk
+}
 \description{
 Find string and replace in file
 }

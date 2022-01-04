@@ -4,6 +4,9 @@
 #'
 #' @param code character string with ODE code
 #' @export
+#' @return List with elements `from` and `to` indicating the syntax for the ODE
+#'   code
+#' @md
 detect_ode_syntax <- function(code) {
   ## currently very simple, supports only PKPDsim / RxODE
   from <- "PKPDsim"

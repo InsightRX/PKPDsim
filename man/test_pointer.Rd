@@ -9,6 +9,9 @@ test_pointer(model)
 \arguments{
 \item{model}{pointer to model}
 }
+\value{
+No return value
+}
 \description{
 Test if model still in memory
 }

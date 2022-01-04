@@ -7,6 +7,7 @@
 #' @param obs_cmt observation compartment for added observation time(s)
 #'
 #' @export
+#' @return Data frame containing doses
 regimen_to_nm <- function(
   reg = NULL,
   dose_cmt = 1,

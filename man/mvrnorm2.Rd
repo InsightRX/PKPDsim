@@ -19,8 +19,11 @@ mvrnorm2(n, mu, Sigma, exponential = FALSE, sequence = NULL, ...)
 
 \item{...}{parameters passed to mvrnorm or randtoolbox sequence generator}
 }
+\value{
+Multivariate normal samples
+}
 \description{
-Besides standard mutlivariate normal sampling (mvrnorm), allows exponential
+Besides standard multivariate normal sampling (mvrnorm), allows exponential
 multivarate normal and quasi-random multivariate normal (using the randtoolbox)
 all using the same interface.
 }

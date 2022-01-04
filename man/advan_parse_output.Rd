@@ -17,6 +17,9 @@ advan_parse_output(data, cmts = 1, t_obs, extra_t_obs = TRUE, regimen)
 
 \item{regimen}{PKPDsim regimen}
 }
+\value{
+Data frame containing parsed simulation data
+}
 \description{
 Internal function to parse the raw output from ADVAN-style functions
 }

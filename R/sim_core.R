@@ -6,6 +6,7 @@
 #' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
 #' @param t_init time of initization of the ODE system. Usually 0.
 #' @export
+#' @return Data frame with simulation results
 sim_core <- function(
   sim_object = NULL,
   ode,

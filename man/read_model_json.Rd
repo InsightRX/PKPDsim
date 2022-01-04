@@ -9,6 +9,9 @@ read_model_json(path)
 \arguments{
 \item{path}{Path to JSON file}
 }
+\value{
+List containing contents of original JSON file
+}
 \description{
 Does some substitution of escaped characters in strings in the JSON file,
 then converts to a list with \code{\link[jsonlite:fromJSON]{jsonlite::fromJSON()}}

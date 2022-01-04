@@ -19,6 +19,9 @@ add_ruv_to_quantile(y, sd_y, log_scale = FALSE, q = NULL, ruv = list(), ...)
 
 \item{...}{passed arguments}
 }
+\value{
+Numeric vector of y values with residual variability
+}
 \description{
 Calculate the increase in a specific quantile for a distribution on y when residual variability is added
 }

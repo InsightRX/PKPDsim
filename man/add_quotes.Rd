@@ -11,6 +11,9 @@ add_quotes(x, quote = "double")
 
 \item{quote}{what type of quotes (`double` or `single`)}
 }
+\value{
+Character vector of input with quotation marks around each value
+}
 \description{
 Put vector values in quotes
 }

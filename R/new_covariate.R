@@ -10,6 +10,8 @@
 #' @param comments `NULL`, or vector of length equal to `value` specifying comments to each observation
 #' @param verbose verbosity
 #' @export
+#' @return Object of class `"covariate"`
+#' @md
 new_covariate <- function(
   value = NULL,
   times = NULL,

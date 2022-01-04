@@ -13,6 +13,7 @@
 #' @param include_variables boolean, include variables?
 #' @param ... arguments to pass on to simulation function
 #' @export
+#' @return List of model-specific variables
 calculate_parameters <- function(
   ode = NULL,
   parameters = NULL,

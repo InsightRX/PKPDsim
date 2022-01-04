@@ -703,6 +703,7 @@ ThreeCompOralMetab <- function(d) {
 #' @param model Standard linear PK model, e.g. `pk_1cmt_iv_bolus`.
 #' @param cpp use C++-versions of model (~50x faster than R implementations)
 #' @export
+#' @return Model function
 advan <- function(model, cpp = TRUE) {
   cmt <- list(
     "1cmt_iv_bolus" = 1,

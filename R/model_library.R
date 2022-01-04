@@ -1,6 +1,7 @@
 #' Model library
 #' @param name name of model in library. If none specified, will show list of available models.
 #' @export
+#' @return List containing information about the named model
 model_library <- function(name = NULL) {
   lib <- list(
     "pk_1cmt_iv" = list(

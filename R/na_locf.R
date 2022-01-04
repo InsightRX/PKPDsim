@@ -3,9 +3,11 @@
 #' Inspired by zoo::na.locf0
 #'
 #' @param object an object
-#' @param fromLast logical. Causes observations to be carried backward rather than forward. Default is FALSE. With a value of TRUE this corresponds to NOCB (next observation carried backward). It is not supported if x or xout is specified.
+#' @param fromLast logical. Causes observations to be carried backward rather
+#'   than forward. Default is FALSE.
 #'
 #' @export
+#' @return Original object with NAs filled in
 na_locf <- function(object, fromLast = FALSE) {
   if (fromLast) object <- rev(object)
   for (i in seq_along(object)) {

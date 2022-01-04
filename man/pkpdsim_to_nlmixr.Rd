@@ -38,6 +38,9 @@ pkpdsim_to_nlmixr(
 
 \item{...}{passed on}
 }
+\value{
+nlmixr function
+}
 \description{
 Convert a model generated with PKPDsim to an object for nlmixr
 }

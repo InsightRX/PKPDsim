@@ -26,6 +26,9 @@ nlmixr_parse_parameters(
 
 \item{...}{passed on}
 }
+\value{
+List of parameters that can be used by nlmixr
+}
 \description{
 Function to parse parameters for a model into a structure used by nlmixr
 }

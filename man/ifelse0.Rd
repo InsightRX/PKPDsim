@@ -13,6 +13,9 @@ ifelse0(value = NULL, alternative = NULL, allow_null = FALSE)
 
 \item{allow_null}{can the alternative be NULL?}
 }
+\value{
+\code{value} if non-NULL; \code{alternative} otherwise
+}
 \description{
 ifelse function but then based on whether value is NULL or not
 }

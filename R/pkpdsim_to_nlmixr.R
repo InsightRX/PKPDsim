@@ -11,6 +11,7 @@
 #' @param verbose verbose, `TRUE` or `FALSE`
 #' @param ... passed on
 #' @export
+#' @return nlmixr function
 pkpdsim_to_nlmixr <- function(
   model = NULL,
   parameters = NULL,

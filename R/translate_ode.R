@@ -8,6 +8,7 @@
 #' @param to to syntax
 #' @param verbose verbose, `TRUE` or `FALSE`
 #' @export
+#' @return Translated PKPDsim or RxODE model
 translate_ode <- function(
   code,
   auto = TRUE,

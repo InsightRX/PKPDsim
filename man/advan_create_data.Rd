@@ -26,6 +26,9 @@ advan_create_data(
 
 \item{covariate_model}{covariate model equations, written in C}
 }
+\value{
+Data frame of ADVAN-style data
+}
 \description{
 Create ADVAN-style dataset
 }

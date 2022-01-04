@@ -33,7 +33,10 @@ model_from_api(
 
 \item{install_all}{force install all, even if model inactive}
 
-\item{...}{arguments passed to `new_ode_model()` function}
+\item{...}{arguments passed to \code{new_ode_model()} function}
+}
+\value{
+Model object created with \code{\link[=new_ode_model]{new_ode_model()}}
 }
 \description{
 Load model definition from API, and compile to R library

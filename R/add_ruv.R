@@ -5,6 +5,7 @@
 #' @param obs_type vector of observation types
 #'
 #' @export
+#' @return Input vector with residual variability added
 add_ruv <- function(x, ruv = list(), obs_type = 1) {
   if(!is.null(ruv$prop)) {
     x <- x * (1 + stats::rnorm(length(x), 0, ruv$prop[obs_type]))

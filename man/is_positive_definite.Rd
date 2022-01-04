@@ -7,7 +7,10 @@
 is_positive_definite(x)
 }
 \arguments{
-\item{x}{matrix, specified either as `vector` of lower triangle, or full matrix (as `matrix` class)}
+\item{x}{matrix, specified either as \code{vector} of lower triangle, or full matrix (as \code{matrix} class)}
+}
+\value{
+TRUE if \code{x} is positive definite; FALSE otherwise.
 }
 \description{
 Is matrix positive definite

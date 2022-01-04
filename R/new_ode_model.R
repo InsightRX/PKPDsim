@@ -42,6 +42,8 @@
 #' output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
 #' TRUE captures the output and saves as a file.
 #' @export
+#' @return If package name is NULL, returns the model object. Otherwise has no
+#'   return value.
 new_ode_model <- function (model = NULL,
                            code = NULL,
                            pk_code = NULL,

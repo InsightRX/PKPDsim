@@ -1,10 +1,13 @@
 #' Remove n doses (from tail) of PKPDsim regimen
+#'
 #' Opposite of shift_regimen()
 #'
 #' @param regimen PKPDsim regimen created using `new_regimen()`
 #' @param n number of doses to pop from regimen
 #'
+#' @seealso shift_regimen
 #' @export
+#' @return Input regiment minus selected number of doses
 pop_regimen <- function(
     regimen,
     n = 1) {

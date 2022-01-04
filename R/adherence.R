@@ -13,6 +13,7 @@
 #' @return Returns a vector of length `n`
 #'   containing values 0 (non-adherent) or 1 (adherent).
 #' @export
+#' @return Numeric vector of length n
 new_adherence <- function(n = 100,
                           type = c("markov", "binomial"),
                           p_markov_remain_ad = 0.75,
@@ -38,6 +39,7 @@ new_adherence <- function(n = 100,
 #' @return Returns a vector of length `n`
 #'   containing values 0 (non-adherent) or 1 (adherent).
 #' @export
+#' @return Numeric vector of length n
 adherence_markov <- function(n = 100, p11 = 0.9, p01 = 0.7) {
   adh <- 1
   dos <- 1 # all patients adherent for first dose
@@ -64,6 +66,7 @@ adherence_markov <- function(n = 100, p11 = 0.9, p01 = 0.7) {
 #' @return Returns a vector of length `n`
 #'   containing values 0 (non-adherent) or 1 (adherent).
 #' @export
+#' @return Numeric vector of length n
 adherence_binomial <- function(n = 100, prob) {
   stats::rbinom(n, 1, prob)
 }

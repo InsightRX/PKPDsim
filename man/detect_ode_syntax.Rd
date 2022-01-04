@@ -9,6 +9,10 @@ detect_ode_syntax(code)
 \arguments{
 \item{code}{character string with ODE code}
 }
+\value{
+List with elements \code{from} and \code{to} indicating the syntax for the ODE
+code
+}
 \description{
 Either PKPDsim or RxODE
 }

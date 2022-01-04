@@ -9,7 +9,11 @@ na_locf(object, fromLast = FALSE)
 \arguments{
 \item{object}{an object}
 
-\item{fromLast}{logical. Causes observations to be carried backward rather than forward. Default is FALSE. With a value of TRUE this corresponds to NOCB (next observation carried backward). It is not supported if x or xout is specified.}
+\item{fromLast}{logical. Causes observations to be carried backward rather
+than forward. Default is FALSE.}
+}
+\value{
+Original object with NAs filled in
 }
 \description{
 Inspired by zoo::na.locf0

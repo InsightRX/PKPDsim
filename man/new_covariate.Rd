@@ -24,13 +24,16 @@ new_covariate(
 
 \item{unit}{specify covariate unit (optional, for documentation purposes only)}
 
-\item{interpolation_join_limit}{for `interpolate` option, if covariate timepoints are spaced too close together, the ODE solver sometimes chokes. This argument sets a lower limit on the space between timepoints. It will create average values on joint timepoints instead. If undesired set to NULL or 0.}
+\item{interpolation_join_limit}{for \code{interpolate} option, if covariate timepoints are spaced too close together, the ODE solver sometimes chokes. This argument sets a lower limit on the space between timepoints. It will create average values on joint timepoints instead. If undesired set to NULL or 0.}
 
-\item{remove_negative_times}{`TRUE`` or `FALSE`}
+\item{remove_negative_times}{\verb{TRUE`` or }FALSE`}
 
-\item{comments}{`NULL`, or vector of length equal to `value` specifying comments to each observation}
+\item{comments}{\code{NULL}, or vector of length equal to \code{value} specifying comments to each observation}
 
 \item{verbose}{verbosity}
+}
+\value{
+Object of class \code{"covariate"}
 }
 \description{
 Describe data for a covariate, either fixed or time-variant

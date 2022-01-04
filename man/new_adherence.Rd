@@ -27,6 +27,8 @@ to adherent state}
 \value{
 Returns a vector of length `n`
   containing values 0 (non-adherent) or 1 (adherent).
+
+Numeric vector of length n
 }
 \description{
 Model the drug adherence using either a binomial probability distribution or

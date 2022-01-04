@@ -2,8 +2,7 @@
 % Please edit documentation in R/covariates_table_to_list.R
 \name{covariates_table_to_list}
 \alias{covariates_table_to_list}
-\title{Convert covariate table specified as data.frame
-Can handle time-varying data too, if `t` or `time` is specified as column}
+\title{Convert covariate table specified as data.frame}
 \usage{
 covariates_table_to_list(covariates_table, covariates_implementation = list())
 }
@@ -12,7 +11,9 @@ covariates_table_to_list(covariates_table, covariates_implementation = list())
 
 \item{covariates_implementation}{`list` with implementation method per covariate}
 }
+\value{
+List of covariates
+}
 \description{
-Convert covariate table specified as data.frame
 Can handle time-varying data too, if `t` or `time` is specified as column
 }
