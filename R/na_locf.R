@@ -7,7 +7,7 @@
 #'   than forward. Default is FALSE.
 #'
 #' @export
-#' @return Original object iwth NAs filled in
+#' @return Original object with NAs filled in
 na_locf <- function(object, fromLast = FALSE) {
   if (fromLast) object <- rev(object)
   for (i in seq_along(object)) {
