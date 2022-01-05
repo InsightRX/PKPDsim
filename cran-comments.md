@@ -1,14 +1,15 @@
 ## Test environments
 
-* Ubuntu 16.04 (local), R 3.4.0
-* Ubuntu 12.04.5 LTS (travis-ci), R 3.4.0
-* Windows (CRAN win-builder), R 3.4.0
-
+* MacOS MBP-M1 (local, R 4.1.2)
+* Debian Linux, R-devel, GCC ASAN/UBSAN (R-hub)
+* Ubuntu Linux 20.04.1 LTS, R-release, GCC (R-hub)
+* Fedora Linux, R-devel, clang, gfortran (R-hub)
+* Windows Server 2022, R-devel, 64 bit (R-hub)
 
 ## R CMD check results
 
 R CMD check results
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 2 notes
 
 R CMD check succeeded
 
@@ -21,3 +22,31 @@ None
 ## Misc
 
 First submission to CRAN
+
+
+## Notes
+
+2 NOTEs are expected during CRAN-submission.
+
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: 'Ron Keizer <ron@insight-rx.com>'
+
+New submission
+
+Possibly misspelled words in DESCRIPTION:
+  Pharmacodynamic (4:25)
+  Pharmacokinetic (4:9)
+  analytical (19:67)
+  pharmacodynamic (18:57)
+  pharmacokinetic (18:41)
+
+Maintainer response: These are all correctly spelled words, see:
+https://www.merriam-webster.com/dictionary/pharmacodynamic
+https://www.merriam-webster.com/dictionary/pharmacokinetic
+https://www.merriam-webster.com/dictionary/analytical
+
+* checking dependencies in R code ... NOTE
+Namespace in Imports field not imported from: 'BH'
+  All declared Imports should be used.
+
+Maintainer response: The BH package provides Boost C++ library headers. The BH library is not used in any of the code in /R or /src, but only in the C++ templates that comes with the package (in /inst/cpp). The C++ templates are used when creating a model using the new_ode_model() function, which is then compiled on-the-fly. If the BH package is removed from the Depends field, it won't be installed and hence models cannot be compiled.
