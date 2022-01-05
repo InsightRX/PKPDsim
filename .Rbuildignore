@@ -4,3 +4,5 @@ slack_notification.sh
 git-hooks
 Jenkinsfile
 \.travis\.yml$
+^CRAN-RELEASE$
+cran-comments.md
