@@ -439,7 +439,7 @@ new_ode_model <- function (model = NULL,
         args <- c("CMD", "build", normalizePath(file.path(folder, package)))
         system2(cmd, args, stdout = quiet, stderr = quiet)
         pkg_file <- paste0(new_folder, .Platform$file.sep, package, "_", version, ".tar.gz")
-        pkg_newfile <- paste0(curr, .Platform$file.sep, package, "_", version, ".tar.gz")
+        pkg_newfile <- paste0(getwd(), .Platform$file.sep, package, "_", version, ".tar.gz")
         if(file.exists(pkg_file)) {
           file.copy(pkg_file, pkg_newfile)
           message(paste0("Package built in: ", pkg_newfile))
