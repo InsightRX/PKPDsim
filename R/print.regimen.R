@@ -2,6 +2,7 @@
 #'
 #' @param x regimen
 #' @param ... arguments to pass
+#' @return No return value, print function.
 #' @export
 print.regimen <- function(x, ...) {
   if(!is.null(x) && !is.null(x$dose_times) && length(x$dose_times) > 0) {

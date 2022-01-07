@@ -11,6 +11,9 @@
 
 \item{...}{additional arguments}
 }
+\value{
+No return value, print function.
+}
 \description{
 Print function for PKPDsim covariate object
 }

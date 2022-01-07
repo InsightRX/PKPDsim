@@ -2,6 +2,7 @@
 #'
 #' @param x covariate object
 #' @param ... additional arguments
+#' @return No return value, print function.
 #' @export
 print.covariate <- function(x, ...) {
   if(! "covariate" %in% class(x)) {

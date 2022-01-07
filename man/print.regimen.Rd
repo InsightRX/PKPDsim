@@ -11,6 +11,9 @@
 
 \item{...}{arguments to pass}
 }
+\value{
+No return value, print function.
+}
 \description{
 Print function for PKPDsim regimen
 }

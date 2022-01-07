@@ -2,6 +2,7 @@
 #'
 #' @param x function
 #' @param ... additional arguments
+#' @return No return value, print function.
 #' @export
 print.PKPDsim <- function(x, ...) {
   cat(paste0("ODE definition: \n", attr(x, "code")), "\n")
