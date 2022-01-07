@@ -403,16 +403,13 @@ new_ode_model <- function (model = NULL,
       }
 
       ## Compile / build / install
-      curr <- getwd()
-      on.exit(setwd(curr))
-      setwd(new_folder)
       if(file.exists(file.path(new_folder, "R", "RcppExports.R"))) {
         file.remove(paste0(new_folder, "R", "RcppExports.R"))
       }
       if(file.exists(file.path(new_folder, "src", "RcppExports.cpp"))) {
         file.remove(file.path(new_folder, "src", "RcppExports.cpp"))
       }
-      Rcpp::compileAttributes(".", )
+      Rcpp::compileAttributes(new_folder)
 
       cmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
       if (install) { # install into R
@@ -451,6 +448,8 @@ new_ode_model <- function (model = NULL,
         }
       }
     }
+    return()
   }
+
 
 }
