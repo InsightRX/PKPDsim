@@ -16,8 +16,8 @@ Suggests: httr, testthat (>= 3.0.0), mockery
 LinkingTo: BH, Rcpp (>= 0.12.9)
 Description: Simulate dose regimens for pharmacokinetic-pharmacodynamic (PK-PD)
         models described by differential equation (DE) systems. Simulation using 
-        ADVAN-style analytical equations is also supported (Abuhelwa et al (2015) 
-        <10.1016/j.vascn.2015.03.004>).
+        ADVAN-style analytical equations is also supported (Abuhelwa et al. (2015) 
+        <doi:10.1016/j.vascn.2015.03.004>).
 License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 7.1.2
