@@ -404,6 +404,7 @@ new_ode_model <- function (model = NULL,
 
       ## Compile / build / install
       curr <- getwd()
+      on.exit(setwd(curr))
       setwd(new_folder)
       if(file.exists(file.path(new_folder, "R", "RcppExports.R"))) {
         file.remove(paste0(new_folder, "R", "RcppExports.R"))
@@ -449,7 +450,6 @@ new_ode_model <- function (model = NULL,
           message("Package not created.")
         }
       }
-      setwd(curr)
     }
   }
 
