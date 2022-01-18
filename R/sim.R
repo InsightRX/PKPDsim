@@ -44,6 +44,7 @@
 #' @seealso \link{sim_ode_shiny}
 #' @return Simulated regimen
 #' @examples
+#' \donttest{
 #' p <- list(
 #'   CL = 38.48,
 #'   V  = 7.4,
@@ -70,6 +71,7 @@
 #'   n_ind = 20,
 #'   regimen = r1
 #' )
+#' }
 sim <- function (ode = NULL,
                  analytical = NULL,
                  parameters = NULL,

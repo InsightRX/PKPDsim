@@ -128,6 +128,7 @@ Simulated regimen
 Simulates a specified regimen using ODE system or analytical equation
 }
 \examples{
+\donttest{
 p <- list(
   CL = 38.48,
   V  = 7.4,
@@ -154,6 +155,7 @@ dat <- sim(
   n_ind = 20,
   regimen = r1
 )
+}
 }
 \seealso{
 \link{sim_ode_shiny}
