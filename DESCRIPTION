@@ -1,8 +1,8 @@
 Package: PKPDsim
 Type: Package
-Title: Simulate Ordinary Differential Equations for Pharmacokinetic-Pharmacodynamic Models
-Version: 1.0.124
-Date: 2021-12-06
+Title: Tools for Performing Pharmacokinetic-Pharmacodynamic Simulations
+Version: 1.1.0
+Date: 2022-01-04
 Authors@R: c(
         person("Ron", "Keizer", email = "ron@insight-rx.com", role = c("aut", "cre")),
         person("Jasmine", "Hughes", email = "jasmine@insight-rx.com", role = "aut"),
@@ -15,8 +15,9 @@ Imports: Rcpp (>= 0.12.9), BH, data.table, stringr, MASS,
 Suggests: httr, testthat (>= 3.0.0), mockery
 LinkingTo: BH, Rcpp (>= 0.12.9)
 Description: Simulate dose regimens for pharmacokinetic-pharmacodynamic (PK-PD)
-        models described by differential equation (DE) systems or analytical
-        equations.
+        models described by differential equation (DE) systems. Simulation using 
+        ADVAN-style analytical equations is also supported (Abuhelwa et al. (2015) 
+        <doi:10.1016/j.vascn.2015.03.004>).
 License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 7.1.2

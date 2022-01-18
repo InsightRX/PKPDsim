@@ -128,7 +128,7 @@ Simulated regimen
 Simulates a specified regimen using ODE system or analytical equation
 }
 \examples{
-\dontrun{
+\donttest{
 p <- list(
   CL = 38.48,
   V  = 7.4,
@@ -138,6 +138,9 @@ p <- list(
   V3 = 111
 )
 
+omega <- c(0.3,       # IIV CL
+           0.1, 0.3)  # IIV V
+
 r1 <- new_regimen(
   amt = 100,
   times = c(0, 24, 36),
@@ -145,30 +148,6 @@ r1 <- new_regimen(
 )
 
 mod <- new_ode_model("pk_3cmt_iv")
-dat <- sim(
-  ode = mod,
-  parameters = p,
-  regimen = r1
-)
-
-dat_wide <- reshape(
-  dat,
-  direction = "wide",
-  timevar = "comp",
-  idvar = "t"
-)
-
-matplot(
-  dat_wide[, grepl("^y", names(dat_wide))],
-  type = "b",
-  pch = 1,
-  log = "y"
-)
-
-# repeat with IIV:
-omega <- c(0.3,       # IIV CL
-           0.1, 0.3)  # IIV V
-
 dat <- sim(
   ode = mod,
   parameters = p,

@@ -403,15 +403,13 @@ new_ode_model <- function (model = NULL,
       }
 
       ## Compile / build / install
-      curr <- getwd()
-      setwd(new_folder)
       if(file.exists(file.path(new_folder, "R", "RcppExports.R"))) {
         file.remove(paste0(new_folder, "R", "RcppExports.R"))
       }
       if(file.exists(file.path(new_folder, "src", "RcppExports.cpp"))) {
         file.remove(file.path(new_folder, "src", "RcppExports.cpp"))
       }
-      Rcpp::compileAttributes(".", )
+      Rcpp::compileAttributes(new_folder)
 
       cmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
       if (install) { # install into R
@@ -441,7 +439,7 @@ new_ode_model <- function (model = NULL,
         args <- c("CMD", "build", normalizePath(file.path(folder, package)))
         system2(cmd, args, stdout = quiet, stderr = quiet)
         pkg_file <- paste0(new_folder, .Platform$file.sep, package, "_", version, ".tar.gz")
-        pkg_newfile <- paste0(curr, .Platform$file.sep, package, "_", version, ".tar.gz")
+        pkg_newfile <- paste0(getwd(), .Platform$file.sep, package, "_", version, ".tar.gz")
         if(file.exists(pkg_file)) {
           file.copy(pkg_file, pkg_newfile)
           message(paste0("Package built in: ", pkg_newfile))
@@ -449,8 +447,9 @@ new_ode_model <- function (model = NULL,
           message("Package not created.")
         }
       }
-      setwd(curr)
     }
+    return()
   }
+
 
 }
