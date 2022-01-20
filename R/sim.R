@@ -131,6 +131,9 @@ sim <- function (ode = NULL,
   ## Add duplicate "doses" to regimen, e.g. for double-absorption compartments
   dose_dupl <- attr(ode, "dose")$duplicate
   if(!is.null(dose_dupl)) {
+    if(is.null(regimen$cmt)) {
+      regimen$cmt <- attr(ode, "dose")$cmt
+    }
     regimen_dupl <- regimen
     for(i in 1:length(dose_dupl)) {
       regimen_dupl$cmt <- dose_dupl[i]

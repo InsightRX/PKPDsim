@@ -140,7 +140,6 @@ new_regimen <- function(
     reg$t_inf[reg$type == "oral"] <- 0
     reg$rate[reg$type == "oral"] <- 0
   }
-  if(is.null(cmt)) cmt <- 1
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {
       cmt <- rep(cmt[1], length(reg$dose_times))
