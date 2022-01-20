@@ -1,4 +1,5 @@
 test_that("Double absorption models work appropriately", {
+  skip_on_cran()
   mod <- new_ode_model(
     code = "dAdt[1] = -KA1*A[1]; dAdt[2] = -KA2*A[2]; dAdt[3] = KA1*A[1] + KA2*A[2] -(CL/V)*A[3]; ",
     pk_code = NULL,
