@@ -8,7 +8,7 @@
 #' @export
 #' @return Merged regimens
 merge_regimen <- function(regimens) {
-  cols <- c("interval", "n", "type", "t_inf", "dose_times", "dose_amts", "first_dose_time")
+  cols <- c("interval", "n", "type", "t_inf", "dose_times", "dose_amts", "first_dose_time", "cmt")
   reg <- data.frame(regimens[[1]], stringsAsFactors = FALSE)[, cols]
   if(length(regimens) > 1) {
     for(i in 2:length(regimens)) {

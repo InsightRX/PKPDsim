@@ -76,7 +76,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert_parameter_definitions
 
   // Initialize parameters, compartments, etc:
-  pk_code(0, times, doses, 0, dose_cmt, dose_type, iov_bin);
+
+  pk_code(0, times, doses, doses[0], dose_cmt, dose_type, iov_bin);
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
   set_covariates(0);
@@ -99,6 +100,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     }
     // insert scale definition for integration period
 
+    prv_dose = doses[0];
+    t_prv_dose = times[0];
     pk_code(i, times, doses, prv_dose, dose_cmt, dose_type, iov_bin);
 
     start = 0;
