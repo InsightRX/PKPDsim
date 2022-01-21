@@ -11,7 +11,7 @@ test_that("Double absorption models work appropriately", {
       bioav = c(0.3, 0.6, 0.9)
     ),
     lagtime = c(0, 1.5),
-    cpp = T
+    cpp = F
   )
   reg <- new_regimen(amt = 100, n = 12, interval = 12, type = "oral")
   res <- sim(
