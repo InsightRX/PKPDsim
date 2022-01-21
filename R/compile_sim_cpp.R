@@ -124,8 +124,8 @@ compile_sim_cpp <- function(
   pars <- paste0(pars, "double prv_dose, t_prv_dose = 0;\n")
   ## Initialize rate and bioav variables and insert temporary dummy values.
   pars <- paste0(pars, paste0("double rate[] = { ", paste(rep(0, size), collapse=", "), " };\n"))
-  if(length(dose$bioav) != size) {
-    dose$biov <- rep(dose$bioav, size)
+  if(length(dose$bioav) < size) {
+    dose$bioav <- c(dose$bioav, rep(1, size - length(dose$bioav)))
   }
   pars <- paste0(pars, paste0("double bioav[] = { ", paste(rep(1, size), collapse=", "), " };\n"))
   if(!is.null(iov) && !is.null(iov$n_bins)) {
@@ -237,8 +237,11 @@ compile_sim_cpp <- function(
     cpp_code[idx9] <- shift_state_indices(pk_code, -1)
   }
   if(!is.null(dose$bioav)) {
-    for(i in 1:size) {
-      cpp_code[idx10] <- paste(paste0("    bioav[", (1:size)-1, "] = ", dose$bioav, ";"), collapse = "\n")
+    not1 <- dose$bioav != 1 # keep C++ code clean and only redeclare F when not 1
+    if(any(not1)) {
+      for(i in 1:size[not1]) {
+        cpp_code[idx10] <- paste(paste0("    bioav[", (1:size)[not1]-1, "] = ", dose$bioav[not1], ";"), collapse = "\n")
+      }
     }
   }
   if(!is.null(dose_code)) {
