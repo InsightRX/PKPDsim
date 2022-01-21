@@ -239,7 +239,7 @@ compile_sim_cpp <- function(
   if(!is.null(dose$bioav)) {
     not1 <- dose$bioav != 1 # keep C++ code clean and only redeclare F when not 1
     if(any(not1)) {
-      for(i in 1:size[not1]) {
+      for(i in (1:size)[not1]) {
         cpp_code[idx10] <- paste(paste0("    bioav[", (1:size)[not1]-1, "] = ", dose$bioav[not1], ";"), collapse = "\n")
       }
     }
