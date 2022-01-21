@@ -140,7 +140,7 @@ sim <- function (ode = NULL,
       regimen <- merge_regimen(list(regimen, regimen_dupl))
     }
   }
-  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime")[1] == "undefined" && attr(ode, "lagtime") != "NULL") {
+  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime")[1] != "undefined" && attr(ode, "lagtime") != "NULL") {
     if(is.null(lagtime)) { # only override from metadata if not specified by user
       lagtime <- attr(ode, "lagtime")
     }
