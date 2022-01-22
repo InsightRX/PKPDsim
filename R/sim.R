@@ -128,7 +128,19 @@ sim <- function (ode = NULL,
     t_ss <- 0
     regimen_orig <- regimen
   }
-  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime") != "undefined" && attr(ode, "lagtime") != "NULL") {
+  ## Add duplicate "doses" to regimen, e.g. for double-absorption compartments
+  dose_dupl <- attr(ode, "dose")$duplicate
+  if(!is.null(dose_dupl)) {
+    if(is.null(regimen$cmt)) {
+      regimen$cmt <- attr(ode, "dose")$cmt
+    }
+    regimen_dupl <- regimen
+    for(i in 1:length(dose_dupl)) {
+      regimen_dupl$cmt <- dose_dupl[i]
+      regimen <- merge_regimen(list(regimen, regimen_dupl))
+    }
+  }
+  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime")[1] != "undefined" && attr(ode, "lagtime")[1] != "NULL") {
     if(is.null(lagtime)) { # only override from metadata if not specified by user
       lagtime <- attr(ode, "lagtime")
     }

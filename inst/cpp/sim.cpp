@@ -76,7 +76,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert_parameter_definitions
 
   // Initialize parameters, compartments, etc:
-  pk_code(0, times, doses, 0, dose_cmt, dose_type, iov_bin);
+
+  pk_code(0, times, doses, doses[0], dose_cmt, dose_type, iov_bin);
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
   set_covariates(0);
@@ -95,10 +96,12 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
 
     // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
-      rate[dose_cmt[i]-1] = (rate[dose_cmt[i]-1])*1.0 + rates[i] * bioav;
+      rate[dose_cmt[i]-1] = (rate[dose_cmt[i]-1])*1.0 + rates[i] * bioav[dose_cmt[i]-1];
     }
     // insert scale definition for integration period
 
+    prv_dose = doses[0];
+    t_prv_dose = times[0];
     pk_code(i, times, doses, prv_dose, dose_cmt, dose_type, iov_bin);
 
     start = 0;
@@ -109,7 +112,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
       t_prv_dose = times[i];
       prv_dose = doses[i];
       if(dose_type[i] == 0) { // bolus
-        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav;
+        Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav[dose_cmt[i]-1];
         start = 0;
       }
     }

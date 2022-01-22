@@ -4,7 +4,7 @@ model <- function(mod = NULL) {
   attr(ret, "cpp") <- TRUE
   attr(ret, "size") <- [N_COMP]
   attr(ret, "obs") <- list("cmt" = [OBS_COMP], "scale" = "[OBS_SCALE]", "variable" = [OBS_VARIABLE])
-  attr(ret, "dose") <- list("cmt" = [DOSE_COMP], "bioav" = [DOSE_BIOAV] )
+  attr(ret, "dose") <- list("cmt" = [DOSE_COMP], "bioav" = [DOSE_BIOAV], "duplicate" = [DOSE_DUPLICATE] )
   attr(ret, "code") <- "[CODE]"
   attr(ret, "pk_code") <- "[PK_CODE]"
   attr(ret, "state_init") <- [STATE_INIT]
