@@ -27,7 +27,7 @@ vector_to_R_code <- function(vec, return_null = TRUE) {
 bioavailability_to_R_code <- function(bioav) {
   if (is.null(bioav)) bioav <- "1"
 
-  if(class(bioav) == "character" || length(bioav) > 1) {
+if(inherits(bioav, "character") || length(bioav) > 1) {
     vector_to_R_code(bioav)
   } else {
     bioav
