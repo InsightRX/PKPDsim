@@ -302,29 +302,21 @@ new_ode_model <- function (model = NULL,
       ## Replace module name and other info
       if(is.null(pk_code)) { pk_code <- "" }
       if(is.null(dose_code)) { dose_code <- "" }
-      if(is.null(lagtime)) { lagtime <- "NULL" } else {
-        lagtime <- paste0("c(", paste(add_quotes(lagtime), collapse = ", "), ")")
-      }
+      lagtime <- vector_to_R_code(lagtime)
       if(is.null(obs$cmt)) { obs$cmt <- "1" }
       if(is.null(obs$scale)) { obs$scale <- "1" }
       if(is.null(dose$cmt)) { dose$cmt <- "1" }
-      if(is.null(dose$bioav)) { dose$bioav <- "1" }
-      if(class(dose$bioav) == "character" || length(dose$bioav) > 1) {
-        dose$bioav <- paste0("c(", paste(add_quotes(dose$bioav), collapse = ", "), ")")
-      }
+      dose$bioav <- bioavailability_to_R_code(dose$bioav)
       if(is.null(size)) { size <- "1" }
       if(is.null(ltbs)) { ltbs <- FALSE }
       if(is.null(state_init)) { state_init <- "NULL" } else { state_init <- add_quotes(state_init)}
       if(is.null(nonmem)) { nonmem <- "NULL" }
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
-      pars <- paste0("c(", paste(add_quotes(reqd), collapse = ", "), ")")
-      covs <- paste0("c(", paste(add_quotes(cov_names), collapse = ", "), ")")
-      fixed <- ifelse(
-        is.null(fixed),
-        "NULL",
-        paste0("c(", paste(add_quotes(fixed), collapse = ", "), ")")
-      )
-      vars <- paste0("c(", paste(add_quotes(variables), collapse = ", "), ")")
+      pars <- vector_to_R_code(reqd, return_null = FALSE)
+      covs <- vector_to_R_code(cov_names, return_null = FALSE)
+      fixed <- vector_to_R_code(fixed)
+      vars <- vector_to_R_code(variables, return_null = FALSE)
+
       repl <- matrix(c("\\[MODULE\\]", package,
                        "\\[N_COMP\\]", size,
                        "\\[OBS_COMP\\]", obs$cmt,
