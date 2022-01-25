@@ -312,10 +312,10 @@ new_ode_model <- function (model = NULL,
       if(is.null(state_init)) { state_init <- "NULL" } else { state_init <- add_quotes(state_init)}
       if(is.null(nonmem)) { nonmem <- "NULL" }
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
-      pars <- vector_to_R_code(reqd, return_null = FALSE)
-      covs <- vector_to_R_code(cov_names, return_null = FALSE)
+      pars <- vector_to_R_code(reqd)
+      covs <- vector_to_R_code(cov_names)
       fixed <- vector_to_R_code(fixed)
-      vars <- vector_to_R_code(variables, return_null = FALSE)
+      vars <- vector_to_R_code(variables)
 
       repl <- matrix(c("\\[MODULE\\]", package,
                        "\\[N_COMP\\]", size,

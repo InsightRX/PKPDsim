@@ -5,12 +5,10 @@
 #' for writing new model code.
 #'
 #' @param vec a vector
-#' @param return_null logical indicating if `vec` is NULL whether to "NULL"
-#'   (alternative is to return an empty list).
 #' @return character string of length 1
 
-vector_to_R_code <- function(vec, return_null = TRUE) {
-  if (return_null && is.null(vec)) return("NULL")
+vector_to_R_code <- function(vec) {
+  if (is.null(vec)) return("NULL")
   paste0("c(", paste(add_quotes(vec), collapse = ", "), ")")
 }
 
@@ -26,11 +24,12 @@ vector_to_R_code <- function(vec, return_null = TRUE) {
 
 bioavailability_to_R_code <- function(bioav) {
   if (is.null(bioav)) bioav <- "1"
+  bioav <- as.character(bioav)
 
-  if(class(bioav) == "character" || length(bioav) > 1) {
+  if(length(bioav) > 1) {
     vector_to_R_code(bioav)
   } else {
-    bioav
+    add_quotes(bioav)
   }
 
 }
