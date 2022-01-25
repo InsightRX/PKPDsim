@@ -24,12 +24,5 @@ vector_to_R_code <- function(vec) {
 
 bioavailability_to_R_code <- function(bioav) {
   if (is.null(bioav)) bioav <- "1"
-  bioav <- as.character(bioav)
-
-  if(length(bioav) > 1) {
-    vector_to_R_code(bioav)
-  } else {
-    add_quotes(bioav)
-  }
-
+  vector_to_R_code(as.character(bioav))
 }

@@ -4,13 +4,10 @@
 \alias{vector_to_R_code}
 \title{Transform a vector into a string that evaluates to the same vector}
 \usage{
-vector_to_R_code(vec, return_null = TRUE)
+vector_to_R_code(vec)
 }
 \arguments{
 \item{vec}{a vector}
-
-\item{return_null}{logical indicating if `vec` is NULL whether to "NULL"
-(alternative is to return an empty list).}
 }
 \value{
 character string of length 1
