@@ -81,6 +81,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
   set_covariates(0);
+  prv_dose = doses[0];
+  t_prv_dose = times[0];
 
   // Main call to ODE solver
   ode(A_dum, dAdt_dum, 0);
@@ -99,9 +101,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
       rate[dose_cmt[i]-1] = (rate[dose_cmt[i]-1])*1.0 + rates[i] * bioav[dose_cmt[i]-1];
     }
     // insert scale definition for integration period
-
-    prv_dose = doses[0];
-    t_prv_dose = times[0];
+        
     pk_code(i, times, doses, prv_dose, dose_cmt, dose_type, iov_bin);
 
     start = 0;
