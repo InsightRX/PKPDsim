@@ -28,7 +28,7 @@ bioavailability_to_R_code <- function(bioav) {
   if (is.null(bioav)) bioav <- "1"
 
   if(class(bioav) == "character" || length(bioav) > 1) {
-    paste0("c(", paste(add_quotes(bioav), collapse = ", "), ")")
+    vector_to_R_code(bioav)
   } else {
     bioav
   }
