@@ -14,7 +14,7 @@ pipeline {
         echo "Running irx-r-base container"
         sh """
         \$(aws ecr get-login --no-include-email --region us-west-2 &> /dev/null)
-        docker run -d --name ${BUILD_TAG} 579831337053.dkr.ecr.us-west-2.amazonaws.com/irx-r-base:5
+        docker run -dt --name ${BUILD_TAG} 579831337053.dkr.ecr.us-west-2.amazonaws.com/irx-r-base:latest
         """
       }
 
