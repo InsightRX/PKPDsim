@@ -96,21 +96,22 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
 
     set_covariates(i);
 
+    if(evid[i] == 1) {
+      t_prv_dose = times[i];
+      prv_dose = doses[i];
+    }
+    pk_code(i, times, doses, prv_dose, dose_cmt, dose_type, iov_bin);
     // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
       rate[dose_cmt[i]-1] = (rate[dose_cmt[i]-1])*1.0 + rates[i] * bioav[dose_cmt[i]-1];
     }
     // insert scale definition for integration period
-        
-    pk_code(i, times, doses, prv_dose, dose_cmt, dose_type, iov_bin);
 
     start = 0;
     if(i > 0) {
       start = 1;
     }
     if(evid[i] == 1) {
-      t_prv_dose = times[i];
-      prv_dose = doses[i];
       if(dose_type[i] == 0) { // bolus
         Aupd[dose_cmt[i]-1] = Aupd[dose_cmt[i]-1] + doses[i] * bioav[dose_cmt[i]-1];
         start = 0;
