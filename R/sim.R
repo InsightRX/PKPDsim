@@ -573,7 +573,7 @@ sim <- function (ode = NULL,
   comb$t_obs_type <- paste(comb$t, comb$obs_type, sep = "_")
   comb$rownr <- 1:nrow(comb) # keep row-ordering during merge
   comb <- merge(grid, comb, all=FALSE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type", "rownr", all_names)]
-  comb <- comb[order(comb$id, comb$comp, comb$t, comb$obs_type, comb$rownr, decreasing=FALSE), -2]
+  comb <- comb[order(comb$id, comb$comp, comb$t, comb$obs_type, comb$rownr, decreasing=FALSE), -c(2, 7)]
   if(!is.null(regimen_orig$ss_regimen)) {
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
     comb$t <- as.num(comb$t) - t_ss
@@ -588,7 +588,6 @@ sim <- function (ode = NULL,
       obs_type = comb[comb$comp == 'obs',]$obs_type)
   }
   comb$t <- comb$t - t_init
-  comb$rownr <- NULL
 
   class(comb) <- c("PKPDsim_data", class(comb))
   attr(comb, "regimen") <- regimen_orig
