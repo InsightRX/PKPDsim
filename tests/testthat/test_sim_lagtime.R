@@ -1,4 +1,5 @@
 test_that("dose dump after lagtime in correct order in output data", {
+  skip_on_cran()
   reg <- new_regimen(amt = 500, n = 4, interval = 12, type = 'oral')
   pars <- list(CL = 5, V = 50, KA = 0.5, TLAG = 0.83)
   mod <- new_ode_model(
