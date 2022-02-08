@@ -110,11 +110,7 @@ compile_sim_cpp <- function(
     m <- p_def %in% declare_variables # remove covariates and other declared variables
     p_def <- p_def[!m]
   }
-  if(!is.null(obs) && length(obs$scale) > 1) {
-    p <- c(p, paste0("scale", 1:length(obs$scale)))
-  } else {
-    p <- c(p, "scale")
-  }
+  p <- c(p, paste0("scale", seq_along(obs$scale)))
   p <- unique(c(p, "conc", declare_variables)) # add rate and conc as explicitly declared variables
   pars <- "\n"
   par_def <- ""
@@ -205,10 +201,11 @@ compile_sim_cpp <- function(
     cpp_code[idx14] <- "  std::vector<double> obs;"
   } else {
     if(length(obs$cmt) == 1) {
-      cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale = ", obs$scale[1], ";")
-      cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale = ", obs$scale[1], ";")
+      scale <- paste0("\n    scale", seq_along(obs$scale), " = ", obs$scale, ";", collapse = "")
+      cpp_code[idx5] <- paste0(cpp_code[idx5], scale)
+      cpp_code[idx7] <- paste0(cpp_code[idx7], scale)
       cpp_code[idx8] <- cov_scale
-      cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale);")
+      cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale1);")
       cpp_code[idx13] <- paste0('  comb["obs"] = obs;\n');
       cpp_code[idx14] <- "  std::vector<double> obs;"
     } else {
