@@ -209,7 +209,18 @@ compile_sim_cpp <- function(
       cpp_code[idx13] <- paste0('  comb["obs"] = obs;\n');
       cpp_code[idx14] <- "  std::vector<double> obs;"
     } else {
-      if(is.null(obs$cmt)) obs$cmt <- 1
+      if(is.null(obs$cmt) && is.null(obs$variable)) {
+        stop("Either a `cmt` or `variable` element has to be specified in the `obs` argument.")
+      }
+      if(!is.null(obs$cmt)) { ## `cmt` is specified
+        if(length(obs$scale) != length(obs$cmt)) {
+          stop("Provided `scale` vector is not the same length as observation compartments (`cmt`) vector. Please update `obs` argument.")
+        }
+      } else { ## `variable` is used
+        if(length(obs$scale) != length(obs$variable)) {
+          stop("Provided `scale` vector is not the same length as observation `variable` vector. Please update `obs` argument.")
+        }
+      }
       for(k in 1:length(obs$cmt)) {
         cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale", k," = ", obs$scale[k], ";")
         cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale", k," = ", obs$scale[k], ";")
