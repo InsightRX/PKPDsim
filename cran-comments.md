@@ -2,7 +2,7 @@
 
 - The example in sim.R is put within \donttest{} since it often goes over the 5s limit on CRAN. The example is however very useful to users so would strongly prefer to keep it in. The example cannot be made to run faster as it contains a compilation step that takes 4-5 s.
 
-- 2 NOTEs are expected during CRAN-submission.
+- several NOTEs are expected during CRAN-submission.
 
 * checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Ron Keizer <ron@insight-rx.com>'
@@ -31,6 +31,24 @@ Namespace in Imports field not imported from: 'BH'
   All declared Imports should be used.
 
 Maintainer response: The BH package provides Boost C++ library headers. The BH library is not used in any of the code in /R or /src, but only in the C++ templates that comes with the package (in /inst/cpp). The C++ templates are used when creating a model using the new_ode_model() function, which is then compiled on-the-fly. If the BH package is removed from the Depends field, it won't be installed and hence models cannot be compiled and run. BH cannot be moved to the LinkingTo field.
+
+* CRAN repository db overrides:
+  X-CRAN-Comment: Archived on 2022-01-19 for policy violation.
+
+  On not remving debugging information.
+
+Maintainer response: to reduce file size, we were stripping logging information
+from the compiled code, to greatly reduce the compiled file size in /libs. 
+We did not realize this is against CRAN policy. The installed package size is
+now larger.
+
+* checking installed package size ... NOTE
+  installed size is 10.4Mb
+  sub-directories of 1Mb or more:
+    libs   9.8Mb
+    
+Maintainer response: see comment above. We attempted to reduce the file size
+of the compiled files, but this lead to a CRAN check failure.
 
 ## Test environments
 

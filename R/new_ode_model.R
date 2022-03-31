@@ -88,7 +88,7 @@ new_ode_model <- function (model = NULL,
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
   }
   if (!is.null(func)) { # R function supplied, use deSolve approach
-    if(class(func) != "function") {
+    if(!inherits(func, "function")) {
       stop("The object specified in 'func' is not a valid R function.")
     }
     sim_out <- func
@@ -107,7 +107,7 @@ new_ode_model <- function (model = NULL,
     }
     code_init_text <- ""
     code <- gsub("(#).*?\\n", "\n", code) # remove comments
-    if(class(state_init) == "character") {
+    if(inherits(state_init, "character")) {
       code <- gsub("dadt", "dAdt", code)
       code <- gsub("DADT", "dAdt", code)
       code <- gsub("^\\n", "", code)
@@ -182,7 +182,7 @@ new_ode_model <- function (model = NULL,
       }
       parameters <- get_parameters_from_code(comb_code, state_init, declare_variables)
     } else {
-      if(class(parameters) == "list") {
+      if(inherits(parameters, "list")) {
         parameters <- names(parameters)
       }
     }
@@ -194,10 +194,10 @@ new_ode_model <- function (model = NULL,
     if(is.null(dose$cmt))  { dose$cmt <- 1 }
     cov_names <- NULL
     if(!is.null(covariates)) {
-      if(class(covariates) == "character") {
+      if(inherits(covariates, "character")) {
         cov_names <- covariates
       }
-      if(class(covariates) == "list") {
+      if(inherits(covariates, "list")) {
         cov_names <- names(covariates)
       }
     }
