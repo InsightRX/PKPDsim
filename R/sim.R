@@ -295,7 +295,7 @@ sim <- function (ode = NULL,
     if(inherits(omega, "matrix")) {
       omega_mat <- omega
     }
-    if(inherits(omega, "numeric")) {
+    if(mode(omega) == "numeric") {
       omega_mat <- triangle_to_full(omega)
     }
     etas <- mvrnorm2(n = n_ind, mu=rep(0, nrow(omega_mat)), Sigma=omega_mat, sequence=sequence)
