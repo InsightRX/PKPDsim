@@ -179,7 +179,7 @@ sim <- function (ode = NULL,
       }
     }
     if(is.null(analytical)) {
-      if(inherits(ode, "function") && is.null(attr(ode, "cpp")) || attr(ode, "cpp") == FALSE) {
+      if(inherits(ode, "function") && !isTRUE(attr(ode, "cpp"))) {
         stop("Sorry. Non-C++ functions are deprecated as input for ODE.")
       } else {
         if(inherits(ode, "function")) {
