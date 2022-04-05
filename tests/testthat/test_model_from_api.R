@@ -41,7 +41,15 @@ test_that("Can install a package from json", {
     )
   )
 
+  orig_libs <- .libPaths()
+  .libPaths(c(instloc, .libPaths()))
+  on.exit(.libPaths(orig_libs))
+
   expect_true("test1cmtiv" %in% installed.packages(lib.loc = instloc))
+  expect_equal(
+    prior_from_PKPDsim_model("test1cmtiv"),
+    list(CL = 5, V = 50)
+  )
   suppressMessages(require(test1cmtiv, lib.loc = instloc))
   mod_from_pkg <- test1cmtiv::model()
   expect_true("PKPDsim" %in% class(mod_from_pkg))
