@@ -1,4 +1,7 @@
-strippedLib: $(SHLIB)
-	if test -e "/usr/bin/strip" & test -e "/bin/uname" & [[ `uname` == "Linux" ]] ; then /usr/bin/strip --strip-debug $(SHLIB); fi
-.phony: strippedLib
+## The code below reduces the size of the installed package, but it makes a
+## CRAN test fail, so leaving this commented for now.
+
+# strippedLib: $(SHLIB)
+#  if test -e "/usr/bin/strip" & test -e "/bin/uname" & [[ `uname` == "Linux" ]] ; then /usr/bin/strip --strip-debug $(SHLIB); fi
+# .phony: strippedLib
 

@@ -141,10 +141,10 @@ compile_sim_cpp <- function(
   cov_scale <- ""
   cov_names <- NULL
   if(!is.null(covariates)) {
-    if(class(covariates) == "character") {
+    if(inherits(covariates, "character")) {
       cov_names <- covariates
     }
-    if(class(covariates) == "list") {
+    if(inherits(covariates, "list")) {
       cov_names <- names(covariates)
     }
   }

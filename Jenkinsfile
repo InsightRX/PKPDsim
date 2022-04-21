@@ -30,7 +30,7 @@ pipeline {
         sh """
         docker cp . ${BUILD_TAG}:/src/PKPDsim
         docker exec -i ${BUILD_TAG} Rscript -e "install.packages('mockery')"
-        docker exec -i ${BUILD_TAG} Rscript -e "Sys.setlocale('LC_ALL','C'); devtools::check('PKPDsim')"
+        docker exec -i ${BUILD_TAG} Rscript -e "Sys.setlocale('LC_ALL','C'); devtools::check('/src/PKPDsim')"
         """
       }
     }

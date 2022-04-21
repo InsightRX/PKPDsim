@@ -22,7 +22,7 @@ mvrnorm2 <- function(n, mu, Sigma, exponential = FALSE, sequence = NULL, ...) {
     )
   }
   if(is.null(dim(Sigma))) { # specified as lower triangle?
-    if(class(Sigma) == "numeric") {
+    if(inherits(Sigma, "numeric")) {
       Sigma_full <- triangle_to_full(Sigma)
     } else {
       stop("Covariance matrix not specified correctly.")
