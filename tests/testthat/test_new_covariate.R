@@ -48,4 +48,17 @@ test_that("Joining works as expected", {
   expect_equal(length(tmp_join$value), 2)
 })
 
+test_that("Interpolated times are rounded properly", {
+  expect_message(
+    tmp_rnd <- new_covariate(
+      value = c(1,2,3),
+      times = c(0, 3.321252, 3.5111234),
+      interpolation_join_limit = 1,
+      round_times = 3
+    )
+  )
+  expect_equal(tmp_rnd$times[2], 3.416)
+})
+
+
 
