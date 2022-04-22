@@ -7,6 +7,7 @@
 #' @param interpolation_join_limit for `interpolate` option, if covariate timepoints are spaced too close together, the ODE solver sometimes chokes. This argument sets a lower limit on the space between timepoints. It will create average values on joint timepoints instead. If undesired set to NULL or 0.
 #' @param unit specify covariate unit (optional, for documentation purposes only)
 #' @param remove_negative_times `TRUE`` or `FALSE`
+#' @param round_times round times to specified number of digits. If `NULL`, will not round.
 #' @param comments `NULL`, or vector of length equal to `value` specifying comments to each observation
 #' @param verbose verbosity
 #' @export
@@ -19,6 +20,7 @@ new_covariate <- function(
   unit = NULL,
   interpolation_join_limit = 1,
   remove_negative_times = TRUE,
+  round_times = NULL,
   comments = NULL,
   verbose = TRUE) {
   if(is.null(value)) {
@@ -114,11 +116,16 @@ new_covariate <- function(
   if(length(new_unit) > length(new_values)) {
     new_unit <- new_unit[1:length(new_values)]
   }
-  cov <- list(value = new_values,
-              times = new_times,
-              implementation = implementation,
-              unit = new_unit,
-              comments = comments)
+  if(!is.null(round_times)) {
+    new_times <- round(new_times, round_times)
+  }
+  cov <- list(
+    value = new_values,
+    times = new_times,
+    implementation = implementation,
+    unit = new_unit,
+    comments = comments
+  )
   class(cov) <- c("covariate", class(cov))
   return(cov)
 }
