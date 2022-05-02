@@ -31,7 +31,7 @@ model_from_api <- function(url,
   if(get_definition) {
     return(def)
   }
-  if(!def$build && !install_all) {
+  if(!isTRUE(def$build) && !install_all) {
     message(paste0("- Model ", model, " not flagged for building, skipping compilation. Use `install_all=TRUE` to force build."))
   }
   if(isTRUE(def$misc$init_parameter) && !is.null(def$misc$model_type)) {
@@ -43,7 +43,7 @@ model_from_api <- function(url,
   }
   if(is.null(def$comments)) def$comments <- ""
   mod <- NULL
-  if(def$build || install_all) {
+  if(isTRUE(def$build) || install_all) {
     build <- TRUE
     package <- NULL
     if(to_package) {
