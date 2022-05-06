@@ -117,6 +117,13 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
         start = 0;
       }
     }
+    if(start == 0) { // make a separate call to sim_cpp to make sure observation variables are initialized and stored
+      ode_out tmp = sim_cpp(Aupd, t_start, t_start, step_size);
+      // insert time-dependent covariates scale
+      // insert scale definition for observation
+      // insert saving observations to obs object(s)
+      // insert copy variables into all variables
+    }
     ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
     state_type tail = tmp.y.back();
     if(start == 0) {
@@ -132,7 +139,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     for (int k = 0; k < n_comp; k++) {
       Aupd[k] = tail[k];
     }
-    for (int k = start; k < tmp.y.size(); k++) {
+    for (int k = 1; k < tmp.y.size(); k++) {
       // insert time-dependent covariates scale
       // insert scale definition for observation
       // insert saving observations to obs object(s)

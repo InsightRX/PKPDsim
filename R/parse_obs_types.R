@@ -1,7 +1,7 @@
 #' Parse observation types to simulation code
 #'
-#' @param obs specified observation object including at least a description of 
-#'       which variable(s) are associated with a particular compartment, e.g. 
+#' @param obs specified observation object including at least a description of
+#'       which variable(s) are associated with a particular compartment, e.g.
 #'       `list(variable="CONC", scale="1")`.
 parse_obs_types <- function(obs) {
   if(is.null(obs$scale)) obs$scale <- "1.0"
@@ -19,17 +19,17 @@ parse_obs_types <- function(obs) {
       tmp <- c(
         tmp,
         paste0(
-          "      ", str_if, " (obs_type[i+1]==", i, ")", 
-          " { obs.insert(obs.end(), ", obs$variable[i], "/(", obs$scale[i], ")); } ", 
+          "      ", str_if, " (obs_type[i+1]==", i, ")",
+          " { obs.insert(obs.end(), ", obs$variable[i], "/(", obs$scale[i], ")); } ",
           str_else, " "
         )
       )
     }
     # make sure something is pushed on obs stack
     tmp <- c(
-      tmp, 
+      tmp,
       paste0("         { obs.insert(obs.end(), ", obs$variable[1], "/(", obs$scale[1], ")); }")
-    ) 
+    )
   }
   return(paste0(tmp, collapse = "\n"))
 }
