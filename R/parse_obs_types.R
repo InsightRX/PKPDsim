@@ -19,7 +19,7 @@ parse_obs_types <- function(obs) {
       tmp <- c(
         tmp,
         paste0(
-          "      ", str_if, " (obs_type[i+1]==", i, ")",
+          "      ", str_if, " (obs_type[row]==", i, ")",
           " { obs.insert(obs.end(), ", obs$variable[i], "/(", obs$scale[i], ")); } ",
           str_else, " "
         )
