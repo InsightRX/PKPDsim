@@ -142,20 +142,22 @@ create_event_table <- function(
   design <- dos[order(dos$t, -dos$dose),]
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
     t_obs <- round(t_obs, 6)
-    t_diff <- setdiff(t_obs, design$t)
-    if(length(t_diff) > 0) {
-      design[(length(design[,1])+1) : (length(design[,1])+length(t_diff)),] <- cbind(
-         t = t_diff,
-         dose = 0,
-         type = 0,
-         dum = 0,
-         dose_cmt = 0,
-         t_inf = 0,
-         evid = 0,
-         bioav = 0,
-         rate = 0)
-      design <- design[order(design$t, -design$dose),]
-    }
+    design$obs_type <- 0
+    design <- rbind(
+      design,
+      data.frame(
+        t = t_obs,
+        dose = 0,
+        type = 0,
+        dum = 0,
+        dose_cmt = 0,
+        t_inf = 0,
+        evid = 0,
+        bioav = 0,
+        rate = 0,
+        obs_type = obs_type
+      )
+    )
   }
   if(!is.null(t_tte) && length(t_obs) != 0) { # make sure tte times are in dataset
     t_diff <- setdiff(t_tte, design$t)
@@ -221,15 +223,6 @@ create_event_table <- function(
     # design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
   }
   design <- design[design$t <= max(t_obs),]
-  if(!is.null(obs_type)) {
-    design <- merge(design, data.frame(t = t_obs, obs_type), all=TRUE)
-    design$obs_type <- ifelse(is.na(design$obs_type), 0, as.integer(design$obs_type))
-    # merging can induce multiple infusion stop events, should reset those:
-    duplicate_stop <- design$evid == 2 & duplicated(paste(design$t, design$evid, design$rate))
-    if(any(duplicate_stop)) {
-      design$rate[duplicate_stop] <- 0
-    }
-  }
   design <- design[order(design$t, design$type, design$dum, decreasing=FALSE),]
   if(t_init != 0) { # add event line at t=0, to start integration
      design <- design[c(1, 1:nrow(design)),]
