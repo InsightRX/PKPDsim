@@ -119,6 +119,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
       }
     }
     if(start == 0) { // make a separate call to sim_cpp to make sure observation variables are initialized and stored
+      int k = 0;
       ode_out tmp = sim_cpp(Aupd, t_start, t_start, step_size);
       // insert time-dependent covariates scale
       // insert scale definition for observation
