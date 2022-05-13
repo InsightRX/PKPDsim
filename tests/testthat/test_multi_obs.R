@@ -154,11 +154,11 @@ test_that("multi-obs with baseline and obs_time = dose_time works correctly", {
     output_include = list(variables = TRUE),
     return_design = F
   )
-  expect_equal( # fails
+  expect_equal(
     tmp$y[tmp$obs_type == 1],
     tmp$CONC[tmp$obs_type == 1]
   )
-  expect_equal( # passes
+  expect_equal( 
     tmp$y[tmp$obs_type == 4],
     tmp$ACT[tmp$obs_type == 4]
   )
