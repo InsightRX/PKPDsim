@@ -1,9 +1,9 @@
 # Example multiple observation types (e.g. different compartments! not just different residual errors)
 
 ## define parameters
-vars <- c("CONC", "METAB", "METAB2")
+vars <- c("CONC", "METAB", "METAB2", "ACT")
 pk1 <- new_ode_model(
-  code = "dAdt[1] = -(CL/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t;",
+  code = "dAdt[1] = -(CL/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t; ACT = 15",
   obs = list(variable = vars, scale = 1),
   declare_variables = vars,
   cpp_show_code = F
@@ -141,4 +141,25 @@ test_that("specifying ruv as multi-type when only 1 obs_type", {
   )
   expect_equal(s_multi1$y[c(1, 3)], s_single$y[c(1,3)])
   expect_true(sum(abs(s_single$y[c(2,4)] - s_multi1$y[c(2,4)])) > 50)
+})
+
+test_that("multi-obs with baseline and obs_time = dose_time works correctly", {
+  tmp <- sim(
+    pk1,
+    parameters = parameters,
+    regimen = regimen,
+    t_obs = c(0, 0, 6, 6),
+    obs_type = c(1, 4, 1, 4),
+    only_obs = TRUE,
+    output_include = list(variables = TRUE),
+    return_design = F
+  )
+  expect_equal(
+    tmp$y[tmp$obs_type == 1],
+    tmp$CONC[tmp$obs_type == 1]
+  )
+  expect_equal( 
+    tmp$y[tmp$obs_type == 4],
+    tmp$ACT[tmp$obs_type == 4]
+  )
 })
