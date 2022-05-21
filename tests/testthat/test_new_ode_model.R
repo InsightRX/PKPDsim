@@ -71,3 +71,64 @@ test_that("All IOV bins are properly activated", {
 
   expect_equal(round(res$kappa_CL, 2), c(0.10, 0.20, 0.30, 0.40, -0.50))
 })
+
+test_that("correct combinations of vars/scale/cmt are supported", {
+  skip_on_cran() # slow
+
+  ## cmt and scale same lengths: ok
+  expect_error(
+    new_ode_model(
+      code = "
+      dAdt[1] = -KA * A[1];
+      dAdt[2] = -(CL/V) * A[2] + KA*A[1];
+    ",
+    obs = list(
+      cmt = c(1, 2),
+      scale = c(1, "V"),
+      label = c("abs", "conc")
+    ),
+    cpp_show_code = FALSE
+    ),
+    NA
+  )
+
+  ## cmt length > 1 and scale length = 1: ok
+  expect_error(
+    new_ode_model(
+      code = "
+      dAdt[1] = -KA * A[1];
+      dAdt[2] = -(CL/V) * A[2] + KA*A[1];
+    ",
+    obs = list(
+      cmt = c(1, 2),
+      scale = c(1),
+      label = c("abs", "conc")
+    ),
+    cpp_show_code = FALSE
+    ),
+    NA
+  )
+
+  ## cmt and scale different lengths: error
+  expect_error(
+    new_ode_model(
+      code = "dAdt[1] = -(CL/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t; ACT = 15",
+      obs = list(cmt = 1, scale = c(1, 0.5)),
+      cpp_show_code = FALSE
+    )
+  )
+
+  ## both variable and scale are provided: error
+  expect_error(
+    new_ode_model(
+      code = "dAdt[1] = -(CL/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t; ACT = 15",
+      obs = list(
+        variable = c("CONC", "METAB", "METAB2", "ACT"),
+        scale = 1
+      ),
+      declare_variables = vars,
+      cpp_show_code = FALSE
+    )
+  )
+
+})
