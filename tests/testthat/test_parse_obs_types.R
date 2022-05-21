@@ -45,3 +45,31 @@ test_that("multiple observation type, scale is same-length", {
   )
 })
 
+test_that("var and scale provided -> error", {
+  expect_error(
+    check_obs_input(
+      obs = list(variable = c("CONC", "CONCM", "PD"), scale = 1)
+    )
+  )
+})
+
+test_that("cmt and scale mismatch length -> error", {
+  expect_error(
+    check_obs_input(
+      obs = list(cmt = 1, scale = c(1, 0.5))
+    )
+  )
+})
+
+test_that("null cmt or scale get set to 1", {
+  obs1 <- list(cmt = 1)
+  obs2 <- list(scale = 1)
+  expect_equal(
+    check_obs_input(obs1),
+    list(cmt = 1, scale = 1)
+  )
+  expect_equal(
+    check_obs_input(obs2),
+    list(scale = 1, cmt = 1)
+  )
+})

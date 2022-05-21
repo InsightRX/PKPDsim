@@ -189,8 +189,7 @@ new_ode_model <- function (model = NULL,
 
     check_mixture_model(mixture, parameters)
 
-    if(is.null(obs$scale)) { obs$scale <- 1 }
-    if(is.null(obs$cmt))   { obs$cmt <- 1 }
+    obs <- check_obs_input(obs)
     if(is.null(dose$cmt))  { dose$cmt <- 1 }
     cov_names <- NULL
     if(!is.null(covariates)) {
