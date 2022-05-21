@@ -4,7 +4,7 @@
 vars <- c("CONC", "METAB", "METAB2", "ACT")
 pk1 <- new_ode_model(
   code = "dAdt[1] = -(CL/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t; ACT = 15",
-  obs = list(variable = vars, scale = rep(1, length(vars))),
+  obs = list(variable = vars, scale = 1),
   declare_variables = vars,
   cpp_show_code = F
 )
