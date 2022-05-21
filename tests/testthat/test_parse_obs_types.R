@@ -4,44 +4,19 @@ test_that("single observation type, scale not supplied", {
   )
   expect_equal(
     parse_obs_types(obs1a),
-    "      obs.insert(obs.end(), CONC/(1.0)); "
+    "      obs.insert(obs.end(), CONC); "
   )
 })
 
-test_that("single observation type, scale=variable", {
-  obs1b <- list(
-    variable = "CONC",
-    scale = "V/1000.0"
-  )
-  expect_equal(
-    parse_obs_types(obs1b),
-    "      obs.insert(obs.end(), CONC/(V/1000.0)); "
-  )
-})
-
-test_that("multiple observation type, scale is single", {
+test_that("multiple observation type", {
   obs3a <- list(
-    variable = c("CONC", "CONCM", "PD"),
-    scale = 1
+    variable = c("CONC", "CONCM", "PD")
   )
-  expect_warning(
-    res <- PKPDsim:::parse_obs_types(obs3a),
-    "Provided `scale` vector not same length as `variable` vector."
-  )
+
+  res <- PKPDsim:::parse_obs_types(obs3a)
   expect_equal(
     res,
-    "      if (obs_type[row]==1) { obs.insert(obs.end(), CONC/(1)); } else if \n         (obs_type[row]==2) { obs.insert(obs.end(), CONCM/(1)); } else if \n         (obs_type[row]==3) { obs.insert(obs.end(), PD/(1)); } else \n         { obs.insert(obs.end(), CONC/(1)); }"
-  )
-})
-
-test_that("multiple observation type, scale is same-length", {
-  obs3b <- list(
-    variable = c("CONC", "CONCM", "PD"),
-    scale = c(1, 2, 3)
-  )
-  expect_equal(
-    parse_obs_types(obs3b),
-    "      if (obs_type[row]==1) { obs.insert(obs.end(), CONC/(1)); } else if \n         (obs_type[row]==2) { obs.insert(obs.end(), CONCM/(2)); } else if \n         (obs_type[row]==3) { obs.insert(obs.end(), PD/(3)); } else \n         { obs.insert(obs.end(), CONC/(1)); }"
+    "      if (obs_type[row]==1) { obs.insert(obs.end(), CONC); } else if \n         (obs_type[row]==2) { obs.insert(obs.end(), CONCM); } else if \n         (obs_type[row]==3) { obs.insert(obs.end(), PD); } else \n         { obs.insert(obs.end(), CONC); }"
   )
 })
 

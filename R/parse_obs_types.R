@@ -5,7 +5,7 @@
 #'       `list(variable="CONC", scale="1")`.
 parse_obs_types <- function(obs) {
   if(length(obs$variable) == 1) {
-    tmp <- paste0("      obs.insert(obs.end(), ", obs$variable, "/(", obs$scale,")); ")
+    tmp <- paste0("      obs.insert(obs.end(), ", obs$variable, "); ")
   } else {
     tmp <- c()
     for(i in 1:length(obs$variable)) {
@@ -15,7 +15,7 @@ parse_obs_types <- function(obs) {
         tmp,
         paste0(
           "      ", str_if, " (obs_type[row]==", i, ")",
-          " { obs.insert(obs.end(), ", obs$variable[i], "/(", obs$scale[i], ")); } ",
+          " { obs.insert(obs.end(), ", obs$variable[i], "); } ",
           str_else, " "
         )
       )
@@ -23,7 +23,7 @@ parse_obs_types <- function(obs) {
     # make sure something is pushed on obs stack
     tmp <- c(
       tmp,
-      paste0("         { obs.insert(obs.end(), ", obs$variable[1], "/(", obs$scale[1], ")); }")
+      paste0("         { obs.insert(obs.end(), ", obs$variable[1], "); }")
     )
   }
   return(paste0(tmp, collapse = "\n"))
