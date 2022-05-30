@@ -7,12 +7,20 @@ test_that("Regimen type parsed correctly", {
   reg_oral <- new_regimen(amt = 100, n = 4, interval = 4, type = "oral")
   reg_bolus <- new_regimen(amt = 100, n=4, interval = 4, type = "bolus")
   reg_inf <- new_regimen(amt = 100, n = 4, interval = 4, type = "infusion")
-  reg_mixed <- new_regimen(amt = 100, n = 3, interval = 4, type = c("bolus", "infusion", "oral"))
+  reg_sc <- new_regimen(amt = 100, n = 4, interval = 4, type = "sc")
+  reg_im <- new_regimen(amt = 100, n = 4, interval = 4, type = "im")
+  reg_mixed <- new_regimen(amt = 100, n = 5, interval = 4, type = c("bolus", "infusion", "oral", "sc", "im"))
 
   expect_equal(reg_oral$type, rep("oral", 4))
   expect_equal(reg_bolus$type, rep("bolus", 4))
   expect_equal(reg_inf$type, rep("infusion", 4))
-  expect_equal(reg_mixed$type, c("bolus", "infusion", "oral"))
+  expect_equal(reg_sc$type, rep("sc", 4))
+  expect_equal(reg_im$type, rep("im", 4))
+  expect_equal(reg_mixed$type, c("bolus", "infusion", "oral", "sc", "im"))
+  expect_message(
+    new_regimen(amt = 100, n = 3, interval = 4, type = c("bolus", "bolus", "blabla")),
+    "Type argument should be one of 'bolus', infusion', 'oral', 'sc' or 'im'. Assuming bolus for all doses."
+  )
 })
 
 test_that("Auto-detect infusion vs bolus", {
