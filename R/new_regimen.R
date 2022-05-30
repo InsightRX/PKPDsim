@@ -137,8 +137,8 @@ new_regimen <- function(
     reg$rate[reg$type == "bolus"] <- 0
   }
   if(any(reg$type == "oral")) {
-    reg$t_inf[reg$type %in% c("oral")] <- 0
-    reg$rate[reg$type %in% c("oral")] <- 0
+    reg$t_inf[reg$type == "oral"] <- 0
+    reg$rate[reg$type == "oral"] <- 0
   }
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {
