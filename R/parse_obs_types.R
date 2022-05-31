@@ -4,14 +4,9 @@
 #'       which variable(s) are associated with a particular compartment, e.g.
 #'       `list(variable="CONC", scale="1")`.
 parse_obs_types <- function(obs) {
-  if(is.null(obs$scale)) obs$scale <- "1.0"
   if(length(obs$variable) == 1) {
-    tmp <- paste0("      obs.insert(obs.end(), ", obs$variable, "/(", obs$scale,")); ")
+    tmp <- paste0("      obs.insert(obs.end(), ", obs$variable, "); ")
   } else {
-    if(length(obs$scale) < length(obs$variable)) {
-      obs$scale <- rep(obs$scale[1], length(obs$variable))
-      warning("Provided `scale` vector not same length as `variable` vector.")
-    }
     tmp <- c()
     for(i in 1:length(obs$variable)) {
       str_else <- ifelse(length(obs$variable)-i <= 0, str_else <- "else", "else if")
@@ -20,7 +15,7 @@ parse_obs_types <- function(obs) {
         tmp,
         paste0(
           "      ", str_if, " (obs_type[row]==", i, ")",
-          " { obs.insert(obs.end(), ", obs$variable[i], "/(", obs$scale[i], ")); } ",
+          " { obs.insert(obs.end(), ", obs$variable[i], "); } ",
           str_else, " "
         )
       )
@@ -28,8 +23,34 @@ parse_obs_types <- function(obs) {
     # make sure something is pushed on obs stack
     tmp <- c(
       tmp,
-      paste0("         { obs.insert(obs.end(), ", obs$variable[1], "/(", obs$scale[1], ")); }")
+      paste0("         { obs.insert(obs.end(), ", obs$variable[1], "); }")
     )
   }
   return(paste0(tmp, collapse = "\n"))
+}
+
+#' Checks obs input for valid combinations of cmt, var, scale
+#'
+#' @inheritParams parse_obs_types
+check_obs_input <- function(obs) {
+  if(!is.null(obs$scale) && !is.null(obs$variable)) {
+    stop(
+      "obs should contain only one of `scale` or `variable`.",
+      call. = FALSE
+    )
+  }
+  if (is.null(obs$scale)) obs$scale <- 1
+  if (is.null(obs$cmt))   obs$cmt <- 1
+
+  if (length(obs$scale) > 1 && length(obs$scale) != length(obs$cmt)) {
+    stop(
+      "obs$scale should be either the same length as obs$cmt, or 1",
+      call. = FALSE
+    )
+  }
+
+  if (length(obs$scale) == 1 && length(obs$cmt) > 1) {
+    obs$scale <- rep(obs$scale, length(obs$cmt))
+  }
+  obs
 }

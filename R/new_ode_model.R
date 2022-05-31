@@ -189,8 +189,7 @@ new_ode_model <- function (model = NULL,
 
     check_mixture_model(mixture, parameters)
 
-    if(is.null(obs$scale)) { obs$scale <- 1 }
-    if(is.null(obs$cmt))   { obs$cmt <- 1 }
+    obs <- check_obs_input(obs)
     if(is.null(dose$cmt))  { dose$cmt <- 1 }
     cov_names <- NULL
     if(!is.null(covariates)) {
@@ -303,9 +302,6 @@ new_ode_model <- function (model = NULL,
       if(is.null(pk_code)) { pk_code <- "" }
       if(is.null(dose_code)) { dose_code <- "" }
       lagtime <- vector_to_R_code(lagtime)
-      if(is.null(obs$cmt)) { obs$cmt <- "1" }
-      if(is.null(obs$scale)) { obs$scale <- "1" }
-      if(is.null(dose$cmt)) { dose$cmt <- "1" }
       dose$bioav <- bioavailability_to_R_code(dose$bioav)
       if(is.null(size)) { size <- "1" }
       if(is.null(ltbs)) { ltbs <- FALSE }
