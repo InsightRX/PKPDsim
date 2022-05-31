@@ -7,8 +7,8 @@
 parse_obs_types(obs)
 }
 \arguments{
-\item{obs}{specified observation object including at least a description of 
-which variable(s) are associated with a particular compartment, e.g. 
+\item{obs}{specified observation object including at least a description of
+which variable(s) are associated with a particular compartment, e.g.
 `list(variable="CONC", scale="1")`.}
 }
 \description{
