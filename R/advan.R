@@ -19,6 +19,7 @@
 #' @references Abuhelwa, A. Y., Foster, D. J. R., Upton, R. N. (2015)
 #'   ADVAN-style analytical solutions for common pharmacokinetic models. J
 #'   Pharmacol Toxicol Methods 73:42-8. DOI: 10.1016/j.vascn.2015.03.004
+#' @keywords internal
 OneCompIVbolus <- function(d){
 
   # set initial values in the compartments
@@ -43,6 +44,7 @@ OneCompIVbolus <- function(d){
 #' IV bolus- 2 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, DV, CL, V1, Q, V2
 #' @return Returns a dataframe with populated columns for A1, A2, and DV
+#' @keywords internal
 TwoCompIVbolus <- function(d) {
 
   # set initial values in the compartments
@@ -87,6 +89,7 @@ TwoCompIVbolus <- function(d) {
 #' IV bolus- 3 compartment
 #' @param d data, Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V1, Q12, V2, Q13, V3
 #' @return Returns a dataframe with populated columns for A1, A2, A3,and DV
+#' @keywords internal
 ThreeCompIVbolus <- function(d) {
 
   # set initial values in the compartments
@@ -165,6 +168,7 @@ ThreeCompIVbolus <- function(d) {
 #' IV infusion- 1 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V
 #' @return Returns a dataframe with populated columns for A1, and DV
+#' @keywords internal
 OneCompIVinfusion <- function(d) {
 
   #set initial values in the compartments
@@ -199,6 +203,7 @@ OneCompIVinfusion <- function(d) {
 #' IV infusion- 2 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV, RATE, RATEALL, DV, CL, V1, Q, V2
 #' @return Returns a dataframe with populated columns for A1, A2, and DV
+#' @keywords internal
 TwoCompIVinfusion <- function(d) {
 
   # set initial values in the compartments
@@ -253,6 +258,7 @@ TwoCompIVinfusion <- function(d) {
 #' IV infusion- 3 compartment
 #' @param d data, Accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,RATE, RATEALL, DV, CL, V1, Q12, V2, Q13, V3
 #' @return Returns a dataframe with populated columns for A1, A2, A3,and DV
+#' @keywords internal
 ThreeCompIVinfusion <- function(d) {
 
   # set initial values in the compartments
@@ -340,6 +346,7 @@ ThreeCompIVinfusion <- function(d) {
 #' 3-compartment IV infusion with first-order metabolite formation
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,RATE, RATEALL, DV, CL, V1, Q12, V2, Q13, V3, CLM,VM,km
 #' @return Returns a dataframe with populated columns for A1, A2, A3,and DV
+#' @keywords internal
 ThreeCompIVinfusionMetab <- function(d) {
 
   # set initial values in the compartments
@@ -437,6 +444,7 @@ ThreeCompIVinfusionMetab <- function(d) {
 #' first-order absorption 1 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V, KA & F1
 #' @return Returns a dataframe with populated columns for A1, A2 and DV
+#' @keywords internal
 OneCompOral <- function(d) {
 
   # set initial values in the compartments
@@ -471,6 +479,7 @@ OneCompOral <- function(d) {
 #' First-order absorption- 2 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q, V3, KA & F1
 #' @return Returns a dataframe with populated columns for A1, A2, A3 and DV
+#' @keywords internal
 TwoCompOral <- function(d) {
   # set initial values in the compartments
   d$A1[d$TIME==0] <- d$AMT[d$TIME==0]*d$F1[1]  # Amount in the absorption compartment at time zero.
@@ -522,6 +531,7 @@ TwoCompOral <- function(d) {
 #' first-order absorption- 3 compartment
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q3, V3, Q4, V4, KA & F1
 #' @return Returns a dataframe with populated columns for A1, A2, A3, A4 and DV
+#' @keywords internal
 ThreeCompOral <- function(d) {
 
   # set initial values in the compartments
@@ -607,6 +617,7 @@ ThreeCompOral <- function(d) {
 #' first-order absorption- 3 compartment-Metabolite
 #' @param d data, accepts a NONMEM style data frame for 1 subject with columns for TIME, AMT,MDV,DV, CL, V2, Q3, V3, Q4, V4, KA & F1
 #' @return Returns a dataframe with populated columns for A1, A2, A3, A4 and DV
+#' @keywords internal
 ThreeCompOralMetab <- function(d) {
 
   # set initial values in the compartments

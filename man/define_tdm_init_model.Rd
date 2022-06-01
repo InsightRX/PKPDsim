@@ -16,3 +16,4 @@ model defintion with `state_init` object added describing how to initializing th
 \description{
 Currently only available for 1-cmt and 2-cmt IV models
 }
+\keyword{internal}

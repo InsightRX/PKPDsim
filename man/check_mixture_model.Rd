@@ -14,3 +14,4 @@ check_mixture_model(mixture, parameters)
 \description{
 Check that mixture model is specified in right format and within constraints (1 parameter, 2 groups)
 }
+\keyword{internal}

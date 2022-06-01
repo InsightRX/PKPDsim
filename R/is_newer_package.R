@@ -6,7 +6,7 @@
 #'
 #' @param package R package
 #' @param new_version new version number
-#'
+#' @keywords internal
 is_newer_package <- function(package, new_version) {
     installed_version <- NULL
     tryCatch({

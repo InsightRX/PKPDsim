@@ -5,7 +5,7 @@
 #' @param analytical analytical equation, taking parameters `amt`, `parameters`, and `t`, and returning a vector of values for `y`
 #' @param design design dataset created by `sim_ode`
 #' @param parameters list of parameters
-#'
+#' @keywords internal
 analytical_eqn_wrapper <- function(analytical, design = NULL, parameters) {
   doses <- which(design$evid == 1)
   dat <- data.frame(time = design$t, y = 0)

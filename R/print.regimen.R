@@ -4,6 +4,7 @@
 #' @param ... arguments to pass
 #' @return No return value, print function.
 #' @export
+#' @keywords internal
 print.regimen <- function(x, ...) {
   if(!is.null(x) && !is.null(x$dose_times) && length(x$dose_times) > 0) {
     tmp <- data.frame(cbind(t = x$dose_times, type = x$type, amt = x$dose_amts, cmt = x$cmt))

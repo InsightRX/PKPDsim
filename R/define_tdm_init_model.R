@@ -4,8 +4,8 @@
 #'
 #' @param def model definition, named recursive list with at least the
 #' objects `misc$model_type`, `parameters` and `variables`
-#' @returns model defintion with `state_init` object added describing how to initializing the compartments.
-
+#' @return model defintion with `state_init` object added describing how to initializing the compartments.
+#' @keywords internal
 define_tdm_init_model <- function(def){
   if(!is.null(def$state_init)) {
     stop("Sorry, state init already specified. Cannot override for TDM-based initializiaton.")

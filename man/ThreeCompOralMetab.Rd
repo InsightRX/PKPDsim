@@ -15,3 +15,4 @@ Returns a dataframe with populated columns for A1, A2, A3, A4 and DV
 \description{
 first-order absorption- 3 compartment-Metabolite
 }
+\keyword{internal}

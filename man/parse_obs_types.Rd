@@ -14,3 +14,4 @@ which variable(s) are associated with a particular compartment, e.g.
 \description{
 Parse observation types to simulation code
 }
+\keyword{internal}

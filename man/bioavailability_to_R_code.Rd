@@ -18,3 +18,4 @@ character string of length 1
 Specialized wrapper around `vector_to_R_code` that makes reasonable PK
 assumptions for when the bioavailability specification is NULL.
 }
+\keyword{internal}

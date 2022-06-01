@@ -19,3 +19,4 @@ Used by \code{\link[=sim]{sim()}} to arrange data from ode() function into the c
 \seealso{
 \code{\link[=sim]{sim()}}
 }
+\keyword{internal}
