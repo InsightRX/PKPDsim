@@ -5,15 +5,9 @@
 ## Installation
 
 ```
-library(devtools)
-install_github("InsightRX/PKPDsim")
-library(PKPDsim)
+install.packages("PKPDsim")
 ```
 
-## Documentation
-
-[PKPDsim documentation](http://pkpdsim.insight-rx.com/)
-
-## License
-
-[MIT license](https://opensource.org/licenses/MIT)
+<div align="right">
+© <img src="man/figures/insightrx_logo_color.png" alt="InsightRX logo" width="120" />
+</div>
