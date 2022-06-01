@@ -16,3 +16,4 @@ is_newer_package(package, new_version)
 Technically it only checks if a package version is different, not necessarily
 a higher version number.
 }
+\keyword{internal}

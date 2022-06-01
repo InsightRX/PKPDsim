@@ -9,6 +9,7 @@
 #' @param covariates covariates
 #' @param model model
 #' @param obs_type observation type
+#' @keywords internal
 create_event_table <- function(
   regimen,
   t_max = NULL,

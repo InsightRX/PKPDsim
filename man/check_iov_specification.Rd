@@ -19,3 +19,4 @@ Inter-occasion variability (IOV) is expected to be supplied as a list with
 for each PK parameter. This function then checks to ensure that the PK code
 or ODE code contains an IOV term for each PK parameter specified.
 }
+\keyword{internal}

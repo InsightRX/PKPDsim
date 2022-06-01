@@ -2,7 +2,7 @@
 #'
 #' @param mixture mixture model specification (as list, e.g. `list("CL" = list(values=c(5, 10), probability=0.3))`)
 #' @param parameters vector of parameter names
-#'
+#' @keywords internal
 check_mixture_model <- function(mixture, parameters) {
   if(!is.null(mixture)) {
     if(length(names(mixture)) > 1) {

@@ -17,3 +17,4 @@ Collapses a vector into a comma-separated list with strings quoted
 (and special characters escaped). A general purpose helper function
 for writing new model code.
 }
+\keyword{internal}

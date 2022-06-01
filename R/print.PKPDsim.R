@@ -4,6 +4,7 @@
 #' @param ... additional arguments
 #' @return No return value, print function.
 #' @export
+#' @keywords internal
 print.PKPDsim <- function(x, ...) {
   cat(paste0("ODE definition: \n", attr(x, "code")), "\n")
   if(!is.null(attr(x, "pk_code")) && attr(x, "pk_code") != "") {

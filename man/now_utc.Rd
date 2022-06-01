@@ -12,3 +12,4 @@ POSIXct object containing current time in UTC
 \description{
 Current time in UTC
 }
+\keyword{internal}

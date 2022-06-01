@@ -19,7 +19,8 @@ Description: Simulate dose regimens for pharmacokinetic-pharmacodynamic (PK-PD)
         ADVAN-style analytical equations is also supported (Abuhelwa et al. (2015) 
         <doi:10.1016/j.vascn.2015.03.004>).
 License: MIT + file LICENSE
-URL: https://github.com/InsightRX/PKPDsim
+URL: https://github.com/InsightRX/PKPDsim,
+    https://insightrx.github.io/PKPDsim/
 LazyData: TRUE
 RoxygenNote: 7.2.0
 Config/testthat/edition: 3

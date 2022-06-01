@@ -32,3 +32,4 @@ Abuhelwa, A. Y., Foster, D. J. R., Upton, R. N. (2015)
   ADVAN-style analytical solutions for common pharmacokinetic models. J
   Pharmacol Toxicol Methods 73:42-8. DOI: 10.1016/j.vascn.2015.03.004
 }
+\keyword{internal}

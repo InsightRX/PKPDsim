@@ -8,4 +8,5 @@
 #' @importFrom utils packageVersion tail
 #' @importFrom stats aggregate qnorm quantile reshape rnorm
 #' @importFrom magrittr `%>%`
+#' @keywords internal
 NULL

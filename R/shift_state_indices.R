@@ -3,7 +3,7 @@
 #'
 #' @param ode_def ODE definition
 #' @param n add/substract what number, default = -1
-#'
+#' @keywords internal
 shift_state_indices <- function(ode_def, n = -1) {
 
   shift <- function(ode_def, n = -1, regxp = "A") {

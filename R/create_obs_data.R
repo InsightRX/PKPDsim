@@ -7,6 +7,7 @@
 #' @param id ID of the individual
 #' @seealso [sim()]
 #' @md
+#' @keywords internal
 create_obs_data <- function(ode_data, obs_attr, id) {
   if(!is.null(obs_attr) && length(obs_attr$cmt) > 1) {
     lab <- vapply(seq_along(obs_attr$cmt), function(x) {

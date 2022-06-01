@@ -3,6 +3,7 @@
 #' @param obs specified observation object including at least a description of
 #'       which variable(s) are associated with a particular compartment, e.g.
 #'       `list(variable="CONC", scale="1")`.
+#' @keywords internal
 parse_obs_types <- function(obs) {
   if(length(obs$variable) == 1) {
     tmp <- paste0("      obs.insert(obs.end(), ", obs$variable, "); ")

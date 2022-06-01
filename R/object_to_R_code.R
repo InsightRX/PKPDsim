@@ -6,7 +6,7 @@
 #'
 #' @param vec a vector
 #' @return character string of length 1
-
+#' @keywords internal
 vector_to_R_code <- function(vec) {
   if (is.null(vec)) return("NULL")
   paste0("c(", paste(add_quotes(vec), collapse = ", "), ")")
@@ -21,7 +21,7 @@ vector_to_R_code <- function(vec) {
 #'   in all compartments), a single value (assume it applies to all
 #'   compartments), or a vector of values.
 #' @return character string of length 1
-
+#' @keywords internal
 bioavailability_to_R_code <- function(bioav) {
   if (is.null(bioav)) bioav <- "1"
   vector_to_R_code(as.character(bioav))

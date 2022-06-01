@@ -8,7 +8,7 @@
 #' @param iov IOV specifications, provided as a nested named list.
 #' @param code C++ ODE code, supplied as a string
 #' @param pk_code C++ PK code, supplied as a string
-
+#' @keywords internal
 check_iov_specification <- function(iov, code, pk_code){
   if(is.null(iov$cv) || class(iov$cv) != "list" || is.null(iov$n_bins)) {
     stop("IOV misspecified.")

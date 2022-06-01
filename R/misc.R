@@ -96,6 +96,7 @@ print_list <- function(x, wrapper = TRUE, quote = FALSE) {
 #' Current time in UTC
 #'
 #' @return POSIXct object containing current time in UTC
+#' @keywords internal
 now_utc <- function() {
   as.POSIXct(as.POSIXlt(Sys.time(), tz = "UTC"))
 }

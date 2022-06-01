@@ -4,6 +4,7 @@
 #' @param ... additional arguments
 #' @return No return value, print function.
 #' @export
+#' @keywords internal
 print.covariate <- function(x, ...) {
   if(! "covariate" %in% class(x)) {
     stop("Not a PKPDsim covariate object")

@@ -15,3 +15,4 @@ Returns a dataframe with populated columns for A1, A2, A3,and DV
 \description{
 IV bolus- 3 compartment
 }
+\keyword{internal}

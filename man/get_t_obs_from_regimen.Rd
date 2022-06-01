@@ -29,3 +29,4 @@ get_t_obs_from_regimen(
 \description{
 Extract sensible default observation times from a specified regimen
 }
+\keyword{internal}

@@ -38,3 +38,4 @@ create_event_table(
 \description{
 Create an event table
 }
+\keyword{internal}
