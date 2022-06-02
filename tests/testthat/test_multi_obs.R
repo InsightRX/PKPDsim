@@ -164,7 +164,8 @@ test_that("multi-obs with baseline and obs_time = dose_time works correctly", {
   )
 })
 
-test_that("multi-obs model simlates correctly (bug 202205)", {
+test_that("multi-obs model simulates correctly (bug 202205)", {
+  skip_on_cran()
 
   pars <- list(
     CL = 23.9,
