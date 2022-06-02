@@ -158,8 +158,79 @@ test_that("multi-obs with baseline and obs_time = dose_time works correctly", {
     tmp$y[tmp$obs_type == 1],
     tmp$CONC[tmp$obs_type == 1]
   )
-  expect_equal( 
+  expect_equal(
     tmp$y[tmp$obs_type == 4],
     tmp$ACT[tmp$obs_type == 4]
   )
+})
+
+test_that("multi-obs model simulates correctly (bug 202205)", {
+  skip_on_cran()
+
+  pars <- list(
+    CL = 23.9,
+    CLM = 5.19,
+    V = 107,
+    Q = 3.31,
+    V2 = 46.2,
+    VM = 111,
+    KA = 18.6,
+    TLAG = 0.415
+  )
+  covs <- list(WT = PKPDsim::new_covariate(80))
+  mod <- new_ode_model(
+    code = "dAdt[0] = -KAi*A[0] \
+    dAdt[1] = +KAi*A[0] - (CLi/Vi)*A[1] - (Qi/Vi)*A[1] + (Qi/V2i)*A[2] \
+    dAdt[2] = +(Qi/Vi)*A[1] - (Qi/V2i)*A[2] \
+    dAdt[3] = +(CLi/Vi)*A[1] - (CLMi/VMi)*A[3] \
+    dAdt[4] = A[1]*1000.0/Vi \
+    CONC = A[1]/(Vi/1000.0) \
+    CONCM = A[3]/(VMi/1000.0) \
+    CONCT = CONC+CONCM \
+  ",
+    pk = "KAi = KA \
+    CLi = CL * pow(WT/70.0, 0.75) \
+    Vi = V *(WT/70.0) \
+    Qi = Q * pow(WT/70.0, 0.75)\
+    V2i = V2 * (WT/70.0) \
+    CLMi = CLM * pow(WT/70.0, 0.75) \
+    VMi = VM *(WT/70.0) \
+  ",
+    parameters = pars,
+    declare_variables = c( "CLi", "Vi", "V2i", "Qi", "KAi", "VMi", "CLMi", "CONC", "CONCM", "CONCT" ),
+    obs = list(
+      variable = c( "CONC", "CONCM", "CONC", "CONCM" )
+    ),
+    covariates = covs
+  )
+  regimen <- new_regimen(amt = 3.7, n=10, interval = 24, type = "oral", cmt = 1)
+  data <- data.frame(
+    t = 70,
+    y = 1,
+    evid = 0,
+    loq = 0,
+    obs_type = 2,
+    dv = 1
+  )
+  t_obs <- seq(0, 50, .5)
+  pop <- sim(
+    ode = mod,
+    regimen = regimen,
+    parameters = pars,
+    covariates = covs,
+    t_obs = rep(t_obs, each = 4),
+    only_obs = TRUE,
+    obs_type = rep(1:4, length(t_obs))
+  )
+  # correct obs_types
+  expect_equal(
+    pop[pop$t %in% c(23, 47), ]$obs_type,
+    c(1,2,3,4,1,2,3,4)
+  )
+  # correct output values
+  expect_equal(
+    round(pop[pop$t %in% c(23, 47), ]$y, 2),
+    c(0.52, 12.34, 0.52, 12.34, 0.63, 17.17, 0.63, 17.17)
+  )
+
 })

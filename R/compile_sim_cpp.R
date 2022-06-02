@@ -190,7 +190,8 @@ compile_sim_cpp <- function(
   idx9 <- grep("insert custom pk event code", cpp_code)
   idx10 <- grep("insert bioav definition", cpp_code)
   idx11 <- grep("insert custom dosing event code", cpp_code)
-  idx12 <- grep("insert saving observations", cpp_code)
+  idx12a <- grep("insert saving initial observations", cpp_code)
+  idx12b <- grep("insert saving loop observations", cpp_code)
   idx13 <- grep("insert copy observation object", cpp_code)
   idx14 <- grep("insert observation variable definition", cpp_code)
   idx15 <- grep("insert copy variables", cpp_code)
@@ -208,7 +209,8 @@ compile_sim_cpp <- function(
       cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale = ", obs$scale[1], ";")
       cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale = ", obs$scale[1], ";")
       cpp_code[idx8] <- cov_scale
-      cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale);")
+      cpp_code[idx12a] <- paste0(cpp_code[idx12a], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale);")
+      cpp_code[idx12b] <- paste0(cpp_code[idx12b], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale);")
       cpp_code[idx13] <- paste0('  comb["obs"] = obs;\n');
       cpp_code[idx14] <- "  std::vector<double> obs;"
     } else {
@@ -217,13 +219,15 @@ compile_sim_cpp <- function(
         cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale", k," = ", obs$scale[k], ";")
         cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale", k," = ", obs$scale[k], ";")
         cpp_code[idx8] <- cov_scale
-        cpp_code[idx12] <- paste0(cpp_code[idx12], "\n      obs",k,".insert(obs",k,".end(), tmp.y[k][", obs$cmt[k]-1,"] / scale", k,");")
+        cpp_code[idx12a] <- paste0(cpp_code[idx12a], "\n      obs",k,".insert(obs",k,".end(), tmp.y[k][", obs$cmt[k]-1,"] / scale", k,");")
+        cpp_code[idx12b] <- paste0(cpp_code[idx12b], "\n      obs",k,".insert(obs",k,".end(), tmp.y[k][", obs$cmt[k]-1,"] / scale", k,");")
         cpp_code[idx13] <- paste0(cpp_code[idx13], '\n  comb["obs', k,'"] = obs', k,';');
         cpp_code[idx14] <- paste0(cpp_code[idx14], "\n  std::vector<double> obs",k,";")
       }
     }
     if(!is.null(obs$variable) && length(obs$variable) > 0) {
-      cpp_code[idx12] <- parse_obs_types(obs)
+      cpp_code[idx12a] <- parse_obs_types(obs, initial = TRUE)
+      cpp_code[idx12b] <- parse_obs_types(obs, initial = FALSE)
     }
   }
   if(!is.null(variables)) {

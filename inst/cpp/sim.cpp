@@ -69,7 +69,6 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   obs_type = as<std::vector<int> >(design["obs_type"]);
   int len = times.size();
   int start;
-  int row = 0;
   memset(rate, 0, sizeof(rate));
   // insert observation compartment
   // insert bioavailability definition
@@ -123,9 +122,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
       ode_out tmp = sim_cpp(Aupd, t_start, t_start, step_size);
       // insert time-dependent covariates scale
       // insert scale definition for observation
-      // insert saving observations to obs object(s)
+      // insert saving initial observations to obs object(s)
       // insert copy variables into all variables
-      row++;
     }
     ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
     state_type tail = tmp.y.back();
@@ -145,9 +143,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     for (int k = 1; k < tmp.y.size(); k++) {
       // insert time-dependent covariates scale
       // insert scale definition for observation
-      // insert saving observations to obs object(s)
+      // insert saving loop observations to obs object(s)
       // insert copy variables into all variables
-      row++;
     }
   }
 

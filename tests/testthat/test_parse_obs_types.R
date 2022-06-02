@@ -13,11 +13,18 @@ test_that("multiple observation type", {
     variable = c("CONC", "CONCM", "PD")
   )
 
-  res <- PKPDsim:::parse_obs_types(obs3a)
+  res <- PKPDsim:::parse_obs_types(obs3a, initial = FALSE)
   expect_equal(
     res,
-    "      if (obs_type[row]==1) { obs.insert(obs.end(), CONC); } else if \n         (obs_type[row]==2) { obs.insert(obs.end(), CONCM); } else if \n         (obs_type[row]==3) { obs.insert(obs.end(), PD); } else \n         { obs.insert(obs.end(), CONC); }"
+    "      if (obs_type[i+1]==1) { obs.insert(obs.end(), CONC); } else if \n         (obs_type[i+1]==2) { obs.insert(obs.end(), CONCM); } else if \n         (obs_type[i+1]==3) { obs.insert(obs.end(), PD); } else \n         { obs.insert(obs.end(), CONC); }"
   )
+
+  res <- PKPDsim:::parse_obs_types(obs3a, initial = TRUE)
+  expect_equal(
+    res,
+    "      if (obs_type[i+0]==1) { obs.insert(obs.end(), CONC); } else if \n         (obs_type[i+0]==2) { obs.insert(obs.end(), CONCM); } else if \n         (obs_type[i+0]==3) { obs.insert(obs.end(), PD); } else \n         { obs.insert(obs.end(), CONC); }"
+  )
+
 })
 
 test_that("var and scale provided -> error", {
