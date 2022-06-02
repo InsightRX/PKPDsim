@@ -51,7 +51,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">parse_obs_types</span><span class="op">(</span><span class="va">obs</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">parse_obs_types</span><span class="op">(</span><span class="va">obs</span>, initial <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -60,6 +60,10 @@
 <dd><p>specified observation object including at least a description of
 which variable(s) are associated with a particular compartment, e.g.
 `list(variable="CONC", scale="1")`.</p></dd>
+<dt>initial</dt>
+<dd><p>is this for the initial code block in the C++ template that
+initializes the variables and compartments (`TRUE`), or for the
+second code block used for the rest of the dataset?</p></dd>
 </dl></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
