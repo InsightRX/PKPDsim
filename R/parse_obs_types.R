@@ -3,6 +3,10 @@
 #' @param obs specified observation object including at least a description of
 #'       which variable(s) are associated with a particular compartment, e.g.
 #'       `list(variable="CONC", scale="1")`.
+#' @param initial is this for the initial code block in the C++ template that
+#'       initializes the variables and compartments (`TRUE`), or for the
+#'       second code block used for the rest of the dataset?
+#'
 #' @keywords internal
 parse_obs_types <- function(obs, initial = FALSE) {
   if(length(obs$variable) == 1) {
@@ -15,7 +19,7 @@ parse_obs_types <- function(obs, initial = FALSE) {
       tmp <- c(
         tmp,
         paste0(
-          "      ", str_if, " (obs_type[i+", ifelse(initial, 0, 1), 
+          "      ", str_if, " (obs_type[i+", ifelse(initial, 0, 1),
           "]==", i, ") { obs.insert(obs.end(), ", obs$variable[i], "); } ",
           str_else, " "
         )
