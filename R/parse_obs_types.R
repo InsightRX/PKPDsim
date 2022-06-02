@@ -4,7 +4,7 @@
 #'       which variable(s) are associated with a particular compartment, e.g.
 #'       `list(variable="CONC", scale="1")`.
 #' @keywords internal
-parse_obs_types <- function(obs) {
+parse_obs_types <- function(obs, initial = FALSE) {
   if(length(obs$variable) == 1) {
     tmp <- paste0("      obs.insert(obs.end(), ", obs$variable, "); ")
   } else {
@@ -15,8 +15,8 @@ parse_obs_types <- function(obs) {
       tmp <- c(
         tmp,
         paste0(
-          "      ", str_if, " (obs_type[row]==", i, ")",
-          " { obs.insert(obs.end(), ", obs$variable[i], "); } ",
+          "      ", str_if, " (obs_type[i+", ifelse(initial, 0, 1), 
+          "]==", i, ") { obs.insert(obs.end(), ", obs$variable[i], "); } ",
           str_else, " "
         )
       )
