@@ -2,3 +2,30 @@ url: https://insightrx.github.io/PKPDsim/
 template:
   bootstrap: 5
 
+articles:
+  - title: Intro
+    navbar: ~
+    contents:
+      - getting-started
+  - title: Documentation
+    navbar: Documentation
+    contents:
+      - model
+      - regimen
+      - parameters
+      - simulation
+      - output
+      - variability
+      - error
+      - covariates
+      - plotting
+      - export-model
+      - speed
+      - estimation-nlmixr
+  - title: More Examples
+    navbar: More Examples
+    contents:
+      - example-absorption-lagtime
+      - example-absorption-transit
+      - example-pkpd-model
+      - example-shiny-app
