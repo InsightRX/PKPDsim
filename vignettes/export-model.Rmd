@@ -12,20 +12,25 @@ vignette: >
 
 PKPDsim allows you to export your ODE model to a precompiled R package. The benefit of doing so is that compilation (which usually takes 3-5 seconds) has to be done only when the package is created, and not when it is reloaded into R. This is useful for example when you want to create a Shiny app using a PKPDsim model, as it will remove the delay due to the compilation when starting the Shiny app. You can export to a package using the `package` argument to `new_ode_model`. With the `install` option you can control whether the package should be installed into R (default), or exported to a zip-file (`install=FALSE`). Example:
 
-    library(PKPDsim)
-    p <- list(CL = 5, V = 50)
-    reg <- new_regimen (amt = 100, n = 4, interval = 12, type = "bolus",  cmt=1)
+```{r export-example, eval = FALSE}
+library(PKPDsim)
+p <- list(CL = 5, V = 50)
+reg <- new_regimen (amt = 100, n = 4, interval = 12, type = "bolus",  cmt=1)
 
-    new_ode_model(
-      code = "
-        dAdt[1] = -(CL/V) * A[1]
-      ",
-      dose = list(cmt = 1, bioav = 1),
-      obs = list(cmt = 1, scale = "V"),
-      parameters = p,
-      package = "pktest", install = TRUE
-    )
+new_ode_model(
+  code = "
+    dAdt[1] = -(CL/V) * A[1]
+  ",
+  dose = list(cmt = 1, bioav = 1),
+  obs = list(cmt = 1, scale = "V"),
+  parameters = p,
+  package = "pktest",
+  install = TRUE
+)
 
-    library(pktest)
-    mod <- pktest::model()
-    dat <- sim(mod, parameters = p, regimen = reg)
+library(pktest)
+mod <- pktest::model()
+dat <- sim(mod, parameters = p, regimen = reg)
+```
+    
+

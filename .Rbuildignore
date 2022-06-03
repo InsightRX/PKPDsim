@@ -10,3 +10,8 @@ cran-comments.md
 ^docs$
 ^pkgdown$
 ^\.github$
+vignettes/estimation-nlmixr.Rmd
+vignettes/error.Rmd
+vignettes/example-pkpd-model.Rmd
+vignettes/getting-started.Rmd
+vignettes/variability.Rmd
