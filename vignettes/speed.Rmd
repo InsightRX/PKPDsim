@@ -7,8 +7,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Speed
-
 The simulation backend in `PKPDsim` uses an ODE solver written in C++ (`Boost::odeint`) to make sure simulations are fast. Therefore, for most simulation problems computational speed will not be an issue. Even simulating thousands (or millions) of patients for complex models will rarely take more than a few minutes. Simpler simulation problems will commonly take seconds to complete.
 
 However, in some special cases speed could become an issue, and for that it is important to understand the structure of PKPDsim's main function (`sim()`) because. The `sim()` function is composed of three parts:
@@ -39,6 +37,8 @@ There is a different way to solve ODEs with `PKPDsim` though, which uses only th
     }
     # potentially any post-processing here
 
-## Comparison with other packages
+# Comparison with other packages
 
-The R package `RxODE` implements a similar approach (i.e. overhead from pre- / post-processing separated from main simulation function) by default, while `mrgsolve` is more similar to `PKPDsim` with much overhead inside the main simulation function. Therefore, especially when used in an iterative context, `RxODE` will be much faster than `PKDPsim` and `mrgsolve` by default, while `PKPDsim` and `mrgsolve` are broadly similar in terms of speed. However, when using the `sim_core()` function as outlined above, our benchmarks indicate that simulation speed for `PKDDsim` is highly similar to that obtained with the `RxODE` package.
+Several other open source R packages provide similar features as PKPDsim, the main ones being `RxODE` (now renamed to `rxode2`) and `mrgsolve`. 
+
+In the `rxode2` package, the overhead from pre- and post-processing is separated from the main simulation function by default, while `mrgsolve` is more similar to `PKPDsim` with the overhead being included within the main simulation function. Therefore, especially when used in an iterative context, `RxODE` will seem much faster than `PKDPsim` and `mrgsolve`, while `PKPDsim` and `mrgsolve` will seem broadly similar. However, when using the `sim_core()` function as outlined above, our benchmarks indicate that simulation speed for `PKDDsim` is highly similar to that obtained with the `RxODE` package.

@@ -7,10 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
-# Regimen
-
 Regimens are defined using the `new_regimen()` function. You should provide information on the dose amount, how many doses, and the dosing interval. However, how you provide that information is very flexible. You can e.g. specify:
+
+```{r load-lib, echo=FALSE}
+library("PKPDsim")
+```
 
 ```{r reg1}
 reg1 <- new_regimen(
@@ -65,7 +66,7 @@ Which will administer the doses to compartments 1, 1, 2, 2, and 3, respectively 
 
 *Note: `PKPDsim` doesn't care about what unit the dose is in, you have to define this yourself in conjunction with the model code and observation scale.*
 
-## Steady state
+# Steady state
 
 Instead of simulating the full concentration time course for a give model,
 if you want to simulate the PK(PD) at steady state, you can also specify
@@ -74,3 +75,14 @@ regimen at steady state. By default, steady state is assumed to occur after
 5 days (PKPDsim doesn't check if steady state is reached!), but if you want
 to decrease or increase this you can do so by specifying the `n_ss` argument
 which takes the number of doses to simulate before assuming steady state.
+
+```{r reg_ss}
+reg_ss <- new_regimen(
+  amt = 100,
+  interval = 12,
+  n = 5,
+  ss = TRUE,
+  n_ss = 10
+)
+reg_ss
+```

@@ -7,10 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
-# Example: PKPD model
-
-Below is an example of a simple indirect-response model. With PK-PD models, the inital state of the PD system often depends on specific model parts. We can define the state of the ODE system statically using the `A_init=` argument, but this will not any (individual) parameters into account. However, we can also define initial states dynamically using the `state_init` argument, so that for each inidividual the desired initial state will be calculated:
+Below is an example of a simple indirect-response model. With PK-PD models, the inital state of the PD system often depends on specific model parts. We can define the state of the ODE system statically using the `A_init=` argument, but this will not take any parameters into account. However, we can also define initial states dynamically using the `state_init` argument, which allow you to specify the state of each compartment using code. 
 
 ```{r example-pkpd}
 library("PKPDsim")
@@ -43,7 +40,7 @@ dat <- sim(
   ode = pkpd,
   n_ind = 25,
   omega = cv_to_omega(
-    par_cv = list("CL"=0.1, "V"=0.1, "KIN" = .05, "KOUT"= 0.1),
+    par_cv = list(CL = 0.1, V = 0.1, KIN = .05, KOUT = 0.1),
     p_pkpd
   ),
   parameters = p_pkpd,
@@ -58,10 +55,9 @@ ggplot(dat, aes(x = t, y = y, colour = factor(id))) +
 ```
 
 
-## Combine PK and PD models
+# Combine PK and PD models
 
-As shown above, a PK-PD model can be written as a single set of differential equations. However, we often develop PK and PD models separately and e.g. want to plug various PK models into existing PD models. This can be done easily in `PKPDsim` by specifying the model parts in a list to the `code` argument:
-
+As shown above, a PK-PD model can be written as a single set of differential equations. However, we often develop PK and PD models separately and e.g. want to plug various PK models into existing PD models. In `PKPDsim` you can two or more model parts separately in a list to the `code` argument:
 
 ```{r separate-pk-pd}
 pkpd <- new_ode_model(
@@ -72,3 +68,5 @@ pkpd <- new_ode_model(
   state_init = list(pd = "A[1] = KIN/KOUT;")
 )
 ```
+
+The above two systems of ODEs will then be combined into a single one.

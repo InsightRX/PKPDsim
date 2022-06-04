@@ -24,6 +24,5 @@ articles:
   - title: More Examples
     navbar: More Examples
     contents:
-      - example-absorption-lagtime
-      - example-absorption-transit
+      - example-absorption-models
       - example-pkpd-model
