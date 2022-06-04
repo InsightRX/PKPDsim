@@ -18,7 +18,6 @@ articles:
       - variability
       - error
       - covariates
-      - plotting
       - export-model
       - speed
       - estimation-nlmixr
@@ -28,4 +27,3 @@ articles:
       - example-absorption-lagtime
       - example-absorption-transit
       - example-pkpd-model
-      - example-shiny-app
