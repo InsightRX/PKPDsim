@@ -3,7 +3,7 @@ title: "Estimation: nlmixr"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Estimation: nlmixr}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -67,7 +67,6 @@ conc <- sim(
   dplyr::select(ID = id, TIME = t, CMT, DV = y, AMT, EVID, MDV)
 doses <- regimen_to_nm(regimen, n_ind = n)
 simdat <- dplyr::bind_rows(doses, conc) %>% dplyr::arrange(ID, TIME)
-d <- nmDataConvert(simdat)
 
 ## Create nlmixr model object
 f <- pkpdsim_to_nlmixr(

@@ -3,7 +3,7 @@ title: "Export model"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Export model}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
 

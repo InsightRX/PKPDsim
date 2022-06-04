@@ -3,7 +3,7 @@ title: "Residual error"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Residual error}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
 

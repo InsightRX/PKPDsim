@@ -3,7 +3,7 @@ title: "Covariates"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Covariates}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
 

@@ -3,7 +3,7 @@ title: "Regimen"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Regimen}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
 
