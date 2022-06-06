@@ -7,10 +7,9 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
 # Residual error
 
-PKPDsim can simulate residual errors on top of your observed data, which
+PKPDsim can simulate residual errors in your observed data, which
 can be done with the `res_var` argument to the `sim()` function.
 This argument requires a `list()` with one or more of the
 following components:
@@ -25,10 +24,14 @@ would give a 10% proportional error plus an additive error of 1 concentration un
 
 Below are some examples of the `res_var` argument
 
-```{r example}
+```{r load-lib, echo=FALSE}
 library(PKPDsim)
 library(ggplot2)
- 
+```
+
+Combined proportional and additive:
+
+```{r example}
 mod <- new_ode_model("pk_1cmt_iv")
 reg <- new_regimen(
   amt = 1000,
@@ -36,8 +39,6 @@ reg <- new_regimen(
   interval = 12,
   type = "bolus"
 )
-
-## Combined proportional and additive
 sim1 <- sim(
   mod,
   parameters = list(CL = 5, V = 150),
@@ -45,11 +46,14 @@ sim1 <- sim(
   regimen = reg,
   only_obs=TRUE
 )
-
 ggplot(sim1, aes(x = t, y = y)) +
   geom_point()
 
-## Exponential
+```
+
+Exponential:
+
+```{r exp}
 sim2 <- sim(
   mod,
   parameters = list(CL = 5, V = 150),
@@ -64,8 +68,13 @@ include it afterwards. For that, the function `add_ruv()` is useful.
 
 ```{r example-2}
 sim3 <- sim1
-sim3$y <- add_ruv(sim3$y, list(prop = 0.1, add = 1))
-
+sim3$y <- add_ruv(
+  x = sim3$y, 
+  ruv = list(
+    prop = 0.1, 
+    add = 1
+  )
+)
 ggplot(sim3, aes(x = t, y = y)) +
   geom_point()
 ```

@@ -7,10 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
-# Parameters
-
-Parameters are just specified as a `list` object in R. Example:
+Parameters are just specified as a `list` object in R. For example:
 
 ```{r params}
 pars <- list(
