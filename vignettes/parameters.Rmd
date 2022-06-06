@@ -3,7 +3,7 @@ title: "Parameters"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Parameters}
-  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

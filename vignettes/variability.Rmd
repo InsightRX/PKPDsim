@@ -3,7 +3,7 @@ title: "Variability"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Variability}
-  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

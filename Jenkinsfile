@@ -11,10 +11,10 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
       }
       steps {
-        echo "Running irx-r-base container"
+        echo "Building Docker image"
         sh """
         \$(aws ecr get-login --no-include-email --region us-west-2 &> /dev/null)
-        docker run -dt --name ${BUILD_TAG} 579831337053.dkr.ecr.us-west-2.amazonaws.com/irx-r-base:latest
+        docker build -t pkpdsim .
         """
       }
 
@@ -28,9 +28,8 @@ pipeline {
         This line can be removed when processx (called by rcmdcheck) is updated.
         */
         sh """
-        docker cp . ${BUILD_TAG}:/src/PKPDsim
-        docker exec -i ${BUILD_TAG} Rscript -e "install.packages('mockery')"
-        docker exec -i ${BUILD_TAG} Rscript -e "Sys.setlocale('LC_ALL','C'); devtools::check('/src/PKPDsim')"
+        docker run -d -t --name ${BUILD_TAG} pkpdsim:latest
+        docker exec -i ${BUILD_TAG} Rscript -e "Sys.setlocale('LC_ALL','C'); devtools::check()"
         """
       }
     }

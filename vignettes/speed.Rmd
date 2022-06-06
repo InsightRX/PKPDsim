@@ -3,7 +3,7 @@ title: "Speed"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Speed}
-  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

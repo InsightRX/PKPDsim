@@ -3,7 +3,7 @@ title: "Estimation: nlmixr2"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Estimation: nlmixr2}
-  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 

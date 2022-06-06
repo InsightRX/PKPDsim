@@ -3,7 +3,7 @@ title: "Absorption models"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Absorption models}
-  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
