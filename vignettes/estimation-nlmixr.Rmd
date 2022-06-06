@@ -10,7 +10,7 @@ vignette: >
 # Introduction
 
 While the `PKPDsim` R package does not include functionality to perform population estimation within the package, it does offer
-a convenient translator to be able to use the [`nlmixr` R package](http://nlmixr.org) for parameter estimation. `nlmixr2` allows fitting of
+a convenient translator to be able to use the [`nlmixr2` R package](https://nlmixr2.github.io/nlmixr2/) for parameter estimation. `nlmixr2` allows fitting of
 population PK-PD models using common algorithms applied in pharmacometrics, such as *FOCE* and *SAEM*. For installation and usage of `nlmixr2`, please refer to the documentation in the `nlmixr2` package and on the respective website.
 
 # Translation
