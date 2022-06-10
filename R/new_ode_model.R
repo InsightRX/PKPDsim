@@ -427,11 +427,9 @@ new_ode_model <- function (model = NULL,
         # Run R CMD BUILD to zip file
         args <- c("CMD", "build", normalizePath(file.path(folder, package)))
         system2(cmd, args, stdout = quiet, stderr = quiet)
-        pkg_file <- paste0(new_folder, .Platform$file.sep, package, "_", version, ".tar.gz")
-        pkg_newfile <- paste0(getwd(), .Platform$file.sep, package, "_", version, ".tar.gz")
+        pkg_file <- paste0(package, "_", version, ".tar.gz")
         if(file.exists(pkg_file)) {
-          file.copy(pkg_file, pkg_newfile)
-          message(paste0("Package built in: ", pkg_newfile))
+          message(paste0("Package built in: ", file.path(getwd(), pkg_file)))
         } else {
           message("Package not created.")
         }
