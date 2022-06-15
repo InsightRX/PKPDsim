@@ -1,0 +1,55 @@
+---
+title: "Simulation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The `sim()` function will combine the model, the parameters, and the regimen, and simulate out the ODE system. It will return a `data.frame` in the long format, i.e. one observation per row, and split by compartment and individual. The command for `sim()` looks e.g. like this:
+
+```{r load-lib, echo=FALSE}
+library("PKPDsim")
+```
+
+```{r sim, eval=FALSE}
+dat <- sim(
+  ode = model,              # created using new_ode_model()
+  parameters = parameters,  # a named list of parameter values
+  regimen = regimen         # created using new_regimen
+)
+```
+
+Here is a minimal example using real code:
+
+```{r sim-real-example}
+model <- new_ode_model("pk_1cmt_iv")
+parameters <- list(CL = 5, V = 50)
+regimen <- new_regimen(
+  amt = 100,
+  n = 3,
+  interval = 12,
+  type = "infusion",
+  t_inf = 2
+)
+
+dat1 <- sim(
+  ode = model,
+  parameters = parameters,
+  regimen = regimen
+)
+head(dat1)
+```
+
+By default, the observation times will include an observation every 1 hour. However, you can specify a vector of observation times to get only those observations:
+
+```{r obs-times}
+dat2 <- sim(
+  ode = model,
+  parameters = parameters,
+  regimen = regimen,
+  t_obs = c(0.5, 2, 4, 8, 12, 16, 24)
+)
+head(dat2)
+```

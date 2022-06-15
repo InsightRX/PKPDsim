@@ -1,0 +1,98 @@
+---
+title: "Getting started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Installation
+
+PKPDsim can be installed from CRAN:
+
+```{r cran, eval=FALSE}
+install.packages("PKPDsim")
+```
+
+Or you can install the development version from GitHub:
+
+```{r gh, eval=FALSE}
+devtools::install_github("InsightRX/PKPDsim")
+```
+
+# First simulation
+
+The main simulation function in `PKPDsim` is `sim()`. To be able to simulate a dosing regimen for a specific drug, at least the following **three** arguments are required:
+
+- `ode`: the compiled ODE model (created using the `new_ode_model()` function)
+- `parameters`: a `list` of parameter values for the model
+- `regimen`: the dosing regimen (created using the `new_regimen()` function)
+
+The model library in PKPDsim contains a small library of built-in PK and PD models, but of course more interesting is its ability to handle user-specified ODE systems. However, as a first example, let's implement the most simple example from the library:
+
+```{r load-lib, echo=FALSE}
+library("PKPDsim")
+library("ggplot2")
+```
+
+```{r intro-example}
+p <- list(CL = 1, V  = 10, KA = 0.5)
+pk1 <- new_ode_model("pk_1cmt_oral")
+r1 <- new_regimen(
+  amt = 100,
+  n = 5,
+  interval = 12
+)
+dat <- sim(
+  ode = pk1,
+  parameters = p,
+  regimen = r1
+)
+```
+
+You probably noticed that the `new_ode_model()`-step took a few seconds to finish, while the simulation itself was in the order of milliseconds. In `new_ode_model()`, the model is compiled from C++ source code to binary code, which takes a few seconds. However, this has to be done only once. After compilation, the model is then available to be used in `sim()` for as long as the R session is open.
+
+Let's look at the output. `PKPDsim` will output data in the "long" format, i.e. one row per observed timepoint, and split by compartment:
+
+```{r view-dat}
+head(dat)
+```
+
+To check what output was produced by `sim()`, let's plot it (installation of `ggplot2` required).
+
+```{r plot-example}
+ggplot(dat, aes(x = t, y = y)) +
+  geom_line() +
+  facet_wrap(~ comp)
+```
+
+# Custom ODE model
+
+We can write the same exact model using custom ODE code. The following example will also only output the concentration (`only_obs=TRUE`), and not the amounts in each compartment. We're also going to use an infusion instead of bolus injection:
+
+```{r custom}
+pk2 <- new_ode_model(
+  code = "dAdt[1] = -(CL/V) * A[1]",
+  obs = list(cmt = 1, scale = "V"),
+  dose = list(cmt = 1)
+)
+r2 <- new_regimen(
+  amt = 100,
+  n = 5,
+  interval = 12,
+  type = "infusion",
+  t_inf = 2
+)
+dat2 <- sim(
+  ode = pk2,
+  parameters = p,
+  regimen = r2,
+  only_obs = TRUE
+)
+```
+
+```{r plot-example2}
+ggplot(dat2, aes(x = t, y = y)) +
+  geom_line()
+```

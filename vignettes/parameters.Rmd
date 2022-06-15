@@ -1,0 +1,18 @@
+---
+title: "Parameters"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Parameters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Parameters are just specified as a `list` object in R. For example:
+
+```{r params}
+pars <- list(
+  "KA" = 1,
+  "CL" = 5,
+  "V" = 50
+)
+```

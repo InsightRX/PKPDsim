@@ -1,0 +1,112 @@
+---
+title: "Covariates"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Covariates}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Covariates
+
+Covariates are implemented using the `new_covariate()` function, wrapped in a 
+named list. For example:
+
+```{r load-lib, echo=FALSE}
+library(PKPDsim)
+```
+
+```{r cov}
+covariates <- list(
+  "WT" = new_covariate(value = 70),
+  "SCR" = new_covariate(value = 120)
+)
+```
+
+The names in the covariate list-object should correspond **exactly** with the names of the covariates in the model.
+
+## Time-varying covariates
+
+Time-varing covariates, such as creatinine values can be implemented easily as well. They just require the additional `times` argument:
+
+```{r timevarying-cov}
+covariates <- list(
+  "WT" = new_covariate(value = 70),
+  "CR" = new_covariate(
+    value = c(0.8, 1, 1.2),
+    times = c(0, 48, 72)
+  )
+)
+```
+
+By default, `PKPDsim` assumes that you want to interpolate (linearly) between 
+measurements of the time-varying covariates. If you prefer to implement the 
+covariate using *last-observation-carried-forward* (in other words a step 
+function), specify the `method = "LOCF"` argument to `new_covariate()`.
+
+## Covariates for multiple patients
+
+A table of covariates can be supplied to `sim()` with covariate values per 
+individual. It can handle both static and time-varying covariates. A covariate 
+table could look like this:
+
+```{r cov-table}
+cov_table <- data.frame(
+  id  = c(1, 1, 2, 3),
+  WT  = c(40, 45, 50, 60),
+  SCR = c(50, 150, 90, 110),
+  t   = c(0, 5, 0, 0)
+)
+```
+
+The `id` and `t` (time) columns can be omitted when only static covariates are 
+to be used. Again, make sure that the headers used for the covariates match 
+*exactly* with the covariate names specified in the model definition.
+
+A full example for a model with (simulated) covariates for a patient population:
+
+```{r full-ex}
+parameters <- list(
+  CL = 1,
+  V = 10,
+  KA = 0.5
+)
+n_ind <- 50
+cov_table <- data.frame(
+  'id' = 1:n_ind,
+  'WT' = rnorm(n_ind, mean = 70, sd = 5)
+)
+
+model <- new_ode_model(
+  code = '
+     CLi = CL * pow((WT/70), 0.75)
+     Vi  = V * (WT/70)
+     dAdt[1] = -KA*A[1]
+     dAdt[2] =  KA*A[1] -(CLi/Vi)*A[2]
+   ',
+   declare_variables = c('CLi', 'Vi'),
+   covariates = c('WT'),
+   dose = list(cmt = 1),
+   obs = list(cmt = 2, scale = 'V * (WT/70)')
+)
+
+regimen <- new_regimen(
+  amt  = 30,
+  n = 4,
+  type = 'bolus',
+  interval = 12
+)
+
+dat <- sim(
+  ode = model,
+  parameters = parameters,
+  t_obs = c(0.5, 2, 4, 8, 12, 16, 24),
+  n_ind = n_ind,
+  regimen = regimen,
+  covariates_table = cov_table,
+  output_include = list(covariates = TRUE)
+)
+```
+
+*Note: PKPDsim does not handle missing covariate values. If you do have missing covariate data, probably the best approach would be to impute the values manually before simulation, e.g. based on the mean observed / known value, or the correlation between the covariates.*
+
