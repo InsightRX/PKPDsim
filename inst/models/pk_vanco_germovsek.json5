@@ -1,0 +1,61 @@
+{
+  "id": "pk_vanco_germovsek",
+  "ode_code": "\
+    dAdt[0] = -(CLi / Vi) * A[0];\
+    dAdt[1] = (A[0]/Vi);",
+  "pk_code": "\
+    HILL = 3.33\
+    TM50 = 55.4\
+    Fallo = pow((WT/70.0), 0.632)\
+    Fmat = pow(PMA, HILL) / (pow(TM50, HILL) + pow(PMA, HILL))\
+    CLi = CL * Fallo * Fmat + CL_HEMO\
+    Vi =  V * (WT/70.0)",
+  "n_comp": 2,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * (WT/70.0)"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "parameters": {
+    "CL": 5.7329,
+    "V": 39.26
+  },
+  "omega_matrix": [
+    0.103194,
+    0.0444473,
+    0.0999011
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0.2965,
+    "add": 0.001
+  },
+  "covariates": [
+    "WT",
+    "PMA",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "Fallo",
+    "Fmat",
+    "CLi",
+    "Vi",
+    "HILL",
+    "TM50"
+  ],
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Germovsek E et al. JAC 2019",
+      "url": "https://academic.oup.com/jac/advance-article-abstract/doi/10.1093/jac/dky525/5298179"
+    }
+  ],
+  "version": "0.2.4"
+}

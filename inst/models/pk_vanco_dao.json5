@@ -1,0 +1,55 @@
+{
+  "id": "pk_vanco_dao",
+  "ode_code": "\
+    dAdt[0] = -(CLi / Vi) * A[0];\
+    dAdt[1] = (A[0]/Vi);",
+  "pk_code": "\
+    Fmat = pow(PMA, 3.54) / (pow(PMA, 3.54) + pow(46.4, 3.54)) \
+    CLi = CL * pow((WT/1.0), 0.438) * Fmat * pow((0.61/CR), 0.473) + CL_HEMO \
+    Vi =  V * (WT/1.0) \
+  ",
+  "n_comp": 2,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * (WT/1.0)"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "parameters": {
+    "CL": 0.273,
+    "V": 0.628
+  },
+  "omega_matrix": [
+    0.051076
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0.236,
+    "add": 1.98
+  },
+  "covariates": [
+    "WT",
+    "CR",
+    "PMA",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "Fmat",
+    "CLi",
+    "Vi"
+  ],
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Dao K. et al. Pharmacological Research. 2020.",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31108184/"
+    }
+  ],
+  "version": "0.1.1"
+}

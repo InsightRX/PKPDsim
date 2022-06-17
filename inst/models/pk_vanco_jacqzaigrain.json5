@@ -1,0 +1,87 @@
+{
+  "id": "pk_vanco_jacqzaigrain",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
+    dAdt[2] = A[0]/Vi;",
+  "pk_code": "\
+    RM = pow(PMA / 32.0, 0.544) \
+    RF = 1.0 / pow((pow(0.72, CR_ASSAY) * CR / 0.61086), 0.666) \
+    CLi = CL * pow(WT/1.35, 0.863) * RM * RF * pow(0.72, CR_ASSAY) * exp(kappa_CL) \
+    CLtot = CLi + CL_HEMO \
+    Vi = V * pow(WT / 1.35, 1.13) \
+    V2i = V2 * pow(WT / 1.35, 1.15) \
+    Qi = Q * WT / 1.35 \
+  ",
+  "n_comp": 3,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * pow(WT / 1.35, 1.13)"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "covariates": [
+    "WT",
+    "CR",
+    "PMA",
+    "CR_ASSAY",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "CLi",
+    "Qi",
+    "Vi",
+    "V2i",
+    "CLtot",
+    "RM",
+    "RF"
+  ],
+  "parameters": {
+    "CL": 0.068,
+    "V": 0.728,
+    "V2": 0.358,
+    "Q": 0.0301
+  },
+  "fixed": [
+    "Q"
+  ],
+  "omega_matrix": [
+    0.033124,
+    0,
+    0.030625,
+    0,
+    0,
+    1.050625
+  ],
+  "iov": {
+    "cv": {
+      "CL": 0.191
+    },
+    "n_bins": 4,
+    "bins": [
+      0,
+      24,
+      48,
+      72,
+      9999
+    ]
+  },
+  "ruv": {
+    "prop": 0.222,
+    "add": 1.57
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Jacqz-Aigrain E. et al. J. Antimicrob. Chemother. (2019)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31049551/"
+    }
+  ],
+  "version": "0.1.5"
+}

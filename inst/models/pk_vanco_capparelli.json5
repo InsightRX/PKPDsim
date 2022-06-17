@@ -1,0 +1,66 @@
+{
+  "id": "pk_vanco_capparelli",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
+    dAdt[2] = A[0]/Vi;",
+  "pk_code": "\
+    CLi = CL * (WT * ((0.028/CR) + ((0.000127*365.0)*AGE) + 0.0123*(GA>28.0)) + 0.006)\
+    CLtot = CLi + CL_HEMO\
+    VSSi = VSS * (0.793 * WT + 0.010)\
+    Vi = 0.666 * VSSi\
+    Qi = Q * WT\
+    V2i = VSSi - Vi\
+  ",
+  "n_comp": 3,
+  "obs": {
+    "cmt": 1,
+    "scale": "0.666 * VSSi"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "covariates": [
+    "WT",
+    "CR",
+    "AGE",
+    "GA",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "CLi",
+    "VSSi",
+    "Qi",
+    "Vi",
+    "V2i",
+    "CLtot"
+  ],
+  "parameters": {
+    "CL": 1,
+    "VSS": 1,
+    "Q": 0.0334
+  },
+  "omega_matrix": [
+    0.1024,
+    0.0128,
+    0.0256
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0.14,
+    "add": 3.4
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Capparelli EV et al. J Clin Pharmacol 2001",
+      "url": "https://www.ncbi.nlm.nih.gov/pubmed/11549096"
+    }
+  ],
+  "version": "0.2.6"
+}

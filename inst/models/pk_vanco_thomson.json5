@@ -1,0 +1,76 @@
+{
+  "id": "pk_vanco_thomson",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Q/Vi)*A[0] + (Q/V2i)*A[1] \
+    dAdt[1] = +(Q/Vi)*A[0] - (Q/V2i)*A[1] \
+    dAdt[2] = A[0]/Vi ",
+  "pk_code": "\
+    CLi = CL * (1 + TH_CRCL * (CRCL*16.66667 - 66)) \
+    CLtot = CLi + CL_HEMO \
+    Qi = Q \
+    Vi = V * WT \
+    V2i = V2 * WT \
+  ",
+  "n_comp": 3,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * WT"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "covariates": [
+    "WT",
+    "CRCL",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "CLi",
+    "Qi",
+    "Vi",
+    "V2i",
+    "CLtot"
+  ],
+  "parameters": {
+    "CL": 2.99,
+    "V": 0.675,
+    "TH_CRCL": 0.0154,
+    "Q": 2.28,
+    "V2": 0.732
+  },
+  "fixed": [
+    "TH_CRCL",
+    "TDM_INIT",
+    "TH_CVVH"
+  ],
+  "omega_matrix": [
+    0.0729,
+    0.01,
+    0.0225,
+    0,
+    0,
+    0.2401,
+    0,
+    0,
+    0,
+    1.69
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0.15,
+    "add": 1.6
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Thomson AH et al. J Antimicrob Chemotherap 2009",
+      "url": "http://www.ncbi.nlm.nih.gov/pubmed/19299472"
+    }
+  ],
+  "version": "0.2.7"
+}
