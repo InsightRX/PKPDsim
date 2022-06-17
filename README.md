@@ -1,4 +1,4 @@
-# PKPDsim
+# PKPDsim <img src="man/figures/hexsticker.png" align="right" width = "200"/>
 
 PKPDsim is a library for numerical integration of ODE systems, in particular pharmacokinetic-pharmacodynamic (PK-PD) mixed-effects models.
 
