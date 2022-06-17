@@ -13,5 +13,5 @@ cran-comments.md
 vignettes/estimation-nlmixr.Rmd
 vignettes/error.Rmd
 vignettes/example-pkpd-model.Rmd
-vignettes/getting-started.Rmd
+vignettes/PKPDsim.Rmd
 vignettes/variability.Rmd
