@@ -21,6 +21,29 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Documentation</h6>
+    <a class="dropdown-item" href="../articles/model.html">Model</a>
+    <a class="dropdown-item" href="../articles/regimen.html">Regimen</a>
+    <a class="dropdown-item" href="../articles/parameters.html">Parameters</a>
+    <a class="dropdown-item" href="../articles/simulation.html">Simulation</a>
+    <a class="dropdown-item" href="../articles/output.html">Output</a>
+    <a class="dropdown-item" href="../articles/variability.html">Variability</a>
+    <a class="dropdown-item" href="../articles/error.html">Residual error</a>
+    <a class="dropdown-item" href="../articles/covariates.html">Covariates</a>
+    <a class="dropdown-item" href="../articles/export-model.html">Export model</a>
+    <a class="dropdown-item" href="../articles/speed.html">Speed</a>
+    <a class="dropdown-item" href="../articles/estimation-nlmixr.html">Estimation: nlmixr2</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>More Examples</h6>
+    <a class="dropdown-item" href="../articles/example-absorption-models.html">Absorption models</a>
+    <a class="dropdown-item" href="../articles/example-pkpd-model.html">PKPD model</a>
+  </div>
+</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -96,83 +119,160 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>ode</dt>
 <dd><p>function describing the ODE system</p></dd>
+
+
 <dt>analytical</dt>
 <dd><p>string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.</p></dd>
+
+
 <dt>parameters</dt>
 <dd><p>model parameters</p></dd>
+
+
 <dt>parameters_table</dt>
 <dd><p>dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.</p></dd>
+
+
 <dt>mixture_group</dt>
 <dd><p>mixture group for models containing mixtures. Should be either `1` or `2`, since only two groups are currently allowed.</p></dd>
+
+
 <dt>omega</dt>
 <dd><p>vector describing the lower-diagonal of the between-subject variability matrix</p></dd>
+
+
 <dt>omega_type</dt>
 <dd><p>exponential or normal, specified as vector</p></dd>
+
+
 <dt>res_var</dt>
 <dd><p>residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.</p></dd>
+
+
 <dt>iov_bins</dt>
 <dd><p>allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. `iov_bins = c(0, 24, 48, 72, 9999)`.</p></dd>
+
+
 <dt>seed</dt>
 <dd><p>set seed for reproducible results</p></dd>
+
+
 <dt>sequence</dt>
 <dd><p>if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.</p></dd>
+
+
 <dt>n_ind</dt>
 <dd><p>number of individuals to simulate</p></dd>
+
+
 <dt>event_table</dt>
 <dd><p>use a previously created `design` object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.</p></dd>
+
+
 <dt>regimen</dt>
 <dd><p>a regimen object created using the regimen() function</p></dd>
+
+
 <dt>lagtime</dt>
 <dd><p>either a value (numeric) or a parameter (character) or NULL.</p></dd>
+
+
 <dt>covariates</dt>
 <dd><p>list of covariates (for single individual) created using `new_covariate()` function</p></dd>
+
+
 <dt>covariates_table</dt>
 <dd><p>data.frame (or unnamed list of named lists per individual) with covariate values</p></dd>
+
+
 <dt>covariates_implementation</dt>
 <dd><p>used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`</p></dd>
+
+
 <dt>covariate_model</dt>
 <dd><p>R code used to pre-calculate effective parameters for use in ADVAN-style analytical equations. Not used in ODE simulations.</p></dd>
+
+
 <dt>A_init</dt>
 <dd><p>vector with the initial state of the ODE system</p></dd>
+
+
 <dt>only_obs</dt>
 <dd><p>only return the observations</p></dd>
+
+
 <dt>obs_step_size</dt>
 <dd><p>the step size between the observations</p></dd>
+
+
 <dt>int_step_size</dt>
 <dd><p>the step size for the numerical integrator</p></dd>
+
+
 <dt>t_max</dt>
 <dd><p>maximum simulation time, if not specified will pick the end of the regimen as maximum</p></dd>
+
+
 <dt>t_obs</dt>
 <dd><p>vector of observation times, only output these values (only used when t_obs==NULL)</p></dd>
+
+
 <dt>t_tte</dt>
 <dd><p>vector of observation times for time-to-event simulation</p></dd>
+
+
 <dt>t_init</dt>
 <dd><p>initialization time before first dose, default 0.</p></dd>
+
+
 <dt>obs_type</dt>
 <dd><p>vector of observation types. Only valid in combination with equal length vector `t_obs`.</p></dd>
+
+
 <dt>duplicate_t_obs</dt>
 <dd><p>allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.</p></dd>
+
+
 <dt>extra_t_obs</dt>
 <dd><p>include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.</p></dd>
+
+
 <dt>rtte</dt>
 <dd><p>should repeated events be allowed (FALSE by default)</p></dd>
+
+
 <dt>checks</dt>
 <dd><p>perform input checks? Default is TRUE. For calculations where sim_ode is invoked many times (e.g. population estimation, optimal design) it makes sense to switch this to FALSE (after confirming the input is correct) to improve speed.</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>show more output</p></dd>
+
+
 <dt>return_event_table</dt>
 <dd><p>return the event table for the simulation only, does not run the actual simulation. Useful for iterative use of sim().</p></dd>
+
+
 <dt>return_design</dt>
 <dd><p>returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with `sim_core()`, e.g. for estimation and optimal design.</p></dd>
+
+
 <dt>output_include</dt>
 <dd><p>list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>extra parameters</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a data frame of compartments with associated concentrations at requested times
-Simulated regimen</p>
+    
+
+<p>a data frame of compartments with associated concentrations at requested times</p>
+
+
+<p>Simulated regimen</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -220,7 +320,7 @@ Simulated regimen</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

@@ -21,6 +21,29 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Documentation</h6>
+    <a class="dropdown-item" href="../articles/model.html">Model</a>
+    <a class="dropdown-item" href="../articles/regimen.html">Regimen</a>
+    <a class="dropdown-item" href="../articles/parameters.html">Parameters</a>
+    <a class="dropdown-item" href="../articles/simulation.html">Simulation</a>
+    <a class="dropdown-item" href="../articles/output.html">Output</a>
+    <a class="dropdown-item" href="../articles/variability.html">Variability</a>
+    <a class="dropdown-item" href="../articles/error.html">Residual error</a>
+    <a class="dropdown-item" href="../articles/covariates.html">Covariates</a>
+    <a class="dropdown-item" href="../articles/export-model.html">Export model</a>
+    <a class="dropdown-item" href="../articles/speed.html">Speed</a>
+    <a class="dropdown-item" href="../articles/estimation-nlmixr.html">Estimation: nlmixr2</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>More Examples</h6>
+    <a class="dropdown-item" href="../articles/example-absorption-models.html">Absorption models</a>
+    <a class="dropdown-item" href="../articles/example-pkpd-model.html">PKPD model</a>
+  </div>
+</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -76,42 +99,77 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>code</dt>
 <dd><p>C++ code ODE system</p></dd>
+
+
 <dt>dose_code</dt>
 <dd><p>C++ code per dose event</p></dd>
+
+
 <dt>pk_code</dt>
 <dd><p>C++ code per any event (similar to $PK)</p></dd>
+
+
 <dt>size</dt>
 <dd><p>size of ODE system</p></dd>
+
+
 <dt>p</dt>
 <dd><p>parameters (list)</p></dd>
+
+
 <dt>cpp_show_code</dt>
 <dd><p>show output c++ function?</p></dd>
+
+
 <dt>code_init</dt>
 <dd><p>code for initialization of state</p></dd>
+
+
 <dt>state_init</dt>
 <dd><p>state init vector</p></dd>
+
+
 <dt>declare_variables</dt>
 <dd><p>variable declaration for all required variables (including user-specified)</p></dd>
+
+
 <dt>variables</dt>
 <dd><p>only the user-specified variables</p></dd>
+
+
 <dt>covariates</dt>
 <dd><p>covariates specification</p></dd>
+
+
 <dt>obs</dt>
 <dd><p>observation specification</p></dd>
+
+
 <dt>dose</dt>
 <dd><p>dose specification</p></dd>
+
+
 <dt>iov</dt>
 <dd><p>iov specification</p></dd>
+
+
 <dt>compile</dt>
 <dd><p>compile or not?</p></dd>
+
+
 <dt>verbose</dt>
 <dd><p>show more output</p></dd>
+
+
 <dt>as_is</dt>
 <dd><p>use C-code as-is, don't substitute line-endings or shift indices</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>List containing ODE definition in C++ code and simulation function</p>
+    
+
+<p>List containing ODE definition in C++ code and simulation function</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -123,7 +181,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

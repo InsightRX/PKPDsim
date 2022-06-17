@@ -21,6 +21,29 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/getting-started.html">Getting started</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Documentation</h6>
+    <a class="dropdown-item" href="../articles/model.html">Model</a>
+    <a class="dropdown-item" href="../articles/regimen.html">Regimen</a>
+    <a class="dropdown-item" href="../articles/parameters.html">Parameters</a>
+    <a class="dropdown-item" href="../articles/simulation.html">Simulation</a>
+    <a class="dropdown-item" href="../articles/output.html">Output</a>
+    <a class="dropdown-item" href="../articles/variability.html">Variability</a>
+    <a class="dropdown-item" href="../articles/error.html">Residual error</a>
+    <a class="dropdown-item" href="../articles/covariates.html">Covariates</a>
+    <a class="dropdown-item" href="../articles/export-model.html">Export model</a>
+    <a class="dropdown-item" href="../articles/speed.html">Speed</a>
+    <a class="dropdown-item" href="../articles/estimation-nlmixr.html">Estimation: nlmixr2</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>More Examples</h6>
+    <a class="dropdown-item" href="../articles/example-absorption-models.html">Absorption models</a>
+    <a class="dropdown-item" href="../articles/example-pkpd-model.html">PKPD model</a>
+  </div>
+</li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
@@ -72,34 +95,61 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>amt</dt>
 <dd><p>dosing amount, either a single value (which will repeated for multiple doses), or a vector with doses for each administration</p></dd>
+
+
 <dt>interval</dt>
 <dd><p>dosing interval (requires n as argument)</p></dd>
+
+
 <dt>n</dt>
 <dd><p>number of doses (requires interval as argument)</p></dd>
+
+
 <dt>times</dt>
 <dd><p>vector describing dosing times. Overrides specified times using interval and n arguments</p></dd>
+
+
 <dt>type</dt>
 <dd><p>either "infusion", "bolus", "oral", "sc" (subcutaneous), or "im" (intramuscular).</p></dd>
+
+
 <dt>t_inf</dt>
 <dd><p>infusion time (if `type`==`infusion`)</p></dd>
+
+
 <dt>rate</dt>
 <dd><p>infusion rate (if `type`==`infusion`). `NULL` by default. If specified, overrides `t_inf`</p></dd>
+
+
 <dt>t_lag</dt>
 <dd><p>lag time (can be applied to any dose type, not only oral). Will just be added to `times`</p></dd>
+
+
 <dt>cmt</dt>
 <dd><p>vector of dosing compartments (optional, if NULL will dosing compartment defined in model will be used)</p></dd>
+
+
 <dt>checks</dt>
 <dd><p>input checks. Remove to increase speed (e.g. for population-level estimation or optimal design)</p></dd>
+
+
 <dt>ss</dt>
 <dd><p>steady state? boolean value whether to simulate out to steady state first (steady state will be based on specified `amt` and `interval`, `times` will be ignored).</p></dd>
+
+
 <dt>n_ss</dt>
 <dd><p>how many doses to simulate before assumed steady state. Default is 4 * 24 / `interval`.</p></dd>
+
+
 <dt>first_dose_time</dt>
 <dd><p>datetime stamp of first dose (of class `POSIXct`). Default is current date time.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a list containing calculated VPC information, and a ggplot2 object</p>
+    
+
+<p>a list containing calculated VPC information, and a ggplot2 object</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -123,7 +173,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>
