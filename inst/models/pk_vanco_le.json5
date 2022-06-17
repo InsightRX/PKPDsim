@@ -1,0 +1,53 @@
+{
+  "id": "pk_vanco_le",
+  "ode_code": "\
+    CLi = CL * pow(WT, 0.75) * pow((0.4/CR), 0.431) * pow((log(AGE*365)/7.7), 0.808);\n\
+    CLtot = CLi + CL_HEMO;\
+    Vi =  V * WT;\n\
+    dAdt[0] = -(CLtot / Vi) * A[0]; dAdt[1] = (A[0] / Vi);",
+  "n_comp": 2,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * WT"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "parameters": {
+    "CL": 0.258,
+    "V": 0.644
+  },
+  "omega_matrix": [
+    0.1681,
+    0.001968,
+    0.0144
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0.28,
+    "add": 1
+  },
+  "covariates": [
+    "WT",
+    "CR",
+    "AGE",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "CLi",
+    "Vi"
+  ],
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Le J et al. Ther Drug Monit 2014 Aug;36(4):510-8",
+      "url": "https://www.ncbi.nlm.nih.gov/pubmed/24452067"
+    }
+  ],
+  "version": "0.2.5"
+}

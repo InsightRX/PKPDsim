@@ -1,0 +1,59 @@
+{
+  "id": "pk_vanco_anderson",
+  "ode_code": "\
+    CPR = 516.0 * exp(0.0096 * (PMA-40.0)/(52.0-40.0)) \
+    CLCR = CPR / (CR*88.4) \
+    RF = CLCR/6.0 \
+    CLi = CL * pow((WT/70.0), 0.75) * (1 + 0.0216*(PMA-40.0)) * RF + CL_HEMO \
+    Vi =  V * (WT/70.0) \
+    dAdt[0] = -(CLi / Vi) * A[0] \
+    dAdt[1] = (A[0]/Vi) ",
+  "n_comp": 2,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * (WT/70.0)"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "parameters": {
+    "CL": 2.19,
+    "V": 39
+  },
+  "omega_matrix": [
+    0.034969,
+    0.0090695,
+    0.037636
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0.23,
+    "add": 1.4
+  },
+  "covariates": [
+    "WT",
+    "PMA",
+    "CR",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "CLi",
+    "Vi",
+    "CPR",
+    "CLCR",
+    "RF"
+  ],
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Anderson et al. Br J Clin Pharmacol 2007",
+      "url": "http://www.ncbi.nlm.nih.gov/pubmed/16869817"
+    }
+  ],
+  "version": "0.2.4"
+}

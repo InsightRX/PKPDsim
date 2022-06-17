@@ -1,0 +1,86 @@
+{
+  "id": "pk_vanco_kloprogge",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
+    dAdt[2] = A[0]/Vi;",
+  "pk_code": "\
+    HILL = 3.52;\
+    TSCR = -2.37330 - (12.91367 * log(AGE)) + (23.93581 * sqrt(AGE)) \
+    if(AGE > 15 & AGE <= 17) { \
+      if(SEX == 1) { TSCR = 9.5471*AGE - 87.847;} else { TSCR = 4.7137*AGE - 15.347; } \
+    }\
+    if(AGE > 17) { \
+      if(SEX == 1) { TSCR = 84; } else { TSCR = 69.5; } \
+    } \
+    MAT = (pow(PMA, HILL) / (pow(50.2,HILL) + pow(PMA,HILL))) \
+    SCOV = pow((CR*88.4)/TSCR, -0.692342) \
+    CLi = CL * SCOV * pow(WT/70.0, 0.632) * MAT;\
+    CLtot = CLi + CL_HEMO;\
+    Vi = V * (WT/70.0);\
+    V2i = V2 * (WT/70.0);\
+    Qi = Q * pow(WT/70.0, 0.75) \
+  ",
+  "n_comp": 3,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * (WT/70.0)"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "covariates": [
+    "WT",
+    "CR",
+    "AGE",
+    "PMA",
+    "SEX",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "CLi",
+    "Qi",
+    "Vi",
+    "V2i",
+    "CLtot",
+    "HILL",
+    "TSCR",
+    "MAT",
+    "SCOV"
+  ],
+  "parameters": {
+    "CL": 4.84,
+    "V": 39.9,
+    "V2": 37.8,
+    "Q": 3.85
+  },
+  "fixed": [
+    "Q",
+    "V2",
+    "TDM_INIT"
+  ],
+  "omega_matrix": [
+    0.2263512,
+    0.3465337,
+    1.853544
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0,
+    "add": 0.243
+  },
+  "ltbs": true,
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Kloprogge F et al. AAC 2019",
+      "url": "https://www.ncbi.nlm.nih.gov/pubmed/30833429"
+    }
+  ],
+  "version": "0.2.7"
+}

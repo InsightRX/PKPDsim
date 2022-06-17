@@ -1,0 +1,85 @@
+{
+  "id": "pkpd_neutropenia_template1",
+  "ode_code": "\
+    FEEDB = pow((CIRC0/A[7]), GAMMA) \
+    KTR   = 4/MTT \
+    CONC  = A[1]/V \
+    EDRUG = SLOPE * CONC \
+    dAdt[0] = -KA*A[0] \
+    dAdt[1] = +KA*A[0] - (CL/V)*A[1] - (Q/V)*A[1] + (Q/V2)*A[2] \
+    dAdt[2] = +(Q/V)*A[1] - (Q/V2)*A[2] \
+    dAdt[3] = +KTR*A[3] * (1.0-EDRUG) * FEEDB - KTR*A[3] \
+    dAdt[4] = +KTR*A[3] - KTR*A[4] \
+    dAdt[5] = +KTR*A[4] - KTR*A[5] \
+    dAdt[6] = +KTR*A[5] - KTR*A[6] \
+    dAdt[7] = +KTR*A[6] - KTR*A[7] \
+    ANC = A[7] \
+  ",
+  "n_comp": 8,
+  "obs": {
+    "variable": [
+      "CONC",
+      "ANC"
+    ],
+    "scale": 1
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "parameters": {
+    "CL": 5,
+    "V": 50,
+    "SLOPE": 0.1,
+    "MTT": 100,
+    "CIRC0": 5,
+    "GAMMA": 0.2,
+    "Q": 5,
+    "V2": 100,
+    "KA": 1
+  },
+  "fixed": [
+    "KA",
+    "Q",
+    "V2",
+    "GAMMA"
+  ],
+  "iov": null,
+  "ruv": {
+    "add": [
+      0.2,
+      0.3
+    ],
+    "prop": [
+      0,
+      0
+    ]
+  },
+  "ltbs": true,
+  "omega": [
+    0.09,
+    0,
+    0.09,
+    0,
+    0,
+    0.16,
+    0,
+    0,
+    0,
+    0.04,
+    0,
+    0,
+    0,
+    0,
+    1
+  ],
+  "covariates": [],
+  "variables": [
+    "CONC",
+    "FEEDB",
+    "KTR",
+    "EDRUG",
+    "ANC"
+  ],
+  "version": "0.1.0"
+}

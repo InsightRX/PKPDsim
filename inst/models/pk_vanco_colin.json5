@@ -1,0 +1,101 @@
+{
+  "id": "pk_vanco_colin",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\n\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\n\
+    dAdt[2] = A[0]/Vi;",
+  "pk_code": "\
+    PMA_R = 35.0 + (40.0/52.0) \
+    SCR_std = exp(-1.22839 + log10(PMA/52.0)*0.67190 + 6.27017*exp(-3.10940 * PMA/52.0)) \
+    Fsize = WT/70.0 \
+    CANC = 0 \
+    HEEL = 0 \
+    EXPO = 0.64856 \
+    GAM = 2.8864 \
+    GAM2 = -2.241 \
+    DEG50 = 61.559 \
+    MAT50 = 0.8932 \
+    Fmat   = pow(PMA/52.0, GAM)  / (pow(MAT50, GAM)  + pow(PMA/52.0, GAM))\
+    Fmat_R = pow(PMA_R,    GAM)  / (pow(MAT50, GAM)  + pow(PMA_R, GAM))\
+    Fage   = pow(PMA/52.0, GAM2) / (pow(DEG50, GAM2) + pow(PMA/52.0, GAM2))\
+    Fage_R = pow(PMA_R,    GAM2) / (pow(DEG50, GAM2) + pow(PMA_R, GAM2))\
+    Fscr   = exp(-EXPO*(CR - SCR_std)) \
+    Vi =  V * Fsize * (1-HEEL * 0.312) \
+    CLi = CL * pow(Vi / 42.52, 0.75) * (Fmat / Fmat_R) * (Fage / Fage_R) * Fscr * (1 + CANC*0.294)\
+    CLtot = CLi + CL_HEMO \
+    V2i = V2 * Fsize \
+    Qi = Q * pow(V2i / 41.68, 0.75) * (1-HEEL*0.597)\
+  ",
+  "n_comp": 3,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * Fsize * (1-HEEL*0.312)"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "parameters": {
+    "CL": 5.312,
+    "V": 42.52,
+    "V2": 41.68,
+    "Q": 3.222
+  },
+  "omega_matrix": [
+    0.0746,
+    0,
+    0.0716,
+    0,
+    0,
+    0.684
+  ],
+  "fixed": [
+    "Q",
+    "TDM_INIT"
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0.2145,
+    "add": 1.23
+  },
+  "covariates": [
+    "WT",
+    "PMA",
+    "CR",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "Fsize",
+    "Fmat",
+    "Fmat_R",
+    "Fage",
+    "Fage_R",
+    "Fscr",
+    "CLi",
+    "CLtot",
+    "Vi",
+    "V2i",
+    "Qi",
+    "GAM",
+    "GAM2",
+    "MAT50",
+    "DEG50",
+    "CANC",
+    "HEEL",
+    "EXPO",
+    "SCR_std",
+    "PMA_R"
+  ],
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Colin et al. Clin Pharmacokinet 2019",
+      "url": "http://link.springer.com/10.1007/s40262-018-0727-5"
+    }
+  ],
+  "version": "0.2.6"
+}

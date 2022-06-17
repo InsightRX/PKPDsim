@@ -1,0 +1,55 @@
+{
+  "id": "pk_vanco_frymoyer",
+  "ode_code": "\
+    Fmat = (1 / (1 + pow((PMA/34.8), -4.53)));\
+    CLi = CL * pow((WT/2.9), 0.75) * Fmat * pow((1/CR), 0.267) + CL_HEMO;\
+    Vi =  V * (WT/2.9);\
+    dAdt[0] = -(CLi / Vi) * A[0];\
+    dAdt[1] = (A[0]/Vi);",
+  "n_comp": 2,
+  "obs": {
+    "cmt": 1,
+    "scale": "V * (WT/2.9)"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": 1
+  },
+  "parameters": {
+    "CL": 0.345,
+    "V": 1.75
+  },
+  "omega_matrix": [
+    0.0465,
+    0.00734,
+    0.0119
+  ],
+  "iov": null,
+  "ruv": {
+    "prop": 0.205,
+    "add": 1.3
+  },
+  "covariates": [
+    "WT",
+    "CR",
+    "PMA",
+    "CL_HEMO"
+  ],
+  "variables": [
+    "Fmat",
+    "CLi",
+    "Vi"
+  ],
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Frymoyer A et al. Antimicrob Agents Chemother 2014",
+      "url": "http://www.ncbi.nlm.nih.gov/pubmed/25136027"
+    }
+  ],
+  "version": "0.2.8"
+}
