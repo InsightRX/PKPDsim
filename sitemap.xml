@@ -7,6 +7,9 @@
     <loc>https://insightrx.github.io/PKPDsim/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>https://insightrx.github.io/PKPDsim/articles/PKPDsim.html</loc>
+  </url>
+  <url>
     <loc>https://insightrx.github.io/PKPDsim/articles/covariates.html</loc>
   </url>
   <url>
@@ -23,9 +26,6 @@
   </url>
   <url>
     <loc>https://insightrx.github.io/PKPDsim/articles/export-model.html</loc>
-  </url>
-  <url>
-    <loc>https://insightrx.github.io/PKPDsim/articles/getting-started.html</loc>
   </url>
   <url>
     <loc>https://insightrx.github.io/PKPDsim/articles/index.html</loc>
