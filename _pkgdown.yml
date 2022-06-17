@@ -6,7 +6,7 @@ articles:
   - title: Intro
     navbar: ~
     contents:
-      - getting-started
+      - PKPDsim
   - title: Documentation
     navbar: Documentation
     contents:
