@@ -155,6 +155,9 @@ sim <- function (ode = NULL,
   }
   t_obs_orig <- t_obs + t_init
   if(checks) {
+    if(!is.null(parameters) && !is.null(parameters_table)) {
+      stop("Both `parameters` and `parameters_table` are specified!")
+    }
     ## test_pointer looks if the model is in memory, will throw error if needs to be recompiled.
     test_pointer(ode)
     if(is.null(ode) && is.null(analytical)) {
@@ -190,9 +193,6 @@ sim <- function (ode = NULL,
       }
     } else {
       size <- attr(analytical, "size")
-    }
-    if(!is.null(parameters) && !is.null(parameters_table)) {
-      stop("Both `parameters` and `parameters_table` are specified!")
     }
     if(is.null(ode) && is.null(analytical)) {
       stop("Please specify at least the required arguments 'ode' or 'analytical' for simulations.")
