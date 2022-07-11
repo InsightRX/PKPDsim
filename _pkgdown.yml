@@ -2,6 +2,15 @@ url: https://insightrx.github.io/PKPDsim/
 template:
   bootstrap: 5
 
+navbar:
+  structure:
+    right: [search, github, ds]
+  components:
+    ds:
+      href: https://ds.insight-rx.com/
+      icon: fa-home
+      aria-label: Home
+
 articles:
   - title: Intro
     navbar: ~
