@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,20 +106,20 @@
 <li>post-processing (R)</li>
 </ol>
 <p>From this structure it is easy to understand that when you would request simulation of 1,000 patients:</p>
-<pre><code><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>ode <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></code></pre>
+<pre><code><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>ode <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre>
 <p>the pre- and post-processing parts will take relatively minor computational time, since the main part will be the loop simulating the PK for the subjects. However, if instead you would write a loop yourself to simulate 1,000 patients, and would call sim() repeatedly:</p>
-<pre><code><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">rbindlist</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>ode <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span></code></pre>
+<pre><code><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">rbindlist</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>ode <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre>
 <p>now in each iteration also the pre- and post-processing functionality would be invoked, and the overall simulation will take much longer than before, probably by an order of magnitude. The same concept applies if you would use <code><a href="../reference/sim.html">sim()</a></code> in the context of population (NLME) or individual (MAP) estimation, or in optimal design in evaluation of the FIM.</p>
 <p>There is a different way to solve ODEs with <code>PKPDsim</code> though, which uses only the core ODE solver function and does not perform pre-/post-processing. If you need to use PKPDsim in an iterative context as described above, you should therefore use the <code><a href="../reference/sim_core.html">sim_core()</a></code> function instead, and perform the pre- and post-processing outside of the main loop, e.g.:</p>
-<pre><code><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, return_design<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span>
-<span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">rbindlist</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="../reference/sim_core.html">sim_core</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">design</span>, ode <span class="op">=</span> <span class="va">mod</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span>
-<span class="co"># potentially any post-processing here</span></code></pre>
+<pre><code><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, return_design<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">rbindlist</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="../reference/sim_core.html">sim_core</a></span><span class="op">(</span>design <span class="op">=</span> <span class="va">design</span>, ode <span class="op">=</span> <span class="va">mod</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co"># potentially any post-processing here</span></span></code></pre>
 <div class="section level2">
 <h2 id="comparison-with-other-packages">Comparison with other packages<a class="anchor" aria-label="anchor" href="#comparison-with-other-packages"></a>
 </h2>
@@ -138,7 +138,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

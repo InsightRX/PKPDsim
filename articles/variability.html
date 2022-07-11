@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,117 +101,117 @@
 <p>This can be implemented using the <code>n</code> and <code>omega</code> options. The <code>omega</code> (nomenclature borrowed from NONMEM) should be specified as either a <strong>vector</strong> defining the lower triagle of the BSV or <span class="math inline">\(\Omega\)</span> matrix, or as a <strong>matrix</strong> defining the full <span class="math inline">\(\Omega\)</span> matrix. An alternative option is to specify the between-subject variability as CV, using the <code><a href="../reference/cv_to_omega.html">cv_to_omega()</a></code> function, but this assumes there is no correlation between individual parameters.</p>
 <p>The following:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_1cmt_iv"</span><span class="op">)</span>
-<span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
-<span class="va">regimen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>
-  amt <span class="op">=</span> <span class="fl">100</span>,
-  n <span class="op">=</span> <span class="fl">3</span>,
-  interval <span class="op">=</span> <span class="fl">12</span>,
-  type <span class="op">=</span> <span class="st">"infusion"</span>,
-  t_inf <span class="op">=</span> <span class="fl">2</span>
-<span class="op">)</span>
-
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">model</span>,
-  parameters <span class="op">=</span> <span class="va">parameters</span>,
-  regimen <span class="op">=</span> <span class="va">regimen</span>,
-  n <span class="op">=</span> <span class="fl">50</span>,
-  omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-    <span class="fl">0.2</span>, 
-    <span class="fl">0.05</span>, <span class="fl">0.2</span>
-  <span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_1cmt_iv"</span><span class="op">)</span></span>
+<span><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">regimen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
+<span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  interval <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"infusion"</span>,</span>
+<span>  t_inf <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="va">parameters</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="va">regimen</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">0.2</span>, </span>
+<span>    <span class="fl">0.05</span>, <span class="fl">0.2</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>will simulate out data for 50 patients, assuming an Omega matrix as defined above. Alternatively, the <span class="math inline">\(\Omega\)</span> could also have been defined as:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">model</span>,
-  parameters <span class="op">=</span> <span class="va">parameters</span>,
-  regimen <span class="op">=</span> <span class="va">regimen</span>,
-  n <span class="op">=</span> <span class="fl">50</span>,
-  omega_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-    <span class="fl">0.2</span>, <span class="fl">0.05</span>, 
-    <span class="fl">0.05</span>, <span class="fl">0.2</span>
-  <span class="op">)</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="va">parameters</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="va">regimen</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  omega_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">0.2</span>, <span class="fl">0.05</span>, </span>
+<span>    <span class="fl">0.05</span>, <span class="fl">0.2</span></span>
+<span>  <span class="op">)</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Or also using the coefficient of variation and without correlation between parameters:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">model</span>,
-  parameters <span class="op">=</span> <span class="va">parameters</span>,
-  regimen <span class="op">=</span> <span class="va">regimen</span>,
-  n <span class="op">=</span> <span class="fl">50</span>,
-  omega <span class="op">=</span> <span class="fu"><a href="../reference/cv_to_omega.html">cv_to_omega</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    CL <span class="op">=</span> <span class="fl">0.1</span>, 
-    V <span class="op">=</span> <span class="fl">0.1</span>
-  <span class="op">)</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## No parameter list provided as argument, assumed order for `omega_matrix`: CL, V</span></code></pre>
+<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="va">parameters</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="va">regimen</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  omega <span class="op">=</span> <span class="fu"><a href="../reference/cv_to_omega.html">cv_to_omega</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    CL <span class="op">=</span> <span class="fl">0.1</span>, </span>
+<span>    V <span class="op">=</span> <span class="fl">0.1</span></span>
+<span>  <span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## No parameter list provided as argument, assumed order for `omega_matrix`: CL, V</span></span></code></pre>
 <p>Note that using the <code>cv_to_omega</code> function assumes the <em>CV is on the SD-scale</em> and not on the variance scale (and the definition of CV uses the assumption <span class="math display">\[1 + \eta \approx 1 * \exp(\eta)\]</span>).</p>
 <div class="section level2">
 <h2 id="variability-distribution">Variability distribution<a class="anchor" aria-label="anchor" href="#variability-distribution"></a>
 </h2>
 <p>By default, PKPDsim will assume exponential distribution of all parameters if <code>omega</code> is specified. If normal distribution is desired for all parameters, please use the <code>omega_type</code> argument:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">model</span>,
-  parameters <span class="op">=</span> <span class="va">parameters</span>,
-  regimen <span class="op">=</span> <span class="va">regimen</span>,
-  n <span class="op">=</span> <span class="fl">50</span>,
-  omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-    <span class="fl">0.2</span>, 
-    <span class="fl">0.05</span>, <span class="fl">0.1</span>
-  <span class="op">)</span>,
-  omega_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="st">"normal"</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="va">parameters</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="va">regimen</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">0.2</span>, </span>
+<span>    <span class="fl">0.05</span>, <span class="fl">0.1</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  omega_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="st">"normal"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="more-flexible-variability-models">More flexible variability models<a class="anchor" aria-label="anchor" href="#more-flexible-variability-models"></a>
 </h2>
 <p>To allow more flexibility in how between-subject variability enters the model, there is an alternative way of specifying variability. This approach is very similar to the way variability is encoded in NONMEM, i.e. variability components (<em>eta’s</em>) are added explicitly in the model code. In <code>PKPDsim</code> this means that <em>eta’s</em> should be treated just like regular parameters, but with <code>0</code> mean and normal distribution. See example below for the simulation of bioavailability using the logit-distribution.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>
-  code <span class="op">=</span> <span class="st">"
-    CLi = CL * exp(eta1)
-    Vi = V * exp(eta2)
-    F1i =  exp(F1 + eta3) / (1 + exp(F1 + eta3))
-    dAdt[1] = -KA * A[1]
-    dAdt[2] = KA * A[1] - (CLi/Vi) * A[2]
-  "</span>, 
-  declare_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLi"</span>, <span class="st">"Vi"</span>, <span class="st">"F1i"</span><span class="op">)</span>,
-  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="st">"V * exp(eta2)"</span><span class="op">)</span>,
-  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, bioav <span class="op">=</span> <span class="st">"F1i"</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">2</span>, interval <span class="op">=</span> <span class="fl">12</span>, type<span class="op">=</span><span class="st">"oral"</span><span class="op">)</span>
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">mod1</span>,
-  regimen  <span class="op">=</span> <span class="va">reg1</span>,
-  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-    eta1 <span class="op">=</span> <span class="fl">0</span>,
-    eta2 <span class="op">=</span> <span class="fl">0</span>,
-    eta3 <span class="op">=</span> <span class="fl">0</span>,
-    CL <span class="op">=</span> <span class="fl">5</span>,
-    V <span class="op">=</span> <span class="fl">50</span>,
-    KA <span class="op">=</span> <span class="fl">.5</span>,
-    F1 <span class="op">=</span> <span class="fl">0.8</span>
-  <span class="op">)</span>,
-  t_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">48</span><span class="op">)</span>,
-  omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>
-    <span class="fl">0.1</span>, 
-    <span class="fl">0.05</span>, <span class="fl">0.1</span>, 
-    <span class="fl">0</span>,    <span class="fl">0</span>,   <span class="fl">0.1</span>
-  <span class="op">)</span>,
-  n <span class="op">=</span> <span class="fl">100</span>,
-  omega_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="st">"normal"</span>, <span class="st">"normal"</span><span class="op">)</span>,
-  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"parameters"</span> <span class="op">=</span> <span class="cn">TRUE</span>, variables <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-  only_obs <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
+<span>  code <span class="op">=</span> <span class="st">"</span></span>
+<span><span class="st">    CLi = CL * exp(eta1)</span></span>
+<span><span class="st">    Vi = V * exp(eta2)</span></span>
+<span><span class="st">    F1i =  exp(F1 + eta3) / (1 + exp(F1 + eta3))</span></span>
+<span><span class="st">    dAdt[1] = -KA * A[1]</span></span>
+<span><span class="st">    dAdt[2] = KA * A[1] - (CLi/Vi) * A[2]</span></span>
+<span><span class="st">  "</span>, </span>
+<span>  declare_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CLi"</span>, <span class="st">"Vi"</span>, <span class="st">"F1i"</span><span class="op">)</span>,</span>
+<span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="st">"V * exp(eta2)"</span><span class="op">)</span>,</span>
+<span>  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, bioav <span class="op">=</span> <span class="st">"F1i"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">2</span>, interval <span class="op">=</span> <span class="fl">12</span>, type<span class="op">=</span><span class="st">"oral"</span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">mod1</span>,</span>
+<span>  regimen  <span class="op">=</span> <span class="va">reg1</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    eta1 <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    eta2 <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    eta3 <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    CL <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>    V <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>    KA <span class="op">=</span> <span class="fl">.5</span>,</span>
+<span>    F1 <span class="op">=</span> <span class="fl">0.8</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  t_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">48</span><span class="op">)</span>,</span>
+<span>  omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fl">0.1</span>, </span>
+<span>    <span class="fl">0.05</span>, <span class="fl">0.1</span>, </span>
+<span>    <span class="fl">0</span>,    <span class="fl">0</span>,   <span class="fl">0.1</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  omega_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"normal"</span>, <span class="st">"normal"</span>, <span class="st">"normal"</span><span class="op">)</span>,</span>
+<span>  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"parameters"</span> <span class="op">=</span> <span class="cn">TRUE</span>, variables <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  only_obs <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span>
-<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span>, group <span class="op">=</span> <span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span>, group <span class="op">=</span> <span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="variability_files/figure-html/plot-1.png" width="700"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">F1i</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">F1i</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_histogram.html" class="external-link">geom_histogram</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</span></span></code></pre>
 <p><img src="variability_files/figure-html/plot-2.png" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -227,7 +227,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

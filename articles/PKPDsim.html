@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,10 +103,10 @@
 </h2>
 <p>PKPDsim can be installed from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"PKPDsim"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"PKPDsim"</span><span class="op">)</span></span></code></pre></div>
 <p>Or you can install the development version from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"InsightRX/PKPDsim"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"InsightRX/PKPDsim"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="first-simulation">First simulation<a class="anchor" aria-label="anchor" href="#first-simulation"></a>
@@ -122,34 +122,34 @@
 </ul>
 <p>The model library in PKPDsim contains a small library of built-in PK and PD models, but of course more interesting is its ability to handle user-specified ODE systems. However, as a first example, let’s implement the most simple example from the library:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">1</span>, V  <span class="op">=</span> <span class="fl">10</span>, KA <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
-<span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_1cmt_oral"</span><span class="op">)</span>
-<span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>
-  amt <span class="op">=</span> <span class="fl">100</span>,
-  n <span class="op">=</span> <span class="fl">5</span>,
-  interval <span class="op">=</span> <span class="fl">12</span>
-<span class="op">)</span>
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">pk1</span>,
-  parameters <span class="op">=</span> <span class="va">p</span>,
-  regimen <span class="op">=</span> <span class="va">r1</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">1</span>, V  <span class="op">=</span> <span class="fl">10</span>, KA <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_1cmt_oral"</span><span class="op">)</span></span>
+<span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
+<span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  interval <span class="op">=</span> <span class="fl">12</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">pk1</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="va">p</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="va">r1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>You probably noticed that the <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code>-step took a few seconds to finish, while the simulation itself was in the order of milliseconds. In <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code>, the model is compiled from C++ source code to binary code, which takes a few seconds. However, this has to be done only once. After compilation, the model is then available to be used in <code><a href="../reference/sim.html">sim()</a></code> for as long as the R session is open.</p>
 <p>Let’s look at the output. <code>PKPDsim</code> will output data in the “long” format, i.e. one row per observed timepoint, and split by compartment:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##     id t comp         y obs_type</span>
-<span class="co">## 1    1 0    1 100.00000        1</span>
-<span class="co">## 4    1 1    1  60.65307        1</span>
-<span class="co">## 40   1 2    1  36.78794        1</span>
-<span class="co">## 76   1 3    1  22.31302        1</span>
-<span class="co">## 112  1 4    1  13.53353        1</span>
-<span class="co">## 148  1 5    1   8.20850        1</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##     id t comp         y obs_type</span></span>
+<span><span class="co">## 1    1 0    1 100.00000        1</span></span>
+<span><span class="co">## 4    1 1    1  60.65307        1</span></span>
+<span><span class="co">## 40   1 2    1  36.78794        1</span></span>
+<span><span class="co">## 76   1 3    1  22.31302        1</span></span>
+<span><span class="co">## 112  1 4    1  13.53353        1</span></span>
+<span><span class="co">## 148  1 5    1   8.20850        1</span></span></code></pre>
 <p>To check what output was produced by <code><a href="../reference/sim.html">sim()</a></code>, let’s plot it (installation of <code>ggplot2</code> required).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="va">dat</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">comp</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">dat</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span> <span class="va">comp</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PKPDsim_files/figure-html/plot-example-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -157,27 +157,27 @@
 </h2>
 <p>We can write the same exact model using custom ODE code. The following example will also only output the concentration (<code>only_obs=TRUE</code>), and not the amounts in each compartment. We’re also going to use an infusion instead of bolus injection:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pk2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>
-  code <span class="op">=</span> <span class="st">"dAdt[1] = -(CL/V) * A[1]"</span>,
-  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, scale <span class="op">=</span> <span class="st">"V"</span><span class="op">)</span>,
-  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="op">)</span>
-<span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>
-  amt <span class="op">=</span> <span class="fl">100</span>,
-  n <span class="op">=</span> <span class="fl">5</span>,
-  interval <span class="op">=</span> <span class="fl">12</span>,
-  type <span class="op">=</span> <span class="st">"infusion"</span>,
-  t_inf <span class="op">=</span> <span class="fl">2</span>
-<span class="op">)</span>
-<span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">pk2</span>,
-  parameters <span class="op">=</span> <span class="va">p</span>,
-  regimen <span class="op">=</span> <span class="va">r2</span>,
-  only_obs <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">pk2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
+<span>  code <span class="op">=</span> <span class="st">"dAdt[1] = -(CL/V) * A[1]"</span>,</span>
+<span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, scale <span class="op">=</span> <span class="st">"V"</span><span class="op">)</span>,</span>
+<span>  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
+<span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  interval <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"infusion"</span>,</span>
+<span>  t_inf <span class="op">=</span> <span class="fl">2</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">pk2</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="va">p</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="va">r2</span>,</span>
+<span>  only_obs <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">ggplot</span><span class="op">(</span><span class="va">dat2</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">dat2</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PKPDsim_files/figure-html/plot-example2-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -186,40 +186,40 @@
 <p>PKPDsim includes definitions of several PK/PD models used in the InsightRX platform.</p>
 <p>These models can be installed as R packages using the <code><a href="../reference/model_from_api.html">model_from_api()</a></code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/model_from_api.html">model_from_api</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"models"</span>, <span class="st">"pk_vanco_anderson.json5"</span>, package <span class="op">=</span> <span class="st">"PKPDsim"</span><span class="op">)</span>,
-  to_package <span class="op">=</span> <span class="cn">TRUE</span>,
-  install_all <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/model_from_api.html">model_from_api</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"models"</span>, <span class="st">"pk_vanco_anderson.json5"</span>, package <span class="op">=</span> <span class="st">"PKPDsim"</span><span class="op">)</span>,</span>
+<span>  to_package <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  install_all <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Please note that these models may differ from those used in production by InsightRX. They are provided for demonstration purposes only, and should not be used for dosing patients.</p>
 <div class="section level3">
 <h3 id="example-usage">Example usage<a class="anchor" aria-label="anchor" href="#example-usage"></a>
 </h3>
 <p>To simulate PK, provide the model and parameters to <code><a href="../reference/sim.html">PKPDsim::sim()</a></code> along with a dosing regimen and covariates.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">## Create dosing regimen and covariates</span>
-<span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>
-  amt <span class="op">=</span> <span class="fl">100</span>,
-  n <span class="op">=</span> <span class="fl">3</span>,
-  interval <span class="op">=</span> <span class="fl">12</span>,
-  type <span class="op">=</span> <span class="st">"infusion"</span>,
-  t_inf <span class="op">=</span> <span class="fl">1</span>
-<span class="op">)</span>
-
-<span class="va">covs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-  WT <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>,
-  PMA <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>,
-  CR <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>,
-  CL_HEMO <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="co">## Perform simulation</span>
-<span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="fu">pkvancoanderson</span><span class="fu">::</span><span class="fu">model</span><span class="op">(</span><span class="op">)</span>,
-  parameters <span class="op">=</span> <span class="fu">pkvancoanderson</span><span class="fu">::</span><span class="fu">parameters</span><span class="op">(</span><span class="op">)</span>,
-  regimen <span class="op">=</span> <span class="va">reg</span>,
-  covariates <span class="op">=</span> <span class="va">covs</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">## Create dosing regimen and covariates</span></span>
+<span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
+<span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  interval <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"infusion"</span>,</span>
+<span>  t_inf <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">covs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  WT <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>,</span>
+<span>  PMA <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span>,</span>
+<span>  CR <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  CL_HEMO <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## Perform simulation</span></span>
+<span><span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="fu">pkvancoanderson</span><span class="fu">::</span><span class="fu">model</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu">pkvancoanderson</span><span class="fu">::</span><span class="fu">parameters</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="va">reg</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="va">covs</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -235,7 +235,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

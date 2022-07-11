@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,45 +75,45 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">sim</span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="cn">NULL</span>,
-  analytical <span class="op">=</span> <span class="cn">NULL</span>,
-  parameters <span class="op">=</span> <span class="cn">NULL</span>,
-  parameters_table <span class="op">=</span> <span class="cn">NULL</span>,
-  mixture_group <span class="op">=</span> <span class="cn">NULL</span>,
-  omega <span class="op">=</span> <span class="cn">NULL</span>,
-  omega_type <span class="op">=</span> <span class="st">"exponential"</span>,
-  res_var <span class="op">=</span> <span class="cn">NULL</span>,
-  iov_bins <span class="op">=</span> <span class="cn">NULL</span>,
-  seed <span class="op">=</span> <span class="cn">NULL</span>,
-  sequence <span class="op">=</span> <span class="cn">NULL</span>,
-  n_ind <span class="op">=</span> <span class="fl">1</span>,
-  event_table <span class="op">=</span> <span class="cn">NULL</span>,
-  regimen <span class="op">=</span> <span class="cn">NULL</span>,
-  lagtime <span class="op">=</span> <span class="cn">NULL</span>,
-  covariates <span class="op">=</span> <span class="cn">NULL</span>,
-  covariates_table <span class="op">=</span> <span class="cn">NULL</span>,
-  covariates_implementation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  covariate_model <span class="op">=</span> <span class="cn">NULL</span>,
-  A_init <span class="op">=</span> <span class="cn">NULL</span>,
-  only_obs <span class="op">=</span> <span class="cn">FALSE</span>,
-  obs_step_size <span class="op">=</span> <span class="cn">NULL</span>,
-  int_step_size <span class="op">=</span> <span class="fl">0.01</span>,
-  t_max <span class="op">=</span> <span class="cn">NULL</span>,
-  t_obs <span class="op">=</span> <span class="cn">NULL</span>,
-  t_tte <span class="op">=</span> <span class="cn">NULL</span>,
-  t_init <span class="op">=</span> <span class="fl">0</span>,
-  obs_type <span class="op">=</span> <span class="cn">NULL</span>,
-  duplicate_t_obs <span class="op">=</span> <span class="cn">FALSE</span>,
-  extra_t_obs <span class="op">=</span> <span class="cn">TRUE</span>,
-  rtte <span class="op">=</span> <span class="cn">FALSE</span>,
-  checks <span class="op">=</span> <span class="cn">TRUE</span>,
-  verbose <span class="op">=</span> <span class="cn">FALSE</span>,
-  return_event_table <span class="op">=</span> <span class="cn">FALSE</span>,
-  return_design <span class="op">=</span> <span class="cn">FALSE</span>,
-  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="cn">FALSE</span>, covariates <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sim</span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  analytical <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  parameters_table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mixture_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  omega <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  omega_type <span class="op">=</span> <span class="st">"exponential"</span>,</span>
+<span>  res_var <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  iov_bins <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sequence <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_ind <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  event_table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  lagtime <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  covariates <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  covariates_table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  covariates_implementation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  covariate_model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  A_init <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  only_obs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  obs_step_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  int_step_size <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>  t_max <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_obs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_tte <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  t_init <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  obs_type <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  duplicate_t_obs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  extra_t_obs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  rtte <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  checks <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  return_event_table <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  return_design <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="cn">FALSE</span>, covariates <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -282,34 +282,34 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">  CL <span class="op">=</span> <span class="fl">38.48</span>,</span>
-<span class="r-in">  V  <span class="op">=</span> <span class="fl">7.4</span>,</span>
-<span class="r-in">  Q  <span class="op">=</span> <span class="fl">7.844</span>,</span>
-<span class="r-in">  V2 <span class="op">=</span> <span class="fl">5.19</span>,</span>
-<span class="r-in">  Q2  <span class="op">=</span> <span class="fl">9.324</span>,</span>
-<span class="r-in">  V3 <span class="op">=</span> <span class="fl">111</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">omega</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>,       <span class="co"># IIV CL</span></span>
-<span class="r-in">           <span class="fl">0.1</span>, <span class="fl">0.3</span><span class="op">)</span>  <span class="co"># IIV V</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
-<span class="r-in">  amt <span class="op">=</span> <span class="fl">100</span>,</span>
-<span class="r-in">  times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">24</span>, <span class="fl">36</span><span class="op">)</span>,</span>
-<span class="r-in">  type <span class="op">=</span> <span class="st">"infusion"</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_3cmt_iv"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">sim</span><span class="op">(</span></span>
-<span class="r-in">  ode <span class="op">=</span> <span class="va">mod</span>,</span>
-<span class="r-in">  parameters <span class="op">=</span> <span class="va">p</span>,</span>
-<span class="r-in">  omega <span class="op">=</span> <span class="va">omega</span>,</span>
-<span class="r-in">  n_ind <span class="op">=</span> <span class="fl">20</span>,</span>
-<span class="r-in">  regimen <span class="op">=</span> <span class="va">r1</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"><span class="co"># }</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  CL <span class="op">=</span> <span class="fl">38.48</span>,</span></span>
+<span class="r-in"><span>  V  <span class="op">=</span> <span class="fl">7.4</span>,</span></span>
+<span class="r-in"><span>  Q  <span class="op">=</span> <span class="fl">7.844</span>,</span></span>
+<span class="r-in"><span>  V2 <span class="op">=</span> <span class="fl">5.19</span>,</span></span>
+<span class="r-in"><span>  Q2  <span class="op">=</span> <span class="fl">9.324</span>,</span></span>
+<span class="r-in"><span>  V3 <span class="op">=</span> <span class="fl">111</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">omega</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>,       <span class="co"># IIV CL</span></span></span>
+<span class="r-in"><span>           <span class="fl">0.1</span>, <span class="fl">0.3</span><span class="op">)</span>  <span class="co"># IIV V</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">r1</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_regimen.html">new_regimen</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  amt <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>  times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">24</span>, <span class="fl">36</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  type <span class="op">=</span> <span class="st">"infusion"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_3cmt_iv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">sim</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  ode <span class="op">=</span> <span class="va">mod</span>,</span></span>
+<span class="r-in"><span>  parameters <span class="op">=</span> <span class="va">p</span>,</span></span>
+<span class="r-in"><span>  omega <span class="op">=</span> <span class="va">omega</span>,</span></span>
+<span class="r-in"><span>  n_ind <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>  regimen <span class="op">=</span> <span class="va">r1</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -321,7 +321,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

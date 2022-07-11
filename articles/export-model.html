@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,30 +100,30 @@
     
 <p>PKPDsim allows you to export your ODE model to a precompiled R package. The benefit of doing so is that compilation (which usually takes ~5 seconds) has to be done only when the package is installed, and not when it is reloaded into R. This is useful for example when you want to create a Shiny app using a PKPDsim model, as it will remove the delay due to the compilation when starting the Shiny app. You can export to a package using the <code>package</code> argument to <code>new_ode_model</code>. With the <code>install</code> option you can control whether the package should be installed into R (default), or exported to a zip-file (<code>install=FALSE</code>). Example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
-<span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span> <span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">4</span>, interval <span class="op">=</span> <span class="fl">12</span>, type <span class="op">=</span> <span class="st">"bolus"</span>,  cmt<span class="op">=</span><span class="fl">1</span><span class="op">)</span>
-
-<span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>
-  code <span class="op">=</span> <span class="st">"
-    dAdt[1] = -(CL/V) * A[1]
-  "</span>,
-  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, bioav <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,
-  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, scale <span class="op">=</span> <span class="st">"V"</span><span class="op">)</span>,
-  parameters <span class="op">=</span> <span class="va">p</span>,
-  package <span class="op">=</span> <span class="st">"pktest"</span>,
-  install <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span> <span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">4</span>, interval <span class="op">=</span> <span class="fl">12</span>, type <span class="op">=</span> <span class="st">"bolus"</span>,  cmt<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
+<span>  code <span class="op">=</span> <span class="st">"</span></span>
+<span><span class="st">    dAdt[1] = -(CL/V) * A[1]</span></span>
+<span><span class="st">  "</span>,</span>
+<span>  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, bioav <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, scale <span class="op">=</span> <span class="st">"V"</span><span class="op">)</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="va">p</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"pktest"</span>,</span>
+<span>  install <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>To load the library and model:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pktest</span><span class="op">)</span>
-<span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">pktest</span><span class="fu">::</span><span class="fu">model</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">pktest</span><span class="op">)</span></span>
+<span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu">pktest</span><span class="fu">::</span><span class="fu">model</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>To simulate from the model:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">mod</span>, 
-  parameters <span class="op">=</span> <span class="va">p</span>, 
-  regimen <span class="op">=</span> <span class="va">reg</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">mod</span>, </span>
+<span>  parameters <span class="op">=</span> <span class="va">p</span>, </span>
+<span>  regimen <span class="op">=</span> <span class="va">reg</span></span>
+<span><span class="op">)</span></span></code></pre></div>
   </main>
 </div>
 
@@ -136,7 +136,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

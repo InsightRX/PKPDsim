@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -103,23 +103,23 @@
 </h2>
 <p>Covariates are implemented using the <code><a href="../reference/new_covariate.html">new_covariate()</a></code> function, wrapped in a named list. For example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-  <span class="st">"WT"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">70</span><span class="op">)</span>,
-  <span class="st">"SCR"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">120</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="st">"WT"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">70</span><span class="op">)</span>,</span>
+<span>  <span class="st">"SCR"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The names in the covariate list-object should correspond <strong>exactly</strong> with the names of the covariates in the model.</p>
 <div class="section level3">
 <h3 id="time-varying-covariates">Time-varying covariates<a class="anchor" aria-label="anchor" href="#time-varying-covariates"></a>
 </h3>
 <p>Time-varing covariates, such as creatinine values can be implemented easily as well. They just require the additional <code>times</code> argument:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-  <span class="st">"WT"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">70</span><span class="op">)</span>,
-  <span class="st">"CR"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>
-    value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1</span>, <span class="fl">1.2</span><span class="op">)</span>,
-    times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">48</span>, <span class="fl">72</span><span class="op">)</span>
-  <span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="st">"WT"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">70</span><span class="op">)</span>,</span>
+<span>  <span class="st">"CR"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span></span>
+<span>    value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">1</span>, <span class="fl">1.2</span><span class="op">)</span>,</span>
+<span>    times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">48</span>, <span class="fl">72</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>By default, <code>PKPDsim</code> assumes that you want to interpolate (linearly) between measurements of the time-varying covariates. If you prefer to implement the covariate using <em>last-observation-carried-forward</em> (in other words a step function), specify the <code>method = "LOCF"</code> argument to <code><a href="../reference/new_covariate.html">new_covariate()</a></code>.</p>
 </div>
 <div class="section level3">
@@ -127,56 +127,56 @@
 </h3>
 <p>A table of covariates can be supplied to <code><a href="../reference/sim.html">sim()</a></code> with covariate values per individual. It can handle both static and time-varying covariates. A covariate table could look like this:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cov_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
-  id  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,
-  WT  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">60</span><span class="op">)</span>,
-  SCR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">150</span>, <span class="fl">90</span>, <span class="fl">110</span><span class="op">)</span>,
-  t   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cov_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  id  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  WT  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">60</span><span class="op">)</span>,</span>
+<span>  SCR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">150</span>, <span class="fl">90</span>, <span class="fl">110</span><span class="op">)</span>,</span>
+<span>  t   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>The <code>id</code> and <code>t</code> (time) columns can be omitted when only static covariates are to be used. Again, make sure that the headers used for the covariates match <em>exactly</em> with the covariate names specified in the model definition.</p>
 <p>A full example for a model with (simulated) covariates for a patient population:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
-  CL <span class="op">=</span> <span class="fl">1</span>,
-  V <span class="op">=</span> <span class="fl">10</span>,
-  KA <span class="op">=</span> <span class="fl">0.5</span>
-<span class="op">)</span>
-<span class="va">n_ind</span> <span class="op">&lt;-</span> <span class="fl">50</span>
-<span class="va">cov_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>
-  <span class="st">'id'</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_ind</span>,
-  <span class="st">'WT'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_ind</span>, mean <span class="op">=</span> <span class="fl">70</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>
-  code <span class="op">=</span> <span class="st">'
-     CLi = CL * pow((WT/70), 0.75)
-     Vi  = V * (WT/70)
-     dAdt[1] = -KA*A[1]
-     dAdt[2] =  KA*A[1] -(CLi/Vi)*A[2]
-   '</span>,
-   declare_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'CLi'</span>, <span class="st">'Vi'</span><span class="op">)</span>,
-   covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'WT'</span><span class="op">)</span>,
-   dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,
-   obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="st">'V * (WT/70)'</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="va">regimen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>
-  amt  <span class="op">=</span> <span class="fl">30</span>,
-  n <span class="op">=</span> <span class="fl">4</span>,
-  type <span class="op">=</span> <span class="st">'bolus'</span>,
-  interval <span class="op">=</span> <span class="fl">12</span>
-<span class="op">)</span>
-
-<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>
-  ode <span class="op">=</span> <span class="va">model</span>,
-  parameters <span class="op">=</span> <span class="va">parameters</span>,
-  t_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">12</span>, <span class="fl">16</span>, <span class="fl">24</span><span class="op">)</span>,
-  n_ind <span class="op">=</span> <span class="va">n_ind</span>,
-  regimen <span class="op">=</span> <span class="va">regimen</span>,
-  covariates_table <span class="op">=</span> <span class="va">cov_table</span>,
-  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>covariates <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Simulating 50 individuals.</span></code></pre>
+<code class="sourceCode R"><span><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  CL <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  V <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  KA <span class="op">=</span> <span class="fl">0.5</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">n_ind</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
+<span><span class="va">cov_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  <span class="st">'id'</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n_ind</span>,</span>
+<span>  <span class="st">'WT'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_ind</span>, mean <span class="op">=</span> <span class="fl">70</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
+<span>  code <span class="op">=</span> <span class="st">'</span></span>
+<span><span class="st">     CLi = CL * pow((WT/70), 0.75)</span></span>
+<span><span class="st">     Vi  = V * (WT/70)</span></span>
+<span><span class="st">     dAdt[1] = -KA*A[1]</span></span>
+<span><span class="st">     dAdt[2] =  KA*A[1] -(CLi/Vi)*A[2]</span></span>
+<span><span class="st">   '</span>,</span>
+<span>   declare_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'CLi'</span>, <span class="st">'Vi'</span><span class="op">)</span>,</span>
+<span>   covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'WT'</span><span class="op">)</span>,</span>
+<span>   dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>   obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="st">'V * (WT/70)'</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">regimen</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
+<span>  amt  <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">'bolus'</span>,</span>
+<span>  interval <span class="op">=</span> <span class="fl">12</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
+<span>  ode <span class="op">=</span> <span class="va">model</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="va">parameters</span>,</span>
+<span>  t_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">8</span>, <span class="fl">12</span>, <span class="fl">16</span>, <span class="fl">24</span><span class="op">)</span>,</span>
+<span>  n_ind <span class="op">=</span> <span class="va">n_ind</span>,</span>
+<span>  regimen <span class="op">=</span> <span class="va">regimen</span>,</span>
+<span>  covariates_table <span class="op">=</span> <span class="va">cov_table</span>,</span>
+<span>  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>covariates <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Simulating 50 individuals.</span></span></code></pre>
 <p><em>Note: PKPDsim does not handle missing covariate values. If you do have missing covariate data, probably the best approach would be to impute the values manually before simulation, e.g. based on the mean observed / known value, or the correlation between the covariates.</em></p>
 </div>
 </div>
@@ -193,7 +193,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>
