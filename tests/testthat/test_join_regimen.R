@@ -66,3 +66,11 @@ test_that("one null regimen returns the other", {
   expect_equal(join_regimen(reg1, NULL), reg1)
 })
 
+test_that("join regimen works when no t_inf specified, e.g. oral or sc dosing", {
+  reg_i <- new_regimen(amt = 500, type = "sc", times = c(0, 2, 6)*24*7)
+  reg_m <- new_regimen(amt = 400, type = "sc", n = 5, interval = 8*7*24)
+  reg <- join_regimen(reg_i, reg_m, interval = 8*7*24)
+  expect_equal(reg$dose_times, c(0, 336, 1008, 2352, 3696, 5040, 6384, 7728))
+  expect_equal(reg$type, c("sc", "sc", "sc", "sc", "sc", "sc", "sc", "sc"))
+  expect_equal(reg$dose_amts, c(500, 500, 500, 400, 400, 400, 400, 400))
+})
