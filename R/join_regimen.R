@@ -36,7 +36,7 @@ join_regimen <- function(
     regimen1$dose_amts <- c(regimen1$dose_amts[keep], regimen2$dose_amts)
     ## when we join, we don't want the last infusion to overlap with
     ## the 1st one from the 2nd regimen, and should run until then.
-    if(length(keep) > 0 && regimen1$t_inf[max(keep)] > (t_dose_update - regimen1$dose_times[max(keep)])) {
+    if(isTRUE(length(keep) > 0 && regimen1$t_inf[max(keep)] > (t_dose_update - regimen1$dose_times[max(keep)]))) {
       planned_t_inf <- regimen1$t_inf[max(keep)]
       new_t_inf <- t_dose_update - max(regimen1$dose_times[keep])
       regimen1$t_inf[max(keep)] <- new_t_inf
@@ -81,7 +81,7 @@ join_regimen <- function(
     }
     ## when we join, we don't want the last infusion to overlap with
     ## the 1st one from the 2nd regimen, and should run until then.
-    if(tail(regimen1$t_inf,1) > interval) {
+    if(isTRUE(tail(regimen1$t_inf,1) > interval)) {
       planned_t_inf <- tail(regimen1$t_inf,1)
       regimen1$t_inf[length(regimen1$t_inf)] <- interval
       regimen1$dose_amts[length(regimen1$t_inf)] <- regimen1$dose_amts[length(regimen1$t_inf)] * interval / planned_t_inf
