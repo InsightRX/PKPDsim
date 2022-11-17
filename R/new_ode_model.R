@@ -20,6 +20,7 @@
 #' @param fixed parameters that should not have iiv added.
 #' @param iiv inter-individual variability, can optionally be added to library
 #' @param iov inter-occasion variability, can optionally be added to library
+#' @param development Information about the model development population, can optionally be added to library
 #' @param omega_matrix variance-covariance matrix for inter-individual variability, can optionally be added to library
 #' @param ruv residual variability, can optionally be added to library
 #' @param ltbs log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).
@@ -63,6 +64,7 @@ new_ode_model <- function (model = NULL,
                            declare_variables = NULL,
                            iiv = NULL,
                            iov = NULL,
+                           development = NULL,
                            omega_matrix = NULL,
                            ruv = NULL,
                            ltbs = NULL,
@@ -269,6 +271,7 @@ new_ode_model <- function (model = NULL,
       attr(sim_out, "misc") <- misc
       attr(sim_out, "cmt_mapping") <- cmt_mapping
       attr(sim_out, "iov") <- iov
+      attr(sim_out, "development") <- development
       attr(sim_out, "comments") <- paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n")))
       if(!is.null(int_step_size)) {
         attr(sim_out, "int_step_size") <- int_step_size
