@@ -107,7 +107,12 @@
 <div class="section level2">
 <h2 id="absorption-with-lag-time">Absorption with lag time<a class="anchor" aria-label="anchor" href="#absorption-with-lag-time"></a>
 </h2>
-<p>Specify the <code>lagtime</code> when you create the model using <code>new_ode_model</code>. The lag time can either be a number, or a string referring to a parameter (e.g. “ALAG”). If a single number or parameter is specified, the lag time will apply to the default dose compartment only. Alternatively, it is also possible to specify a vector of lag times, with a value for each compartment.</p>
+<p>Specify the <code>lagtime</code> when you create the model using
+<code>new_ode_model</code>. The lag time can either be a number, or a
+string referring to a parameter (e.g. “ALAG”). If a single number or
+parameter is specified, the lag time will apply to the default dose
+compartment only. Alternatively, it is also possible to specify a vector
+of lag times, with a value for each compartment.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/InsightRX/PKPDsim" class="external-link">"PKPDsim"</a></span><span class="op">)</span></span>
 <span></span>
@@ -141,8 +146,15 @@
 <div class="section level2">
 <h2 id="absorption-transit-compartments">Absorption transit compartments<a class="anchor" aria-label="anchor" href="#absorption-transit-compartments"></a>
 </h2>
-<p>The code below implements the transit compartment model for absorption compartments as described by Savic et al. JPKPD 2007. Please note that this implementation assumes that all drug amount has been absorbed within the dosing interval. Such an assumption might not always hold. Also, for this implementation of dosing, it is essentioal to set the bioavailability for the dose compartment to 0, since dosing is now implemented using a separate analytical equation.</p>
-<p><em>Note: a simplified way of coding the transit compartments model will be added soon to PKPDsim.</em></p>
+<p>The code below implements the transit compartment model for
+absorption compartments as described by Savic et al. JPKPD 2007. Please
+note that this implementation assumes that all drug amount has been
+absorbed within the dosing interval. Such an assumption might not always
+hold. Also, for this implementation of dosing, it is essentioal to set
+the bioavailability for the dose compartment to 0, since dosing is now
+implemented using a separate analytical equation.</p>
+<p><em>Note: a simplified way of coding the transit compartments model
+will be added soon to PKPDsim.</em></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/InsightRX/PKPDsim" class="external-link">PKPDsim</a></span><span class="op">)</span></span>
 <span></span>

@@ -104,14 +104,18 @@
 
     
     
-<p>Regimens are defined using the <code><a href="../reference/new_regimen.html">new_regimen()</a></code> function. You should provide information on the dose amount, how many doses, and the dosing interval. However, how you provide that information is very flexible. You can e.g. specify:</p>
+<p>Regimens are defined using the <code><a href="../reference/new_regimen.html">new_regimen()</a></code> function.
+You should provide information on the dose amount, how many doses, and
+the dosing interval. However, how you provide that information is very
+flexible. You can e.g. specify:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
 <span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  interval <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>which will administer 5 doses of 100 mg (or whatever the unit is), at an interval of 12 hours. The same can however also be specified as:</p>
+<p>which will administer 5 doses of 100 mg (or whatever the unit is), at
+an interval of 12 hours. The same can however also be specified as:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
 <span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -123,8 +127,14 @@
 <span>  amt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, <span class="fl">24</span>, <span class="fl">36</span>, <span class="fl">48</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Be careful: if the length of the <code>amt</code> vector is not the same as the lenght in <code>times</code>, the function will repeat the first <code>amt</code> specified. The same goes for the arguments <code>type</code>, <code>cmt</code>, and <code>t_inf</code>.</p>
-<p>By default, the <code><a href="../reference/new_regimen.html">new_regimen()</a></code> function assumes the dose is given as bolus. If you want to specify that these should be given as infusion, specify the <code>type</code> and <code>t_inf</code> arguments:</p>
+<p>Be careful: if the length of the <code>amt</code> vector is not the
+same as the lenght in <code>times</code>, the function will repeat the
+first <code>amt</code> specified. The same goes for the arguments
+<code>type</code>, <code>cmt</code>, and <code>t_inf</code>.</p>
+<p>By default, the <code><a href="../reference/new_regimen.html">new_regimen()</a></code> function assumes the dose
+is given as bolus. If you want to specify that these should be given as
+infusion, specify the <code>type</code> and <code>t_inf</code>
+arguments:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
 <span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -132,19 +142,33 @@
 <span>  type <span class="op">=</span> <span class="st">"infusion"</span>,</span>
 <span>  t_inf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1.5</span>, <span class="fl">1.5</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>When you created the model using <code>new_ode_model</code>, you also specified a default dosing compartment. If you didn’t specify the <code>dose</code> argument, the default dosing compartment is 1. Now, should you want to administer the dose into a different compartment, you can override it with the <code>cmt</code> argumentfunction:</p>
+<p>When you created the model using <code>new_ode_model</code>, you also
+specified a default dosing compartment. If you didn’t specify the
+<code>dose</code> argument, the default dosing compartment is 1. Now,
+should you want to administer the dose into a different compartment, you
+can override it with the <code>cmt</code> argumentfunction:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
 <span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, <span class="fl">24</span>, <span class="fl">36</span>, <span class="fl">48</span><span class="op">)</span>,</span>
 <span>  cmt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Which will administer the doses to compartments 1, 1, 2, 2, and 3, respectively (of course this is a hypothetical example).</p>
-<p><em>Note: <code>PKPDsim</code> doesn’t care about what unit the dose is in, you have to define this yourself in conjunction with the model code and observation scale.</em></p>
+<p>Which will administer the doses to compartments 1, 1, 2, 2, and 3,
+respectively (of course this is a hypothetical example).</p>
+<p><em>Note: <code>PKPDsim</code> doesn’t care about what unit the dose
+is in, you have to define this yourself in conjunction with the model
+code and observation scale.</em></p>
 <div class="section level2">
 <h2 id="steady-state">Steady state<a class="anchor" aria-label="anchor" href="#steady-state"></a>
 </h2>
-<p>Instead of simulating the full concentration time course for a give model, if you want to simulate the PK(PD) at steady state, you can also specify the <code>ss=TRUE</code> argument to <code><a href="../reference/new_regimen.html">new_regimen()</a></code>, which will then simulate the regimen at steady state. By default, steady state is assumed to occur after 5 days (PKPDsim doesn’t check if steady state is reached!), but if you want to decrease or increase this you can do so by specifying the <code>n_ss</code> argument which takes the number of doses to simulate before assuming steady state.</p>
+<p>Instead of simulating the full concentration time course for a give
+model, if you want to simulate the PK(PD) at steady state, you can also
+specify the <code>ss=TRUE</code> argument to <code><a href="../reference/new_regimen.html">new_regimen()</a></code>,
+which will then simulate the regimen at steady state. By default, steady
+state is assumed to occur after 5 days (PKPDsim doesn’t check if steady
+state is reached!), but if you want to decrease or increase this you can
+do so by specifying the <code>n_ss</code> argument which takes the
+number of doses to simulate before assuming steady state.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg_ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
 <span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>

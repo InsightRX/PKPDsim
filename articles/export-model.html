@@ -104,7 +104,16 @@
 
     
     
-<p>PKPDsim allows you to export your ODE model to a precompiled R package. The benefit of doing so is that compilation (which usually takes ~5 seconds) has to be done only when the package is installed, and not when it is reloaded into R. This is useful for example when you want to create a Shiny app using a PKPDsim model, as it will remove the delay due to the compilation when starting the Shiny app. You can export to a package using the <code>package</code> argument to <code>new_ode_model</code>. With the <code>install</code> option you can control whether the package should be installed into R (default), or exported to a zip-file (<code>install=FALSE</code>). Example:</p>
+<p>PKPDsim allows you to export your ODE model to a precompiled R
+package. The benefit of doing so is that compilation (which usually
+takes ~5 seconds) has to be done only when the package is installed, and
+not when it is reloaded into R. This is useful for example when you want
+to create a Shiny app using a PKPDsim model, as it will remove the delay
+due to the compilation when starting the Shiny app. You can export to a
+package using the <code>package</code> argument to
+<code>new_ode_model</code>. With the <code>install</code> option you can
+control whether the package should be installed into R (default), or
+exported to a zip-file (<code>install=FALSE</code>). Example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span> <span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">4</span>, interval <span class="op">=</span> <span class="fl">12</span>, type <span class="op">=</span> <span class="st">"bolus"</span>,  cmt<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>

@@ -109,14 +109,23 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p><code>new_ode_model</code> is the function that creates a new ODE model that can be used in the <code><a href="../reference/sim.html">sim()</a></code> command. It defines the ODE system and sets some attributes for the model. The model can be specified in three different ways:</p>
+<p><code>new_ode_model</code> is the function that creates a new ODE
+model that can be used in the <code><a href="../reference/sim.html">sim()</a></code> command. It defines the
+ODE system and sets some attributes for the model. The model can be
+specified in three different ways:</p>
 <ul>
 <li>
-<code>model</code>: a string that references a model from the library included in <code>PKPDsim</code>. Examples in the current library are e.g. <code>pk_1cmt_oral</code>, <code>pk_2cmt_iv</code>. To show the available models, run <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code> without any arguments.</li>
+<code>model</code>: a string that references a model from the
+library included in <code>PKPDsim</code>. Examples in the current
+library are e.g. <code>pk_1cmt_oral</code>, <code>pk_2cmt_iv</code>. To
+show the available models, run <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code> without any
+arguments.</li>
 <li>
-<code>code</code>: using code specyfing derivatives for ODE specified in <em>pseudo-R</em> code</li>
+<code>code</code>: using code specyfing derivatives for ODE
+specified in <em>pseudo-R</em> code</li>
 <li>
-<code>file</code>: similar to <code>code</code>, but reads the code from a file</li>
+<code>file</code>: similar to <code>code</code>, but reads the code
+from a file</li>
 </ul>
 </div>
 <div class="section level2">
@@ -125,7 +134,8 @@
 <p>For example, a 1-compartment oral PK model can be obtained using:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"pk_1cmt_oral"</span><span class="op">)</span></span></code></pre></div>
-<p>Run the <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code> function without arguments to see the currently available models:</p>
+<p>Run the <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code> function without arguments to
+see the currently available models:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Error in new_ode_model(): Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:</span></span>
@@ -150,15 +160,25 @@
 <span><span class="st">"</span><span class="op">)</span></span></code></pre></div>
 <p>The input code should adhere to the follow rules:</p>
 <ul>
-<li>the derivaties in the ODE system are defined using <code>dAdt</code>
+<li>the derivaties in the ODE system are defined using
+<code>dAdt</code>
 </li>
-<li>array indices for the derivatives and compartments are indicated with <code>[ ]</code>. Compartments indices can start at either 0 or 1. If the latter, all indices will be reduced by 1 in the translation to C++ code.</li>
+<li>array indices for the derivatives and compartments are indicated
+with <code>[ ]</code>. Compartments indices can start at either 0 or 1.
+If the latter, all indices will be reduced by 1 in the translation to
+C++ code.</li>
 <li>equations are defined using <code>=</code>
 </li>
-<li>power functions need to be written out as <code>pow(base,exp)</code>.</li>
-<li>force any numbers to be interpreted as <code>real</code>, to avoid them being interpreted as <code>integer</code>. So if an equation involves the real number <code>3</code>, it is usually safer to write this as <code>3.0</code> in code.</li>
+<li>power functions need to be written out as
+<code>pow(base,exp)</code>.</li>
+<li>force any numbers to be interpreted as <code>real</code>, to avoid
+them being interpreted as <code>integer</code>. So if an equation
+involves the real number <code>3</code>, it is usually safer to write
+this as <code>3.0</code> in code.</li>
 </ul>
-<p>The input code is translated into a C++ function. You can check that the model compiled correctly by typing the model name on the R command line, which prints the model information:</p>
+<p>The input code is translated into a C++ function. You can check that
+the model compiled correctly by typing the model name on the R command
+line, which prints the model information:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span></span></code></pre></div>
 <pre><code><span><span class="co">## ODE definition: </span></span>
@@ -179,19 +199,24 @@
 <span><span class="co">## IOV bins: 1</span></span>
 <span><span class="co">## Comments: </span></span>
 <span><span class="co">##  -</span></span></code></pre>
-<p>If you’re interested, you can also output the actual C++ function that is compiled by specifying the <code>cpp_show_code=TRUE</code> argument to the <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code> function.</p>
+<p>If you’re interested, you can also output the actual C++ function
+that is compiled by specifying the <code>cpp_show_code=TRUE</code>
+argument to the <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code> function.</p>
 </div>
 <div class="section level2">
 <h2 id="more-custom-model-options">More custom model options<a class="anchor" aria-label="anchor" href="#more-custom-model-options"></a>
 </h2>
-<p>You can introduce new variables in your code, but you will have to define them using <code>declare_variables</code> argument too:</p>
+<p>You can introduce new variables in your code, but you will have to
+define them using <code>declare_variables</code> argument too:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">  KEL = CL/V</span></span>
 <span><span class="st">  dAdt[1] = -KA * A[1]</span></span>
 <span><span class="st">  dAdt[2] = +KA * A[1] -KEL * A[2]</span></span>
 <span><span class="st">"</span>, declare_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KEL"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>Also, when you want to use covariates in your ODE system (more info on how to define covariates is in the <em>Covariates</em> vignette), you will have to define them, both in the code and in the function call:</p>
+<p>Also, when you want to use covariates in your ODE system (more info
+on how to define covariates is in the <em>Covariates</em> vignette), you
+will have to define them, both in the code and in the function call:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">  CLi = WT/70</span></span>
@@ -199,7 +224,12 @@
 <span><span class="st">  dAdt[1] = -KA * A[1]</span></span>
 <span><span class="st">  dAdt[2] = +KA * A[1] -(CL*(WT/70)/V) * A[2]</span></span>
 <span><span class="st">"</span>, declare_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"KEL"</span>, <span class="st">"CLi"</span><span class="op">)</span>, covariates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>One exception to the input code syntax is the definition of power functions. <code>PKPDsim</code> does not translate those from the <em>pseudo-R</em> code to valid C++ syntax automatically. C/C++ does not use the <code>^</code> to indicate power functions, but uses the <code>pow(value, base)</code> function instead, so for example an allometric PK model should be written as:</p>
+<p>One exception to the input code syntax is the definition of power
+functions. <code>PKPDsim</code> does not translate those from the
+<em>pseudo-R</em> code to valid C++ syntax automatically. C/C++ does not
+use the <code>^</code> to indicate power functions, but uses the
+<code>pow(value, base)</code> function instead, so for example an
+allometric PK model should be written as:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">  CLi = CL * pow((WT/70), 0.75)</span></span>
@@ -209,7 +239,11 @@
 <div class="section level3">
 <h3 id="dosing-bioavailability">Dosing / bioavailability<a class="anchor" aria-label="anchor" href="#dosing-bioavailability"></a>
 </h3>
-<p>The default dosing compartment and bioavailability can be specified using the <code>dose</code> argument. By default, the dose will go into compartment <code>1</code>, with a bioavailability of <code>1</code>. The <code>bioav</code> element in the list can be either a number or a character string referring a parameter.</p>
+<p>The default dosing compartment and bioavailability can be specified
+using the <code>dose</code> argument. By default, the dose will go into
+compartment <code>1</code>, with a bioavailability of <code>1</code>.
+The <code>bioav</code> element in the list can be either a number or a
+character string referring a parameter.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">    dAdt[1] = -KA * A[1]</span></span>
@@ -218,7 +252,10 @@
 <span>  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, bioav <span class="op">=</span> <span class="st">"F1"</span><span class="op">)</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>KA <span class="op">=</span> <span class="fl">1</span>, CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">50</span>, F1 <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Bioavailability can also be used for dosing based on mg/kg, since that is not supported in <code><a href="../reference/new_regimen.html">new_regimen()</a></code>. The way to implement this is by scaling the dose by the “weight” covariate using the bioavailability:</p>
+<p>Bioavailability can also be used for dosing based on mg/kg, since
+that is not supported in <code><a href="../reference/new_regimen.html">new_regimen()</a></code>. The way to
+implement this is by scaling the dose by the “weight” covariate using
+the bioavailability:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">    dAdt[1] = -(CL/V)*A[1];</span></span>
@@ -231,7 +268,9 @@
 <div class="section level3">
 <h3 id="observations">Observations<a class="anchor" aria-label="anchor" href="#observations"></a>
 </h3>
-<p>The observation compartment can be set by specifying a list to the <code>obs</code> argument, with either the elements <code>cmt</code> and <code>scale</code>, or <code>variable</code>.</p>
+<p>The observation compartment can be set by specifying a list to the
+<code>obs</code> argument, with either the elements <code>cmt</code> and
+<code>scale</code>, or <code>variable</code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">    dAdt[1] = -KA * A[1]</span></span>
@@ -239,8 +278,12 @@
 <span><span class="st">  "</span>, </span>
 <span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="st">"V"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The <code>scale</code> can be either a parameter or a number, the <code>cmt</code> can only be a number.</p>
-<p><em>Note that the variables specified inside the differential equation block are not available as scaling parameters. E.g. for allometry you will have to redefine the scaled volume as follows:</em></p>
+<p>The <code>scale</code> can be either a parameter or a number, the
+<code>cmt</code> can only be a number.</p>
+<p><em>Note that the variables specified inside the differential
+equation block are not available as scaling parameters. E.g. for
+allometry you will have to redefine the scaled volume as
+follows:</em></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span>code <span class="op">=</span> <span class="st">"</span></span>
 <span><span class="st">    Vi = V * (WT/70)</span></span>
@@ -264,7 +307,9 @@
 <div class="section level2">
 <h2 id="custom-model-from-file">Custom model from file<a class="anchor" aria-label="anchor" href="#custom-model-from-file"></a>
 </h2>
-<p>Using the <code>file=</code> argument, the model code is read from the specified fils. This is just a convenience function, i.e. it allows you to separate models from R code more easily.</p>
+<p>Using the <code>file=</code> argument, the model code is read from
+the specified fils. This is just a convenience function, i.e. it allows
+you to separate models from R code more easily.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
 <span>  file <span class="op">=</span> <span class="st">"pk_1cmt_oral_nonlin_v1.txt"</span>,</span>

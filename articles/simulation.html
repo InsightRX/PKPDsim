@@ -104,7 +104,11 @@
 
     
     
-<p>The <code><a href="../reference/sim.html">sim()</a></code> function will combine the model, the parameters, and the regimen, and simulate out the ODE system. It will return a <code>data.frame</code> in the long format, i.e. one observation per row, and split by compartment and individual. The command for <code><a href="../reference/sim.html">sim()</a></code> looks e.g. like this:</p>
+<p>The <code><a href="../reference/sim.html">sim()</a></code> function will combine the model, the
+parameters, and the regimen, and simulate out the ODE system. It will
+return a <code>data.frame</code> in the long format, i.e. one
+observation per row, and split by compartment and individual. The
+command for <code><a href="../reference/sim.html">sim()</a></code> looks e.g. like this:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
 <span>  ode <span class="op">=</span> <span class="va">model</span>,              <span class="co"># created using new_ode_model()</span></span>
@@ -136,7 +140,9 @@
 <span><span class="co">## 47  1 3    1 82.00960        1</span></span>
 <span><span class="co">## 65  1 4    1 74.20535        1</span></span>
 <span><span class="co">## 67  1 5    1 67.14378        1</span></span></code></pre>
-<p>By default, the observation times will include an observation every 1 hour. However, you can specify a vector of observation times to get only those observations:</p>
+<p>By default, the observation times will include an observation every 1
+hour. However, you can specify a vector of observation times to get only
+those observations:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
 <span>  ode <span class="op">=</span> <span class="va">model</span>,</span>

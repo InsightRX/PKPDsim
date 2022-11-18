@@ -104,22 +104,44 @@
 
     
     
-<p>The simulation backend in <code>PKPDsim</code> uses an ODE solver written in C++ (<code>Boost::odeint</code>) to make sure simulations are fast. Therefore, for most simulation problems computational speed will not be an issue. Even simulating thousands (or millions) of patients for complex models will rarely take more than a few minutes. Simpler simulation problems will commonly take seconds to complete.</p>
-<p>However, in some special cases speed could become an issue, and for that it is important to understand the structure of PKPDsim’s main function (<code><a href="../reference/sim.html">sim()</a></code>) because. The <code><a href="../reference/sim.html">sim()</a></code> function is composed of three parts:</p>
+<p>The simulation backend in <code>PKPDsim</code> uses an ODE solver
+written in C++ (<code>Boost::odeint</code>) to make sure simulations are
+fast. Therefore, for most simulation problems computational speed will
+not be an issue. Even simulating thousands (or millions) of patients for
+complex models will rarely take more than a few minutes. Simpler
+simulation problems will commonly take seconds to complete.</p>
+<p>However, in some special cases speed could become an issue, and for
+that it is important to understand the structure of PKPDsim’s main
+function (<code><a href="../reference/sim.html">sim()</a></code>) because. The <code><a href="../reference/sim.html">sim()</a></code> function
+is composed of three parts:</p>
 <ol style="list-style-type: decimal">
 <li>preprocessing (R)</li>
 <li>looping over subjects, solving ODE for each subject (R/C++)</li>
 <li>post-processing (R)</li>
 </ol>
-<p>From this structure it is easy to understand that when you would request simulation of 1,000 patients:</p>
+<p>From this structure it is easy to understand that when you would
+request simulation of 1,000 patients:</p>
 <pre><code><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>ode <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></code></pre>
-<p>the pre- and post-processing parts will take relatively minor computational time, since the main part will be the loop simulating the PK for the subjects. However, if instead you would write a loop yourself to simulate 1,000 patients, and would call sim() repeatedly:</p>
+<p>the pre- and post-processing parts will take relatively minor
+computational time, since the main part will be the loop simulating the
+PK for the subjects. However, if instead you would write a loop yourself
+to simulate 1,000 patients, and would call sim() repeatedly:</p>
 <pre><code><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">rbindlist</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>ode <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre>
-<p>now in each iteration also the pre- and post-processing functionality would be invoked, and the overall simulation will take much longer than before, probably by an order of magnitude. The same concept applies if you would use <code><a href="../reference/sim.html">sim()</a></code> in the context of population (NLME) or individual (MAP) estimation, or in optimal design in evaluation of the FIM.</p>
-<p>There is a different way to solve ODEs with <code>PKPDsim</code> though, which uses only the core ODE solver function and does not perform pre-/post-processing. If you need to use PKPDsim in an iterative context as described above, you should therefore use the <code><a href="../reference/sim_core.html">sim_core()</a></code> function instead, and perform the pre- and post-processing outside of the main loop, e.g.:</p>
+<p>now in each iteration also the pre- and post-processing functionality
+would be invoked, and the overall simulation will take much longer than
+before, probably by an order of magnitude. The same concept applies if
+you would use <code><a href="../reference/sim.html">sim()</a></code> in the context of population (NLME) or
+individual (MAP) estimation, or in optimal design in evaluation of the
+FIM.</p>
+<p>There is a different way to solve ODEs with <code>PKPDsim</code>
+though, which uses only the core ODE solver function and does not
+perform pre-/post-processing. If you need to use PKPDsim in an iterative
+context as described above, you should therefore use the
+<code><a href="../reference/sim_core.html">sim_core()</a></code> function instead, and perform the pre- and
+post-processing outside of the main loop, e.g.:</p>
 <pre><code><span><span class="va">design</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, return_design<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span> <span class="op">{</span></span>
@@ -129,8 +151,21 @@
 <div class="section level2">
 <h2 id="comparison-with-other-packages">Comparison with other packages<a class="anchor" aria-label="anchor" href="#comparison-with-other-packages"></a>
 </h2>
-<p>Several other open source R packages provide similar features as PKPDsim, the main ones being <code>RxODE</code> (now renamed to <code>rxode2</code>) and <code>mrgsolve</code>.</p>
-<p>In the <code>rxode2</code> package, the overhead from pre- and post-processing is separated from the main simulation function by default, while <code>mrgsolve</code> is more similar to <code>PKPDsim</code> with the overhead being included within the main simulation function. Therefore, especially when used in an iterative context, <code>RxODE</code> will seem much faster than <code>PKDPsim</code> and <code>mrgsolve</code>, while <code>PKPDsim</code> and <code>mrgsolve</code> will seem broadly similar. However, when using the <code><a href="../reference/sim_core.html">sim_core()</a></code> function as outlined above, our benchmarks indicate that simulation speed for <code>PKDDsim</code> is highly similar to that obtained with the <code>RxODE</code> package.</p>
+<p>Several other open source R packages provide similar features as
+PKPDsim, the main ones being <code>RxODE</code> (now renamed to
+<code>rxode2</code>) and <code>mrgsolve</code>.</p>
+<p>In the <code>rxode2</code> package, the overhead from pre- and
+post-processing is separated from the main simulation function by
+default, while <code>mrgsolve</code> is more similar to
+<code>PKPDsim</code> with the overhead being included within the main
+simulation function. Therefore, especially when used in an iterative
+context, <code>RxODE</code> will seem much faster than
+<code>PKDPsim</code> and <code>mrgsolve</code>, while
+<code>PKPDsim</code> and <code>mrgsolve</code> will seem broadly
+similar. However, when using the <code><a href="../reference/sim_core.html">sim_core()</a></code> function as
+outlined above, our benchmarks indicate that simulation speed for
+<code>PKDDsim</code> is highly similar to that obtained with the
+<code>RxODE</code> package.</p>
 </div>
   </main>
 </div>

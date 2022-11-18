@@ -107,19 +107,28 @@
 <div class="section level2">
 <h2 id="residual-error">Residual error<a class="anchor" aria-label="anchor" href="#residual-error"></a>
 </h2>
-<p>PKPDsim can simulate residual errors in your observed data, which can be done with the <code>res_var</code> argument to the <code><a href="../reference/sim.html">sim()</a></code> function. This argument requires a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> with one or more of the following components:</p>
+<p>PKPDsim can simulate residual errors in your observed data, which can
+be done with the <code>res_var</code> argument to the <code><a href="../reference/sim.html">sim()</a></code>
+function. This argument requires a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list()</a></code> with one or more
+of the following components:</p>
 <ul>
 <li>
-<code>prop</code>: proportional error: <span class="math display">\[y = \hat{y} \cdot (1 + \mathcal{N}(0, prop))\]</span>
+<code>prop</code>: proportional error: <span class="math display">\[y = \hat{y} \cdot (1 + \mathcal{N}(0,
+prop))\]</span>
 </li>
 <li>
-<code>add</code>: additive error: <span class="math display">\[y = \hat{y} + \mathcal{N}(0, add))\]</span>
+<code>add</code>: additive error: <span class="math display">\[y =
+\hat{y} + \mathcal{N}(0, add))\]</span>
 </li>
 <li>
-<code>exp</code>: exponential error: <span class="math display">\[y = \hat{y} \cdot e^{\mathcal{N}(0, exp)}\]</span>
+<code>exp</code>: exponential error: <span class="math display">\[y
+= \hat{y} \cdot e^{\mathcal{N}(0, exp)}\]</span>
 </li>
 </ul>
-<p>These list elements can be combined, e.g. for a combined proportional and additive error model one would write e.g.: <code>res_var = list(prop = 0.1, add = 1)</code>, which would give a 10% proportional error plus an additive error of 1 concentration unit.</p>
+<p>These list elements can be combined, e.g. for a combined proportional
+and additive error model one would write e.g.:
+<code>res_var = list(prop = 0.1, add = 1)</code>, which would give a 10%
+proportional error plus an additive error of 1 concentration unit.</p>
 <p>Below are some examples of the <code>res_var</code> argument</p>
 <p>Combined proportional and additive:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -149,7 +158,9 @@
 <span>  regimen <span class="op">=</span> <span class="va">reg</span>,</span>
 <span>  only_obs<span class="op">=</span><span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Besides including the residual error at simulation time, there is also the option to include it afterwards. For that, the function <code><a href="../reference/add_ruv.html">add_ruv()</a></code> is useful.</p>
+<p>Besides including the residual error at simulation time, there is
+also the option to include it afterwards. For that, the function
+<code><a href="../reference/add_ruv.html">add_ruv()</a></code> is useful.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim3</span> <span class="op">&lt;-</span> <span class="va">sim1</span></span>
 <span><span class="va">sim3</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_ruv.html">add_ruv</a></span><span class="op">(</span></span>

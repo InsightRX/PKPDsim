@@ -107,17 +107,22 @@
 <div class="section level2">
 <h2 id="covariates">Covariates<a class="anchor" aria-label="anchor" href="#covariates"></a>
 </h2>
-<p>Covariates are implemented using the <code><a href="../reference/new_covariate.html">new_covariate()</a></code> function, wrapped in a named list. For example:</p>
+<p>Covariates are implemented using the <code><a href="../reference/new_covariate.html">new_covariate()</a></code>
+function, wrapped in a named list. For example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"WT"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">70</span><span class="op">)</span>,</span>
 <span>  <span class="st">"SCR"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The names in the covariate list-object should correspond <strong>exactly</strong> with the names of the covariates in the model.</p>
+<p>The names in the covariate list-object should correspond
+<strong>exactly</strong> with the names of the covariates in the
+model.</p>
 <div class="section level3">
 <h3 id="time-varying-covariates">Time-varying covariates<a class="anchor" aria-label="anchor" href="#time-varying-covariates"></a>
 </h3>
-<p>Time-varing covariates, such as creatinine values can be implemented easily as well. They just require the additional <code>times</code> argument:</p>
+<p>Time-varing covariates, such as creatinine values can be implemented
+easily as well. They just require the additional <code>times</code>
+argument:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">covariates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"WT"</span> <span class="op">=</span> <span class="fu"><a href="../reference/new_covariate.html">new_covariate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fl">70</span><span class="op">)</span>,</span>
@@ -126,12 +131,19 @@
 <span>    times <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">48</span>, <span class="fl">72</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>By default, <code>PKPDsim</code> assumes that you want to interpolate (linearly) between measurements of the time-varying covariates. If you prefer to implement the covariate using <em>last-observation-carried-forward</em> (in other words a step function), specify the <code>method = "LOCF"</code> argument to <code><a href="../reference/new_covariate.html">new_covariate()</a></code>.</p>
+<p>By default, <code>PKPDsim</code> assumes that you want to interpolate
+(linearly) between measurements of the time-varying covariates. If you
+prefer to implement the covariate using
+<em>last-observation-carried-forward</em> (in other words a step
+function), specify the <code>method = "LOCF"</code> argument to
+<code><a href="../reference/new_covariate.html">new_covariate()</a></code>.</p>
 </div>
 <div class="section level3">
 <h3 id="covariates-for-multiple-patients">Covariates for multiple patients<a class="anchor" aria-label="anchor" href="#covariates-for-multiple-patients"></a>
 </h3>
-<p>A table of covariates can be supplied to <code><a href="../reference/sim.html">sim()</a></code> with covariate values per individual. It can handle both static and time-varying covariates. A covariate table could look like this:</p>
+<p>A table of covariates can be supplied to <code><a href="../reference/sim.html">sim()</a></code> with
+covariate values per individual. It can handle both static and
+time-varying covariates. A covariate table could look like this:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cov_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span>
@@ -139,8 +151,12 @@
 <span>  SCR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">150</span>, <span class="fl">90</span>, <span class="fl">110</span><span class="op">)</span>,</span>
 <span>  t   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The <code>id</code> and <code>t</code> (time) columns can be omitted when only static covariates are to be used. Again, make sure that the headers used for the covariates match <em>exactly</em> with the covariate names specified in the model definition.</p>
-<p>A full example for a model with (simulated) covariates for a patient population:</p>
+<p>The <code>id</code> and <code>t</code> (time) columns can be omitted
+when only static covariates are to be used. Again, make sure that the
+headers used for the covariates match <em>exactly</em> with the
+covariate names specified in the model definition.</p>
+<p>A full example for a model with (simulated) covariates for a patient
+population:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  CL <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -183,7 +199,11 @@
 <span>  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>covariates <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simulating 50 individuals.</span></span></code></pre>
-<p><em>Note: PKPDsim does not handle missing covariate values. If you do have missing covariate data, probably the best approach would be to impute the values manually before simulation, e.g. based on the mean observed / known value, or the correlation between the covariates.</em></p>
+<p><em>Note: PKPDsim does not handle missing covariate values. If you do
+have missing covariate data, probably the best approach would be to
+impute the values manually before simulation, e.g. based on the mean
+observed / known value, or the correlation between the
+covariates.</em></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

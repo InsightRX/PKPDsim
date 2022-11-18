@@ -117,16 +117,25 @@
 <div class="section level2">
 <h2 id="first-simulation">First simulation<a class="anchor" aria-label="anchor" href="#first-simulation"></a>
 </h2>
-<p>The main simulation function in <code>PKPDsim</code> is <code><a href="../reference/sim.html">sim()</a></code>. To be able to simulate a dosing regimen for a specific drug, at least the following <strong>three</strong> arguments are required:</p>
+<p>The main simulation function in <code>PKPDsim</code> is
+<code><a href="../reference/sim.html">sim()</a></code>. To be able to simulate a dosing regimen for a
+specific drug, at least the following <strong>three</strong> arguments
+are required:</p>
 <ul>
 <li>
-<code>ode</code>: the compiled ODE model (created using the <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code> function)</li>
+<code>ode</code>: the compiled ODE model (created using the
+<code><a href="../reference/new_ode_model.html">new_ode_model()</a></code> function)</li>
 <li>
-<code>parameters</code>: a <code>list</code> of parameter values for the model</li>
+<code>parameters</code>: a <code>list</code> of parameter values for
+the model</li>
 <li>
-<code>regimen</code>: the dosing regimen (created using the <code><a href="../reference/new_regimen.html">new_regimen()</a></code> function)</li>
+<code>regimen</code>: the dosing regimen (created using the
+<code><a href="../reference/new_regimen.html">new_regimen()</a></code> function)</li>
 </ul>
-<p>The model library in PKPDsim contains a small library of built-in PK and PD models, but of course more interesting is its ability to handle user-specified ODE systems. However, as a first example, let’s implement the most simple example from the library:</p>
+<p>The model library in PKPDsim contains a small library of built-in PK
+and PD models, but of course more interesting is its ability to handle
+user-specified ODE systems. However, as a first example, let’s implement
+the most simple example from the library:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">1</span>, V  <span class="op">=</span> <span class="fl">10</span>, KA <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="va">pk1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_1cmt_oral"</span><span class="op">)</span></span>
@@ -140,8 +149,16 @@
 <span>  parameters <span class="op">=</span> <span class="va">p</span>,</span>
 <span>  regimen <span class="op">=</span> <span class="va">r1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>You probably noticed that the <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code>-step took a few seconds to finish, while the simulation itself was in the order of milliseconds. In <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code>, the model is compiled from C++ source code to binary code, which takes a few seconds. However, this has to be done only once. After compilation, the model is then available to be used in <code><a href="../reference/sim.html">sim()</a></code> for as long as the R session is open.</p>
-<p>Let’s look at the output. <code>PKPDsim</code> will output data in the “long” format, i.e. one row per observed timepoint, and split by compartment:</p>
+<p>You probably noticed that the <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code>-step took
+a few seconds to finish, while the simulation itself was in the order of
+milliseconds. In <code><a href="../reference/new_ode_model.html">new_ode_model()</a></code>, the model is compiled
+from C++ source code to binary code, which takes a few seconds. However,
+this has to be done only once. After compilation, the model is then
+available to be used in <code><a href="../reference/sim.html">sim()</a></code> for as long as the R session
+is open.</p>
+<p>Let’s look at the output. <code>PKPDsim</code> will output data in
+the “long” format, i.e. one row per observed timepoint, and split by
+compartment:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##     id t comp         y obs_type</span></span>
@@ -151,7 +168,8 @@
 <span><span class="co">## 76   1 3    1  22.31302        1</span></span>
 <span><span class="co">## 112  1 4    1  13.53353        1</span></span>
 <span><span class="co">## 148  1 5    1   8.20850        1</span></span></code></pre>
-<p>To check what output was produced by <code><a href="../reference/sim.html">sim()</a></code>, let’s plot it (installation of <code>ggplot2</code> required).</p>
+<p>To check what output was produced by <code><a href="../reference/sim.html">sim()</a></code>, let’s plot
+it (installation of <code>ggplot2</code> required).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">dat</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -161,7 +179,10 @@
 <div class="section level2">
 <h2 id="custom-ode-model">Custom ODE model<a class="anchor" aria-label="anchor" href="#custom-ode-model"></a>
 </h2>
-<p>We can write the same exact model using custom ODE code. The following example will also only output the concentration (<code>only_obs=TRUE</code>), and not the amounts in each compartment. We’re also going to use an infusion instead of bolus injection:</p>
+<p>We can write the same exact model using custom ODE code. The
+following example will also only output the concentration
+(<code>only_obs=TRUE</code>), and not the amounts in each compartment.
+We’re also going to use an infusion instead of bolus injection:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
 <span>  code <span class="op">=</span> <span class="st">"dAdt[1] = -(CL/V) * A[1]"</span>,</span>
@@ -189,19 +210,25 @@
 <div class="section level2">
 <h2 id="included-models">Included models<a class="anchor" aria-label="anchor" href="#included-models"></a>
 </h2>
-<p>PKPDsim includes definitions of several PK/PD models used in the InsightRX platform.</p>
-<p>These models can be installed as R packages using the <code><a href="../reference/model_from_api.html">model_from_api()</a></code> function.</p>
+<p>PKPDsim includes definitions of several PK/PD models used in the
+InsightRX platform.</p>
+<p>These models can be installed as R packages using the
+<code><a href="../reference/model_from_api.html">model_from_api()</a></code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_from_api.html">model_from_api</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"models"</span>, <span class="st">"pk_vanco_anderson.json5"</span>, package <span class="op">=</span> <span class="st">"PKPDsim"</span><span class="op">)</span>,</span>
 <span>  to_package <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  install_all <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Please note that these models may differ from those used in production by InsightRX. They are provided for demonstration purposes only, and should not be used for dosing patients.</p>
+<p>Please note that these models may differ from those used in
+production by InsightRX. They are provided for demonstration purposes
+only, and should not be used for dosing patients.</p>
 <div class="section level3">
 <h3 id="example-usage">Example usage<a class="anchor" aria-label="anchor" href="#example-usage"></a>
 </h3>
-<p>To simulate PK, provide the model and parameters to <code><a href="../reference/sim.html">PKPDsim::sim()</a></code> along with a dosing regimen and covariates.</p>
+<p>To simulate PK, provide the model and parameters to
+<code><a href="../reference/sim.html">PKPDsim::sim()</a></code> along with a dosing regimen and
+covariates.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Create dosing regimen and covariates</span></span>
 <span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>

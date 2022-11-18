@@ -104,7 +104,14 @@
 
     
     
-<p>This can be implemented using the <code>n</code> and <code>omega</code> options. The <code>omega</code> (nomenclature borrowed from NONMEM) should be specified as either a <strong>vector</strong> defining the lower triagle of the BSV or <span class="math inline">\(\Omega\)</span> matrix, or as a <strong>matrix</strong> defining the full <span class="math inline">\(\Omega\)</span> matrix. An alternative option is to specify the between-subject variability as CV, using the <code><a href="../reference/cv_to_omega.html">cv_to_omega()</a></code> function, but this assumes there is no correlation between individual parameters.</p>
+<p>This can be implemented using the <code>n</code> and
+<code>omega</code> options. The <code>omega</code> (nomenclature
+borrowed from NONMEM) should be specified as either a
+<strong>vector</strong> defining the lower triagle of the BSV or <span class="math inline">\(\Omega\)</span> matrix, or as a
+<strong>matrix</strong> defining the full <span class="math inline">\(\Omega\)</span> matrix. An alternative option is
+to specify the between-subject variability as CV, using the
+<code><a href="../reference/cv_to_omega.html">cv_to_omega()</a></code> function, but this assumes there is no
+correlation between individual parameters.</p>
 <p>The following:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_1cmt_iv"</span><span class="op">)</span></span>
@@ -127,7 +134,9 @@
 <span>    <span class="fl">0.05</span>, <span class="fl">0.2</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>will simulate out data for 50 patients, assuming an Omega matrix as defined above. Alternatively, the <span class="math inline">\(\Omega\)</span> could also have been defined as:</p>
+<p>will simulate out data for 50 patients, assuming an Omega matrix as
+defined above. Alternatively, the <span class="math inline">\(\Omega\)</span> could also have been defined
+as:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
 <span>  ode <span class="op">=</span> <span class="va">model</span>,</span>
@@ -139,7 +148,8 @@
 <span>    <span class="fl">0.05</span>, <span class="fl">0.2</span></span>
 <span>  <span class="op">)</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Or also using the coefficient of variation and without correlation between parameters:</p>
+<p>Or also using the coefficient of variation and without correlation
+between parameters:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
 <span>  ode <span class="op">=</span> <span class="va">model</span>,</span>
@@ -152,11 +162,17 @@
 <span>  <span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## No parameter list provided as argument, assumed order for `omega_matrix`: CL, V</span></span></code></pre>
-<p>Note that using the <code>cv_to_omega</code> function assumes the <em>CV is on the SD-scale</em> and not on the variance scale (and the definition of CV uses the assumption <span class="math display">\[1 + \eta \approx 1 * \exp(\eta)\]</span>).</p>
+<p>Note that using the <code>cv_to_omega</code> function assumes the
+<em>CV is on the SD-scale</em> and not on the variance scale (and the
+definition of CV uses the assumption <span class="math display">\[1 +
+\eta \approx 1 * \exp(\eta)\]</span>).</p>
 <div class="section level2">
 <h2 id="variability-distribution">Variability distribution<a class="anchor" aria-label="anchor" href="#variability-distribution"></a>
 </h2>
-<p>By default, PKPDsim will assume exponential distribution of all parameters if <code>omega</code> is specified. If normal distribution is desired for all parameters, please use the <code>omega_type</code> argument:</p>
+<p>By default, PKPDsim will assume exponential distribution of all
+parameters if <code>omega</code> is specified. If normal distribution is
+desired for all parameters, please use the <code>omega_type</code>
+argument:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
 <span>  ode <span class="op">=</span> <span class="va">model</span>,</span>
@@ -173,7 +189,14 @@
 <div class="section level2">
 <h2 id="more-flexible-variability-models">More flexible variability models<a class="anchor" aria-label="anchor" href="#more-flexible-variability-models"></a>
 </h2>
-<p>To allow more flexibility in how between-subject variability enters the model, there is an alternative way of specifying variability. This approach is very similar to the way variability is encoded in NONMEM, i.e. variability components (<em>eta’s</em>) are added explicitly in the model code. In <code>PKPDsim</code> this means that <em>eta’s</em> should be treated just like regular parameters, but with <code>0</code> mean and normal distribution. See example below for the simulation of bioavailability using the logit-distribution.</p>
+<p>To allow more flexibility in how between-subject variability enters
+the model, there is an alternative way of specifying variability. This
+approach is very similar to the way variability is encoded in NONMEM,
+i.e. variability components (<em>eta’s</em>) are added explicitly in the
+model code. In <code>PKPDsim</code> this means that <em>eta’s</em>
+should be treated just like regular parameters, but with <code>0</code>
+mean and normal distribution. See example below for the simulation of
+bioavailability using the logit-distribution.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
 <span>  code <span class="op">=</span> <span class="st">"</span></span>
