@@ -24,6 +24,7 @@ new_ode_model(
   declare_variables = NULL,
   iiv = NULL,
   iov = NULL,
+  development = NULL,
   omega_matrix = NULL,
   ruv = NULL,
   ltbs = NULL,
@@ -84,6 +85,8 @@ new_ode_model(
 \item{iiv}{inter-individual variability, can optionally be added to library}
 
 \item{iov}{inter-occasion variability, can optionally be added to library}
+
+\item{development}{Information about the model development population, can optionally be added to library}
 
 \item{omega_matrix}{variance-covariance matrix for inter-individual variability, can optionally be added to library}
 

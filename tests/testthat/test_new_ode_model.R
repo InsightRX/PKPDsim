@@ -132,3 +132,22 @@ test_that("correct combinations of vars/scale/cmt are supported", {
   )
 
 })
+
+test_that("adding development info works", {
+  skip_on_cran()
+  dev <- list(
+    n_patients = 50,
+    n_sites = 1,
+    n_tdms = 200,
+    age = list(min = 15, median = 50, max = 90, unit = "years")
+  )
+  mod_1cmt_iv <- new_ode_model(
+    "pk_1cmt_iv",
+    development = dev
+  )
+
+  expect_identical(
+    attr(mod_1cmt_iv, "development"),
+    dev
+  )
+})
