@@ -134,6 +134,7 @@ test_that("correct combinations of vars/scale/cmt are supported", {
 })
 
 test_that("adding development info works", {
+  skip_on_cran()
   dev <- list(
     n_patients = 50,
     n_sites = 1,
