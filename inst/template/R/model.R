@@ -20,6 +20,7 @@ model <- function(mod = NULL) {
   attr(ret, "cmt_mapping") <- [CMT_MAPPING]
   attr(ret, "int_step_size") <- [INT_STEP_SIZE]
   attr(ret, "iov") <- list([IOV])
+  attr(ret, "development") <- list([DEVELOPMENT])
   attr(ret, "cmt_mapping") <- [CMT_MAPPING]
   attr(ret, "nonmem") <- "[NONMEM]"
   attr(ret, "comments") <- "[COMMENTS]"
