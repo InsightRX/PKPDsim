@@ -159,7 +159,7 @@ model and parameter definitions in <code>nlmixr</code> syntax:</p>
 <span><span class="co">##         y ~ prop(err_prop) + add(err_add)</span></span>
 <span><span class="co">##     })</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;environment: 0x559254796610&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x558705d69498&gt;</span></span></code></pre>
 <p>A full code example is included below.</p>
 <p><em>Note: both nlmixr and the nlmixr-translator in PKPDsim are still
 under active development. Syntax and results may therefore
@@ -232,20 +232,20 @@ change.</em></p>
 <span><span class="co">## <span style="font-weight: bold;">── Time (sec </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$time</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##            setup covariance   saem table compress    other</span></span>
-<span><span class="co">## elapsed 0.003287   0.046009 20.049 0.081    0.032 2.163704</span></span>
+<span><span class="co">## elapsed 0.003489   0.044012 20.198 0.078     0.03 2.119499</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-weight: bold;">── Population Parameters (</span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixed</span><span style="font-weight: bold;"> or </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixedDf</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##           <span style="font-weight: bold;">Est.</span>     <span style="font-weight: bold;">SE</span> <span style="font-weight: bold;">%RSE</span> <span style="font-weight: bold;">Back-transformed(95%CI)</span> <span style="font-weight: bold;">BSV(CV%)</span> <span style="font-weight: bold;">Shrink(SD)%</span></span></span>
-<span><span class="co">## <span style="font-weight: bold;">logCL</span>      1.6 0.0415 2.59       4.95 (4.57, 5.37)     20.2      <span style="color: #00BB00; font-weight: bold;">22.5%</span> </span></span>
-<span><span class="co">## <span style="font-weight: bold;">logV</span>      3.88 0.0453 1.17       48.4 (44.3, 52.9)     7.39      <span style="color: #BB0000; font-weight: bold;">63.4%</span> </span></span>
-<span><span class="co">## <span style="font-weight: bold;">err_prop</span> 0.261                               0.261                     </span></span>
-<span><span class="co">## <span style="font-weight: bold;">err_add</span>   1.32                                1.32                     </span></span>
+<span><span class="co">## <span style="font-weight: bold;">logCL</span>     1.59 0.0407 2.56         4.9 (4.52, 5.3)     22.4      <span style="color: #00BB00; font-weight: bold;">21.8%</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold;">logV</span>      3.85 0.0523 1.36         46.9 (42.3, 52)     26.9      <span style="color: #00BB00; font-weight: bold;">27.6%</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold;">err_prop</span> 0.204                               0.204                     </span></span>
+<span><span class="co">## <span style="font-weight: bold;">err_add</span>   1.33                                1.33                     </span></span>
 <span><span class="co">##  </span></span>
 <span><span class="co">##   Covariance Type (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$covMethod</span>): <span style="font-weight: bold;">linFim</span></span></span>
 <span><span class="co">##   Correlations in between subject variability (BSV) matrix:</span></span>
 <span><span class="co">##     cor:eta_V,eta_CL </span></span>
-<span><span class="co">##          -0.292   </span></span>
+<span><span class="co">##           0.203   </span></span>
 <span><span class="co">##  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##   Full BSV covariance (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$omega</span>) or correlation (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$omegaR</span>; diagonals=SDs) </span></span>
@@ -254,11 +254,11 @@ change.</em></p>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-weight: bold;">── Fit Data (object </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="font-weight: bold;"> is a modified </span><span style="color: #0000BB; font-weight: bold;">tibble</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 200 × 16</span></span></span>
-<span><span class="co">##   ID     TIME    DV  PRED    RES IPRED   IRES  IWRES eta_CL   eta_V     y     A1</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> 1       8   11.4  13.7  -<span style="color: #BB0000;">2.30</span>  12.0  -<span style="color: #BB0000;">0.579</span> -<span style="color: #BB0000;">0.171</span>  0.153 -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">6</span> 12.0   569. </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> 1      23.5  2.20  2.80 -<span style="color: #BB0000;">0.600</span>  1.82  0.377  0.268  0.153 -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">6</span>  1.82   86.8</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> 1      25   25.8  30.4  -<span style="color: #BB0000;">4.55</span>  29.5  -<span style="color: #BB0000;">3.63</span>  -<span style="color: #BB0000;">0.466</span>  0.153 -<span style="color: #BB0000;">0.017</span><span style="color: #BB0000; text-decoration: underline;">6</span> 29.5  <span style="text-decoration: underline;">1</span>401. </span></span>
+<span><span class="co">##   ID     TIME    DV  PRED    RES IPRED   IRES  IWRES  eta_CL  eta_V     y     A1</span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> 1       8   14.1  13.9   0.237 14.0   0.111 0.035<span style="text-decoration: underline;">3</span> -<span style="color: #BB0000;">0.034</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.487</span> 14.0   404. </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> 1      23.5  2.10  2.75 -<span style="color: #BB0000;">0.647</span>  1.10  1.00  0.747  -<span style="color: #BB0000;">0.034</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.487</span>  1.10   31.7</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> 1      25   59.6  31.2  28.5   45.0  14.6   1.58   -<span style="color: #BB0000;">0.034</span><span style="color: #BB0000; text-decoration: underline;">4</span> -<span style="color: #BB0000;">0.487</span> 45.0  <span style="text-decoration: underline;">1</span>298. </span></span>
 <span><span class="co">## <span style="color: #949494;"># … with 197 more rows, and 4 more variables: CL &lt;dbl&gt;, V &lt;dbl&gt;, tad &lt;dbl&gt;,</span></span></span>
 <span><span class="co">## <span style="color: #949494;">#   dosenum &lt;dbl&gt;</span></span></span></code></pre>
 </div>
