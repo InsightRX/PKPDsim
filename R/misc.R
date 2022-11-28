@@ -80,7 +80,7 @@ add_quotes <- function(x, quote = "double") {
 #' @export
 #' @return Original list in R syntax
 print_list <- function(x, wrapper = TRUE, quote = FALSE) {
-  if(is.null(x)) return("")
+  if(is.null(x) || length(x) == 0) return("")
   if(!quote) {
     tmp <- paste(PKPDsim::add_quotes(names(x)), "=", x[names(x)], collapse = ", ")
   } else {
