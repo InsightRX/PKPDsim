@@ -7,3 +7,9 @@ test_that("now_utc returns time in UTC", {
   now <- now_utc()
   expect_equal(attr(now, "tzone"), "UTC")
 })
+
+test_that("print_list supports empty lists", {
+  x <- list()
+  res <- print_list(x)
+  expect_equal(res, "")
+})
