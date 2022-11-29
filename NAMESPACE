@@ -3,6 +3,8 @@
 S3method(print,PKPDsim)
 S3method(print,covariate)
 S3method(print,regimen)
+S3method(print_list,"NULL")
+S3method(print_list,list)
 export(add_quotes)
 export(add_ruv)
 export(add_ruv_to_quantile)

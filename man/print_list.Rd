@@ -4,14 +4,12 @@
 \alias{print_list}
 \title{Return a list in R syntax}
 \usage{
-print_list(x, wrapper = TRUE, quote = FALSE)
+print_list(x, wrapper = TRUE)
 }
 \arguments{
 \item{x}{list to be printed}
 
 \item{wrapper}{wrap in list object?}
-
-\item{quote}{add quotes to values in list definition?}
 }
 \value{
 Original list in R syntax
