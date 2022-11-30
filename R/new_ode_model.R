@@ -367,7 +367,7 @@ new_ode_model <- function (model = NULL,
         default_parameters <- PKPDsim::print_list(default_parameters, FALSE)
       }
       if(is.null(units)) { units <- "''" } else {
-        units <- PKPDsim::print_list(units, TRUE, TRUE)
+        units <- PKPDsim::print_list(units, wrapper = TRUE)
       }
       search_replace_in_file(file.path(new_folder, "R", "iiv.R"), "\\[IIV\\]", iiv)
       search_replace_in_file(file.path(new_folder, "R", "iov.R"), "\\[IOV\\]", iov)

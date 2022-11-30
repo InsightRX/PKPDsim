@@ -76,20 +76,27 @@ add_quotes <- function(x, quote = "double") {
 #'
 #' @param x list to be printed
 #' @param wrapper wrap in list object?
-#' @param quote add quotes to values in list definition?
 #' @export
 #' @return Original list in R syntax
-print_list <- function(x, wrapper = TRUE, quote = FALSE) {
-  if(is.null(x) || length(x) == 0) return("")
-  if(!quote) {
-    tmp <- paste(PKPDsim::add_quotes(names(x)), "=", x[names(x)], collapse = ", ")
+print_list <- function(x, wrapper = TRUE) {
+  UseMethod("print_list")
+}
+
+#' @export
+print_list.NULL <- function(x, wrapper = TRUE) {
+  return("")
+}
+
+#' @export
+print_list.list <- function(x, wrapper = TRUE) {
+  if(length(x) == 0) return("")
+  result <- paste0(capture.output(dput(x)), collapse = "")
+  if(isTRUE(wrapper)) {
+    return(result)
   } else {
-    tmp <- paste(PKPDsim::add_quotes(names(x)), "=", add_quotes(x[names(x)]), collapse = ", ")
-  }
-  if(wrapper) {
-    return(paste0("list (", tmp, ")"))
-  } else {
-    return(tmp)
+    result <- gsub("^list\\(", "", result)
+    result <- gsub("\\)$", "", result)
+    result
   }
 }
 
