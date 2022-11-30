@@ -21,8 +21,12 @@ test_that("print_list returns expected results", {
 })
 
 test_that("print_list can remove outer list() call", {
-  l <- list(x = 1, y = 2)
-  expect_equal(print_list(l, wrapper = FALSE), "x = 1, y = 2")
+  l1 <- list(x = 1, y = 2)
+  l2 <- list(formulation = c("a", "b"))
+  l3 <- list(x = list(y = list(z = 1)))
+  expect_equal(print_list(l1, wrapper = FALSE), "x = 1, y = 2")
+  expect_equal(print_list(l2, wrapper = FALSE), "formulation = c(\"a\", \"b\")")
+  expect_equal(print_list(l3, wrapper = FALSE), "x = list(y = list(z = 1))")
 })
 
 test_that("print_list supports empty lists", {
