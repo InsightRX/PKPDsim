@@ -8,8 +8,7 @@
 #' @export
 #' @return List containing contents of original JSON file
 read_model_json <- function(
-  path,
-  raw = FALSE
+  path
 ) {
   if(!file.exists(path)) {
     warning(paste0("Model information not found (", path, ")."))
