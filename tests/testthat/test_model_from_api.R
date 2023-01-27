@@ -9,7 +9,7 @@ test_that("Can specify a package from json", {
   expect_true("PKPDsim" %in% class(mod))
 })
 
-test_that("Can install a package from json", {
+test_that("Can install a package from json, and spec added to package", {
   skip_on_cran()
   # This test specifies tmp directories explicitly during install.
   # Environment settings for tmp directories change from system to system
@@ -48,6 +48,11 @@ test_that("Can install a package from json", {
   if ("test1cmtiv" %in% installed.packages(lib.loc = instloc)){
     suppressMessages(remove.packages("test1cmtiv", lib = c("", instloc)))
   }
+
+  expect_true(
+    file.exists(file.path(instloc, "test1cmtiv", "definition.json"))
+  )
+
 })
 
 
