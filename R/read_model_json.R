@@ -7,11 +7,21 @@
 #' @md
 #' @export
 #' @return List containing contents of original JSON file
-read_model_json <- function(path) {
+read_model_json <- function(
+  path,
+  raw = FALSE
+) {
+  if(!file.exists(path)) {
+    warning(paste0("Model information not found (", path, ")."))
+    return()
+  }
+  ## Convert the multi-line objects in JSON5 to conventional JSON
   lines <- paste(readLines(path), collapse = "\n") %>%
     stringr::str_replace_all("'", "\"") %>%
     stringr::str_replace_all("\\\\n", "\n") %>%
     stringr::str_replace_all("\n", "") %>%
     stringr::str_replace_all("\\\\", "\\\\n")
   def <- jsonlite::fromJSON(lines)
+  attr(def, "path") <- path
+  def
 }

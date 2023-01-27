@@ -1,3 +1,4 @@
+library(PKPDsim)
 
 ## Set up simulations to test variance:
 ## Uses model defined in setup.R
@@ -13,35 +14,41 @@ par <- list(CL = 5, V = 50)
 omega <- c(0.1, 0.0, 0.1)
 t_obs <- c(2, 48)
 res <- sim_ode(
-  mod_1cmt_iv,
+  mod_1cmt_iv_auc,
   parameters = par,
   regimen = reg,
   t_obs = t_obs,
-  only_obs=TRUE
+  only_obs = TRUE
 )
 
 ## 1 compartment model
 test_that("delta approximation and full simulation match", {
   skip_on_cran()
   v_delta <- get_var_y(
-    model = mod_1cmt_iv,
+    model = mod_1cmt_iv_auc,
     parameters = par,
     t_obs = t_obs,
     regimen = reg,
     omega = omega,
+    obs_comp = 2,
+    auc = TRUE,
     method = "delta"
   )
-  v_sim <- get_var_y(
-    model = mod_1cmt_iv,
+  res <- sim(
+    mod_1cmt_iv_auc,
     parameters = par,
     t_obs = t_obs,
-    auc = FALSE,
     regimen = reg,
     omega = omega,
-    method="sim",
-    n_ind = 2500
-  )
-  expect_true(max(abs(v_delta$regular - v_sim$regular)/v_sim$regular) <0.1)
+    n_ind = 2000
+  ) %>%
+    dplyr::filter(comp == 2) %>%
+    dplyr::group_by(id) %>%
+    dplyr::summarise(dAUC=diff(y))
+  medi
+  quantile(res$dAUC, 0.95)
+
+    expect_true(max(abs(v_delta$regular - v_sim$regular)/v_sim$regular) <0.1)
   expect_true(max(abs(v_delta$log - v_sim$log)/v_sim$log) < 0.15)
 })
 

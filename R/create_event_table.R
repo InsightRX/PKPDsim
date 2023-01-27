@@ -140,7 +140,7 @@ create_event_table <- function(
     dos[(length(dos[,1])+1) : (length(dos[,1])+length(dos_t2[,1])),] <- dos_t2
     dos <- data.frame(dos)
   }
-  design <- dos[order(dos$t, -dos$dose),]
+    design <- dos[order(dos$t, -dos$dose),]
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
     t_obs <- round(t_obs, 6)
     t_diff <- setdiff(t_obs, design$t)
