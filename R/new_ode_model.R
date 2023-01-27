@@ -42,6 +42,9 @@
 #' @param quiet passed on to `system2` as setting for stderr and stdout; how to
 #' output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
 #' TRUE captures the output and saves as a file.
+#' @param definition list object with the full definition for the model. If
+#' specified, the definition will be stored as `definition.json` in the
+#' resulting package.
 #' @export
 #' @return If package name is NULL, returns the model object. Otherwise has no
 #'   return value.
@@ -84,7 +87,8 @@ new_ode_model <- function (model = NULL,
                            nonmem = NULL,
                            comments = NULL,
                            version = "0.1.0",
-                           quiet = ""
+                           quiet = "",
+                           definition = NULL
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -293,8 +297,27 @@ new_ode_model <- function (model = NULL,
       if(!file.exists(new_folder)) {
         dir.create(new_folder)
       }
-      file.copy(from = templ_folder, to = new_folder,
-                overwrite = TRUE, recursive = TRUE, copy.mode = FALSE)
+      file.copy(
+        from = templ_folder,
+        to = new_folder,
+        overwrite = TRUE,
+        recursive = TRUE,
+        copy.mode = FALSE
+      )
+
+      ## copy definition JSON, if model created from definition file.
+      if(!is.null(definition) && !is.null(attr(definition, "path"))) {
+        dir.create(file.path(new_folder, "inst"))
+        copy_result <- file.copy(
+          from = attr(definition, "path"),
+          to = file.path(new_folder, "inst", "definition.json")
+        )
+        if(isTRUE(copy_result)) {
+          message("* Adding model definition to R package.")
+        } else {
+          message("* Could not add model definition to R package.")
+        }
+      }
 
       ## Write new source file
       fileConn <- file(file.path(new_folder, "src", "sim_wrapper_cpp.cpp"))
