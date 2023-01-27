@@ -42,8 +42,8 @@
 #' @param quiet passed on to `system2` as setting for stderr and stdout; how to
 #' output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
 #' TRUE captures the output and saves as a file.
-#' @param definition list object with the full definition for the model. If
-#' specified, the definition will be stored as `definition.json` in the
+#' @param definition optional, filename for the JSON file the full definition
+#' for the model. The definition file will be stored as `definition.json` in the
 #' resulting package.
 #' @export
 #' @return If package name is NULL, returns the model object. Otherwise has no
@@ -306,10 +306,10 @@ new_ode_model <- function (model = NULL,
       )
 
       ## copy definition JSON, if model created from definition file.
-      if(!is.null(definition) && !is.null(attr(definition, "path"))) {
+      if(!is.null(definition) && file.exists(definition)) {
         dir.create(file.path(new_folder, "inst"))
         copy_result <- file.copy(
-          from = attr(definition, "path"),
+          from = definition,
           to = file.path(new_folder, "inst", "definition.json")
         )
         if(isTRUE(copy_result)) {

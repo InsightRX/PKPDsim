@@ -20,7 +20,5 @@ read_model_json <- function(
     stringr::str_replace_all("\\\\n", "\n") %>%
     stringr::str_replace_all("\n", "") %>%
     stringr::str_replace_all("\\\\", "\\\\n")
-  def <- jsonlite::fromJSON(lines)
-  attr(def, "path") <- path
-  def
+  jsonlite::fromJSON(lines)
 }
