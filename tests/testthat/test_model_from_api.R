@@ -46,7 +46,7 @@ test_that("Can install a package from json, and spec added to package", {
   mod_from_pkg <- test1cmtiv::model()
   expect_true("PKPDsim" %in% class(mod_from_pkg))
   expect_true(
-    file.exists(file.path(instloc, "test1cmtiv", "definition.json"))
+    file.exists(file.path(instloc, "test1cmtiv", "definition.json5"))
   )
   if ("test1cmtiv" %in% installed.packages(lib.loc = instloc)){
     suppressMessages(remove.packages("test1cmtiv", lib = c("", instloc)))
