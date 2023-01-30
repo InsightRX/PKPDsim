@@ -310,7 +310,7 @@ new_ode_model <- function (model = NULL,
         dir.create(file.path(new_folder, "inst"))
         copy_result <- file.copy(
           from = definition,
-          to = file.path(new_folder, "inst", "definition.json")
+          to = file.path(new_folder, "inst", "definition.json5")
         )
         if(isTRUE(copy_result)) {
           message("* Adding model definition to R package.")
