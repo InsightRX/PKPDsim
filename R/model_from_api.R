@@ -88,6 +88,7 @@ model_from_api <- function(url,
         int_step_size = def$simulation$int_step_size,
         comments = stringr::str_replace_all(def$comments, '\\"', ""),
         version = ifelse(!is.null(def$version), def$version, "0.1.0"),
+        definition = url,
         ...
       )
     }

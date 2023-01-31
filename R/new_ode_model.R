@@ -42,6 +42,9 @@
 #' @param quiet passed on to `system2` as setting for stderr and stdout; how to
 #' output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
 #' TRUE captures the output and saves as a file.
+#' @param definition optional, filename for the JSON file the full definition
+#' for the model. The definition file will be stored as `definition.json` in the
+#' resulting package.
 #' @export
 #' @return If package name is NULL, returns the model object. Otherwise has no
 #'   return value.
@@ -84,7 +87,8 @@ new_ode_model <- function (model = NULL,
                            nonmem = NULL,
                            comments = NULL,
                            version = "0.1.0",
-                           quiet = ""
+                           quiet = "",
+                           definition = NULL
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -218,23 +222,25 @@ new_ode_model <- function (model = NULL,
     if(!is.null(package)) { # don't compile if saving as library
       compile = FALSE
     }
-    cmp <- compile_sim_cpp(code = code,
-                           pk_code = pk_code,
-                           dose_code = dose_code,
-                           size = size,
-                           p = parameters,
-                           cpp_show_code = cpp_show_code,
-                           code_init = code_init_text,
-                           state_init = state_init,
-                           declare_variables = declare_variables,
-                           variables = variables,
-                           covariates = covariates,
-                           obs = obs,
-                           dose = dose,
-                           verbose = verbose,
-                           compile = compile,
-                           as_is = as_is,
-                           iov = iov)
+    cmp <- compile_sim_cpp(
+      code = code,
+      pk_code = pk_code,
+      dose_code = dose_code,
+      size = size,
+      p = parameters,
+      cpp_show_code = cpp_show_code,
+      code_init = code_init_text,
+      state_init = state_init,
+      declare_variables = declare_variables,
+      variables = variables,
+      covariates = covariates,
+      obs = obs,
+      dose = dose,
+      verbose = verbose,
+      compile = compile,
+      as_is = as_is,
+      iov = iov
+    )
     reqd <- parameters
     if(length(grep("cov_", reqd)) > 0) {
       reqd <- reqd[-grep("cov_", reqd)]
@@ -293,8 +299,29 @@ new_ode_model <- function (model = NULL,
       if(!file.exists(new_folder)) {
         dir.create(new_folder)
       }
-      file.copy(from = templ_folder, to = new_folder,
-                overwrite = TRUE, recursive = TRUE, copy.mode = FALSE)
+      file.copy(
+        from = templ_folder,
+        to = new_folder,
+        overwrite = TRUE,
+        recursive = TRUE,
+        copy.mode = FALSE
+      )
+
+      ## copy definition JSON, if model created from definition file.
+      if(!is.null(definition) && file.exists(definition)) {
+        dir.create(file.path(new_folder, "inst"))
+        copy_result <- file.copy(
+          from = definition,
+          to = file.path(new_folder, "inst", "definition.json5")
+        )
+        if(verbose) {
+          if(isTRUE(copy_result)) {
+            message("* Adding model definition to R package.")
+          } else {
+            message("* Could not add model definition to R package.")
+          }
+        }
+      }
 
       ## Write new source file
       fileConn <- file(file.path(new_folder, "src", "sim_wrapper_cpp.cpp"))
@@ -308,7 +335,11 @@ new_ode_model <- function (model = NULL,
       dose$bioav <- bioavailability_to_R_code(dose$bioav)
       if(is.null(size)) { size <- "1" }
       if(is.null(ltbs)) { ltbs <- FALSE }
-      if(is.null(state_init)) { state_init <- "NULL" } else { state_init <- add_quotes(state_init)}
+      if(is.null(state_init)) {
+        state_init <- "NULL"
+      } else {
+        state_init <- add_quotes(state_init)
+      }
       if(is.null(nonmem)) { nonmem <- "NULL" }
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- vector_to_R_code(reqd)
