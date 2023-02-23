@@ -131,8 +131,8 @@ new_ode_model(
 output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
 TRUE captures the output and saves as a file.}
 
-\item{definition}{list object with the full definition for the model. If
-specified, the definition will be stored as `definition.json` in the
+\item{definition}{optional, filename for the JSON file the full definition
+for the model. The definition file will be stored as `definition.json` in the
 resulting package.}
 }
 \value{
