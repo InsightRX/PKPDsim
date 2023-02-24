@@ -10,7 +10,7 @@
 #' @param pk_code C++ PK code, supplied as a string
 #' @keywords internal
 check_iov_specification <- function(iov, code, pk_code){
-  if(is.null(iov$cv) || class(iov$cv) != "list" || is.null(iov$n_bins)) {
+  if(is.null(iov$cv) || !inherits(iov$cv, "list") || is.null(iov$n_bins)) {
     stop("IOV misspecified.")
   }
   lapply(

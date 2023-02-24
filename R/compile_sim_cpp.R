@@ -168,7 +168,7 @@ compile_sim_cpp <- function(
       cov_def <- paste0(cov_def, paste0('  gradients_', nam, ' = design["gradients_', nam,'"];\n'))
       cov_def <- paste0(cov_def, paste0('  ', nam,' = cov_', nam,'[0];\n'))
       cov_tmp <- paste0(cov_tmp, paste0('    ', nam, '_0 = cov_', nam,'[i];\n'))
-      if(class(covariates) == "character" || (class(covariates) == "list" && tolower(covariates[[nam]]$implementation) != "locf")) {
+      if(inherits(covariates, "character") || (inherits(covariates, "list") && tolower(covariates[[nam]]$implementation) != "locf")) {
         cov_tmp <- paste0(cov_tmp, paste0('    gr_', nam, ' = gradients_',nam,'[i] ;\n'))
         cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = cov_t_', nam, '[i] ;\n'))
       } else { ## if covariates specified as character vector, also assume non-timevarying
