@@ -90,7 +90,7 @@ print_list.NULL <- function(x, wrapper = TRUE) {
 #' @export
 print_list.list <- function(x, wrapper = TRUE) {
   if(length(x) == 0) return("")
-  result <- paste0(capture.output(dput(x)), collapse = "")
+  result <- paste0(utils::capture.output(dput(x)), collapse = "")
   if(isTRUE(wrapper)) {
     return(result)
   } else {
