@@ -5,3 +5,4 @@
 #  if test -e "/usr/bin/strip" & test -e "/bin/uname" & [[ `uname` == "Linux" ]] ; then /usr/bin/strip --strip-debug $(SHLIB); fi
 # .phony: strippedLib
 
+PKG_CPPFLAGS = -D_HAS_AUTO_PTR_ETC=0
