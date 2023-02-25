@@ -178,6 +178,9 @@
     <loc>https://insightrx.github.io/PKPDsim/reference/f_cov.html</loc>
   </url>
   <url>
+    <loc>https://insightrx.github.io/PKPDsim/reference/get_fixed_parameters.html</loc>
+  </url>
+  <url>
     <loc>https://insightrx.github.io/PKPDsim/reference/get_ode_model_size.html</loc>
   </url>
   <url>
@@ -206,6 +209,9 @@
   </url>
   <url>
     <loc>https://insightrx.github.io/PKPDsim/reference/join_regimen.html</loc>
+  </url>
+  <url>
+    <loc>https://insightrx.github.io/PKPDsim/reference/lower_triangle_mat_size.html</loc>
   </url>
   <url>
     <loc>https://insightrx.github.io/PKPDsim/reference/merge_regimen.html</loc>
