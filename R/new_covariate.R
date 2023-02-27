@@ -39,7 +39,7 @@ new_covariate <- function(
   } else {
     unit <- as.character(unit[srt])
   }
-  if(implementation == "interpolate" && class(values) == "numeric" && !is.null(interpolation_join_limit) && interpolation_join_limit > 0) {
+  if(implementation == "interpolate" && inherits(values, "numeric") && !is.null(interpolation_join_limit) && interpolation_join_limit > 0) {
     new_times <- c()
     new_values <- c()
     new_unit <- c()
