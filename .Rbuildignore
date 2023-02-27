@@ -16,3 +16,4 @@ vignettes/example-pkpd-model.Rmd
 vignettes/PKPDsim.Rmd
 vignettes/variability.Rmd
 Dockerfile
+^CRAN-SUBMISSION$
