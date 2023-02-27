@@ -52,7 +52,7 @@ reg1 <- new_regimen(
 )
 ```
 
-When you created the model using `new_ode_model`, you also specified a default dosing compartment. If you didn't specify the `dose` argument, the default dosing compartment is 1. Now, should you want to administer the dose into a different compartment, you can override it with the `cmt` argumentfunction:
+When you created the model using `new_ode_model`, you also specified a default dosing compartment. If you didn't specify the `dose` argument, the default dosing compartment is 1. Now, should you want to administer the dose into a different compartment, you can override it with the `cmt` argument:
 
 ```{r regimen-cmt}
 reg1 <- new_regimen(

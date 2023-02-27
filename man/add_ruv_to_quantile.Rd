@@ -9,7 +9,7 @@ add_ruv_to_quantile(y, sd_y, log_scale = FALSE, q = NULL, ruv = list(), ...)
 \arguments{
 \item{y}{y with}
 
-\item{sd_y}{standard deviation of y without residual variability added. Will add normally distributed variability (potetially on log-scale).}
+\item{sd_y}{standard deviation of y without residual variability added. Will add normally distributed variability (potentially on log-scale).}
 
 \item{log_scale}{add variability on log scale (FALSE by default, DEPRECATED!).}
 

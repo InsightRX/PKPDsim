@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This can be implemented using the `n` and `omega` options. The `omega` (nomenclature borrowed from NONMEM) should be specified as either a **vector** defining the lower triagle of the BSV or $\Omega$ matrix, or as a **matrix** defining the full $\Omega$ matrix. An alternative option is to specify the between-subject variability as CV, using the `cv_to_omega()` function, but this assumes there is no correlation between individual parameters.
+This can be implemented using the `n` and `omega` options. The `omega` (nomenclature borrowed from NONMEM) should be specified as either a **vector** defining the lower triangle of the BSV or $\Omega$ matrix, or as a **matrix** defining the full $\Omega$ matrix. An alternative option is to specify the between-subject variability as CV, using the `cv_to_omega()` function, but this assumes there is no correlation between individual parameters.
 
 The following:
 

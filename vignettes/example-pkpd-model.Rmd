@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Below is an example of a simple indirect-response model. With PK-PD models, the inital state of the PD system often depends on specific model parts. We can define the state of the ODE system statically using the `A_init=` argument, but this will not take any parameters into account. However, we can also define initial states dynamically using the `state_init` argument, which allow you to specify the state of each compartment using code. 
+Below is an example of a simple indirect-response model. With PK-PD models, the initial state of the PD system often depends on specific model parts. We can define the state of the ODE system statically using the `A_init=` argument, but this will not take any parameters into account. However, we can also define initial states dynamically using the `state_init` argument, which allow you to specify the state of each compartment using code. 
 
 ```{r example-pkpd}
 library("PKPDsim")

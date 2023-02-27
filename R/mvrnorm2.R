@@ -1,7 +1,7 @@
 #' More powerful multivariate normal sampling function
 #'
 #' Besides standard multivariate normal sampling (mvrnorm), allows exponential
-#' multivarate normal and quasi-random multivariate normal (using the randtoolbox)
+#' multivariate normal and quasi-random multivariate normal (using the randtoolbox)
 #' all using the same interface.
 #'
 #' @param n number of samples

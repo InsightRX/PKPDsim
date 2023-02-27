@@ -17,7 +17,7 @@
 #' @param auc is AUC?
 #' @param n_ind number of individuals to simulate with sim method
 #' @param sd return as standard deviation (`TRUE`) or variance (`FALSE`)
-#' @param q return vector of quantiles instead of sd/var. Will return parametric quantiles when deltamethod is used, non-parametric for simulation-basesd methods.
+#' @param q return vector of quantiles instead of sd/var. Will return parametric quantiles when delta-method is used, non-parametric for simulation-based methods.
 #' @param in_parallel run simulations in parallel?
 #' @param n_cores if run in parallel, on how many cores?
 #' @param return_all return object with all relevant information?

@@ -16,7 +16,7 @@ install.packages("PKPDsim")
 `new_ode_model` is the function that creates a new ODE model that can be used in the `sim()` command. It defines the ODE system and sets some attributes for the model. The model can be specified in three different ways:
 
 - `model`: a string that references a model from the library included in `PKPDsim`. Examples in the current library are e.g. `pk_1cmt_oral`, `pk_2cmt_iv`. To show the available models, run `new_ode_model()` without any arguments.
-- `code`: using code specyfing derivatives for ODE specified in *pseudo-R* code
+- `code`: using code specifying derivatives for ODE specified in *pseudo-R* code
 - `file`: similar to `code`, but reads the code from a file
 
 # Model from library
@@ -170,7 +170,7 @@ pk1 <- new_ode_model(code = "
 
 # Custom model from file
 
-Using the `file=` argument, the model code is read from the specified fils. This is just a convenience function, i.e. it allows you to separate models from R code more easily.
+Using the `file=` argument, the model code is read from the specified files. This is just a convenience function, i.e. it allows you to separate models from R code more easily.
 
 ```{r model-from-file, eval=FALSE}
 pk1 <- new_ode_model(

@@ -62,7 +62,7 @@ get_var_y(
 
 \item{sd}{return as standard deviation (`TRUE`) or variance (`FALSE`)}
 
-\item{q}{return vector of quantiles instead of sd/var. Will return parametric quantiles when deltamethod is used, non-parametric for simulation-basesd methods.}
+\item{q}{return vector of quantiles instead of sd/var. Will return parametric quantiles when delta-method is used, non-parametric for simulation-based methods.}
 
 \item{in_parallel}{run simulations in parallel?}
 
