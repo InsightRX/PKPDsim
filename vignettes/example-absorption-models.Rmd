@@ -45,7 +45,7 @@ res <- sim(
 
 # Absorption transit compartments
 
-The code below implements the transit compartment model for absorption compartments as described by Savic et al. JPKPD 2007. Please note that this implementation assumes that all drug amount has been absorbed within the dosing interval. Such an assumption might not always hold. Also, for this implementation of dosing, it is essentioal to set the bioavailability for the dose compartment to 0, since dosing is now implemented using a separate analytical equation.
+The code below implements the transit compartment model for absorption compartments as described by Savic et al. JPKPD 2007. Please note that this implementation assumes that all drug amount has been absorbed within the dosing interval. Such an assumption might not always hold. Also, for this implementation of dosing, it is essential to set the bioavailability for the dose compartment to 0, since dosing is now implemented using a separate analytical equation.
 
 *Note: a simplified way of coding the transit compartments model will be added soon to PKPDsim.*
 

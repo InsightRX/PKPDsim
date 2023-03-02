@@ -1,12 +1,12 @@
 #' Calculate the increase in a specific quantile for a distribution on y when residual variability is added
 #'
 #' @param y y with
-#' @param sd_y standard deviation of y without residual variability added. Will add normally distributed variability (potetially on log-scale).
+#' @param sd_y standard deviation of y without residual variability added. Will add normally distributed variability (potentially on log-scale).
 #' @param log_scale add variability on log scale (FALSE by default, DEPRECATED!).
 #' @param q quantile
 #' @param ruv list of residual variability (`prop` and `add`)
 #' @param ... passed arguments
-#' 
+#'
 #' @export
 #' @return Numeric vector of y values with residual variability
 add_ruv_to_quantile <- function(

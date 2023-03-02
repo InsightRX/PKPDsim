@@ -38,7 +38,7 @@ cleanup_code <- function(code) {
 #'
 #' @param files vector of files
 #' @param find find what string, vector of character
-#' @param replacement replace with what, vector of character, should be equal in lenght to `find`
+#' @param replacement replace with what, vector of character, should be equal in length to `find`
 #' @export
 #' @return Function does not return a value but edits files on disk
 search_replace_in_file <- function(files = c(), find = NULL, replacement = NULL) {

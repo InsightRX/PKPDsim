@@ -24,7 +24,7 @@ get_t_obs_from_regimen(
 
 \item{extra_t_obs}{add timepoints to t_obs at which covariate is changing (`T`/`F`)}
 
-\item{t_init}{time of initization of the ODE system. Usually 0.}
+\item{t_init}{time of initiation of the ODE system. Usually 0.}
 }
 \description{
 Extract sensible default observation times from a specified regimen

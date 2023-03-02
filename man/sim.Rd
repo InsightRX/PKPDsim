@@ -115,7 +115,7 @@ sim(
 
 \item{return_design}{returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with `sim_core()`, e.g. for estimation and optimal design.}
 
-\item{output_include}{list specyfing what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.}
+\item{output_include}{list specifying what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.}
 
 \item{...}{extra parameters}
 }

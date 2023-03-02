@@ -1,3 +1,7 @@
+#if __cplusplus >= 201703L
+# define _HAS_AUTO_PTR_ETC 0
+#endif
+
 // [[Rcpp::depends(BH)]]
 
 #include <iostream>
