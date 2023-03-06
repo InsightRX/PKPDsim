@@ -10,6 +10,7 @@
   "obs": { "cmt": 1, "scale": "V" },
   "dose": { "cmt": 1, "bioav": 1 },
   "parameters": { "CL": 5, "V": 50 },
+  "fixed": [],
   "covariates": [],
   "variables": [],
   "misc": {
