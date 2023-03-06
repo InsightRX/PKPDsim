@@ -20,21 +20,15 @@ test_that("get_fixed_parameters returns fixed params listed in model def even if
   expect_equal(res2, list())
 })
 
-test_that("get_fixed_parameters determines fixed params from omega matrix size", {
+test_that("get_fixed_parameters errors if fixed params are not present", {
   def <- list(
     parameters = list(
-      KA = 0.5,
-      CL = 169L,
-      V = 33.1,
-      Q = 14.6,
-      V2 = 226L,
-      ALAG = 1L
-    ),
-    omega = c(0.223289, 0.449190, 3.459600)
+      CL = 5.312,
+      V = 42.52,
+      V2 = 41.68,
+      Q = 3.222
+    )
   )
 
-  expect_equal(
-    get_fixed_parameters(def),
-    c("V", "Q", "V2", "ALAG")
-  )
+  expect_error(get_fixed_parameters(def))
 })
