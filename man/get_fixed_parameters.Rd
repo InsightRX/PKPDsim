@@ -10,5 +10,5 @@ get_fixed_parameters(def)
 \item{def}{Model definition as output by \code{\link[=read_model_json]{read_model_json()}}}
 }
 \description{
-Get fixed parameters listed in model definition if present. If not present, use size of omega matrix to determine fixed parameters.
+Get fixed parameters listed in model definition.
 }
