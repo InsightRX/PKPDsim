@@ -15,3 +15,37 @@ test_that("regimen can be converted to nonmem format", {
   expect_true(all(expected_cols %in% colnames(b)))
 })
 
+test_that("regimen with infusion correctly recalculates rates when bioavailability specified", {
+  a <- new_regimen(amt = 10, n = 5, interval = 12, t_inf = 1, type = "infusion")
+  expect_message(
+    {
+      b <- regimen_to_nm(
+        a,
+        t_obs = c(1, 2, 3),
+        bioav = 0.5
+      )
+    },
+    "Recalculating infusion rates"
+  )
+  expect_warning(
+    regimen_to_nm(
+      a,
+      t_obs = c(1, 2, 3),
+      bioav = "F1"
+    ),
+    "Bioavailability not specified correctly"
+  )
+  expected_cols <- c(
+    "ID",
+    "TIME",
+    "CMT",
+    "DV",
+    "AMT",
+    "EVID",
+    "MDV",
+    "RATE"
+  )
+  expect_true(all(expected_cols %in% colnames(b)))
+  expect_equal(b$RATE, c(5, 0, 0, 0, 5, 5, 5, 5))
+})
+
