@@ -5,6 +5,7 @@
 #' @param n_ind repeat for `n_ind` subjects
 #' @param t_obs add observation time(s)
 #' @param obs_cmt observation compartment for added observation time(s)
+#' @param bioav bioavailability (numeric vector, can not be a parameter)
 #'
 #' @export
 #' @return Data frame containing doses
@@ -13,7 +14,9 @@ regimen_to_nm <- function(
   dose_cmt = 1,
   n_ind = 1,
   t_obs = NULL,
-  obs_cmt = 1) {
+  obs_cmt = 1,
+  bioav = NULL
+) {
   if(is.null(reg) || ! "regimen" %in% class(reg)) {
     stop("No regimen or invalid regimen object supplied.")
   }
@@ -27,6 +30,13 @@ regimen_to_nm <- function(
     MDV = 1))
   if(any(reg$type == "infusion")) {
     dat$RATE <- reg$dose_amts / reg$t_inf
+    if(!is.null(bioav)) {
+      bioav <- as.numeric(bioav)
+      if(!is.na(bioav) && bioav != 1) {
+        dat$RATE <- dat$RATE * bioav[dose_cmt]
+        warning("Recalculating infusion rates to reflect bioavailability for infusion.")
+      }
+    }
   }
   if(!is.null(t_obs)) {
     obs <- data.frame(
