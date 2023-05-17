@@ -30,11 +30,13 @@ regimen_to_nm <- function(
     MDV = 1))
   if(any(reg$type == "infusion")) {
     dat$RATE <- reg$dose_amts / reg$t_inf
-    if(!is.null(bioav)) {
-      bioav <- as.numeric(bioav)
-      if(!is.na(bioav) && bioav != 1) {
+    if(!is.null(bioav[dose_cmt])) {
+      bioav <- as.numeric(bioav[dose_cmt])
+      if(!is.na(bioav[dose_cmt]) && bioav[dose_cmt] != 1) {
         dat$RATE <- dat$RATE * bioav[dose_cmt]
-        warning("Recalculating infusion rates to reflect bioavailability for infusion.")
+        message("Recalculating infusion rates to reflect bioavailability for infusion.")
+      } else {
+        warning("Bioavailability not specified correctly, cannot correct infusion rates.")
       }
     }
   }
