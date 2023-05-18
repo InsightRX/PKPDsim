@@ -81,7 +81,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">regimen_to_nm</span><span class="op">(</span>reg <span class="op">=</span> <span class="cn">NULL</span>, dose_cmt <span class="op">=</span> <span class="fl">1</span>, n_ind <span class="op">=</span> <span class="fl">1</span>, t_obs <span class="op">=</span> <span class="cn">NULL</span>, obs_cmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">regimen_to_nm</span><span class="op">(</span></span>
+<span>  reg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dose_cmt <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  n_ind <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  t_obs <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  obs_cmt <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  bioav <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -104,6 +111,10 @@
 
 <dt>obs_cmt</dt>
 <dd><p>observation compartment for added observation time(s)</p></dd>
+
+
+<dt>bioav</dt>
+<dd><p>bioavailability (numeric vector, can not be a parameter)</p></dd>
 
 </dl></div>
     <div class="section level2">
