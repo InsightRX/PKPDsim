@@ -340,7 +340,7 @@ new_ode_model <- function (model = NULL,
       } else {
         state_init <- add_quotes(state_init)
       }
-      if(is.null(nonmem)) { nonmem <- "NULL" }
+      if(is.null(nonmem) || length(nonmem) == 0) { nonmem <- "NULL" }
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- vector_to_R_code(reqd)
       covs <- vector_to_R_code(cov_names)
