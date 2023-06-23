@@ -110,7 +110,7 @@ new_covariate <- function(
     } else {
       # assume observation was at t=0
       new_times <- c(0, new_times[-1])
-      message("Note: time for first covariate measurement set to 0.")
+      if (verbose) message("Note: time for first covariate measurement set to 0.")
     }
   }
   if(length(new_unit) > length(new_values)) {
