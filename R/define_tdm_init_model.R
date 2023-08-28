@@ -8,7 +8,7 @@
 #' @keywords internal
 define_tdm_init_model <- function(def){
   if(!is.null(def$state_init)) {
-    stop("Sorry, state init already specified. Cannot override for TDM-based initializiaton.")
+    warning("Custom state init specified, but also generated for TDM-based initializiaton. Generataed TDM-initialization will be processed first, and custom code second.")
   }
   if (!def$misc$model_type %in% c("1cmt_iv", "2cmt_iv")) {
     stop("Sorry, TDM initialization not supported for this model type yet.")
@@ -20,12 +20,16 @@ define_tdm_init_model <- function(def){
   Q  <- ifelse("Qi"  %in% def$variables, "Qi",  "Q")
 
   if(def$misc$model_type == "1cmt_iv") {
-    def$state_init <- paste0(" A[0] = TDM_INIT * ", V1, "; ")
+    def$state_init <- paste0(
+      " A[0] = TDM_INIT * ", V1, "; ",
+      def$state_init
+    )
   }
   if(def$misc$model_type == "2cmt_iv") {
     def$state_init <- paste0(
-    "A[0] = TDM_INIT * ", V1, ";\ ",
-    "A[1] = (", Q, "/", V1, ")*(TDM_INIT *", V1, ") / (", Q, "/", V2, "); "
+      "A[0] = TDM_INIT * ", V1, ";\ ",
+      "A[1] = (", Q, "/", V1, ")*(TDM_INIT *", V1, ") / (", Q, "/", V2, "); ",
+      def$state_init
     )
   }
   def
