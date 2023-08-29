@@ -84,11 +84,14 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   prv_dose = doses[0];
   t_prv_dose = times[0];
 
-  // Main call to ODE solver
-  ode(A_dum, dAdt_dum, 0);
-
   // insert_state_init
   NumericVector Aupd = clone(A);
+  
+  // Main call to ODE solver
+  for(int i = 0; i < n_comp; i++) { // make sure A and variables in ode block are initialized before start
+    A_dum[i] = Aupd[i];
+  }
+  ode(A_dum, dAdt_dum, 0);
 
   for(int i = 0; i < (len-1); i++) {
     t_start = times[i];
@@ -117,15 +120,14 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
         start = 0;
       }
     }
-    if(start == 0) { // make a separate call to sim_cpp to make sure observation variables are initialized and stored
+    ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
+    if(start == 0) { // make sure observation variables are stored
       int k = 0;
-      ode_out tmp = sim_cpp(Aupd, t_start, t_start, step_size);
       // insert time-dependent covariates scale
       // insert scale definition for observation
       // insert saving initial observations to obs object(s)
       // insert copy variables into all variables
     }
-    ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
     state_type tail = tmp.y.back();
     if(start == 0) {
       t.insert(t.end(), tmp.time.begin(), tmp.time.end());
