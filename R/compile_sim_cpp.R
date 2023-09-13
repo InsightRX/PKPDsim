@@ -253,7 +253,7 @@ compile_sim_cpp <- function(
   }
   cpp_code[idx18] <- paste0(
     "  boost::array<double, ",size,"> b = { ", paste(rep(0, size), collapse=", ")," };\n",
-    "  const state_type& A_dum = b;\n",
+    "  state_type& A_dum = b;\n",
     "  state_type dAdt_dum = b;")
   sim_func <-
     paste0(paste0(readLines(paste0(folder, "/cpp/sim_header.cpp")), collapse = "\n"),
