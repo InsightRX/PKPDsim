@@ -24,7 +24,6 @@ s <- sim(
 )
 
 test_that("TDM before first dose is considered a true initial value", {
-  skip_on_cran()
   expect_equal(sum(is.na(s$y)), 0)
   expect_equal(s$y[1], 500)
   expect_equal(round(s$y[3]), 427)
@@ -32,7 +31,6 @@ test_that("TDM before first dose is considered a true initial value", {
 })
 
 test_that("Variables are set (also in first row) when TDM before first dose", {
-  skip_on_cran()
   expect_equal(round(s$CONC[1:5], 1), c(500, 462.2, 427.3, 395.1, 365.3))
 })
 
