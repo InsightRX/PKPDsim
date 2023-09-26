@@ -5,12 +5,9 @@ using namespace Rcpp;
 DataFrame pk_1cmt_iv_bolus_covariates(DataFrame data, List parameters, StringVector covariates, Function covariate_model){
 
   double k10, t, A1last;
-  double CLi, Vi, tmp;
   int i, j;
   DataFrame out = clone(data);
 
-  double CL = parameters["CL"];
-  double V  = parameters["V"];
   NumericVector A1 = out["A1"];
   NumericVector DV = out["DV"];
   NumericVector TIME = out["TIME"];
@@ -20,7 +17,6 @@ DataFrame pk_1cmt_iv_bolus_covariates(DataFrame data, List parameters, StringVec
   List p_in, p_upd;
 
   // prepare initial state
-  std::vector<int>::iterator it;
   i = 0;
   while(TIME[i] == 0) {
     A1[i] = AMT[i];
