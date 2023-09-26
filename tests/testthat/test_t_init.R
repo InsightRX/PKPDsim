@@ -5,11 +5,11 @@
 ## Use this as true value in the simulations
 par   <- list(CL = 7.67, V = 97.7, TDM_INIT = 500)
 mod <- new_ode_model(
-  code = "dAdt[1] = -(CL/V)*A[1]; CONC = A[1]/V",
-  state_init = "A[1] = TDM_INIT * V",
+  code = "CLi = CL; Vi = V; dAdt[1] = -(CLi/Vi)*A[1]; CONC = A[1]/Vi",
+  state_init = "A[1] = TDM_INIT * Vi",
   parameters = par,
-  obs = list(cmt = 1, scale = "V"),
-  declare_variables = c("CONC"),
+  obs = list(cmt = 1, scale = "Vi"),
+  declare_variables = c("CONC", "CLi", "Vi"),
   cpp_show_code = F
 )
 reg <- new_regimen(amt = 100000, times=c(0, 24), type="bolus")
