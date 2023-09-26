@@ -28,7 +28,6 @@ DataFrame pk_3cmt_iv_infusion(DataFrame d){
   NumericVector AUC = out["AUC"];
 
   // prepare initial state
-  std::vector<int>::iterator it;
   i = 0;
   while(TIME[i] == 0) {
     A1[i] = 0;

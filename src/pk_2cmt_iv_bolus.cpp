@@ -21,7 +21,6 @@ DataFrame pk_2cmt_iv_bolus(DataFrame d){
   NumericVector AUC = out["AUC"];
 
   // prepare initial state
-  std::vector<int>::iterator it;
   i = 0;
   while(TIME[i] == 0) {
     A1[i] = AMT[i];

@@ -5,7 +5,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 DataFrame pk_2cmt_oral(DataFrame d){
 
-  double ka, k10, k20, k30, k23, k32, E1, E2, E3, lambda1, lambda2, t, A1last, A2last, A3last, A2term1, A2term2, A3term1, A3term2;
+  double ka, k20, k30, k23, k32, E2, E3, lambda1, lambda2, t, A1last, A2last, A3last, A2term1, A2term2, A3term1, A3term2;
   int i;
   DataFrame out = clone(d);
 
@@ -26,7 +26,6 @@ DataFrame pk_2cmt_oral(DataFrame d){
   }
 
   // prepare initial state
-  std::vector<int>::iterator it;
   i = 0;
   while(TIME[i] == 0) {
     A1[i] = AMT[i] * F1[i];

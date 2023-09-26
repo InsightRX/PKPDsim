@@ -22,7 +22,6 @@ DataFrame pk_1cmt_oral(DataFrame d){
   }
 
   // prepare initial state
-  std::vector<int>::iterator it;
   i = 0;
   while(TIME[i] == 0) {
     A1[i] = AMT[i] * F1[i];
