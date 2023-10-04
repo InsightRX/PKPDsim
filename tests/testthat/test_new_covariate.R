@@ -61,4 +61,25 @@ test_that("Interpolated times are rounded properly", {
 })
 
 
+test_that("LOCF correctly implements non-numeric covs at t = 0", {
+  res1 <- new_covariate(
+    value = c("a", "b"),
+    times = c(-0.5, 48),
+    implementation = "LOCF",
+    remove_negative_times = TRUE
+  )
+  expect_equal(res1$value, c("a", "b"))
+  expect_equal(res1$times, c(0, 48))
+  res2 <- new_covariate(
+    value = c("a", "b"),
+    times = c(-0.5, 48),
+    implementation = "LOCF",
+    remove_negative_times = FALSE
+  )
+  expect_equal(res2$value, c("a", "b"))
+  expect_equal(res2$times, c(-0.5, 48))
+})
 
+test_that("implementation must be either locf or interpolate", {
+  expect_error(new_covariate(value = 1, implementation = "foo"))
+})

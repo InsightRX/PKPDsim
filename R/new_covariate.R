@@ -30,6 +30,7 @@ new_covariate <- function(
     times <- c(0)
     value <- value[1]
   }
+  implementation <- match.arg(tolower(implementation), c("interpolate", "locf"))
   srt <- order(times)
   times <- times[srt]
   values <- value[srt]
@@ -70,21 +71,19 @@ new_covariate <- function(
       if(! (0 %in% new_times)) {
         # add zero time, and remove all t < 0
         if(any(new_times > 0)) { # add the interpolated obs before and after 0 as t=0
-          if(class(new_values) %in% c("numeric", "integer")) {
-            if(implementation == 'interpolate') {
-              new_times <- c(new_times, 0)
-              y1 <- utils::tail(new_values[new_times < 0],1)
-              y2 <- utils::head(new_values[new_times > 0],1)
-              t1 <- utils::tail(new_times[new_times < 0],1)
-              t2 <- utils::head(new_times[new_times > 0],1)
-              grad <-  (y2-y1) / (t2-t1)
-              new_values <- c(new_values, y1 + grad * (0-t1))
-              new_unit <- c(new_unit, utils::tail(new_unit[new_times < 0],1))
-            } else { # add the last obs before 0 as t=0
-              new_times <- c(new_times, 0)
-              new_values <- c(new_values, utils::tail(new_values[new_times < 0], 1))
-              new_unit <- c(new_unit, utils::tail(new_unit[new_times < 0], 1))
-            }
+          if(mode(new_values) == "numeric" && implementation == "interpolate") {
+            new_times <- c(new_times, 0)
+            y1 <- utils::tail(new_values[new_times < 0],1)
+            y2 <- utils::head(new_values[new_times > 0],1)
+            t1 <- utils::tail(new_times[new_times < 0],1)
+            t2 <- utils::head(new_times[new_times > 0],1)
+            grad <-  (y2-y1) / (t2-t1)
+            new_values <- c(new_values, y1 + grad * (0-t1))
+            new_unit <- c(new_unit, utils::tail(new_unit[new_times < 0],1))
+          } else { # add the last obs before 0 as t=0
+            new_times <- c(new_times, 0)
+            new_values <- c(new_values, utils::tail(new_values[new_times < 0], 1))
+            new_unit <- c(new_unit, utils::tail(new_unit[new_times < 0], 1))
           }
         } else {
           new_times <- 0
@@ -99,7 +98,7 @@ new_covariate <- function(
     srt <- order(new_times)
     new_times <- new_times[srt]
     new_values <- new_values[srt]
-    new_unit <- new_unit[srt]    
+    new_unit <- new_unit[srt]
   }
   if(min(new_times) > 0) { # extend to time zero if first observation is > 0
     if(new_times[1] > interpolation_join_limit) {
