@@ -2,13 +2,25 @@
 #'
 #' Describe data for a covariate, either fixed or time-variant
 #' @param value a numeric vector
-#' @param times NULL for time-invariant covariate or a numeric vector specifying the update times for the covariate
-#' @param implementation for time-varying covariates either 'LOCF' (last observation carried forward) or 'interpolate' (default)
-#' @param interpolation_join_limit for `interpolate` option, if covariate timepoints are spaced too close together, the ODE solver sometimes chokes. This argument sets a lower limit on the space between timepoints. It will create average values on joint timepoints instead. If undesired set to NULL or 0.
-#' @param unit specify covariate unit (optional, for documentation purposes only)
-#' @param remove_negative_times `TRUE`` or `FALSE`
-#' @param round_times round times to specified number of digits. If `NULL`, will not round.
-#' @param comments `NULL`, or vector of length equal to `value` specifying comments to each observation
+#' @param times NULL for time-invariant covariate or a numeric vector specifying
+#'   the update times for the covariate
+#' @param implementation for time-varying covariates either 'locf' (last
+#'   observation carried forward) or 'interpolate' (default). Non-numeric
+#'   covariate values are assumed to be locf.
+#' @param interpolation_join_limit for `interpolate` option, if covariate
+#'   timepoints are spaced too close together, the ODE solver sometimes chokes.
+#'   This argument sets a lower limit on the space between timepoints. It will
+#'   create average values on joint timepoints instead. If undesired set to
+#'   `NULL` or 0.
+#' @param unit specify covariate unit (optional, for documentation purposes
+#'   only)
+#' @param remove_negative_times should times before zero be discarded (with
+#'   value at time zero determined based on `implementation` argument), `TRUE`
+#'   or `FALSE`.
+#' @param round_times round times to specified number of digits. If `NULL`, will
+#'  not round.
+#' @param comments `NULL`, or vector of length equal to `value` specifying
+#'  comments to each observation (optional, for documentation only)
 #' @param verbose verbosity
 #' @export
 #' @return Object of class `"covariate"`
@@ -16,7 +28,7 @@
 new_covariate <- function(
   value = NULL,
   times = NULL,
-  implementation = "interpolate",
+  implementation = c("interpolate", "locf"),
   unit = NULL,
   interpolation_join_limit = 1,
   remove_negative_times = TRUE,
@@ -30,6 +42,15 @@ new_covariate <- function(
     times <- c(0)
     value <- value[1]
   }
+  implementation <- tolower(implementation)
+  implementation <- match.arg(implementation, c("interpolate", "locf"))
+  if (mode(value) != "numeric" || is.factor(value)) {
+    if (implementation == "interpolate" && verbose) {
+      message("Non-numeric values cannot be interpolated. Switching to 'locf'.")
+    }
+    implementation <- "locf"
+    value <- as.character(value)
+  }
   srt <- order(times)
   times <- times[srt]
   values <- value[srt]
@@ -39,7 +60,7 @@ new_covariate <- function(
   } else {
     unit <- as.character(unit[srt])
   }
-  if(implementation == "interpolate" && inherits(values, "numeric") && !is.null(interpolation_join_limit) && interpolation_join_limit > 0) {
+  if(implementation == "interpolate" && isTRUE(interpolation_join_limit > 0)) {
     new_times <- c()
     new_values <- c()
     new_unit <- c()
@@ -70,21 +91,19 @@ new_covariate <- function(
       if(! (0 %in% new_times)) {
         # add zero time, and remove all t < 0
         if(any(new_times > 0)) { # add the interpolated obs before and after 0 as t=0
-          if(class(new_values) %in% c("numeric", "integer")) {
-            if(implementation == 'interpolate') {
-              new_times <- c(new_times, 0)
-              y1 <- utils::tail(new_values[new_times < 0],1)
-              y2 <- utils::head(new_values[new_times > 0],1)
-              t1 <- utils::tail(new_times[new_times < 0],1)
-              t2 <- utils::head(new_times[new_times > 0],1)
-              grad <-  (y2-y1) / (t2-t1)
-              new_values <- c(new_values, y1 + grad * (0-t1))
-              new_unit <- c(new_unit, utils::tail(new_unit[new_times < 0],1))
-            } else { # add the last obs before 0 as t=0
-              new_times <- c(new_times, 0)
-              new_values <- c(new_values, utils::tail(new_values[new_times < 0], 1))
-              new_unit <- c(new_unit, utils::tail(new_unit[new_times < 0], 1))
-            }
+          if(mode(new_values) == "numeric" && implementation == "interpolate") {
+            new_times <- c(new_times, 0)
+            y1 <- utils::tail(new_values[new_times < 0],1)
+            y2 <- utils::head(new_values[new_times > 0],1)
+            t1 <- utils::tail(new_times[new_times < 0],1)
+            t2 <- utils::head(new_times[new_times > 0],1)
+            grad <-  (y2-y1) / (t2-t1)
+            new_values <- c(new_values, y1 + grad * (0-t1))
+            new_unit <- c(new_unit, utils::tail(new_unit[new_times < 0],1))
+          } else { # add the last obs before 0 as t=0
+            new_times <- c(new_times, 0)
+            new_values <- c(new_values, utils::tail(new_values[new_times < 0], 1))
+            new_unit <- c(new_unit, utils::tail(new_unit[new_times < 0], 1))
           }
         } else {
           new_times <- 0
@@ -99,7 +118,7 @@ new_covariate <- function(
     srt <- order(new_times)
     new_times <- new_times[srt]
     new_values <- new_values[srt]
-    new_unit <- new_unit[srt]    
+    new_unit <- new_unit[srt]
   }
   if(min(new_times) > 0) { # extend to time zero if first observation is > 0
     if(new_times[1] > interpolation_join_limit) {

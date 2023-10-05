@@ -7,7 +7,7 @@
 new_covariate(
   value = NULL,
   times = NULL,
-  implementation = "interpolate",
+  implementation = c("interpolate", "locf"),
   unit = NULL,
   interpolation_join_limit = 1,
   remove_negative_times = TRUE,
@@ -19,19 +19,31 @@ new_covariate(
 \arguments{
 \item{value}{a numeric vector}
 
-\item{times}{NULL for time-invariant covariate or a numeric vector specifying the update times for the covariate}
+\item{times}{NULL for time-invariant covariate or a numeric vector specifying
+the update times for the covariate}
 
-\item{implementation}{for time-varying covariates either 'LOCF' (last observation carried forward) or 'interpolate' (default)}
+\item{implementation}{for time-varying covariates either 'locf' (last
+observation carried forward) or 'interpolate' (default). Non-numeric
+covariate values are assumed to be locf.}
 
-\item{unit}{specify covariate unit (optional, for documentation purposes only)}
+\item{unit}{specify covariate unit (optional, for documentation purposes
+only)}
 
-\item{interpolation_join_limit}{for \code{interpolate} option, if covariate timepoints are spaced too close together, the ODE solver sometimes chokes. This argument sets a lower limit on the space between timepoints. It will create average values on joint timepoints instead. If undesired set to NULL or 0.}
+\item{interpolation_join_limit}{for \code{interpolate} option, if covariate
+timepoints are spaced too close together, the ODE solver sometimes chokes.
+This argument sets a lower limit on the space between timepoints. It will
+create average values on joint timepoints instead. If undesired set to
+\code{NULL} or 0.}
 
-\item{remove_negative_times}{\verb{TRUE`` or }FALSE`}
+\item{remove_negative_times}{should times before zero be discarded (with
+value at time zero determined based on \code{implementation} argument), \code{TRUE}
+or \code{FALSE}.}
 
-\item{round_times}{round times to specified number of digits. If \code{NULL}, will not round.}
+\item{round_times}{round times to specified number of digits. If \code{NULL}, will
+not round.}
 
-\item{comments}{\code{NULL}, or vector of length equal to \code{value} specifying comments to each observation}
+\item{comments}{\code{NULL}, or vector of length equal to \code{value} specifying
+comments to each observation (optional, for documentation only)}
 
 \item{verbose}{verbosity}
 }
