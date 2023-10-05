@@ -84,7 +84,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">new_covariate</span><span class="op">(</span></span>
 <span>  value <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  times <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  implementation <span class="op">=</span> <span class="st">"interpolate"</span>,</span>
+<span>  implementation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"interpolate"</span>, <span class="st">"locf"</span><span class="op">)</span>,</span>
 <span>  unit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  interpolation_join_limit <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  remove_negative_times <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -101,31 +101,43 @@
 
 
 <dt>times</dt>
-<dd><p>NULL for time-invariant covariate or a numeric vector specifying the update times for the covariate</p></dd>
+<dd><p>NULL for time-invariant covariate or a numeric vector specifying
+the update times for the covariate</p></dd>
 
 
 <dt>implementation</dt>
-<dd><p>for time-varying covariates either 'LOCF' (last observation carried forward) or 'interpolate' (default)</p></dd>
+<dd><p>for time-varying covariates either 'locf' (last
+observation carried forward) or 'interpolate' (default). Non-numeric
+covariate values are assumed to be locf.</p></dd>
 
 
 <dt>unit</dt>
-<dd><p>specify covariate unit (optional, for documentation purposes only)</p></dd>
+<dd><p>specify covariate unit (optional, for documentation purposes
+only)</p></dd>
 
 
 <dt>interpolation_join_limit</dt>
-<dd><p>for <code>interpolate</code> option, if covariate timepoints are spaced too close together, the ODE solver sometimes chokes. This argument sets a lower limit on the space between timepoints. It will create average values on joint timepoints instead. If undesired set to NULL or 0.</p></dd>
+<dd><p>for <code>interpolate</code> option, if covariate
+timepoints are spaced too close together, the ODE solver sometimes chokes.
+This argument sets a lower limit on the space between timepoints. It will
+create average values on joint timepoints instead. If undesired set to
+<code>NULL</code> or 0.</p></dd>
 
 
 <dt>remove_negative_times</dt>
-<dd><p><code>TRUE`` or </code>FALSE`</p></dd>
+<dd><p>should times before zero be discarded (with
+value at time zero determined based on <code>implementation</code> argument), <code>TRUE</code>
+or <code>FALSE</code>.</p></dd>
 
 
 <dt>round_times</dt>
-<dd><p>round times to specified number of digits. If <code>NULL</code>, will not round.</p></dd>
+<dd><p>round times to specified number of digits. If <code>NULL</code>, will
+not round.</p></dd>
 
 
 <dt>comments</dt>
-<dd><p><code>NULL</code>, or vector of length equal to <code>value</code> specifying comments to each observation</p></dd>
+<dd><p><code>NULL</code>, or vector of length equal to <code>value</code> specifying
+comments to each observation (optional, for documentation only)</p></dd>
 
 
 <dt>verbose</dt>
