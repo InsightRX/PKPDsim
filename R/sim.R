@@ -521,6 +521,8 @@ sim <- function (ode = NULL,
     cov_names <- NULL
     if(!is.null(output_include$covariates) && output_include$covariates && (!is.null(covariates) || !is.null(covariates_table))) {
       cov_names <- names(covariates_tmp)
+      # make sure no overlap with variables already in output
+      cov_names <- cov_names[!cov_names %in% names(dat_ind)]
       # List of data frames for each covariate
       calculated_covs <- lapply(cov_names, function(key) {
         calculated_cov <- unique(
