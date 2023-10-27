@@ -207,8 +207,8 @@ new_ode_model <- function (model = NULL,
       }
     }
     variables <- declare_variables
-    if(!is.null(covariates) && !is.null(variables)) {
-      if(length(intersect(covariates, variables))) {
+    if(!is.null(cov_names) && !is.null(variables)) {
+      if(length(intersect(cov_names, variables))) {
         stop("Covariates and specified variables cannot overlap.")
       }
     }
