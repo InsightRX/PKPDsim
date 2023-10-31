@@ -151,3 +151,13 @@ test_that("adding development info works", {
     dev
   )
 })
+
+test_that("specifying overlapping covariates and variables throws error", {
+  expect_error(
+    new_ode_model(
+      code = "dAdt[1] = -(CL*WT/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t; ACT = 15",
+      covariates = list(WT = new_covariate(70)),
+      declare_variables = c("WT")
+    )
+  )
+})
