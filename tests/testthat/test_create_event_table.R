@@ -74,7 +74,7 @@ test_that("Rounding-related index matching issues in time col", {
   expect_equal(sum(is.na(res2$cov_PMA)), 0)
 })
 
-test_that("Multiple obs_types does not add erroneuous infusion stop events", {
+test_that("Multiple obs_types does not add erroneous infusion stop events", {
   reg <- new_regimen(
     amt = c(100, 100, 100, 100),
     times = c(0, 336, 672, 1008),
@@ -91,4 +91,25 @@ test_that("Multiple obs_types does not add erroneuous infusion stop events", {
     model = NULL
   )
   expect_true(all(cumsum(res$rate) >= 0)) # cumulative dose rate should never be lower than zero
+  expect_true(sum(res$rate) == 0) # net dose should always be zero
 })
+
+test_that("simulatenous doses in different cmts do not remove infusion stops", {
+  reg <- new_regimen(
+    amt = c(100, 10, 100, 10, 100, 10),
+    times = c(0, 0, 12, 12, 24, 24),
+    t_inf = 0.5,
+    type = rep(c("drug_1", "drug_2"), 3)
+  )
+  model <- mod_2cmt_iv
+  attr(model, "cmt_mapping") <- list(drug_1 = 1, drug_2 = 2)
+  res <- create_event_table(
+    regimen = reg,
+    t_obs = 36,
+    covariates = list(WT = new_covariate(value = c(50, 55), times = c(0, 20))),
+    model = model
+  )
+  expect_true(all(cumsum(res$rate) >= 0)) # cumulative dose rate should never be lower than zero
+  expect_true(sum(res$rate) == 0) # net dose should always be zero
+})
+

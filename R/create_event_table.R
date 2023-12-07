@@ -220,7 +220,7 @@ create_event_table <- function(
       }
     }
     # remove covariate points where there is also a dose
-    design <- design[!duplicated(paste0(design$t, "_", design$dose, "_", design$dum)),]
+    design <- design[!duplicated(paste(design$t, design$dose, design$dum, design$dose_cmt, sep = "_")),]
     # design <- design[!(design$t %in% covt$time & design$t %in% regimen$dose_times & design$dose == 0 & design$dum == 0) | design$t %in% t_obs,]
   }
   design <- design[design$t <= max(t_obs),]
