@@ -113,11 +113,13 @@ create_event_table <- function(
   }
 
   # parse list to a design (data.frame)
-  type <- (regimen$type == "infusion") * 1
-  regimen$t_inf[type == 0] <- 0 # make sure inf_time is 0 for boluses
+  # For boluses/oral, set infusion time to 0. For all other methods, assume
+  # infusion time was provided correctly
+  is_bolus <- regimen$type %in% c("oral", "bolus")
+  regimen$t_inf[is_bolus] <- 0
   dos <- data.frame(cbind(t = regimen$dose_times,
                   dose = regimen$dose_amts,
-                  type = type,
+                  type = as.numeric(!is_bolus),
                   dum = 0,
                   dose_cmt = regimen$dose_cmt,
                   t_inf = regimen$t_inf,
@@ -127,12 +129,12 @@ create_event_table <- function(
   if(sum(regimen$t_inf) > 0) {
     dos$rate[regimen$t_inf > 0] <- regimen$dose_amts[regimen$t_inf > 0] / regimen$t_inf[regimen$t_inf > 0]
   }
-  if(any(regimen$type == "infusion")) {
-    dos_t2 <- cbind(t = regimen$dose_times[regimen$type == "infusion"] + regimen$t_inf[regimen$type == "infusion"],
+  if(any(regimen$t_inf > 0)) {
+    dos_t2 <- cbind(t = regimen$dose_times[regimen$t_inf > 0] + regimen$t_inf[regimen$t_inf > 0],
                           dose = 0,
                           type = 1,
                           dum = 1,
-                          dose_cmt = regimen$dose_cmt[regimen$type == "infusion"],
+                          dose_cmt = regimen$dose_cmt[regimen$t_inf > 0],
                           t_inf = 0,
                           evid = 2,
                           bioav = 0, #bioav,
