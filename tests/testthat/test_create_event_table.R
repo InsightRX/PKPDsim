@@ -111,5 +111,6 @@ test_that("simulatenous doses in different cmts do not remove infusion stops", {
   )
   expect_true(all(cumsum(res$rate) >= 0)) # cumulative dose rate should never be lower than zero
   expect_true(sum(res$rate) == 0) # net dose should always be zero
+  expect_true(all((reg$dose_amts/reg$t_inf) %in% res$rate)) # rates are right
 })
 
