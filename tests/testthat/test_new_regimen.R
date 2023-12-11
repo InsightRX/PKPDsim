@@ -63,3 +63,7 @@ test_that("new_regimen can take arbitrary values for `type`", {
   reg <- new_regimen(100, times = 0, type = "pip")
   expect_equal(reg$type, "pip")
 })
+
+test_that("do not creat regimens of `type` 'covariate'", {
+  expect_error(new_regimen(100, times = 0, type = "covariate"))
+})
