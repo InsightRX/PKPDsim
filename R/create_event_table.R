@@ -119,7 +119,7 @@ create_event_table <- function(
   regimen$t_inf[is_bolus] <- 0
   dos <- data.frame(cbind(t = regimen$dose_times,
                   dose = regimen$dose_amts,
-                  type = as.numeric(!is_bolus),
+                  type = as.numeric(regimen$t_inf != 0),
                   dum = 0,
                   dose_cmt = regimen$dose_cmt,
                   t_inf = regimen$t_inf,
