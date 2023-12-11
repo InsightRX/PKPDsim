@@ -96,7 +96,7 @@ create_event_table <- function(
     regimen$evid <- c(rep(1, length(regimen$dose_times)), rep(2, length(covt$time)))
     regimen$dose_times <- c(regimen$dose_times, covt$time)
     regimen$dose_amts <- c(regimen$dose_amts, rep(0, length(covt$time)))
-    regimen$type <- c(regimen$type, rep(0, length(covt$time)))
+    regimen$type <- c(regimen$type, rep("covariate", length(covt$time)))
     regimen$dose_cmt <- c(regimen$dose_cmt, rep(0, length(covt$time)))
     regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
 
@@ -115,7 +115,7 @@ create_event_table <- function(
   # parse list to a design (data.frame)
   # For boluses/oral, set infusion time to 0. For all other methods, assume
   # infusion time was provided correctly
-  is_bolus <- regimen$type %in% c("oral", "bolus")
+  is_bolus <- regimen$type %in% c("oral", "bolus", "covariate")
   regimen$t_inf[is_bolus] <- 0
   dos <- data.frame(cbind(t = regimen$dose_times,
                   dose = regimen$dose_amts,
