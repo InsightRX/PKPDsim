@@ -65,6 +65,9 @@ new_regimen <- function(
     if (is.null(times) && !is.null(interval) && is.null(n)) {
       stop("The number of doses (n) must be specified in the regimen object.")
     }
+    if (any(reg$type == "covariate")) {
+      stop("'covariate' is a protected type and cannot be used for doses.")
+    }
     if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0)) {
       reg$t_inf = 1
     } else if (any(is.na(t_inf))) {
