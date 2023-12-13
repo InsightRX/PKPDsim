@@ -59,19 +59,14 @@ new_regimen <- function(
         reg$type <- "bolus"
       }
     }
-    if(!is.null(reg$type) && (any(is.null(reg$type)) || any(is.na(reg$type)) || any(length(reg$type) == 0) || !(all(reg$type %in% c("bolus", "oral", "infusion", "sc", "im"))))) {
-      if(!is.null(t_inf) || !is.null(rate)) {
-        reg$type <- "infusion" # assume all infusions
-      } else {
-        message("Type argument should be one of 'bolus', infusion', 'oral', 'sc' or 'im'. Assuming bolus for all doses.")
-        reg$type <- "bolus"
-      }
-    }
     if (is.null(times) && is.null(interval)) {
       stop("Dose times or dosing interval has to be specified.")
     }
     if (is.null(times) && !is.null(interval) && is.null(n)) {
       stop("The number of doses (n) must be specified in the regimen object.")
+    }
+    if (any(reg$type == "covariate")) {
+      stop("'covariate' is a protected type and cannot be used for doses.")
     }
     if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0)) {
       reg$t_inf = 1

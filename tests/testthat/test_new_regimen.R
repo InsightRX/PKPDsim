@@ -17,10 +17,6 @@ test_that("Regimen type parsed correctly", {
   expect_equal(reg_sc$type, rep("sc", 4))
   expect_equal(reg_im$type, rep("im", 4))
   expect_equal(reg_mixed$type, c("bolus", "infusion", "oral", "sc", "im"))
-  expect_message(
-    new_regimen(amt = 100, n = 3, interval = 4, type = c("bolus", "bolus", "blabla")),
-    "Type argument should be one of 'bolus', infusion', 'oral', 'sc' or 'im'. Assuming bolus for all doses."
-  )
 })
 
 test_that("Auto-detect infusion vs bolus", {
@@ -61,4 +57,13 @@ test_that("Doses < 0 set to 0", {
     tmp <- new_regimen(amt = c(-1, -2, 3, 4), times = c(0, 24, 48, 72), type = "infusion")
   )
   expect_true(all(tmp$dose_amts >= 0))
+})
+
+test_that("new_regimen can take arbitrary values for `type`", {
+  reg <- new_regimen(100, times = 0, type = "pip")
+  expect_equal(reg$type, "pip")
+})
+
+test_that("do not creat regimens of `type` 'covariate'", {
+  expect_error(new_regimen(100, times = 0, type = "covariate"))
 })
