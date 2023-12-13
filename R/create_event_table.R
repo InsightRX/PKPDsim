@@ -113,9 +113,9 @@ create_event_table <- function(
   }
 
   # parse list to a design (data.frame)
-  # For boluses/oral, set infusion time to 0. For all other methods, assume
-  # infusion time was provided correctly
-  is_bolus <- regimen$type %in% c("oral", "bolus", "covariate")
+  # For boluses, oral, sc, im, and covariates, set infusion time to 0. For all
+  # other methods, assume infusion time was provided correctly
+  is_bolus <- regimen$type %in% c("oral", "bolus", "sc", "im", "covariate")
   regimen$t_inf[is_bolus] <- 0
   dos <- data.frame(cbind(t = regimen$dose_times,
                   dose = regimen$dose_amts,
@@ -126,7 +126,7 @@ create_event_table <- function(
                   evid = regimen$evid,
                   bioav = bioav,
                   rate = 0))
-  if(sum(regimen$t_inf) > 0) {
+  if(sum(regimen$t_inf, na.rm = TRUE) > 0) {
     dos$rate[regimen$t_inf > 0] <- regimen$dose_amts[regimen$t_inf > 0] / regimen$t_inf[regimen$t_inf > 0]
   }
   if(any(regimen$t_inf > 0)) {
