@@ -114,3 +114,31 @@ test_that("simulatenous doses in different cmts do not remove infusion stops", {
   expect_true(all((reg$dose_amts/reg$t_inf) %in% res$rate)) # rates are right
 })
 
+test_that("sc, im are considered to have t_inf = 0", {
+  reg1 <- new_regimen(
+    amt = c(100, 100),
+    times = c(0, 12),
+    type = rep("im", 2)
+  )
+  reg2 <- new_regimen(
+    amt = c(100, 100),
+    times = c(0, 12),
+    type = rep("sc", 2)
+  )
+
+  res1 <- create_event_table(
+    regimen = reg1,
+    t_obs = 24,
+    covariates = list(WT = new_covariate(value = 50))
+  )
+  res2 <- create_event_table(
+    regimen = reg2,
+    t_obs = 24,
+    covariates = list(WT = new_covariate(value = 50))
+  )
+
+  expect_true(all(res1$rate == 0))
+  expect_true(all(res2$rate == 0))
+  expect_true(all(res1$t_inf == 0))
+  expect_true(all(res2$t_inf == 0))
+})
