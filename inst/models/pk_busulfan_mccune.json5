@@ -1,0 +1,92 @@
+{
+  "id": "pk_busulfan_mccune",
+  "ode_code": "\
+    FTIM = 1\
+    if(t > T_CL_EFF+6) { \
+      FTIM = 0.932 \
+    }\
+    if(t > T_CL_EFF+36) { \
+      FTIM = 0.919 \
+    }\
+    CL_avg = CL * FSIZE_CL  * FMAT  * FTIM \
+    CLi    = CL_avg * exp(kappa_CL) \
+    V_avg  = V * FSIZE_V   * FSEXV \
+    Vi     = V_avg * exp(kappa_V) \
+    dAdt[0] = -(CLi/Vi)*A[0] + (Qi/V2i)*A[1] - (Qi/Vi)*A[0] \
+    dAdt[1] =                - (Qi/V2i)*A[1] + (Qi/Vi)*A[0] \
+    dAdt[2] =  (A[0]/scale) ",
+  "pk_code": "\
+    HTM = HT/100 \
+    BMI = WT/(HTM*HTM) \
+    FSEXV = 1 \
+    FFM = WT * 0.85 \
+    if(SEX == 0) {\
+      WHS_MAX = 37.99\
+      WHS_50 = 35.98 \
+      FSEXV  = 1.07 \
+    } else {\
+      WHS_MAX = 42.92 \
+      WHS_50 = 30.93 \
+    } \
+    FFM = WHS_MAX * (HTM*HTM) * (WT/(WHS_50*(HTM*HTM) + WT)) \
+    FATKG = WT-FFM \
+    NFM_CL = FFM + 0.509 * FATKG \
+    NFM_V  = FFM + 0.203 * FATKG \
+    FSIZE_CL = pow(NFM_CL/70, 0.75) \
+    FSIZE_V  = NFM_V/70 \
+    PMA  = AGE * 52.1775 + 40 \
+    FMAT = 1.0 / (1.0 + pow((PMA/(TM50)), -HILL)) \
+    V2i    = V2 * FSIZE_V   * FSEXV \
+    Qi     = Q  * FSIZE_CL \
+  ",
+  "n_comp": 3,
+  "obs": { "cmt": 1, "scale": "(V * FSIZE_V * FSEXV) * exp(kappa_V) / 1000" },
+  "dose": { "cmt": 1, "bioav": 1 },
+  "covariates": ["AGE", "WT", "HT", "SEX", "T_CL_EFF" ],
+  "variables": ["CL_avg", "CLi", "V_avg", "Vi", "Qi", "V2i", "HTM", "BMI", "FFM", "FATKG", "NFM_CL", "NFM_V", "FSIZE_CL", "FSIZE_V", "FMAT", "FSIZE", "FSEXV", "FTIM", "PMA", "WHS_MAX", "WHS_50"],
+  "parameters": {
+    "CL": 11.4,
+    "V": 13.9,
+    "Q": 135.2,
+    "V2": 29.9,
+    "TM50": 45.7,
+    "HILL": 2.3
+  },
+  "omega_matrix": [
+    0.0459,
+    0.0172, 0.152,
+    0.0681, 0.097, 0.814,
+    0.0115, -0.00924, 0.069, 0.00932
+  ],
+  "iov": {
+    "use": true,
+    "cv": {
+      "CL": 0.113,
+      "V": 0.224
+    },
+    "n_bins": 5,
+    "bins": [0, 24, 48, 72, 96, 9999]
+  },
+  "fixed": ["TM50", "HILL"],
+  "ruv": {
+    "prop": 0.0387,
+    "add": 27
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "init_parameter": false,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+        "ref": "McCune JS et al. Clin Cancer Res 2015",
+        "url": "http://www.ncbi.nlm.nih.gov/pubmed/24218510"
+    },
+    {
+        "ref": "McCune JS et al. Clin Cancer Res 2015 Supplementary Material",
+        "url": "https://clincancerres.aacrjournals.org/content/clincanres/suppl/2013/11/11/1078-0432.CCR-13-1960.DC1/supp_methods.pdf"
+    }
+  ],
+  "version": "0.1.16"
+}
