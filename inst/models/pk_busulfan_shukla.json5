@@ -1,0 +1,66 @@
+{
+  "id": "pk_busulfan_shukla",
+  "ode_code": "\
+    DAY = 0; \
+    if(t > 24) { DAY = 1; }\
+    CL_avg = CL * FMAT * FSIZE * FREGI * (1 + TH_DAY * DAY);\
+    CLi = CL_avg * exp(kappa_CL) \
+    Vi = V_avg * exp(kappa_V) \
+    dAdt[0] = -(CLi/Vi) * A[0];\
+    dAdt[1] = (A[0]/(Vi / 1000.0));",
+  "pk_code": "\
+    BMI = WT/(HT*HT/1e4); \
+    if(SEX == 0) {\
+      FFM = (1.11 + ((1-1.11)/(1+pow((AGE/7.1),-1.1)))) * ((9270 * WT)/(8780 + (244 * BMI))); \
+    } \
+    if(SEX != 0) {\
+      FFM = (0.88 + ((1-0.88)/(1+pow((AGE/13.4),-12.7)))) * ((9270 * WT)/(6680 + (216 * BMI))); \
+    }\
+    FMAT = (MAT_MAG + (1-MAT_MAG)*(1-exp(-AGE*K_MAT)));\
+    FSIZE = pow(FFM/12, 0.75);\
+    FREGI = (1 + (TH_REGI * REGI));\
+    V_avg = V * FFM/12.0 \
+  ",
+  "n_comp": 2,
+  "obs": { "cmt": 1, "scale": "Vi / 1000.0" },
+  "dose": { "cmt": 1, "bioav": 1 },
+  "parameters": {
+    "CL": 3.96,
+    "V": 10.8,
+    "MAT_MAG": 0.451,
+    "K_MAT": 1.37,
+    "TH_REGI": -0.20,
+    "TH_DAY": -0.135
+  },
+  "omega_matrix": [
+    0.0595,
+    0.0323, 0.0293
+  ],
+  "iov": {
+    "cv": {
+      "CL": 0.1288,
+      "V": 0.1334
+     },
+     "n_bins": 5,
+     "bins": [0, 24, 48, 72, 96, 9999]
+  },
+  "fixed": ["MAT_MAG", "K_MAT", "TH_REGI", "TH_DAY"],
+  "ruv": {
+    "prop": 0.106,
+    "add": 22.2
+  },
+  "covariates": ["AGE", "WT", "HT", "SEX", "REGI"],
+  "variables": ["CLi", "Vi", "BMI", "FFM", "FMAT", "FSIZE", "FREGI", "DAY", "CL_avg", "V_avg"],
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "init_parameter": false
+  },
+  "references": [
+    {
+      "ref": "Shukla et al. Front. Pharmacol. 2020",
+      "url": "https://www.frontiersin.org/articles/10.3389/fphar.2020.00888/abstract"
+    }
+  ],
+  "version": "0.2.14"
+}
