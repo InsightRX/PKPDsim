@@ -15,7 +15,7 @@ merge_regimen <- function(regimens) {
     for(i in 2:length(regimens)) {
       reg_tmp <- data.frame(regimens[[i]])
       reg_tmp$type <- as.character(reg_tmp$type)
-      reg_tmp$t_inf <- ifelse0(0, reg_tmp$t_inf)
+      reg_tmp$t_inf <- ifelse0(reg_tmp$t_inf, 0)
       reg <- rbind(reg, reg_tmp[, cols])
     }
   }
