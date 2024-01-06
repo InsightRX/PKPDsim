@@ -45,6 +45,8 @@ join_regimen <- function(
     regimen1$t_inf <- c(regimen1$t_inf[keep], regimen2$t_inf)
     regimen1$interval <- regimen2$interval
     regimen1$type <- c(regimen1$type[keep], regimen2$type)
+    regimen1$rate <- c(regimen1$rate[keep], regimen2$rate)
+    regimen1$n <- length(regimen1$dose_amts)
     return(regimen1)
   }
 
