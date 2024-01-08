@@ -74,3 +74,20 @@ test_that("join regimen works when no t_inf specified, e.g. oral or sc dosing", 
   expect_equal(reg$type, c("sc", "sc", "sc", "sc", "sc", "sc", "sc", "sc"))
   expect_equal(reg$dose_amts, c(500, 500, 500, 400, 400, 400, 400, 400))
 })
+
+test_that("join_regimen with t_dose_update maintains correct rate length", {
+  reg1 <- new_regimen(
+    amt = 1,
+    times = c(0, 24),
+    type = "oral"
+  )
+  reg2 <- new_regimen(
+    amt = 2,
+    time = c(0, 24, 48),
+    type = "oral"
+  )
+  reg3 <- join_regimen(reg1, reg2, t_dose_update = 24)
+
+  expect_equal(length(reg3$rate), length(reg3$dose_times))
+  expect_equal(reg3$n, 4)
+})
