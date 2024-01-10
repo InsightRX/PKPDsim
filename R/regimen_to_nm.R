@@ -27,9 +27,12 @@ regimen_to_nm <- function(
     DV = 0,
     AMT = reg$dose_amts,
     EVID = 1,
-    MDV = 1))
-  if(any(reg$type == "infusion")) {
+    MDV = 1)
+  )
+  has_t_inf <- isTRUE(any(reg$t_inf > 0))
+  if(has_t_inf) {
     dat$RATE <- reg$dose_amts / reg$t_inf
+    dat$RATE[reg$t_inf == 0] <- 0           # rate of zero indicates bolus
     if(!is.null(bioav[dose_cmt])) {
       suppressWarnings(
         bioav_dose <- as.numeric(bioav[dose_cmt])
@@ -53,7 +56,7 @@ regimen_to_nm <- function(
     obs$AMT <- 0
     obs$EVID <- 0
     obs$MDV <- 0
-    if(any(reg$type == "infusion")) {
+    if(has_t_inf) {
       obs$RATE <- 0
     }
     dat <- rbind(dat, obs)
