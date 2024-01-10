@@ -28,7 +28,8 @@ regimen_to_nm <- function(
     AMT = reg$dose_amts,
     EVID = 1,
     MDV = 1))
-  if(any(reg$type == "infusion")) {
+  has_t_inf <- !is.null(reg$t_inf) && length(reg$t_inf) %in% c(1, length(reg$dose_amts))
+  if(has_t_inf) {
     dat$RATE <- reg$dose_amts / reg$t_inf
     if(!is.null(bioav[dose_cmt])) {
       suppressWarnings(
@@ -53,7 +54,7 @@ regimen_to_nm <- function(
     obs$AMT <- 0
     obs$EVID <- 0
     obs$MDV <- 0
-    if(any(reg$type == "infusion")) {
+    if(has_t_inf) {
       obs$RATE <- 0
     }
     dat <- rbind(dat, obs)
