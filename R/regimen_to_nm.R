@@ -37,8 +37,8 @@ regimen_to_nm <- function(
       suppressWarnings(
         bioav_dose <- as.numeric(bioav[dose_cmt])
       )
-      if(!is.na(bioav_dose)) {
-        if(bioav_dose != 1) {
+      if(!any(is.na(bioav_dose))) {
+        if(!all(bioav_dose == 1)) {
           dat$RATE <- dat$RATE * bioav_dose
           message("Recalculating infusion rates to reflect bioavailability for infusion.")
         }

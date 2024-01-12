@@ -55,7 +55,7 @@ test_that("rate is calculated for any regimen with an infusion length", {
     n = 5,
     interval = 12,
     t_inf = c(0, 0, 0.5, 0.5, 0),
-    type = "drug_1"
+    type = c("d1", "d2", "d1", "d2", "d2") # must correspond to dose_cmt arg
   )
   expect_message(
     {
@@ -63,6 +63,17 @@ test_that("rate is calculated for any regimen with an infusion length", {
         a,
         t_obs = c(1, 2, 3),
         bioav = 0.5
+      )
+    },
+    "Recalculating infusion rates"
+  )
+  expect_message(
+    {
+      c <- regimen_to_nm(
+        a,
+        t_obs = c(1, 2, 3),
+        dose_cmt = c(1, 2, 1, 2, 2),
+        bioav = c(0.5, 1)
       )
     },
     "Recalculating infusion rates"
@@ -78,7 +89,9 @@ test_that("rate is calculated for any regimen with an infusion length", {
     "RATE"
   )
   expect_true(all(expected_cols %in% colnames(b)))
+  expect_true(all(expected_cols %in% colnames(c)))
   # in NONMEM, oral doses have a RATE of zero, which indicates a bolus dose
   expect_equal(b$RATE, c(0, 0, 0, 0, 0, 10, 10, 0))
+  expect_equal(c$RATE, c(0, 0, 0, 0, 0, 10, 20, 0))
 })
 
