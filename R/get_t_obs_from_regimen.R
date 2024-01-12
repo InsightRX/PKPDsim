@@ -38,12 +38,12 @@ get_t_obs_from_regimen <- function(
       }
     }
     t_obs <- unique(c(t_obs, regimen$dose_times))
-    if(any(regimen$type == "infusion")) {
-      t_obs <- unique(c(t_obs, regimen$t_inf[regimen$type == "infusion"]))
+    if(isTRUE(any(regimen$t_inf > 0))) {
+      t_obs <- unique(c(t_obs, regimen$t_inf[regimen$t_inf > 0]))
     }
   }
   ## add timepoints at which covariate is changing to t_obs:
-  if(extra_t_obs) {
+  if(isTRUE(extra_t_obs)) {
     func <- function(x) { return(x$times) }
     if(!is.null(covariates) && !is.null(covariates$times)) {
       t_obs <- unique(c(t_obs, unique(unlist(lapply(covariates, func )))))
