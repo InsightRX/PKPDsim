@@ -36,9 +36,6 @@ test_that("timevarying covariates handled", {
     output_include = list(parameters = TRUE, covariates = TRUE)
   )
 
-  ggplot(sim1, aes(x = t, y = y)) +
-    geom_point()
-
   expect_equal(sim1$CRCL[sim1$t == 209], 6.2)
   expect_equal(sim1$CRCL[sim1$t == 210], 600)
   expect_true(sim1$y[sim1$t == 35 * 6] > 10 * sim1$y[sim1$t == 60 * 6])
