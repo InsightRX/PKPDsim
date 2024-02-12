@@ -142,7 +142,7 @@ compile_sim_cpp <- function(
   cpp_code[idx] <- par_def
   idx2 <- grep("insert_state_init", cpp_code)
   cpp_code[idx2] <- paste("   ", code_init)
-  cov_scale <- ""
+  cov_timevar <- ""
   cov_names <- NULL
   if(!is.null(covariates)) {
     if(inherits(covariates, "character")) {
@@ -176,7 +176,7 @@ compile_sim_cpp <- function(
         cov_tmp <- paste0(cov_tmp, paste0('    t_prv_', nam, ' = 0 ;\n'))
       }
       cov_tmp <- paste0(cov_tmp, paste0('    ', nam, ' = ', nam,'_0;\n'))
-      cov_scale <- paste0(cov_scale, paste0('      ', nam, ' = ', nam, '_0 + gr_', nam, ' * (tmp.time[k] - t_prv_', nam), ');\n')
+      cov_timevar <- paste0(cov_timevar, paste0('      ', nam, ' = ', nam, '_0 + gr_', nam, ' * (t_end - t_prv_', nam), ');\n')
     }
     idx3 <- grep("insert covariate definitions", cpp_code)
     cpp_code[idx3] <- cov_def
@@ -208,7 +208,7 @@ compile_sim_cpp <- function(
     if(length(obs$cmt) == 1) {
       cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale = ", obs$scale[1], ";")
       cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale = ", obs$scale[1], ";")
-      cpp_code[idx8] <- cov_scale
+      cpp_code[idx8] <- cov_timevar
       cpp_code[idx12a] <- paste0(cpp_code[idx12a], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale);")
       cpp_code[idx12b] <- paste0(cpp_code[idx12b], "\n      obs.insert(obs.end(), tmp.y[k][", obs$cmt[1]-1,"] / scale);")
       cpp_code[idx13] <- paste0('  comb["obs"] = obs;\n');
@@ -218,7 +218,7 @@ compile_sim_cpp <- function(
       for(k in 1:length(obs$cmt)) {
         cpp_code[idx5] <- paste0(cpp_code[idx5], "\n    scale", k," = ", obs$scale[k], ";")
         cpp_code[idx7] <- paste0(cpp_code[idx7], "\n      scale", k," = ", obs$scale[k], ";")
-        cpp_code[idx8] <- cov_scale
+        cpp_code[idx8] <- cov_timevar
         cpp_code[idx12a] <- paste0(cpp_code[idx12a], "\n      obs",k,".insert(obs",k,".end(), tmp.y[k][", obs$cmt[k]-1,"] / scale", k,");")
         cpp_code[idx12b] <- paste0(cpp_code[idx12b], "\n      obs",k,".insert(obs",k,".end(), tmp.y[k][", obs$cmt[k]-1,"] / scale", k,");")
         cpp_code[idx13] <- paste0(cpp_code[idx13], '\n  comb["obs', k,'"] = obs', k,';');
