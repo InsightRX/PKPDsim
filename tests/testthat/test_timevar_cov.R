@@ -1,6 +1,13 @@
 skip_on_cran()
 
 par <- list(CL = 3, V = 50, Q = 2.5, V2 = 70)
+reg <- new_regimen(
+  amt = 250,
+  n = 60,
+  interval = 6,
+  type = 'infusion',
+  t_inf = 1
+)
 mod <- new_ode_model(
   code = "
       dAdt[1] = -(Q/V)*A[1] + (Q/V2)*A[2] -(CLi/V)*A[1];
@@ -23,9 +30,7 @@ test_that("timevarying covariates handled", {
       implementation = "locf"
     )
   )
-  reg <- new_regimen(amt = 250, n = 60, interval = 6, type = 'infusion',t_inf = 1)
   t_obs <- seq(0, 360, 0.1)
-
   sim1 <- sim_ode(
     mod,
     parameters = par,
@@ -35,7 +40,6 @@ test_that("timevarying covariates handled", {
     t_obs = t_obs,
     output_include = list(parameters = TRUE, covariates = TRUE)
   )
-
   expect_equal(sim1$CRCL[sim1$t == 209], 6.2)
   expect_equal(sim1$CRCL[sim1$t == 210], 600)
   expect_true(sim1$y[sim1$t == 35 * 6] > 10 * sim1$y[sim1$t == 60 * 6])
@@ -98,7 +102,7 @@ test_that("timevarying covariates are interpolated and affect PK", {
 
   ## Check interpolated covariates actually affect simulated conc
   expect_equal(
-    dput(round(sim2_inter$y, 3)[1:10]),
+    round(sim2_inter$y, 3)[1:10],
     c(0, 0.32, 0.611, 0.788, 1.205, 1.531, 1.708, 2.098, 2.379, 2.503),
   )
   expect_equal(
