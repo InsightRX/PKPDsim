@@ -106,6 +106,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
       t_prv_dose = times[i];
       prv_dose = doses[i];
     }
+    // insert time-dependent covariates scale
     pk_code(i, times, doses, prv_dose, dose_cmt, dose_type, iov_bin);
     // insert bioav definition
     if(dummy[i] == 1 || (doses[i] > 0 && dose_type[i] == 1)) { // change rate if start of dose, or if end of infusion
@@ -126,7 +127,6 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
     if(start == 0) { // make sure observation variables are stored
       int k = 0;
-      // insert time-dependent covariates scale
       // insert scale definition for observation
       // insert saving initial observations to obs object(s)
       // insert copy variables into all variables
