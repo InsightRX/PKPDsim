@@ -21,6 +21,8 @@
 #' @param in_parallel run simulations in parallel?
 #' @param n_cores if run in parallel, on how many cores?
 #' @param return_all return object with all relevant information?
+#' @param exclude_parameters Vector of parameters to exclude from variability
+#'   calculation, implemented for "delta" method only.
 #' @param ... passed on to `sim_ode()`
 #'
 #' @export
@@ -47,6 +49,7 @@ get_var_y <- function(
   in_parallel = FALSE,
   n_cores = 3,
   return_all = FALSE,
+  exclude_parameters = NULL,
   ...) {
     if(method == "sim" && is.null(n_ind)) {
       stop("Please specify number of individuals when using simulation method!")
@@ -93,6 +96,11 @@ get_var_y <- function(
     }
     if(auc) y <- diff(y)
     nams <- names(parameters_est)
+    if (!is.null(exclude_parameters)) {
+      ind <- which(!nams %in% exclude_parameters)
+      nams <- setdiff(nams, exclude_parameters)
+      omega_full <- omega_full[ind,ind]
+    }
     jac <- c()
     if(!(method %in% c("delta", "sim"))) {
       stop("Requested method not recognized!")
@@ -101,10 +109,10 @@ get_var_y <- function(
     v <- list()
     qnt <- list()
     if(method == "delta") {
-      sim_func <- function(i, ...) {
+      sim_func <- function(par, ...) {
         par_tmp <- parameters
-        dP <- rel_delta * par_tmp[[nams[i]]]
-        par_tmp[[nams[i]]] <- par_tmp[[nams[i]]] + dP
+        dP <- rel_delta * par_tmp[[par]]
+        par_tmp[[par]] <- par_tmp[[par]] + dP
         res_dP <- PKPDsim::sim_ode(
           ode = model,
           regimen = regimen,
@@ -132,9 +140,9 @@ get_var_y <- function(
       }
       # running in parallel is actually not faster for most simple models. Only for models with larger number of parameters.
       if(in_parallel) {
-        jac <- matrix(unlist(parallel::mclapply(seq(along = nams), sim_func, mc.cores = n_cores, ...)), nrow = ifelse(auc, 1, length(t_obs)))
+        jac <- matrix(unlist(parallel::mclapply(nams, sim_func, mc.cores = n_cores, ...)), nrow = ifelse(auc, 1, length(t_obs)))
       } else {
-        jac <- matrix(unlist(lapply(seq(along = nams), sim_func, ...)), nrow = ifelse(auc, 1, length(t_obs)))
+        jac <- matrix(unlist(lapply(nams, sim_func, ...)), nrow = ifelse(auc, 1, length(t_obs)))
       }
       for(i in seq(types)) {
           type <- types[i]
