@@ -42,20 +42,7 @@ calc_auc_analytic <- function(
 ) {
   model <- match.arg(f)
 
-  ## make sure model and regimens match up
-  ## basically, if regimen is all bolus, then use bolus model
-  ## if 1 or more doses are infusion, then make sure to use infusion model.
-  if(!is.null(regimen)) {
-    if(any(regimen$type == "infusion")) {
-      model <- gsub("bolus", "infusion", model)
-      if(any(regimen$type != "infusion")) {
-        regimen$type <- "infusion"
-        regimen$t_inf[regimen$type != "infusion"] <- 1e-6
-      }
-    } else {
-      model <- gsub("infusion", "bolus", model)
-    }
-  } else {
+  if(is.null(regimen)) {
     if(is.null(dose) || is.null(interval)) {
       stop("Specify `regimen` or `dose` and `interval`")
     }

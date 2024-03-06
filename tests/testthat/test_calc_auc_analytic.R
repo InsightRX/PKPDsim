@@ -108,7 +108,7 @@ test_that("Works for 1cmt model", {
   kel <- parameters$CL / parameters$V
   fr <- clinPK::fraction_of_ss(kel = kel, t = res$t, tau = 24)
   aucfr <- data.frame(
-    t = t_obs,
+    t = res$t,
     auc = AUCss * fr
   )
   expect_equal(tmp$auc, aucfr$auc)
