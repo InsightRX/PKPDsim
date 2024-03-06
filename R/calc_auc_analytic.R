@@ -1,7 +1,7 @@
 #' Convenience function to calculate the AUC based on PK model parameters at
 #' any given moment, for linear iv models.
 #'
-#' @param model analytic model to use, show available models using `advan()`
+#' @param f analytic model to use, show available models using `advan()`
 #' @param regimen PKPDsim regimen created using `new_regimen`. Not required,
 #' regimen can also be specified using `dose`, `interval`, and `t_inf`.
 #' @param dose dosing amount. Only used if no `regimen` supplied.
@@ -45,16 +45,17 @@ calc_auc_analytic <- function(
   ## make sure model and regimens match up
   ## basically, if regimen is all bolus, then use bolus model
   ## if 1 or more doses are infusion, then make sure to use infusion model.
-  if(any(regimen$type == "infusion")) {
-    model <- gsub("bolus", "infusion", model)
-    if(any(regimen$type != "infusion")) {
-      regimen$type <- "infusion"
-      regimen$t_inf[regimen$type != "infusion"] <- 1e-6
+  if(!is.null(regimen)) {
+    if(any(regimen$type == "infusion")) {
+      model <- gsub("bolus", "infusion", model)
+      if(any(regimen$type != "infusion")) {
+        regimen$type <- "infusion"
+        regimen$t_inf[regimen$type != "infusion"] <- 1e-6
+      }
+    } else {
+      model <- gsub("infusion", "bolus", model)
     }
   } else {
-    model <- gsub("infusion", "bolus", model)
-  }
-  if(is.null(regimen)) {
     if(is.null(dose) || is.null(interval)) {
       stop("Specify `regimen` or `dose` and `interval`")
     }

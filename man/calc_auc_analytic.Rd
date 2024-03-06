@@ -18,6 +18,8 @@ calc_auc_analytic(
 )
 }
 \arguments{
+\item{f}{analytic model to use, show available models using `advan()`}
+
 \item{regimen}{PKPDsim regimen created using `new_regimen`. Not required,
 regimen can also be specified using `dose`, `interval`, and `t_inf`.}
 
@@ -34,8 +36,6 @@ for 3-compartment models.}
 \item{t_obs}{vector of observation times for AUC}
 
 \item{...}{optional arguments passed to `advanc_create_data()`}
-
-\item{model}{analytic model to use, show available models using `advan()`}
 }
 \value{
 a data.frame with `t` and `auc`
