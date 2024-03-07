@@ -7,7 +7,7 @@
 advan(model, cpp = TRUE)
 }
 \arguments{
-\item{model}{Standard linear PK model, e.g. `pk_1cmt_iv_bolus`.}
+\item{model}{Standard linear PK model, e.g. `1cmt_iv_bolus`.}
 
 \item{cpp}{use C++-versions of model (~50x faster than R implementations)}
 }
