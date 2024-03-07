@@ -106,10 +106,9 @@ test_that("Works for 1cmt model", {
   ## can check AUC very simply now using "fraction of ss":
   AUCss <- 1500 / parameters$CL
   kel <- parameters$CL / parameters$V
-  fr <- clinPK::fraction_of_ss(kel = kel, t = res$t, tau = 24)
   aucfr <- data.frame(
     t = res$t,
-    auc = AUCss * fr
+    auc = AUCss * (1 - exp(-res$t * kel))
   )
   expect_equal(tmp$auc, aucfr$auc)
 })
