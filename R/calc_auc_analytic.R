@@ -4,9 +4,12 @@
 #' @param f analytic model to use, show available models using `advan()`
 #' @param regimen PKPDsim regimen created using `new_regimen`. Not required,
 #' regimen can also be specified using `dose`, `interval`, and `t_inf`.
-#' @param dose dosing amount. Only used if no `regimen` supplied.
-#' @param interval dosing interval. Only used if no `regimen` supplied.
-#' @param t_inf infusion length. Only used if no `regimen` supplied.
+#' @param dose dosing amount for regimen (single value). Only used if no
+#'  `regimen` supplied.
+#' @param interval dosing interval for regimen (single value). Only used if no
+#'. `regimen` supplied.
+#' @param t_inf infusion length for regimen (single value). Only used if no
+#'  `regimen` supplied.
 #' @param parameters list of parameter estimates. Requires CL/V for
 #' 1-compartment models, CL/V/Q/V2 for 2-compartment models, and CL/V/Q/V2/Q2/V3
 #' for 3-compartment models.
@@ -32,11 +35,11 @@ calc_auc_analytic <- function(
       "1cmt_iv_infusion", "2cmt_iv_infusion", "3cmt_iv_infusion",
       "1cmt_iv_bolus", "2cmt_iv_bolus", "3cmt_iv_bolus"
     ),
+    parameters,
     regimen = NULL,
     dose = NULL,
     interval = NULL,
     t_inf = NULL,
-    parameters,
     t_obs = c(0, 24, 48, 72),
     ...
 ) {
@@ -46,12 +49,13 @@ calc_auc_analytic <- function(
     if(is.null(dose) || is.null(interval)) {
       stop("Specify `regimen` or `dose` and `interval`")
     }
-    if(is.null(t_inf) || t_inf == 0) t_inf <- 1e-6
+    if(is.null(t_inf)) { t_inf <- 1e-6 }
+    if(t_inf[1] <= 0) { t_inf[1] <- 1e-6 }
     regimen <- new_regimen(
-      amt = dose,
+      amt = dose[1],
       type = "infusion",
-      interval = interval,
-      t_inf = t_inf,
+      interval = interval[1],
+      t_inf = t_inf[1],
       n = round(max(t_obs) / interval) + 1
     )
   }
