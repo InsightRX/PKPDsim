@@ -17,10 +17,10 @@ if(run_ref) {
     regimen = reg,
     covariates = covs,
     t_obs = t_obs
-  ) %>%
-    dplyr::filter(comp == attr(mod, "size")) %>%
-    dplyr::mutate(auc = round(c(0, diff(y)), 3)) %>%
-    select(t, auc)
+  ) 
+  res <- res[res$comp == attr(mod, "size"))
+  res$auc <- round(c(0, diff(res$y)), 3)
+  res <- res[, c("t", "auc")]
   par_eff <- PKPDsim::calculate_parameters(mod, parameters = par, covariates = covs)
   parameters = list(CL = par_eff$CLi, V = par_eff$Vi, Q = par_eff$Qi, V2 = par_eff$V2i)
 } else {
