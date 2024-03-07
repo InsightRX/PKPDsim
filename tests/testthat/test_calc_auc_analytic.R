@@ -17,8 +17,8 @@ if(run_ref) {
     regimen = reg,
     covariates = covs,
     t_obs = t_obs
-  ) 
-  res <- res[res$comp == attr(mod, "size"))
+  )
+  res <- res[res$comp == attr(mod, "size"),]
   res$auc <- round(c(0, diff(res$y)), 3)
   res <- res[, c("t", "auc")]
   par_eff <- PKPDsim::calculate_parameters(mod, parameters = par, covariates = covs)
