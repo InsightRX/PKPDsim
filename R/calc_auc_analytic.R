@@ -62,7 +62,6 @@ calc_auc_analytic <- function(
       n = round(max(t_obs) / interval) + 1
     )
   }
-  print(regimen)
 
   ## Create simulation template and run model
   cmts <- as.numeric(substr(model, 1, 1))
