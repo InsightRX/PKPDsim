@@ -51,6 +51,9 @@ calc_auc_analytic <- function(
     }
     if(is.null(t_inf)) { t_inf <- 1e-6 }
     if(t_inf[1] <= 0) { t_inf[1] <- 1e-6 }
+    if((length(dose) > 1) || length(interval) > 1 || length(t_inf) > 1) {
+      warning("Arguments `dose`, `interval`, and `t_inf` should all be of length 1. Using first value in vector.")
+    }
     regimen <- new_regimen(
       amt = dose[1],
       type = "infusion",
@@ -59,10 +62,10 @@ calc_auc_analytic <- function(
       n = round(max(t_obs) / interval) + 1
     )
   }
+  print(regimen)
 
   ## Create simulation template and run model
-  cmts <- as.numeric(substr(model, 1, 1)) +
-    ifelse(length(grep("oral", model)) > 0, 1, 0) # if oral, add 1 compartment
+  cmts <- as.numeric(substr(model, 1, 1))
   t_obs_0 <- unique(c(0, t_obs))
   data_template <- advan_create_data(
     regimen = regimen,

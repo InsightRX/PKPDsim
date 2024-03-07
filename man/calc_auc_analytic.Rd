@@ -8,11 +8,11 @@ any given moment, for linear iv models.}
 calc_auc_analytic(
   f = c("1cmt_iv_infusion", "2cmt_iv_infusion", "3cmt_iv_infusion", "1cmt_iv_bolus",
     "2cmt_iv_bolus", "3cmt_iv_bolus"),
+  parameters,
   regimen = NULL,
   dose = NULL,
   interval = NULL,
   t_inf = NULL,
-  parameters,
   t_obs = c(0, 24, 48, 72),
   ...
 )
@@ -20,18 +20,21 @@ calc_auc_analytic(
 \arguments{
 \item{f}{analytic model to use, show available models using `advan()`}
 
-\item{regimen}{PKPDsim regimen created using `new_regimen`. Not required,
-regimen can also be specified using `dose`, `interval`, and `t_inf`.}
-
-\item{dose}{dosing amount. Only used if no `regimen` supplied.}
-
-\item{interval}{dosing interval. Only used if no `regimen` supplied.}
-
-\item{t_inf}{infusion length. Only used if no `regimen` supplied.}
-
 \item{parameters}{list of parameter estimates. Requires CL/V for
 1-compartment models, CL/V/Q/V2 for 2-compartment models, and CL/V/Q/V2/Q2/V3
 for 3-compartment models.}
+
+\item{regimen}{PKPDsim regimen created using `new_regimen`. Not required,
+regimen can also be specified using `dose`, `interval`, and `t_inf`.}
+
+\item{dose}{dosing amount for regimen (single value). Only used if no
+`regimen` supplied.}
+
+\item{interval}{dosing interval for regimen (single value). Only used if no
+. `regimen` supplied.}
+
+\item{t_inf}{infusion length for regimen (single value). Only used if no
+`regimen` supplied.}
 
 \item{t_obs}{vector of observation times for AUC}
 

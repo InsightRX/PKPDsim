@@ -113,10 +113,11 @@ test_that("Works for 1cmt model", {
   expect_equal(tmp$auc, aucfr$auc)
 })
 
-test_that("Doesn't fail when t_inf is specified as 0. Should be nearly equal to bolus", {
+test_that("Doesn't fail when t_inf is specified as 0 in regimen or as t_inf. Should be nearly equal to bolus", {
   reg1 <- new_regimen(amt = 1500, n = 10, interval = 24, type = "infusion", t_inf = 0)
   reg2 <- new_regimen(amt = 1500, n = 10, interval = 24, type = "bolus")
   tmp1 <- calc_auc_analytic(
+    # setting t_inf to non-zero is handled by new_regimen in this case, will set to 1/60, not 1e-6 like in calc_auc_analytic().
     f = "1cmt_iv_infusion",
     parameters = parameters,
     regimen = reg1,
@@ -128,5 +129,14 @@ test_that("Doesn't fail when t_inf is specified as 0. Should be nearly equal to 
     regimen = reg2,
     t_obs = res$t
   )
+  tmp3 <- calc_auc_analytic(
+    f = "1cmt_iv_bolus",
+    parameters = parameters,
+    dose = 1500,
+    interval = 24,
+    t_inf = 0,
+    t_obs = res$t
+  )
   expect_equal(round(tmp1$auc, 1), round(tmp2$auc, 1))
+  expect_equal(round(tmp3$auc, 1), round(tmp2$auc, 1))
 })
