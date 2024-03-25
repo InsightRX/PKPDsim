@@ -1,20 +1,21 @@
 #' Calculate model-specific variables using a dummy call to sim_ode()
 #'
-#' This is a convenience function for PKPDsim users, it is not used inside the `sim_ode()``
-#' function in any way.
-#' This function is useful for converting from an estimated parameter to actual parameter,
-#' e.g. when clearance is specified as `CLi = CL * (WT/70) * (1/CR)` it can be used to
-#' calculate `CLi` without having to write that function a second time in R.
+#' This is a convenience function for PKPDsim users, it is not used inside the
+#' `sim_ode()`` function in any way. This function is useful for converting from
+#' an estimated parameter to actual parameter, e.g. when clearance is specified
+#' as `CLi = CL * (WT/70) * (1/CR)` it can be used to calculate `CLi` without
+#' having to write that function a second time in R.
 #'
 #' @param ode PKPDsim model object
 #' @param parameters parameter list
-#' @param covariates covariate list. Make sure to include covariates at the right time point, since only last observed covariate values are used.
+#' @param covariates covariate list. Make sure to include covariates at the
+#'   right time point, since only last observed covariate values are used.
 #' @param regimen optional, provide a `regimen` object for the computation of
-#' the effective parameters. This is only relevant for models for which
-#' parameters depend on the dose or administration type, which is rare.
+#'   the effective parameters. This is only relevant for models for which
+#'   parameters depend on the dose or administration type, which is rare.
 #' @param t_obs optional, provide timepoint(s) at which to computate effective
-#' parameters. This is only relevant for models with time-varying fixed-effects.
-#' If unspecified, will evaluate parameters at `t=0`.
+#'   parameters. This is only relevant for models with time-varying
+#'   fixed-effects. If unspecified, will evaluate parameters at `t=0`.
 #' @param include_parameters boolean, include parameters?
 #' @param include_variables boolean, include variables?
 #' @param ... arguments to pass on to simulation function
