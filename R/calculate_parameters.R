@@ -33,12 +33,12 @@ calculate_parameters <- function(
   if(is.null(regimen)) { # then just use dummy regimen.
     regimen <- new_regimen(amt = 0, times = 0, cmt = 1, type = "bolus")
   }
-  t_obs <- round(t_obs, 3)
   if(is.null(t_obs)) {
     t_obs_sim <- c(0, 1)
   } else {
-    t_obs_sim <- unique(c(0, t_obs))
+    t_obs_sim <- t_obs
   }
+  t_obs_sim <- round(t_obs_sim, 3)
   incl <- list(parameters = FALSE, variables = FALSE)
   if(!is.null(covariates)) covariates <- covariate_last_obs_only(covariates) # make sure only single value!
   if(include_parameters) incl$parameters <- TRUE
@@ -54,7 +54,10 @@ calculate_parameters <- function(
     only_obs = TRUE,
     ...
   )
-  res <- res[res$t %in% t_obs, ]
-  pars <- as.list(res[, -c(1:4)])
-  return(pars <- as.list(res[, -c(1:4)]))
+  if(!is.null(t_obs)) {
+    res <- res[res$t %in% t_obs_sim, ]
+  } else {
+    res <- res[nrow(res),]
+  }
+  return(as.list(res[, -c(1:4)]))
 }
