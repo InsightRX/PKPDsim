@@ -10,6 +10,8 @@ calculate_parameters(
   covariates = NULL,
   include_parameters = TRUE,
   include_variables = TRUE,
+  regimen = NULL,
+  t_obs = NULL,
   ...
 )
 }
@@ -23,6 +25,14 @@ calculate_parameters(
 \item{include_parameters}{boolean, include parameters?}
 
 \item{include_variables}{boolean, include variables?}
+
+\item{regimen}{optional, provide a `regimen` object for the computation of
+the effective parameters. This is only relevant for models for which
+parameters depend on the dose or administration type, which is rare.}
+
+\item{t_obs}{optional, provide timepoint at which to computate effective
+parameters. This is only relevant for models with time-varying fixed-effects.
+If unspecified, will evaluate parameters at `t=0`.}
 
 \item{...}{arguments to pass on to simulation function}
 }
