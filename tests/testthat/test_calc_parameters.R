@@ -65,3 +65,16 @@ test_that("Works when t_obs specified for timevarying model", {
     c(CL1, CL1, CL2)
   )
 })
+
+test_that("Works for dose-dependent model", {
+  # model defined in setup.R, with CLi = CL * pow(WT/70, 0.75), and x1.5 after 168 hrs
+  covs1 <- list(WT = new_covariate(50))
+  pars <- list(KA = 0.5, CL = 5, V = 50)
+  reg_low <- new_regimen(amt = 500, times = 0, type = "bolus")
+  reg_high <- new_regimen(amt = 1500, times = 0, type = "bolus")
+  eff1 <- calculate_parameters(oral_1cmt_allometric, pars, covs1)
+  eff2 <- calculate_parameters(oral_1cmt_allometric, pars, covs1, regimen = reg_low)
+  eff3 <- calculate_parameters(oral_1cmt_allometric, pars, covs1, regimen = reg_high)
+  expect_equal(eff1, eff2)
+  expect_equal(eff3$Vi, eff1$Vi * 2)
+})
