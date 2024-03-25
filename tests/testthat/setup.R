@@ -1,9 +1,13 @@
 mod_1cmt_iv <- new_ode_model("pk_1cmt_iv")
 mod_2cmt_iv <- new_ode_model("pk_2cmt_iv")
 mod_1cmt_oral <- new_ode_model("pk_1cmt_oral")
-oral_1cmt_allometric <- new_ode_model(
+oral_1cmt_allometric <- new_ode_model( # also timevarying factor
   code = "
-      CLi = CL * pow(WT/70, 0.75)
+      if(t<168.0) {
+        CLi = CL * pow(WT/70, 0.75)
+      } else {
+        CLi = CL * pow(WT/70, 0.75) * 1.5
+      }
       dAdt[1] = -KA * A[1]
       dAdt[2] = KA*A[1] - (CLi/V)*A[2]
     ",
