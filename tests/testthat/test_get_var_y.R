@@ -164,3 +164,28 @@ test_that("One compartment with MM kinetics", {
   expect_equal(round(v1$regular, 3), c(0.120, 4.206))
 
 })
+
+test_that("delta method, exclude a parameter", {
+  skip_on_cran()
+  v_delta_with <- get_var_y(
+    model = mod_1cmt_iv,
+    parameters = par,
+    t_obs = t_obs,
+    regimen = reg,
+    omega = omega,
+    method = "delta"
+  )
+  v_delta_without <- get_var_y(
+    model = mod_1cmt_iv,
+    parameters = par,
+    t_obs = t_obs,
+    regimen = reg,
+    omega = omega,
+    method = "delta",
+    exclude_parameters = "V"
+  )
+
+  expect_true(all(v_delta_with$regular > v_delta_without$regular))
+  expect_true(all(v_delta_with$log > v_delta_without$log))
+  expect_equal(round(v_delta_without$regular, 3), c(0.055, 0.240))
+})
