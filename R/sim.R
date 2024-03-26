@@ -148,6 +148,14 @@ sim <- function (ode = NULL,
   if(!is.null(lagtime)) {
     regimen <- apply_lagtime(regimen, lagtime, parameters, attr(ode, "cmt_mapping"))
   }
+  if(!is.null(attr(ode, "dose")$duration_scale)) {
+    regimen <- apply_duration_scale(
+      regimen,
+      attr(ode, "dose")$duration_scale,
+      parameters,
+      attr(ode, "cmt_mapping")
+    )
+  }
   if(t_init != 0) regimen$dose_times <- regimen$dose_times + t_init
   p <- as.list(parameters)
   if(!is.null(t_obs)) {
