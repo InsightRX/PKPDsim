@@ -21,7 +21,8 @@
 apply_duration_scale <- function(
   regimen,
   duration_scale = NULL,
-  parameters = NULL
+  parameters = NULL,
+  cmt_mapping = NULL
 ) {
   if(is.null(regimen$t_inf) || all(regimen$t_inf == 0)) {
     warning("`duration_scale` is only relevant for infusion regimens with an infusion length > 0.")

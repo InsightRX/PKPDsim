@@ -4,7 +4,12 @@
 \alias{apply_duration_scale}
 \title{Apply infusion duration scale to a regimen}
 \usage{
-apply_duration_scale(regimen, duration_scale = NULL, parameters = NULL)
+apply_duration_scale(
+  regimen,
+  duration_scale = NULL,
+  parameters = NULL,
+  cmt_mapping = NULL
+)
 }
 \arguments{
 \item{regimen}{PKPDsim regimen}
