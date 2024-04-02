@@ -13,6 +13,9 @@ apply_duration_scale(regimen, duration_scale = NULL, parameters = NULL)
 
 \item{parameters}{parameter list, required if the duration scale is
 specified as a parameter.}
+
+\item{cmt_mapping}{map of administration types to compartments, e.g.
+`list("oral" = 1, "infusion" = 2, "bolus" = 2)`.}
 }
 \value{
 Original regimen with infusion lengths scaled by a factor

@@ -11,6 +11,8 @@
 #' @param duration_scale infusion length scale.
 #' @param parameters parameter list, required if the duration scale is
 #' specified as a parameter.
+#' @param cmt_mapping map of administration types to compartments, e.g.
+#' `list("oral" = 1, "infusion" = 2, "bolus" = 2)`.
 #'
 #' @export
 #'
@@ -33,6 +35,13 @@ apply_duration_scale <- function(
         regimen$t_inf <- regimen$t_inf * duration_scale[regimen$cmt]
       }
     } else if(class(duration_scale) %in% c("character")) {
+      if(is.null(regimen$cmt)) {
+        if(!is.null(cmt_mapping)) {
+          regimen$cmt <- as.numeric(cmt_mapping[regimen$type])
+        } else {
+          regimen$cmt <- rep(1, length(regimen$dose_times))
+        }
+      }
       if(length(duration_scale) == 1) {
         regimen$t_inf <- regimen$t_inf * parameters[[duration_scale]]
       } else {

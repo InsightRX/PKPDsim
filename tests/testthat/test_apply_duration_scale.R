@@ -9,7 +9,8 @@ reg_iv <- new_regimen(
   n = 12,
   interval = 12,
   type = "infusion",
-  t_inf = 1
+  t_inf = 1,
+  cmt = c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2)
 )
 
 ## null / error checks
@@ -39,8 +40,16 @@ test_that("infusion length scaled", {
   expect_equal(dur2$t_inf, rep(1.5, 12))
 })
 
-test_that("infusion length scaled using parameter", {
+test_that("infusion length scaled using vector", {
   dur3 <- apply_duration_scale(
+    regimen = reg_iv,
+    duration_scale = c(1.5, 1.0) # scale oral "infusions", but not "iv"
+  )
+  expect_equal(dur3$t_inf, rep(c(1.5, 1.0), 6))
+})
+
+test_that("infusion length scaled using parameter", {
+  dur4 <- apply_duration_scale(
     regimen = reg_iv,
     duration_scale = "SCALE",
     parameters = list(CL = 5, V = 50, SCALE = 1.6)
