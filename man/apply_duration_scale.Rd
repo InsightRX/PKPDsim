@@ -4,31 +4,25 @@
 \alias{apply_duration_scale}
 \title{Apply infusion duration scale to a regimen}
 \usage{
-apply_duration_scale(
-  regimen,
-  duration_scale = NULL,
-  parameters,
-  cmt_mapping = NULL
-)
+apply_duration_scale(regimen, duration_scale = NULL, parameters = NULL)
 }
 \arguments{
 \item{regimen}{PKPDsim regimen}
 
 \item{duration_scale}{infusion length scale.}
 
-\item{parameters}{parameter list, required if parameters are specified.}
-
-\item{cmt_mapping}{map of administration types to compartments, e.g. `list("oral" = 1, "infusion" = 2, "bolus" = 2)`.}
+\item{parameters}{parameter list, required if the duration scale is
+specified as a parameter.}
 }
 \value{
 Original regimen with infusion lengths scaled by a factor
 }
 \description{
-E.g. see Centanni et al. Clin Pharmacokinet 2024. An estimated scaling factor 
+E.g. see Centanni et al. Clin Pharmacokinet 2024. An estimated scaling factor
 for the length of the infusion was applied there in a model for vincristine.
 This is likely most relevant for very short infusions.
 }
 \details{
-Implementation is similar to handling of `lagtime`, i.e. the regimen that is the 
+Implementation is similar to handling of `lagtime`, i.e. the regimen that is the
 input for the simulation function is updated.
 }
