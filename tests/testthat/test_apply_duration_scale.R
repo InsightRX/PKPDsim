@@ -13,6 +13,15 @@ reg_iv <- new_regimen(
   cmt = c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2)
 )
 
+reg_combo <- new_regimen(
+  amt = 1000,
+  n = 4,
+  interval = 12,
+  type = c("drug1", "drug2", "oral", "oral"),
+  cmt = c(2, 3, 1, 1),
+  t_inf = c(1, 1, 0, 0)
+)
+
 ## null / error checks
 test_that("infusion length NULL warning", {
   expect_warning(
@@ -55,4 +64,12 @@ test_that("infusion length scaled using parameter", {
     parameters = list(CL = 5, V = 50, SCALE = 1.6)
   )
   expect_equal(dur3$t_inf, rep(1.6, 12))
+})
+
+test_that("infusion length scaled", {
+  dur4 <- apply_duration_scale(
+    regimen = reg_combo,
+    duration_scale = c(1, 1.5, 2)
+  )
+  expect_equal(dur4$t_inf, c(1.5, 2, 0))
 })
