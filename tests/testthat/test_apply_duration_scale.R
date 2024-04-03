@@ -63,7 +63,7 @@ test_that("infusion length scaled using parameter", {
     duration_scale = "SCALE",
     parameters = list(CL = 5, V = 50, SCALE = 1.6)
   )
-  expect_equal(dur3$t_inf, rep(1.6, 12))
+  expect_equal(dur4$t_inf, rep(1.6, 12))
 })
 
 test_that("infusion length scaled", {
@@ -71,5 +71,5 @@ test_that("infusion length scaled", {
     regimen = reg_combo,
     duration_scale = c(1, 1.5, 2)
   )
-  expect_equal(dur4$t_inf, c(1.5, 2, 0))
+  expect_equal(dur4$t_inf, c(1.5, 2, 0, 0))
 })
