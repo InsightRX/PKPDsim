@@ -47,7 +47,7 @@ apply_duration_scale <- function(
         regimen$t_inf <- regimen$t_inf * parameters[[duration_scale]]
       } else {
         par_tmp <- parameters
-        regimen$t_inf <- regimen$t_inf + as.numeric(unlist(par_tmp[duration_scale[regimen$cmt]]))
+        regimen$t_inf <- regimen$t_inf * as.numeric(unlist(par_tmp[duration_scale[regimen$cmt]]))
       }
     }
   } else {
