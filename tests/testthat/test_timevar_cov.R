@@ -16,7 +16,7 @@ mod <- new_ode_model(
   pk_code = "CLi = CL + CRCL",
   obs = list(cmt = 2, scale = "V"),
   covariates = list(CRCL = new_covariate(5)), declare_variables = "CLi",
-  cpp = TRUE
+  cpp = FALSE
 )
 
 test_that("timevarying covariates handled", {
@@ -103,7 +103,7 @@ test_that("timevarying covariates are interpolated and affect PK", {
   ## Check interpolated covariates actually affect simulated conc
   expect_equal(
     round(sim2_inter$y, 3)[1:10],
-    c(0, 0.32, 0.611, 0.788, 1.205, 1.531, 1.708, 2.098, 2.379, 2.503),
+    c(0, 0.32, 0.611, 0.788, 1.205, 1.531, 1.708, 2.098, 2.379, 2.503)
   )
   expect_equal(
     round(sim2_locf$y, 3)[1:10],
