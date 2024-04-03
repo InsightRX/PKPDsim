@@ -66,10 +66,39 @@ test_that("infusion length scaled using parameter", {
   expect_equal(dur4$t_inf, rep(1.6, 12))
 })
 
-test_that("infusion length scaled", {
+test_that("infusion length scaled, multiple cmts", {
   dur4 <- apply_duration_scale(
     regimen = reg_combo,
     duration_scale = c(1, 1.5, 2)
   )
   expect_equal(dur4$t_inf, c(1.5, 2, 0, 0))
+})
+
+test_that("infusion length scaled, multiple cmts, no cmt", {
+  reg_combo$cmt <- NULL
+  dur5 <- apply_duration_scale(
+    regimen = reg_combo,
+    duration_scale = "SCALE",
+    parameters = list(CL = 5, V = 50, SCALE = 1.6),
+    cmt_mapping = c("drug1" = 2, "drug2" = 3, "oral" = 1)
+  )
+  dur6 <- apply_duration_scale(
+    regimen = reg_combo,
+    duration_scale = c("SCALE1", "SCALE2", "SCALE3"),
+    parameters = list(CL = 5, V = 50, SCALE1 = 1.6, SCALE2 = 1.7, SCALE3 = 1.8),
+    cmt_mapping = c("drug1" = 2, "drug2" = 3, "oral" = 1)
+  )
+  expect_equal(dur5$t_inf, c(1.6, 1.6, 0, 0))
+  expect_equal(dur6$t_inf, c(1.7, 1.8, 0, 0))
+})
+
+test_that("infusion length scaled, no cmt, no cmt_mapping", {
+  reg_combo$cmt <- NULL
+  dur7 <- apply_duration_scale(
+    regimen = reg_combo,
+    duration_scale = c("SCALE1", "SCALE2", "SCALE3"),
+    parameters = list(CL = 5, V = 50, SCALE1 = 1.6, SCALE2 = 1.7, SCALE3 = 1.8),
+    cmt_mapping = NULL
+  )
+  expect_equal(dur7$t_inf, c(1.6, 1.6, 0, 0))
 })
