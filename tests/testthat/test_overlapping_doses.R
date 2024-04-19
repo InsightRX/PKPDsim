@@ -9,8 +9,8 @@ test_that("continuous infusion with overlapping doses are simulated ok", {
   )
   par <- list(CL = 5, V = 50)
   ## RK: needs to be run twice to confirm no memory issues!
-  res <- sim_ode(mod_1cmt_iv, parameters = par, reg = reg, only_obs = TRUE)
-  res <- sim_ode(mod_1cmt_iv, parameters = par, reg = reg, only_obs = TRUE)
+  res <- sim(ode = mod_1cmt_iv, parameters = par, regimen = reg, only_obs = TRUE)
+  res <- sim(ode = mod_1cmt_iv, parameters = par, regimen = reg, only_obs = TRUE)
 
   expect_true(res[res$t == 7,]$y > res[res$t == 6,]$y)
   expect_true(res[res$t == 8,]$y > res[res$t == 7,]$y)
@@ -23,7 +23,7 @@ test_that("continuous infusion with overlapping doses are simulated ok", {
     type = "infusion",
     t_inf = c(2, 6, 2, 6)
   )
-  res2 <- sim_ode(mod_1cmt_iv, parameters = par, reg = reg2, only_obs = TRUE)
+  res2 <- sim(ode = mod_1cmt_iv, parameters = par, regimen = reg2, only_obs = TRUE)
   expect_true(res2[res2$t == 12,]$y[1] > res2[res2$t == 6,]$y[1])
   expect_true(res2[res2$t == 14,]$y[1] > res2[res2$t == 12,]$y[1])
   expect_true(res2[res2$t == 18,]$y[1] < res2[res2$t == 14,]$y[1])
