@@ -1,8 +1,7 @@
 pandoc: 3.1.11
-pkgdown: 2.0.7
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
-  PKPDsim: PKPDsim.html
   covariates: covariates.html
   error: error.html
   estimation-nlmixr: estimation-nlmixr.html
@@ -12,11 +11,12 @@ articles:
   model: model.html
   output: output.html
   parameters: parameters.html
+  PKPDsim: PKPDsim.html
   regimen: regimen.html
   simulation: simulation.html
   speed: speed.html
   variability: variability.html
-last_built: 2024-04-03T18:51Z
+last_built: 2024-04-22T20:28Z
 urls:
   reference: https://insightrx.github.io/PKPDsim/reference
   article: https://insightrx.github.io/PKPDsim/articles
