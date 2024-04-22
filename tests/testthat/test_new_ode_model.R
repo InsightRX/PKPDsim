@@ -141,23 +141,25 @@ test_that("adding development info works", {
     n_tdms = 200,
     age = list(min = 15, median = 50, max = 90, unit = "years")
   )
-  mod_1cmt_iv <- new_ode_model(
-    "pk_1cmt_iv",
+  mod_1cmt_tmp <- new_ode_model(
+    code = "
+      dAdt[1] = -KA * A[1];
+      dAdt[2] = -(CL/V) * A[2] + KA*A[1];
+    ",
     development = dev
   )
-
   expect_identical(
-    attr(mod_1cmt_iv, "development"),
+    attr(mod_1cmt_tmp, "development"),
     dev
   )
 })
 
 test_that("specifying overlapping covariates and variables throws error", {
-  expect_error(
-    new_ode_model(
+  expect_error({
+    tmp <- new_ode_model(
       code = "dAdt[1] = -(CL*WT/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t; ACT = 15",
       covariates = list(WT = new_covariate(70)),
       declare_variables = c("WT")
     )
-  )
+  })
 })
