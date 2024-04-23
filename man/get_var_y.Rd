@@ -26,6 +26,7 @@ get_var_y(
   in_parallel = FALSE,
   n_cores = 3,
   return_all = FALSE,
+  exclude_parameters = NULL,
   ...
 )
 }
@@ -69,6 +70,9 @@ get_var_y(
 \item{n_cores}{if run in parallel, on how many cores?}
 
 \item{return_all}{return object with all relevant information?}
+
+\item{exclude_parameters}{Vector of parameters to exclude from variability
+calculation, implemented for "delta" method only.}
 
 \item{...}{passed on to `sim_ode()`}
 }
