@@ -67,3 +67,13 @@ test_that("new_regimen can take arbitrary values for `type`", {
 test_that("do not creat regimens of `type` 'covariate'", {
   expect_error(new_regimen(100, times = 0, type = "covariate"))
 })
+
+test_that("sc doses accept an infusion length argument'", {
+  reg1 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36, 48),
+    type = "sc",
+    t_inf = 30/60
+  )
+  expect_equal(reg1$t_inf, rep(0.5,5))
+})

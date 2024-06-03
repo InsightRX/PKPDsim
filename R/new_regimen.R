@@ -73,6 +73,11 @@ new_regimen <- function(
     } else if (any(is.na(t_inf))) {
       t_inf[is.na(t_inf)] <- 1
     }
+    if(any(type == "sc") && (is.null(t_inf) || length(t_inf) == 0)) {
+      reg$t_inf = 1/60
+    } else if (any(is.na(t_inf))) {
+      t_inf[is.na(t_inf)] <- 1/60
+    }
   }
   if(ss) {
     if(is.null(amt) || is.null(interval)) {
@@ -134,6 +139,12 @@ new_regimen <- function(
   if(any(reg$type == "oral")) {
     reg$t_inf[reg$type == "oral"] <- 0
     reg$rate[reg$type == "oral"] <- 0
+  }
+  if(any(reg$type == "sc")) {
+    if(any(reg$t_inf == 0)) {
+      reg$t_inf[reg$t_inf == 0] <- 1/60
+      reg$rate[reg$t_inf == 0] <- 60
+    }
   }
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {
