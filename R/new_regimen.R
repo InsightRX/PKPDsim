@@ -69,14 +69,29 @@ new_regimen <- function(
       stop("'covariate' is a protected type and cannot be used for doses.")
     }
     if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0)) {
-      reg$t_inf = 1
+      reg$t_inf[reg$type=="infusion"] = 1
     } else if (any(is.na(t_inf))) {
-      t_inf[is.na(t_inf)] <- 1
+      reg$t_inf[(reg$type=="infusion" & is.na(t_inf))] <- 1
     }
     if(any(type == "sc") && (is.null(t_inf) || length(t_inf) == 0)) {
-      reg$t_inf = 1/60
+      reg$t_inf[reg$type=="sc"] = 1/60
     } else if (any(is.na(t_inf))) {
-      t_inf[is.na(t_inf)] <- 1/60
+      reg$t_inf[(reg$type=="sc" & is.na(reg$t_inf))] <- 1/60
+    }
+    if(any(type == "im") & (is.null(t_inf) || length(t_inf) == 0)) {
+      reg$t_inf[reg$type=="im"] = 1/60
+    } else if (any(is.na(t_inf))) {
+      reg$t_inf[(reg$type=="im" & is.na(reg$t_inf))] <- 1/60
+    }
+    if(any(type == "bolus") && (is.null(t_inf) || length(t_inf) == 0)) {
+      reg$t_inf[reg$type=="bolus"] = 0
+    } else if (any(is.na(t_inf))) {
+      reg$t_inf[(reg$type=="bolus" & is.na(reg$t_inf))] <- 0
+    }
+    if(any(type == "oral") && (is.null(t_inf) || length(t_inf) == 0)) {
+      reg$t_inf[reg$type=="oral"] = 0
+    } else if (any(is.na(t_inf))) {
+      reg$t_inf[(reg$type=="oral" & is.na(reg$t_inf))] <- 0
     }
   }
   if(ss) {
@@ -126,10 +141,12 @@ new_regimen <- function(
   if(length(reg$type) != length(reg$dose_times)) {
     reg$type <- rep(reg$type[1], length(reg$dose_times))
   }
-  if(any(reg$type == "infusion")) {
+  if(any(reg$type == "infusion" | reg$type == "sc" | reg$type == "im")) {
     if(any(reg$t_inf == 0)) {
-      reg$t_inf[reg$t_inf == 0] <- 1/60
-      reg$rate[reg$t_inf == 0] <- 60
+      reg$t_inf[reg$t_inf == 0 & (type =="sc" | type =="im")] <- 1/60
+      reg$rate[reg$t_inf == 0 & (type =="sc" | type =="im")] <- 60
+      reg$t_inf[reg$t_inf == 0 & type == "infusion"] <- 1/60
+      reg$rate[reg$t_inf == 0 & type == "infusion"] <- 60
     }
   }
   if(any(reg$type == "bolus")) {
@@ -139,12 +156,6 @@ new_regimen <- function(
   if(any(reg$type == "oral")) {
     reg$t_inf[reg$type == "oral"] <- 0
     reg$rate[reg$type == "oral"] <- 0
-  }
-  if(any(reg$type == "sc")) {
-    if(any(reg$t_inf == 0)) {
-      reg$t_inf[reg$t_inf == 0] <- 1/60
-      reg$rate[reg$t_inf == 0] <- 60
-    }
   }
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {

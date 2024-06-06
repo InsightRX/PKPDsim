@@ -81,15 +81,16 @@ test_that("sc doses accept an infusion length argument'", {
 test_that("t_inf imputed correctly", {
   reg1 <- new_regimen(
     amt = 100,
-    times = c(0, 12, 24, 36, 48),
-    type = c("sc", "infusion", "sc", "infusion", "sc")
+    times = c(0, 12, 24, 36, 48, 60, 72, 84),
+    type = c("sc", "infusion", "im", "sc", "infusion", "im","bolus","oral")
   )
   reg2 <- new_regimen(
     amt = 100,
-    times = c(0, 12, 24, 36, 48),
-    type = c("sc", "infusion", "sc", "infusion", "sc"),
-    t_inf = c(2/60, 2.5, NA, NA, 0)
+    times = c(0, 12, 24, 36, 48, 60, 72, 84),
+    type = c("sc", "infusion", "im", "sc", "infusion", "im","bolus","oral"),
+    t_inf = c(2/60, 2.5, 3/60, NA, NA, NA, NA, NA)
   )
-  expect_equal(reg1$t_inf, c(1/60, 1, 1/60, 1, 1/60))
-  expect_equal(reg2$t_inf, c(2/60, 2.5, 1/60, 1, 1/60))
+  expect_equal(reg1$t_inf, c(1/60, 1, 1/60, 1/60, 1, 1/60, 0, 0))
+  expect_equal(reg2$t_inf, c(2/60, 2.5, 3/60, 1/60, 1, 1/60, 0, 0))
 })
+
