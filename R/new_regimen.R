@@ -141,7 +141,7 @@ new_regimen <- function(
   if(length(reg$type) != length(reg$dose_times)) {
     reg$type <- rep(reg$type[1], length(reg$dose_times))
   }
-  if(any(reg$type == "infusion" | reg$type == "sc" | reg$type == "im")) {
+  if(any(reg$type %in% c("infusion", "sc", "im"))) {
     if(any(reg$t_inf == 0)) {
       reg$t_inf[reg$t_inf == 0] <- 1/60
       reg$rate[reg$t_inf == 0] <- 60
