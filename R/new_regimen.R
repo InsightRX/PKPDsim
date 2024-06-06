@@ -68,30 +68,16 @@ new_regimen <- function(
     if (any(reg$type == "covariate")) {
       stop("'covariate' is a protected type and cannot be used for doses.")
     }
-    if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0)) {
-      reg$t_inf[reg$type == "infusion"] <- 1
-    } else if (any(is.na(t_inf))) {
-      reg$t_inf[(reg$type=="infusion" & is.na(t_inf))] <- 1
+    if (is.null(t_inf) || length(t_inf) == 0) {
+      reg$t_inf <- rep(NA_real_, length(reg$type))
     }
-    if(any(type == "sc") && (is.null(t_inf) || length(t_inf) == 0)) {
-      reg$t_inf[reg$type=="sc"] = 1/60
-    } else if (any(is.na(t_inf))) {
-      reg$t_inf[(reg$type=="sc" & is.na(reg$t_inf))] <- 1/60
-    }
-    if(any(type == "im") & (is.null(t_inf) || length(t_inf) == 0)) {
-      reg$t_inf[reg$type=="im"] = 1/60
-    } else if (any(is.na(t_inf))) {
-      reg$t_inf[(reg$type=="im" & is.na(reg$t_inf))] <- 1/60
-    }
-    if(any(type == "bolus") && (is.null(t_inf) || length(t_inf) == 0)) {
-      reg$t_inf[reg$type=="bolus"] = 0
-    } else if (any(is.na(t_inf))) {
-      reg$t_inf[(reg$type=="bolus" & is.na(reg$t_inf))] <- 0
-    }
-    if(any(type == "oral") && (is.null(t_inf) || length(t_inf) == 0)) {
-      reg$t_inf[reg$type=="oral"] = 0
-    } else if (any(is.na(t_inf))) {
-      reg$t_inf[(reg$type=="oral" & is.na(reg$t_inf))] <- 0
+    if (any(is.na(reg$t_inf))) {
+      # impute using standard values for each dose type
+      impute_t_inf <- c(infusion = 1, sc = 1/60, im = 1/60, oral = 0, bolus = 0)
+      idx <- which(is.na(reg$t_inf))
+      reg$t_inf[idx] <- impute_t_inf[reg$type[idx]]
+      # set unrecognized types to 1
+      reg$t_inf[is.na(reg$t_inf)] <- 1
     }
   }
   if(ss) {
