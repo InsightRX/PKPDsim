@@ -143,10 +143,8 @@ new_regimen <- function(
   }
   if(any(reg$type == "infusion" | reg$type == "sc" | reg$type == "im")) {
     if(any(reg$t_inf == 0)) {
-      reg$t_inf[reg$t_inf == 0 & (type =="sc" | type =="im")] <- 1/60
-      reg$rate[reg$t_inf == 0 & (type =="sc" | type =="im")] <- 60
-      reg$t_inf[reg$t_inf == 0 & type == "infusion"] <- 1/60
-      reg$rate[reg$t_inf == 0 & type == "infusion"] <- 60
+      reg$t_inf[reg$t_inf == 0] <- 1/60
+      reg$rate[reg$t_inf == 0] <- 60
     }
   }
   if(any(reg$type == "bolus")) {
