@@ -69,7 +69,7 @@ new_regimen <- function(
       stop("'covariate' is a protected type and cannot be used for doses.")
     }
     if(any(type == "infusion") && (is.null(t_inf) || length(t_inf) == 0)) {
-      reg$t_inf[reg$type=="infusion"] = 1
+      reg$t_inf[reg$type == "infusion"] <- 1
     } else if (any(is.na(t_inf))) {
       reg$t_inf[(reg$type=="infusion" & is.na(t_inf))] <- 1
     }
