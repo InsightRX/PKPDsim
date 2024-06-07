@@ -8,6 +8,7 @@ Authors@R: c(
         person("Jasmine", "Hughes", email = "jasmine@insight-rx.com", role = "aut"),
         person("Dominic", "Tong", email = "dominic@insight-rx.com", role = "aut"),
         person("Kara", "Woo", email = "kara@insight-rx.com", role = c("aut")),
+        person("Jordan", "Brooks", email = "jordan.brooks@insight-rx.com", role = "aut"),
         person("InsightRX", role = c("cph", "fnd")))
 Depends: R (>= 3.0.2)
 Imports: Rcpp (>= 0.12.9), BH, data.table, stringr, MASS,
