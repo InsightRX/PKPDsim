@@ -31,21 +31,21 @@ new_regimen(
 
 \item{type}{either "infusion", "bolus", "oral", "sc" (subcutaneous), or "im" (intramuscular).}
 
-\item{t_inf}{infusion time (if `type`==`infusion`)}
+\item{t_inf}{infusion time (if \code{type}==\code{infusion})}
 
-\item{rate}{infusion rate (if `type`==`infusion`). `NULL` by default. If specified, overrides `t_inf`}
+\item{rate}{infusion rate (if \code{type}==\code{infusion}). \code{NULL} by default. If specified, overrides \code{t_inf}}
 
-\item{t_lag}{lag time (can be applied to any dose type, not only oral). Will just be added to `times`}
+\item{t_lag}{lag time (can be applied to any dose type, not only oral). Will just be added to \code{times}}
 
 \item{cmt}{vector of dosing compartments (optional, if NULL will dosing compartment defined in model will be used)}
 
 \item{checks}{input checks. Remove to increase speed (e.g. for population-level estimation or optimal design)}
 
-\item{ss}{steady state? boolean value whether to simulate out to steady state first (steady state will be based on specified `amt` and `interval`, `times` will be ignored).}
+\item{ss}{steady state? boolean value whether to simulate out to steady state first (steady state will be based on specified \code{amt} and \code{interval}, \code{times} will be ignored).}
 
-\item{n_ss}{how many doses to simulate before assumed steady state. Default is 4 * 24 / `interval`.}
+\item{n_ss}{how many doses to simulate before assumed steady state. Default is 4 * 24 / \code{interval}.}
 
-\item{first_dose_time}{datetime stamp of first dose (of class `POSIXct`). Default is current date time.}
+\item{first_dose_time}{datetime stamp of first dose (of class \code{POSIXct}). Default is current date time.}
 }
 \value{
 a list containing calculated VPC information, and a ggplot2 object

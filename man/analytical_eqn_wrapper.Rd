@@ -7,9 +7,9 @@
 analytical_eqn_wrapper(analytical, design = NULL, parameters)
 }
 \arguments{
-\item{analytical}{analytical equation, taking parameters `amt`, `parameters`, and `t`, and returning a vector of values for `y`}
+\item{analytical}{analytical equation, taking parameters \code{amt}, \code{parameters}, and \code{t}, and returning a vector of values for \code{y}}
 
-\item{design}{design dataset created by `sim_ode`}
+\item{design}{design dataset created by \code{sim_ode}}
 
 \item{parameters}{list of parameters}
 }

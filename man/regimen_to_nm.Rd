@@ -14,11 +14,11 @@ regimen_to_nm(
 )
 }
 \arguments{
-\item{reg}{`PKPDsim` regimen, created using `new_regimen()` function}
+\item{reg}{\code{PKPDsim} regimen, created using \code{new_regimen()} function}
 
-\item{dose_cmt}{dosing compartment, if not specified in `reg` object}
+\item{dose_cmt}{dosing compartment, if not specified in \code{reg} object}
 
-\item{n_ind}{repeat for `n_ind` subjects}
+\item{n_ind}{repeat for \code{n_ind} subjects}
 
 \item{t_obs}{add observation time(s)}
 

@@ -12,8 +12,8 @@ adherence_binomial(n = 100, prob)
 \item{prob}{binomial probability}
 }
 \value{
-Returns a vector of length `n`
-  containing values 0 (non-adherent) or 1 (adherent).
+Returns a vector of length \code{n}
+containing values 0 (non-adherent) or 1 (adherent).
 
 Numeric vector of length n
 }

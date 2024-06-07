@@ -15,7 +15,7 @@ mvrnorm2(n, mu, Sigma, exponential = FALSE, sequence = NULL, ...)
 
 \item{exponential}{exponential distribution (i.e. multiply mu by exponential of sampled numbers)}
 
-\item{sequence}{any sequence available in the randtoolbox, e.g. `halton`, or `sobol`}
+\item{sequence}{any sequence available in the randtoolbox, e.g. \code{halton}, or \code{sobol}}
 
 \item{...}{parameters passed to mvrnorm or randtoolbox sequence generator}
 }

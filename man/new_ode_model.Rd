@@ -67,7 +67,7 @@ new_ode_model(
 
 \item{reparametrization}{list of parameters with definitions that reparametrize the linear PK model to a 1-, 2- o4 3-compartment PK with standardized parametrization.}
 
-\item{mixture}{for mixture models, provide a list of the parameter associated with the mixture and it's possible values and probabilities (of the first value), e.g. `list(CL = list(value = c(10, 20), probability = 0.3)`.}
+\item{mixture}{for mixture models, provide a list of the parameter associated with the mixture and it's possible values and probabilities (of the first value), e.g. \verb{list(CL = list(value = c(10, 20), probability = 0.3)}.}
 
 \item{units}{list or vector of parameter units}
 
@@ -79,7 +79,7 @@ new_ode_model(
 
 \item{dose}{specify default dose compartment, e.g. list(cmt = 1)}
 
-\item{covariates}{specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)}
+\item{covariates}{specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see \code{new_covariate()} function for more info)}
 
 \item{declare_variables}{declare variables}
 
@@ -93,13 +93,13 @@ new_ode_model(
 
 \item{ruv}{residual variability, can optionally be added to library}
 
-\item{ltbs}{log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).}
+\item{ltbs}{log-transform both sides. Not used in simulations, only for fitting (sets attribute \code{ltbs}).}
 
 \item{misc}{a list of miscellaneous model metadata}
 
-\item{cmt_mapping}{list indicating which administration routes apply to which compartments. Example: `list("oral" = 1, "infusion" = 2)`}
+\item{cmt_mapping}{list indicating which administration routes apply to which compartments. Example: \code{list("oral" = 1, "infusion" = 2)}}
 
-\item{int_step_size}{step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`}
+\item{int_step_size}{step size for integrator. Can be pre-specified for model, to override default for \code{sim_ode()}}
 
 \item{default_parameters}{population or specific patient values, can optionally be added to library}
 
@@ -115,7 +115,7 @@ new_ode_model(
 
 \item{folder}{base folder name to create package in}
 
-\item{lib_location}{install into folder (`--library` argument)}
+\item{lib_location}{install into folder (\code{--library} argument)}
 
 \item{verbose}{show more output}
 
@@ -127,17 +127,17 @@ new_ode_model(
 
 \item{version}{number of library}
 
-\item{quiet}{passed on to `system2` as setting for stderr and stdout; how to
-output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
+\item{quiet}{passed on to \code{system2} as setting for stderr and stdout; how to
+output cmd line output. Default (\code{""}) is R console, NULL or FALSE discards.
 TRUE captures the output and saves as a file.}
 
 \item{definition}{optional, filename for the JSON file the full definition
-for the model. The definition file will be stored as `definition.json` in the
+for the model. The definition file will be stored as \code{definition.json} in the
 resulting package.}
 }
 \value{
 If package name is NULL, returns the model object. Otherwise has no
-  return value.
+return value.
 }
 \description{
 Create new ODE model

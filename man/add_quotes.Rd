@@ -9,7 +9,7 @@ add_quotes(x, quote = "double")
 \arguments{
 \item{x}{vector of string / numeric}
 
-\item{quote}{what type of quotes (`double` or `single`)}
+\item{quote}{what type of quotes (\code{double} or \code{single})}
 }
 \value{
 Character vector of input with quotation marks around each value

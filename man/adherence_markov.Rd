@@ -14,8 +14,8 @@ adherence_markov(n = 100, p11 = 0.9, p01 = 0.7)
 \item{p01}{probability of going from non-adherent to adherent state}
 }
 \value{
-Returns a vector of length `n`
-  containing values 0 (non-adherent) or 1 (adherent).
+Returns a vector of length \code{n}
+containing values 0 (non-adherent) or 1 (adherent).
 
 Numeric vector of length n
 }

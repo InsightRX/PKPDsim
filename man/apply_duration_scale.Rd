@@ -20,7 +20,7 @@ apply_duration_scale(
 specified as a parameter.}
 
 \item{cmt_mapping}{map of administration types to compartments, e.g.
-`list("oral" = 1, "infusion" = 2, "bolus" = 2)`.}
+\code{list("oral" = 1, "infusion" = 2, "bolus" = 2)}.}
 }
 \value{
 Original regimen with infusion lengths scaled by a factor
@@ -31,6 +31,6 @@ for the length of the infusion was applied there in a model for vincristine.
 This is likely most relevant for very short infusions.
 }
 \details{
-Implementation is similar to handling of `lagtime`, i.e. the regimen that is the
+Implementation is similar to handling of \code{lagtime}, i.e. the regimen that is the
 input for the simulation function is updated.
 }

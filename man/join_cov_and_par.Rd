@@ -9,7 +9,7 @@ join_cov_and_par(covs, pars)
 \arguments{
 \item{covs}{covariates object}
 
-\item{pars}{model parameters, such as the output of the `parameters()` call frmo a model library.}
+\item{pars}{model parameters, such as the output of the \code{parameters()} call frmo a model library.}
 }
 \value{
 List containing covariates and parameters

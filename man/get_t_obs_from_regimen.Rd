@@ -14,15 +14,15 @@ get_t_obs_from_regimen(
 )
 }
 \arguments{
-\item{regimen}{regimen created using `new_regimen()`}
+\item{regimen}{regimen created using \code{new_regimen()}}
 
 \item{obs_step_size}{step size between observations. Will be auto-calculated if NULL}
 
 \item{t_max}{max time value}
 
-\item{covariates}{covariates object, created using `list(new_covariate(), ...)`}
+\item{covariates}{covariates object, created using \code{list(new_covariate(), ...)}}
 
-\item{extra_t_obs}{add timepoints to t_obs at which covariate is changing (`T`/`F`)}
+\item{extra_t_obs}{add timepoints to t_obs at which covariate is changing (\code{T}/\code{F})}
 
 \item{t_init}{time of initiation of the ODE system. Usually 0.}
 }

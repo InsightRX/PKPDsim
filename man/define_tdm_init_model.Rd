@@ -8,10 +8,10 @@ define_tdm_init_model(def)
 }
 \arguments{
 \item{def}{model definition, named recursive list with at least the
-objects `misc$model_type`, `parameters` and `variables`}
+objects \code{misc$model_type}, \code{parameters} and \code{variables}}
 }
 \value{
-model defintion with `state_init` object added describing how to initializing the compartments.
+model defintion with \code{state_init} object added describing how to initializing the compartments.
 }
 \description{
 Currently only available for 1-cmt and 2-cmt IV models

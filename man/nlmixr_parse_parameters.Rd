@@ -18,7 +18,7 @@ nlmixr_parse_parameters(
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
-\item{res_var}{residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.}
+\item{res_var}{residual variability. Expected a list with arguments \code{prop}, \code{add}, and/or \code{exp}. NULL by default.}
 
 \item{fixed}{vector of fixed parameters}
 

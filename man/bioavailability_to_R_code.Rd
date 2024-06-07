@@ -15,7 +15,7 @@ compartments), or a vector of values.}
 character string of length 1
 }
 \description{
-Specialized wrapper around `vector_to_R_code` that makes reasonable PK
+Specialized wrapper around \code{vector_to_R_code} that makes reasonable PK
 assumptions for when the bioavailability specification is NULL.
 }
 \keyword{internal}

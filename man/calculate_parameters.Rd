@@ -27,13 +27,13 @@ right time point, since only last observed covariate values are used.}
 
 \item{include_variables}{boolean, include variables?}
 
-\item{regimen}{optional, provide a `regimen` object for the computation of
+\item{regimen}{optional, provide a \code{regimen} object for the computation of
 the effective parameters. This is only relevant for models for which
 parameters depend on the dose or administration type, which is rare.}
 
 \item{t_obs}{optional, provide timepoint(s) at which to computate effective
 parameters. This is only relevant for models with time-varying
-fixed-effects. If unspecified, will evaluate parameters at `t=0`.}
+fixed-effects. If unspecified, will evaluate parameters at \code{t=0}.}
 
 \item{...}{arguments to pass on to simulation function}
 }
@@ -42,8 +42,6 @@ List of model-specific variables
 }
 \description{
 This is a convenience function for PKPDsim users, it is not used inside the
-`sim_ode()`` function in any way. This function is useful for converting from
-an estimated parameter to actual parameter, e.g. when clearance is specified
-as `CLi = CL * (WT/70) * (1/CR)` it can be used to calculate `CLi` without
+\verb{sim_ode()`` function in any way. This function is useful for converting from an estimated parameter to actual parameter, e.g. when clearance is specified as }CLi = CL * (WT/70) * (1/CR)\verb{it can be used to calculate}CLi` without
 having to write that function a second time in R.
 }

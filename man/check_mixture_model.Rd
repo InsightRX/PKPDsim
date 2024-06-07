@@ -7,7 +7,7 @@
 check_mixture_model(mixture, parameters)
 }
 \arguments{
-\item{mixture}{mixture model specification (as list, e.g. `list("CL" = list(values=c(5, 10), probability=0.3))`)}
+\item{mixture}{mixture model specification (as list, e.g. \code{list("CL" = list(values=c(5, 10), probability=0.3))})}
 
 \item{parameters}{vector of parameter names}
 }

@@ -18,30 +18,30 @@ calc_auc_analytic(
 )
 }
 \arguments{
-\item{f}{analytic model to use, show available models using `advan()`}
+\item{f}{analytic model to use, show available models using \code{advan()}}
 
 \item{parameters}{list of parameter estimates. Requires CL/V for
 1-compartment models, CL/V/Q/V2 for 2-compartment models, and CL/V/Q/V2/Q2/V3
 for 3-compartment models.}
 
-\item{regimen}{PKPDsim regimen created using `new_regimen`. Not required,
-regimen can also be specified using `dose`, `interval`, and `t_inf`.}
+\item{regimen}{PKPDsim regimen created using \code{new_regimen}. Not required,
+regimen can also be specified using \code{dose}, \code{interval}, and \code{t_inf}.}
 
 \item{dose}{dosing amount for regimen (single value). Only used if no
-`regimen` supplied.}
+\code{regimen} supplied.}
 
 \item{interval}{dosing interval for regimen (single value). Only used if no
-. `regimen` supplied.}
+. \code{regimen} supplied.}
 
 \item{t_inf}{infusion length for regimen (single value). Only used if no
-`regimen` supplied.}
+\code{regimen} supplied.}
 
 \item{t_obs}{vector of observation times for AUC}
 
-\item{...}{optional arguments passed to `advanc_create_data()`}
+\item{...}{optional arguments passed to \code{advanc_create_data()}}
 }
 \value{
-a data.frame with `t` and `auc`
+a data.frame with \code{t} and \code{auc}
 }
 \description{
 Convenience function to calculate the AUC based on PK model parameters at

@@ -15,7 +15,7 @@ check_iov_specification(iov, code, pk_code)
 }
 \description{
 Inter-occasion variability (IOV) is expected to be supplied as a list with
-`cv` and `n_bins` specified. `cv` is expected to be a named list with IOV
+\code{cv} and \code{n_bins} specified. \code{cv} is expected to be a named list with IOV
 for each PK parameter. This function then checks to ensure that the PK code
 or ODE code contains an IOV term for each PK parameter specified.
 }

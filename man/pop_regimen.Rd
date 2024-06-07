@@ -7,7 +7,7 @@
 pop_regimen(regimen, n = 1)
 }
 \arguments{
-\item{regimen}{PKPDsim regimen created using `new_regimen()`}
+\item{regimen}{PKPDsim regimen created using \code{new_regimen()}}
 
 \item{n}{number of doses to pop from regimen}
 }
