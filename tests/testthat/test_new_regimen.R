@@ -67,3 +67,51 @@ test_that("new_regimen can take arbitrary values for `type`", {
 test_that("do not creat regimens of `type` 'covariate'", {
   expect_error(new_regimen(100, times = 0, type = "covariate"))
 })
+
+test_that("sc doses accept an infusion length argument'", {
+  reg1 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36, 48),
+    type = "sc",
+    t_inf = 30/60
+  )
+  expect_equal(reg1$t_inf, rep(0.5,5))
+})
+
+test_that("t_inf imputed correctly", {
+  reg1 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36, 48, 60, 72, 84),
+    type = c("sc", "infusion", "im", "sc", "infusion", "im","bolus","oral")
+  )
+  reg2 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36, 48, 60, 72, 84),
+    type = c("sc", "infusion", "im", "sc", "infusion", "im","bolus","oral"),
+    t_inf = c(2/60, 2.5, 3/60, NA, NA, NA, NA, NA)
+  )
+  reg3 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36, 48, 60, 72, 84),
+    type = c("sc", "infusion", "im", "sc", "infusion", "im","bolus","oral"),
+    t_inf = numeric(0)
+  )
+  reg4 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36, 48, 60, 72, 84),
+    type = c("sc", "infusion", "im", "sc", "infusion", "im","bolus","oral"),
+    t_inf = NULL
+  )
+  reg5 <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24, 36),
+    type = c("sc", "infusion", "im", "unknown_drug_type"),
+    t_inf = c(2/60, 2.5, 3/60, NA)
+  )
+  expect_equal(reg1$t_inf, c(1/60, 1, 1/60, 1/60, 1, 1/60, 0, 0))
+  expect_equal(reg2$t_inf, c(2/60, 2.5, 3/60, 1/60, 1, 1/60, 0, 0))
+  expect_equal(reg3$t_inf, c(1/60, 1, 1/60, 1/60, 1, 1/60, 0, 0))
+  expect_equal(reg4$t_inf, c(1/60, 1, 1/60, 1/60, 1, 1/60, 0, 0))
+  expect_equal(reg5$t_inf, c(2/60, 2.5, 3/60, 1))
+})
+
