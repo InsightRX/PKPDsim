@@ -2,10 +2,19 @@
 % Please edit documentation in R/PKPDsim-package.R
 \docType{package}
 \name{PKPDsim-package}
+\alias{PKPDsim}
 \alias{PKPDsim-package}
 \title{PKPDsim package}
 \description{
 Simulate regimens for PKPD models defined by ODE systems
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/InsightRX/PKPDsim}
+  \item \url{https://insightrx.github.io/PKPDsim/}
+}
+
 }
 \author{
 Ron Keizer \email{ronkeizer@gmail.com}
