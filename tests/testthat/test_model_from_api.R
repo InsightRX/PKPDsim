@@ -7,6 +7,10 @@ test_that("Can specify a package from json", {
     force = TRUE
   )
   expect_true("PKPDsim" %in% class(mod))
+  expect_equal(get_model_parameters(mod), c("CL", "V", "TDM_INIT"))
+  expect_equal(get_model_iov(mod), list(n_bins = 1))
+  expect_equal(get_model_linearity(mod), "linear")
+  expect_equal(get_model_structure(mod), "1cmt_iv")
 })
 
 test_that("Can install a package from json, and spec added to package", {
