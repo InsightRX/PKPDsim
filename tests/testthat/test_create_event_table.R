@@ -114,6 +114,27 @@ test_that("simulatenous doses in different cmts do not remove infusion stops", {
   expect_true(all((reg$dose_amts/reg$t_inf) %in% res$rate)) # rates are right
 })
 
+test_that("useful cmt_mapping mismatch error is thrown", {
+  reg <- new_regimen(
+    amt = 100,
+    times = c(0, 12, 24),
+    t_inf = 0,
+    type = rep("oral", 3)
+  )
+  model <- mod_2cmt_iv
+  attr(model, "cmt_mapping") <- list(infusion = 1, bolus = 1) # not oral
+  expect_error(
+    create_event_table(
+      regimen = reg,
+      t_obs = 36,
+      covariates = list(WT = new_covariate(value = c(50, 55), times = c(0, 20))),
+      model = model
+    ),
+    "Unrecognized regimen type. Define 'oral' in model md field `cmt_mapping`",
+    fixed = TRUE
+  )
+})
+
 test_that("sc, im are considered to have t_inf = 0", {
   reg1 <- new_regimen(
     amt = c(100, 100),
