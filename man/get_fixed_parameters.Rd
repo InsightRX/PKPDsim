@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_fixed_parameters.R
 \name{get_fixed_parameters}
 \alias{get_fixed_parameters}
-\title{Get fixed parameters}
+\title{Get fixed parameters from model defintion.}
 \usage{
 get_fixed_parameters(def)
 }
@@ -10,5 +10,8 @@ get_fixed_parameters(def)
 \item{def}{Model definition as output by \code{\link[=read_model_json]{read_model_json()}}}
 }
 \description{
-Get fixed parameters listed in model definition.
+Get fixed parameters listed in model definition. This function is used when
+parsing model specifications before the model has been compiled. Please see
+\verb{[get_model_fixed_parameters]} for accessing fixed parameters from a model
+that has already been built.
 }

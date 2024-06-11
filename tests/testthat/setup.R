@@ -15,6 +15,7 @@ oral_1cmt_allometric <- new_ode_model( # also timevarying and dose-dependence fa
       }
       dAdt[1] = -KA * A[1]
       dAdt[2] = KA*A[1] - (CLi/Vi)*A[2]
+      dAdt[3] = A[2]/Vi
     ",
   dose = list(cmt = 1, bioav = 1),
   covariates = list(WT = new_covariate(50)),

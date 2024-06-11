@@ -1,6 +1,9 @@
-#' Get fixed parameters
+#' Get fixed parameters from model defintion.
 #'
-#' Get fixed parameters listed in model definition.
+#' Get fixed parameters listed in model definition. This function is used when
+#' parsing model specifications before the model has been compiled. Please see
+#' `[get_model_fixed_parameters]` for accessing fixed parameters from a model
+#' that has already been built.
 #'
 #' @param def Model definition as output by [read_model_json()]
 #' @md
