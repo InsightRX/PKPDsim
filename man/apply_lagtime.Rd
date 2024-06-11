@@ -13,7 +13,7 @@ apply_lagtime(regimen, lagtime, parameters, cmt_mapping = NULL)
 
 \item{parameters}{parameter list, required if parameters are specified.}
 
-\item{cmt_mapping}{map of administration types to compartments, e.g. `list("oral" = 1, "infusion" = 2, "bolus" = 2)`.}
+\item{cmt_mapping}{map of administration types to compartments, e.g. \code{list("oral" = 1, "infusion" = 2, "bolus" = 2)}.}
 }
 \value{
 Original regimen with lagtime added to dose times

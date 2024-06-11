@@ -57,6 +57,11 @@
     "TLAG": 0.949,
     "BCF": 0.367
   },
+  "fixed": [
+    "T50",
+    "TLAG",
+    "BCF"
+  ],
   "omega_matrix": [
     0.806404,
     0,
@@ -126,12 +131,7 @@
     "EXPETA",
     "F1i",
     "ETATR",
-    "logitF1i",
-    "CYP2C19unknown",
-    "CYP2C19a1a2",
-    "CYP2C19a2a2",
-    "CYP2C19a2a3",
-    "CYP2C19a1a3"
+    "logitF1i"
   ],
   "misc": {
     "linearity": "linear + non-linear clearance",

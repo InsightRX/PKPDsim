@@ -7,13 +7,13 @@
 covariates_table_to_list(covariates_table, covariates_implementation = list())
 }
 \arguments{
-\item{covariates_table}{`data.frame`` with covariates in columns. Potentially with `id` and `t` columns}
+\item{covariates_table}{\verb{data.frame`` with covariates in columns. Potentially with }id\code{and}t` columns}
 
-\item{covariates_implementation}{`list` with implementation method per covariate}
+\item{covariates_implementation}{\code{list} with implementation method per covariate}
 }
 \value{
 List of covariates
 }
 \description{
-Can handle time-varying data too, if `t` or `time` is specified as column
+Can handle time-varying data too, if \code{t} or \code{time} is specified as column
 }

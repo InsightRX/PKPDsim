@@ -24,17 +24,17 @@ pkpdsim_to_nlmixr(
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
-\item{res_var}{residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.}
+\item{res_var}{residual variability. Expected a list with arguments \code{prop}, \code{add}, and/or \code{exp}. NULL by default.}
 
 \item{fixed}{vector of fixed (not estimated) parameter names}
 
-\item{ini_code}{manually specify the `ini` block for nlmixr}
+\item{ini_code}{manually specify the \code{ini} block for nlmixr}
 
-\item{model_code}{manually specify the `model` block for nlmixr}
+\item{model_code}{manually specify the \code{model} block for nlmixr}
 
-\item{model_par_code}{manually specify the parameters section inside the `model` block for nlmixr}
+\item{model_par_code}{manually specify the parameters section inside the \code{model} block for nlmixr}
 
-\item{verbose}{verbose, `TRUE` or `FALSE`}
+\item{verbose}{verbose, \code{TRUE} or \code{FALSE}}
 
 \item{...}{passed on}
 }

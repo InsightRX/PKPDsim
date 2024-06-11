@@ -53,33 +53,33 @@ sim(
 
 \item{parameters_table}{dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.}
 
-\item{mixture_group}{mixture group for models containing mixtures. Should be either `1` or `2`, since only two groups are currently allowed.}
+\item{mixture_group}{mixture group for models containing mixtures. Should be either \code{1} or \code{2}, since only two groups are currently allowed.}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
 \item{omega_type}{exponential or normal, specified as vector}
 
-\item{res_var}{residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.}
+\item{res_var}{residual variability. Expected a list with arguments \code{prop}, \code{add}, and/or \code{exp}. NULL by default.}
 
-\item{iov_bins}{allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. `iov_bins = c(0, 24, 48, 72, 9999)`.}
+\item{iov_bins}{allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. \code{iov_bins = c(0, 24, 48, 72, 9999)}.}
 
 \item{seed}{set seed for reproducible results}
 
-\item{sequence}{if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.}
+\item{sequence}{if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See \code{mvrnorm2} for more details.}
 
 \item{n_ind}{number of individuals to simulate}
 
-\item{event_table}{use a previously created `design` object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.}
+\item{event_table}{use a previously created \code{design} object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see \code{sim_core()} for even faster simulations using precalculated \code{design} objects.}
 
 \item{regimen}{a regimen object created using the regimen() function}
 
 \item{lagtime}{either a value (numeric) or a parameter (character) or NULL.}
 
-\item{covariates}{list of covariates (for single individual) created using `new_covariate()` function}
+\item{covariates}{list of covariates (for single individual) created using \code{new_covariate()} function}
 
 \item{covariates_table}{data.frame (or unnamed list of named lists per individual) with covariate values}
 
-\item{covariates_implementation}{used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`}
+\item{covariates_implementation}{used only for \code{covariates_table}, a named list of covariate implementation methods per covariate, e.g. \code{list(WT = "interpolate", BIN = "locf")}}
 
 \item{covariate_model}{R code used to pre-calculate effective parameters for use in ADVAN-style analytical equations. Not used in ODE simulations.}
 
@@ -99,11 +99,11 @@ sim(
 
 \item{t_init}{initialization time before first dose, default 0.}
 
-\item{obs_type}{vector of observation types. Only valid in combination with equal length vector `t_obs`.}
+\item{obs_type}{vector of observation types. Only valid in combination with equal length vector \code{t_obs}.}
 
 \item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 
-\item{extra_t_obs}{include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.}
+\item{extra_t_obs}{include extra t_obs in output for bolus doses? This is only activated when \code{t_obs} is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever \code{t_obs} is specified manually.}
 
 \item{rtte}{should repeated events be allowed (FALSE by default)}
 
@@ -113,9 +113,9 @@ sim(
 
 \item{return_event_table}{return the event table for the simulation only, does not run the actual simulation. Useful for iterative use of sim().}
 
-\item{return_design}{returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with `sim_core()`, e.g. for estimation and optimal design.}
+\item{return_design}{returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with \code{sim_core()}, e.g. for estimation and optimal design.}
 
-\item{output_include}{list specifying what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.}
+\item{output_include}{list specifying what to include in output table, with keys \code{parameters} and \code{covariates}. Both are FALSE by default.}
 
 \item{...}{extra parameters}
 }

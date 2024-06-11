@@ -7,7 +7,7 @@
 advan_process_infusion_doses(data)
 }
 \arguments{
-\item{data}{ADVAN-style dataset, e.g. created using `advan_create_data`.}
+\item{data}{ADVAN-style dataset, e.g. created using \code{advan_create_data}.}
 }
 \value{
 Data frame containing additional RATEALL column.
@@ -18,6 +18,6 @@ cleaned up and somewhat optimized. Can potentially be optimized more.
 }
 \references{
 Abuhelwa, A. Y., Foster, D. J. R., Upton, R. N. (2015)
-  ADVAN-style analytical solutions for common pharmacokinetic models. J
-  Pharmacol Toxicol Methods 73:42-8. DOI: 10.1016/j.vascn.2015.03.004
+ADVAN-style analytical solutions for common pharmacokinetic models. J
+Pharmacol Toxicol Methods 73:42-8. DOI: 10.1016/j.vascn.2015.03.004
 }

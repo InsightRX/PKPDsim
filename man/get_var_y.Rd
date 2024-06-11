@@ -30,17 +30,17 @@ get_var_y(
 )
 }
 \arguments{
-\item{model}{model, created using `PKPDsim::new_ode_model()`}
+\item{model}{model, created using \code{PKPDsim::new_ode_model()}}
 
 \item{parameters}{parameters list}
 
-\item{regimen}{regimen, as created using `PKPDsim::new_regimen()`}
+\item{regimen}{regimen, as created using \code{PKPDsim::new_regimen()}}
 
 \item{t_obs}{vector of observation times}
 
 \item{obs_comp}{observation compartment. If NULL will be "obs" (default)}
 
-\item{obs_variable}{observation variable. If NULL, will be ignored, otherwise will override `obs_comp`.}
+\item{obs_variable}{observation variable. If NULL, will be ignored, otherwise will override \code{obs_comp}.}
 
 \item{omega}{triangle omega block}
 
@@ -48,19 +48,19 @@ get_var_y(
 
 \item{n_ind}{number of individuals to simulate with sim method}
 
-\item{ruv}{residual variability, supplied as a named list, ex: `list(prop = 0, add = 0, exp = 0)`}
+\item{ruv}{residual variability, supplied as a named list, ex: \code{list(prop = 0, add = 0, exp = 0)}}
 
 \item{y}{vector of observations. If NULL, then a new simulation will be performed.}
 
 \item{rel_delta}{rel_delta}
 
-\item{method}{method, `delta` or `sim`}
+\item{method}{method, \code{delta} or \code{sim}}
 
-\item{sequence}{for simulations, if not NULL the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.}
+\item{sequence}{for simulations, if not NULL the pseudo-random sequence to use, e.g. "halton" or "sobol". See \code{mvrnorm2} for more details.}
 
 \item{auc}{is AUC?}
 
-\item{sd}{return as standard deviation (`TRUE`) or variance (`FALSE`)}
+\item{sd}{return as standard deviation (\code{TRUE}) or variance (\code{FALSE})}
 
 \item{q}{return vector of quantiles instead of sd/var. Will return parametric quantiles when delta-method is used, non-parametric for simulation-based methods.}
 
@@ -70,11 +70,11 @@ get_var_y(
 
 \item{return_all}{return object with all relevant information?}
 
-\item{...}{passed on to `sim_ode()`}
+\item{...}{passed on to \code{sim_ode()}}
 }
 \value{
 Vector of standard deviations or variances (or quantiles thereof) for dependent value
-  variable
+variable
 }
 \description{
 Get expected variance/sd/ci of dependent variable

@@ -20,6 +20,21 @@ The development version of PKPDsim can be installed using:
 devtools::install_github("InsightRX/PKPDsim")
 ```
 
+A number of models from the literature have been made available for use in
+PKPD simulations. To see which models are available for installation, run:
+
+```
+available_default_literature_models()
+```
+
+You can install these models as packages using the following commands:
+```
+# To install a single model:
+install_default_literature_model("pk_busulfan_mccune")
+# To install all supplied models:
+install_default_literature_model("all")
+```
+
 ## Contributing
 
 We welcome input from the community:

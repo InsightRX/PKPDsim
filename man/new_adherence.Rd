@@ -25,8 +25,8 @@ to adherent state}
 \item{p_binom}{binomial probability of being adherent}
 }
 \value{
-Returns a vector of length `n`
-  containing values 0 (non-adherent) or 1 (adherent).
+Returns a vector of length \code{n}
+containing values 0 (non-adherent) or 1 (adherent).
 
 Numeric vector of length n
 }

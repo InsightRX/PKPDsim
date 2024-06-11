@@ -7,7 +7,7 @@
 shift_regimen(regimen, n = 1, reset_time = TRUE)
 }
 \arguments{
-\item{regimen}{PKPDsim regimen created using `new_regimen()`}
+\item{regimen}{PKPDsim regimen created using \code{new_regimen()}}
 
 \item{n}{number of doses to shift regimen}
 

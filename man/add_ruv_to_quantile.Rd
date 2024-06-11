@@ -15,7 +15,7 @@ add_ruv_to_quantile(y, sd_y, log_scale = FALSE, q = NULL, ruv = list(), ...)
 
 \item{q}{quantile}
 
-\item{ruv}{list of residual variability (`prop` and `add`)}
+\item{ruv}{list of residual variability (\code{prop} and \code{add})}
 
 \item{...}{passed arguments}
 }

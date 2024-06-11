@@ -20,7 +20,7 @@ calc_ss_analytic(
 )
 }
 \arguments{
-\item{f}{analytic equation to use, must be one of `names(advan_funcs)`}
+\item{f}{analytic equation to use, must be one of \code{names(advan_funcs)}}
 
 \item{dose}{dose}
 
@@ -34,7 +34,7 @@ calc_ss_analytic(
 
 \item{covariates}{covariates list}
 
-\item{map}{list for remapping parameters, ex: `list(CL = "CL", V = "V")`}
+\item{map}{list for remapping parameters, ex: \code{list(CL = "CL", V = "V")}}
 
 \item{n_days}{number of days at which to assume steady state. Default is 45.}
 

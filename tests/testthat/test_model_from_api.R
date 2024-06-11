@@ -53,5 +53,3 @@ test_that("Can install a package from json, and spec added to package", {
   }
 
 })
-
-

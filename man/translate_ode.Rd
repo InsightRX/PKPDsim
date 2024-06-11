@@ -9,13 +9,13 @@ translate_ode(code, auto = TRUE, from = NULL, to = NULL, verbose = TRUE)
 \arguments{
 \item{code}{character string with ODE code}
 
-\item{auto}{is auto-detect syntax (`from`)}
+\item{auto}{is auto-detect syntax (\code{from})}
 
 \item{from}{from syntax}
 
 \item{to}{to syntax}
 
-\item{verbose}{verbose, `TRUE` or `FALSE`}
+\item{verbose}{verbose, \code{TRUE} or \code{FALSE}}
 }
 \value{
 Translated PKPDsim or RxODE model

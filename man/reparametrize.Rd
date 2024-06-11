@@ -7,7 +7,7 @@
 reparametrize(model, parameters, covariates)
 }
 \arguments{
-\item{model}{PKPDsim model, compiled using `reparametrization` argument or in metadata object.}
+\item{model}{PKPDsim model, compiled using \code{reparametrization} argument or in metadata object.}
 
 \item{parameters}{list of model parameters}
 
