@@ -102,6 +102,13 @@
 <pre><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"PKPDsim"</span><span class="op">)</span></span></code></pre>
 <p>The development version of PKPDsim can be installed using:</p>
 <pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"InsightRX/PKPDsim"</span><span class="op">)</span></span></code></pre>
+<p>A number of models from the literature have been made available for use in PKPD simulations. To see which models are available for installation, run:</p>
+<pre><code><span><span class="fu"><a href="reference/available_default_literature_models.html">available_default_literature_models</a></span><span class="op">(</span><span class="op">)</span></span></code></pre>
+<p>You can install these models as packages using the following commands:</p>
+<pre><code><span><span class="co"># To install a single model:</span></span>
+<span><span class="fu"><a href="reference/install_default_literature_model.html">install_default_literature_model</a></span><span class="op">(</span><span class="st">"pk_busulfan_mccune"</span><span class="op">)</span></span>
+<span><span class="co"># To install all supplied models:</span></span>
+<span><span class="fu"><a href="reference/install_default_literature_model.html">install_default_literature_model</a></span><span class="op">(</span><span class="st">"all"</span><span class="op">)</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>

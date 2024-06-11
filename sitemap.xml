@@ -133,6 +133,9 @@
     <loc>https://insightrx.github.io/PKPDsim/reference/apply_lagtime.html</loc>
   </url>
   <url>
+    <loc>https://insightrx.github.io/PKPDsim/reference/available_default_literature_models.html</loc>
+  </url>
+  <url>
     <loc>https://insightrx.github.io/PKPDsim/reference/bioavailability_to_R_code.html</loc>
   </url>
   <url>
@@ -203,6 +206,9 @@
   </url>
   <url>
     <loc>https://insightrx.github.io/PKPDsim/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://insightrx.github.io/PKPDsim/reference/install_default_literature_model.html</loc>
   </url>
   <url>
     <loc>https://insightrx.github.io/PKPDsim/reference/is_newer_package.html</loc>

@@ -141,7 +141,7 @@
 
 
 <dt>mixture_group</dt>
-<dd><p>mixture group for models containing mixtures. Should be either `1` or `2`, since only two groups are currently allowed.</p></dd>
+<dd><p>mixture group for models containing mixtures. Should be either <code>1</code> or <code>2</code>, since only two groups are currently allowed.</p></dd>
 
 
 <dt>omega</dt>
@@ -153,11 +153,11 @@
 
 
 <dt>res_var</dt>
-<dd><p>residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.</p></dd>
+<dd><p>residual variability. Expected a list with arguments <code>prop</code>, <code>add</code>, and/or <code>exp</code>. NULL by default.</p></dd>
 
 
 <dt>iov_bins</dt>
-<dd><p>allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. `iov_bins = c(0, 24, 48, 72, 9999)`.</p></dd>
+<dd><p>allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. <code>iov_bins = c(0, 24, 48, 72, 9999)</code>.</p></dd>
 
 
 <dt>seed</dt>
@@ -165,7 +165,7 @@
 
 
 <dt>sequence</dt>
-<dd><p>if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.</p></dd>
+<dd><p>if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See <code>mvrnorm2</code> for more details.</p></dd>
 
 
 <dt>n_ind</dt>
@@ -173,7 +173,7 @@
 
 
 <dt>event_table</dt>
-<dd><p>use a previously created `design` object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see `sim_core()` for even faster simulations using precalculated `design` objects.</p></dd>
+<dd><p>use a previously created <code>design</code> object used for ODE simulation instead of calling create_event_table() to create a new one. Especially useful for repeated calling of sim(), such as in optimizations or optimal design analysis. Also see <code><a href="sim_core.html">sim_core()</a></code> for even faster simulations using precalculated <code>design</code> objects.</p></dd>
 
 
 <dt>regimen</dt>
@@ -185,7 +185,7 @@
 
 
 <dt>covariates</dt>
-<dd><p>list of covariates (for single individual) created using `new_covariate()` function</p></dd>
+<dd><p>list of covariates (for single individual) created using <code><a href="new_covariate.html">new_covariate()</a></code> function</p></dd>
 
 
 <dt>covariates_table</dt>
@@ -193,7 +193,7 @@
 
 
 <dt>covariates_implementation</dt>
-<dd><p>used only for `covariates_table`, a named list of covariate implementation methods per covariate, e.g. `list(WT = "interpolate", BIN = "locf")`</p></dd>
+<dd><p>used only for <code>covariates_table</code>, a named list of covariate implementation methods per covariate, e.g. <code>list(WT = "interpolate", BIN = "locf")</code></p></dd>
 
 
 <dt>covariate_model</dt>
@@ -233,7 +233,7 @@
 
 
 <dt>obs_type</dt>
-<dd><p>vector of observation types. Only valid in combination with equal length vector `t_obs`.</p></dd>
+<dd><p>vector of observation types. Only valid in combination with equal length vector <code>t_obs</code>.</p></dd>
 
 
 <dt>duplicate_t_obs</dt>
@@ -241,7 +241,7 @@
 
 
 <dt>extra_t_obs</dt>
-<dd><p>include extra t_obs in output for bolus doses? This is only activated when `t_obs` is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever `t_obs` is specified manually.</p></dd>
+<dd><p>include extra t_obs in output for bolus doses? This is only activated when <code>t_obs</code> is not specified manually. E.g. for a bolus dose at t=24, if FALSE, PKPDsim will output only the trough, so for bolus doses you might want to switch this setting to TRUE. When set to "auto" (default), it will be TRUE by default, but will switch to FALSE whenever <code>t_obs</code> is specified manually.</p></dd>
 
 
 <dt>rtte</dt>
@@ -261,11 +261,11 @@
 
 
 <dt>return_design</dt>
-<dd><p>returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with `sim_core()`, e.g. for estimation and optimal design.</p></dd>
+<dd><p>returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with <code><a href="sim_core.html">sim_core()</a></code>, e.g. for estimation and optimal design.</p></dd>
 
 
 <dt>output_include</dt>
-<dd><p>list specifying what to include in output table, with keys `parameters` and `covariates`. Both are FALSE by default.</p></dd>
+<dd><p>list specifying what to include in output table, with keys <code>parameters</code> and <code>covariates</code>. Both are FALSE by default.</p></dd>
 
 
 <dt>...</dt>

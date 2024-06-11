@@ -121,15 +121,15 @@
 
 
 <dt>t_inf</dt>
-<dd><p>infusion time (if `type`==`infusion`)</p></dd>
+<dd><p>infusion time (if <code>type</code>==<code>infusion</code>)</p></dd>
 
 
 <dt>rate</dt>
-<dd><p>infusion rate (if `type`==`infusion`). `NULL` by default. If specified, overrides `t_inf`</p></dd>
+<dd><p>infusion rate (if <code>type</code>==<code>infusion</code>). <code>NULL</code> by default. If specified, overrides <code>t_inf</code></p></dd>
 
 
 <dt>t_lag</dt>
-<dd><p>lag time (can be applied to any dose type, not only oral). Will just be added to `times`</p></dd>
+<dd><p>lag time (can be applied to any dose type, not only oral). Will just be added to <code>times</code></p></dd>
 
 
 <dt>cmt</dt>
@@ -141,15 +141,15 @@
 
 
 <dt>ss</dt>
-<dd><p>steady state? boolean value whether to simulate out to steady state first (steady state will be based on specified `amt` and `interval`, `times` will be ignored).</p></dd>
+<dd><p>steady state? boolean value whether to simulate out to steady state first (steady state will be based on specified <code>amt</code> and <code>interval</code>, <code>times</code> will be ignored).</p></dd>
 
 
 <dt>n_ss</dt>
-<dd><p>how many doses to simulate before assumed steady state. Default is 4 * 24 / `interval`.</p></dd>
+<dd><p>how many doses to simulate before assumed steady state. Default is 4 * 24 / <code>interval</code>.</p></dd>
 
 
 <dt>first_dose_time</dt>
-<dd><p>datetime stamp of first dose (of class `POSIXct`). Default is current date time.</p></dd>
+<dd><p>datetime stamp of first dose (of class <code>POSIXct</code>). Default is current date time.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -100,7 +100,7 @@ any given moment, for linear iv models.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>f</dt>
-<dd><p>analytic model to use, show available models using `advan()`</p></dd>
+<dd><p>analytic model to use, show available models using <code><a href="advan.html">advan()</a></code></p></dd>
 
 
 <dt>parameters</dt>
@@ -110,23 +110,23 @@ for 3-compartment models.</p></dd>
 
 
 <dt>regimen</dt>
-<dd><p>PKPDsim regimen created using `new_regimen`. Not required,
-regimen can also be specified using `dose`, `interval`, and `t_inf`.</p></dd>
+<dd><p>PKPDsim regimen created using <code>new_regimen</code>. Not required,
+regimen can also be specified using <code>dose</code>, <code>interval</code>, and <code>t_inf</code>.</p></dd>
 
 
 <dt>dose</dt>
 <dd><p>dosing amount for regimen (single value). Only used if no
-`regimen` supplied.</p></dd>
+<code>regimen</code> supplied.</p></dd>
 
 
 <dt>interval</dt>
 <dd><p>dosing interval for regimen (single value). Only used if no
-. `regimen` supplied.</p></dd>
+. <code>regimen</code> supplied.</p></dd>
 
 
 <dt>t_inf</dt>
 <dd><p>infusion length for regimen (single value). Only used if no
-`regimen` supplied.</p></dd>
+<code>regimen</code> supplied.</p></dd>
 
 
 <dt>t_obs</dt>
@@ -134,14 +134,16 @@ regimen can also be specified using `dose`, `interval`, and `t_inf`.</p></dd>
 
 
 <dt>...</dt>
-<dd><p>optional arguments passed to `advanc_create_data()`</p></dd>
+<dd><p>optional arguments passed to <code>advanc_create_data()</code></p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>a data.frame with `t` and `auc`</p>
+<p>a data.frame with <code>t</code> and <code>auc</code></p>
+
+
     </div>
 
     <div class="section level2">

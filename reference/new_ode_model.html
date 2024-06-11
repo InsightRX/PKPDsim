@@ -165,7 +165,7 @@
 
 
 <dt>mixture</dt>
-<dd><p>for mixture models, provide a list of the parameter associated with the mixture and it's possible values and probabilities (of the first value), e.g. `list(CL = list(value = c(10, 20), probability = 0.3)`.</p></dd>
+<dd><p>for mixture models, provide a list of the parameter associated with the mixture and it's possible values and probabilities (of the first value), e.g. <code>list(CL = list(value = c(10, 20), probability = 0.3)</code>.</p></dd>
 
 
 <dt>units</dt>
@@ -189,7 +189,7 @@
 
 
 <dt>covariates</dt>
-<dd><p>specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see `new_covariate()` function for more info)</p></dd>
+<dd><p>specify covariates, either as a character vector or a list. if specified as list, it allows use of timevarying covariates (see <code><a href="new_covariate.html">new_covariate()</a></code> function for more info)</p></dd>
 
 
 <dt>declare_variables</dt>
@@ -217,7 +217,7 @@
 
 
 <dt>ltbs</dt>
-<dd><p>log-transform both sides. Not used in simulations, only for fitting (sets attribute `ltbs`).</p></dd>
+<dd><p>log-transform both sides. Not used in simulations, only for fitting (sets attribute <code>ltbs</code>).</p></dd>
 
 
 <dt>misc</dt>
@@ -225,11 +225,11 @@
 
 
 <dt>cmt_mapping</dt>
-<dd><p>list indicating which administration routes apply to which compartments. Example: `list("oral" = 1, "infusion" = 2)`</p></dd>
+<dd><p>list indicating which administration routes apply to which compartments. Example: <code>list("oral" = 1, "infusion" = 2)</code></p></dd>
 
 
 <dt>int_step_size</dt>
-<dd><p>step size for integrator. Can be pre-specified for model, to override default for `sim_ode()`</p></dd>
+<dd><p>step size for integrator. Can be pre-specified for model, to override default for <code><a href="sim_ode.html">sim_ode()</a></code></p></dd>
 
 
 <dt>default_parameters</dt>
@@ -261,7 +261,7 @@
 
 
 <dt>lib_location</dt>
-<dd><p>install into folder (`--library` argument)</p></dd>
+<dd><p>install into folder (<code>--library</code> argument)</p></dd>
 
 
 <dt>verbose</dt>
@@ -285,14 +285,14 @@
 
 
 <dt>quiet</dt>
-<dd><p>passed on to `system2` as setting for stderr and stdout; how to
-output cmd line output. Default (`""`) is R console, NULL or FALSE discards.
+<dd><p>passed on to <code>system2</code> as setting for stderr and stdout; how to
+output cmd line output. Default (<code>""</code>) is R console, NULL or FALSE discards.
 TRUE captures the output and saves as a file.</p></dd>
 
 
 <dt>definition</dt>
 <dd><p>optional, filename for the JSON file the full definition
-for the model. The definition file will be stored as `definition.json` in the
+for the model. The definition file will be stored as <code>definition.json</code> in the
 resulting package.</p></dd>
 
 </dl></div>
@@ -301,7 +301,7 @@ resulting package.</p></dd>
     
 
 <p>If package name is NULL, returns the model object. Otherwise has no
-  return value.</p>
+return value.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
