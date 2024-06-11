@@ -46,6 +46,13 @@ create_event_table <- function(
 
   } else if (!is.null(model) && !is.null(attr(model, "cmt_mapping"))) {
     cmt_mapping <- attr(model, "cmt_mapping")
+    if (!all(regimen$type %in% names(cmt_mapping))) {
+      stop(
+        "Unrecognized regimen type. Define '",
+        setdiff(regimen$type, names(cmt_mapping)),
+        "' in model md field `cmt_mapping`"
+      )
+    }
     regimen$dose_cmt <- vapply(regimen$type, function(x) cmt_mapping[[x]], FUN.VALUE = numeric(1), USE.NAMES = FALSE)
 
   } else {
