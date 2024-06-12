@@ -459,14 +459,14 @@ new_ode_model <- function (model = NULL,
           "--with-keep.source",
           "--pkglock",
           "--no-staged-install",
-          shQuotes(normalizePath(file.path(folder, package)))
+          shQuote(normalizePath(file.path(folder, package)))
         )
 
         system2(cmd, args, stdout = quiet, stderr = quiet)
 
       } else {
         # Run R CMD BUILD to zip file
-        args <- c("CMD", "build", shQuotes(normalizePath(file.path(folder, package))))
+        args <- c("CMD", "build", shQuote(normalizePath(file.path(folder, package))))
         system2(cmd, args, stdout = quiet, stderr = quiet)
         pkg_file <- paste0(package, "_", version, ".tar.gz")
         if(file.exists(pkg_file)) {
