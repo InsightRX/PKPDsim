@@ -1,11 +1,5 @@
 {
   "id": "pk_pegasparaginase_modified_wurthwein",
-  "description": "PK model for PEG-asparagainase children",
-  "drug": "peg-asparaginase",
-  "category": "oncology",
-  "age_categories": [ "children" ],
-  "equations": [
-  ],
   "ode_code": "\
     dAdt[0] = - (CLi/Vi + Qi/Vi) * A[0] \
     dAdt[1] = + (Qi/Vi)*A[0] - (CLi/Vi + Qi/Vi)*A[1] \
@@ -65,45 +59,16 @@
     "timevarying_parameter": false,
     "init_parameter": false
   },
-  "development": {
-    "n_patients": 1374,
-    "n_tdms": 6069,
-    "age": { "median": 5.13, "minimum": 1.03 , "maximum": 17.9 , "unit": "years" },
-    "weight": { "median": 19.55, "minimum": 8.5 , "maximum": 128, "unit": "kg" },
-    "height": { "median": 113, "minimum": 71, "maximum": 195, "unit": "cm" },
-    "sex": { "male": 779, "female": 595}
-  },
-  "external_validation": [],
   "references": [
     {
       "ref": "Würthwein et al. European Journal of Drug Metabolism and Pharmacokinetics. 2021",
       "url": "https://link.springer.com/article/10.1007/s13318-021-00670-8#Sec181"
     }
   ],
-  "active": true,
-  "build": true,
-  "admin": [
-    {
-      "implementer": { "name": "Jordan Brooks", "email": "jordan.brooks@insight-rx.com" },
-      "format": "PKPDsim"
-    },
-    {
-      "implementer": { "name": "Jordan Brooks", "email": "jordan.brooks@insight-rx.com" },
-      "format": "NONMEM"
-    }
-  ],
-  "implementations": {
-    "nonmem": "pk_pegasparaginase_modified_wurthwein.mod"
-  },
   "comments": [
    "Utilizing updated/simplified model from 2021 publication.",
    "Removed IOV and specific occasion effects on CL & V, which were specific to the trial and not generalizable to real-world application.",
    "Re-estimated IIV on CLP, which was much larger than original publication. Larger IIV is in line with literature and clinical understanding about high variability in peg-asparaginase PK."
   ],
-  "validation": {
-    "implementation": true,
-    "numerical": true,
-    "clinical": false
-  },
   "version": "0.1.4"
 }
