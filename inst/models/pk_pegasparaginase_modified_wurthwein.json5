@@ -1,0 +1,74 @@
+{
+  "id": "pk_pegasparaginase_modified_wurthwein",
+  "ode_code": "\
+    dAdt[0] = - (CLi/Vi + Qi/Vi) * A[0] \
+    dAdt[1] = + (Qi/Vi)*A[0] - (CLi/Vi + Qi/Vi)*A[1] \
+    dAdt[2] = + (Qi/Vi)*A[1] - (CLi/Vi + Qi/Vi)*A[2] \
+    dAdt[3] = + (Qi/Vi)*A[2] - (CLi/Vi + Qi/Vi)*A[3] \
+    dAdt[4] = + (Qi/Vi)*A[3] - (CLi/Vi + Qi/Vi)*A[4] \
+    dAdt[5] = + (Qi/Vi)*A[4] - (CLi/Vi + Qi/Vi)*A[5] \
+    dAdt[6] = + (Qi/Vi)*A[5] - (CLi/Vi + Qi/Vi)*A[6] \
+    dAdt[7] = + (Qi/Vi)*A[6] - (CLi/Vi + Qi/Vi)*A[7] \
+    dAdt[8] = + (Qi/Vi)*A[7] - (CLi/Vi + Qi/Vi)*A[8] \
+    dAdt[9] = + (Qi/Vi)*A[8] - (CLi/Vi + Qi/Vi)*A[9] \
+    dAdt[10] = + (Qi/Vi)*A[9] - (CLi/Vi + Qi/Vi)*A[10] \
+    dAdt[11] = + (Qi/Vi)*A[10] - (CLi/Vi + Qi/Vi)*A[11] \
+    dAdt[12] = + (Qi/Vi)*A[11] - (CLi/Vi + Qi/Vi)*A[12] \
+    dAdt[13] = + (Qi/Vi)*A[12] - (CLi/Vi + Qi/Vi)*A[13] \
+    CONC = (A[0] + A[1] + A[2] + A[3] + A[4]+ A[5] + A[6] + A[7] + A[8] + A[9] + A[10] + A[11] + A[12] + A[13])/Vi \
+    dAdt[14] = CONC \
+  ",
+  "pk_code": "\
+   BSA = pow(((HT*WT)/3600),0.5) \
+   if(AGE<=8) {CLAGE = 1 ;} \
+   if(AGE>8) {CLAGE = 1 + 0.021*(AGE - 8.0) ;} \
+   CLSEX = 1.0 * pow(1-0.077, 1-SEX) \
+   RELCLCOV= CLAGE * CLSEX \
+   CLi     = (CL/24) * (1+1.44345*(BSA-0.79)) * RELCLCOV \
+   Vi      = V  * (1+1.56498*(BSA-0.79)) \
+   Qi      = (Q/24)  * (1+1.44345*(BSA-0.79)) \
+  ",
+  "n_comp": 15,
+  "obs":  { "variable": "CONC" },
+  "dose": { "cmt": 1, "bioav": 1 },
+  "covariates": [ "AGE","SEX","HT","WT"],
+  "variables": [ "CLi","Vi","Qi","CONC","RELCLCOV","BSA","CLAGE","CLSEX"],
+  "parameters" : {
+    "CL": 0.0517535,
+    "V" : 1.74477,
+    "Q" : 1.09894
+  },
+  "fixed": ["Q","V"],
+  "units": {
+    "CL": "L/d",
+    "V": "L/kg",
+    "Q": "L/d"
+  },
+  "iiv": {
+    "CL": 0.8083081
+  },
+  "omega_matrix": [0.653362],
+  "iov": null,
+  "ruv": {
+    "prop": 0.221777,
+    "add": 0.102318
+    },
+ "misc": {
+    "model_type": "custom",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": false
+  },
+  "references": [
+    {
+      "ref": "Würthwein et al. European Journal of Drug Metabolism and Pharmacokinetics. 2021",
+      "url": "https://link.springer.com/article/10.1007/s13318-021-00670-8#Sec181"
+    }
+  ],
+  "comments": [
+   "Utilizing updated/simplified model from 2021 publication.",
+   "Removed IOV and specific occasion effects on CL & V, which were specific to the trial and not generalizable to real-world application.",
+   "Re-estimated IIV on CLP, which was much larger than original publication. Larger IIV is in line with literature and clinical understanding about high variability in peg-asparaginase PK."
+  ],
+  "version": "0.1.4"
+}
