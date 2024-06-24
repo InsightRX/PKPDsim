@@ -54,7 +54,7 @@ test_that("Throws warning when `iov_bins` length doesn't match number of specifi
     )
   }, "Number of IOV bins specified")
   Rcpp_v <- unlist(packageVersion("Rcpp"))
-  if(Rcpp_v[1] >= 1 && Rcpp_v[2] >= 0 && Rcpp_v[3] >= 12 && Rcpp_v[4] >= 4) {
+  if(Rcpp_v[1] >= 1 && Rcpp_v[2] >= 0 && (Rcpp_v[3] >= 13 || isTRUE(Rcpp_v[3] >= 12 && Rcpp_v[4] >= 4))) {
     ## if-statement can be removed when Rcpp on CRAN >= 1.0.12.4
     expect_warning({
       expect_warning({
