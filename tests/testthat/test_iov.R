@@ -2,12 +2,12 @@ pars <- list(
   "kappa_CL_1" = 0,
   "kappa_CL_2" = 0,
   "kappa_CL_3" = 0,
-  "kappa_CL_4" = 0,
   "eta_CL" = 0,
   "CL" = 5,
   "V" = 50,
   "KA" = 1
 )
+
 pk1 <- new_ode_model(
   code = "
       CL_iov = CL * exp(kappa_CL + eta_CL);
@@ -16,7 +16,7 @@ pk1 <- new_ode_model(
     ",
   iov = list(
     cv = list(CL = 0.2),
-    n_bins = 4
+    n_bins = 3
   ),
   obs = list(cmt = 2, scale = "V"),
   dose = list(cmt = 1, bioav = 1),
@@ -32,6 +32,53 @@ reg1 <- new_regimen(
   type = "infusion"
 )
 iov_var <- 0.3 ^ 2 # 30% IOV
+
+test_that("Throws warning when `iov_bins` length doesn't match number of specified bins", {
+  expect_warning({
+    sim(
+      ode = pk1,
+      parameters = pars,
+      regimen = reg1,
+      omega = c(
+        iov_var, # IOV in CL
+        0, iov_var,
+        0, 0, iov_var,
+        0, 0, 0, iov_var,
+        0, 0, 0, 0, 0.3 # IIV in CL
+      ),
+      n = 1,
+      iov_bins = c(0, 24, 48, 72, 999), # one bin too many
+      omega_type = "normal",
+      only_obs = TRUE,
+      output_include = list(parameters = TRUE, variables = TRUE)
+    )
+  }, "Number of IOV bins specified")
+  Rcpp_v <- unlist(packageVersion("Rcpp"))
+  if(Rcpp_v[1] >= 1 && Rcpp_v[2] >= 0 && (Rcpp_v[3] >= 13 || isTRUE(Rcpp_v[3] >= 12 && Rcpp_v[4] >= 4))) {
+    ## if-statement can be removed when Rcpp on CRAN >= 1.0.12.4
+    expect_warning({
+      expect_warning({
+        sim(
+          ode = pk1,
+          parameters = pars,
+          regimen = reg1,
+          omega = c(
+            iov_var, # IOV in CL
+            0, iov_var,
+            0, 0, iov_var,
+            0, 0, 0, iov_var,
+            0, 0, 0, 0, 0.3 # IIV in CL
+          ),
+          n = 1,
+          iov_bins = c(0, 24, 999), # one bin too few
+          omega_type = "normal",
+          only_obs = TRUE,
+          output_include = list(parameters = TRUE, variables = TRUE)
+        )
+      }, "Number of IOV bins specified")
+    }, "subscript out of bounds") # only thrown when Rcpp >= 1.0.12.4
+  }
+})
 
 test_that("IOV is added to parameters", {
   skip_on_cran()
@@ -95,7 +142,7 @@ test_that("Change in F in 2nd bin is applied in 2nd bin and not later.", {
     ",
     iov = list(
       cv = list(F = 0.2),
-      n_bins = 4
+      n_bins = 3
     ),
     obs = list(cmt = 2, scale = "V"),
     dose = list(cmt = 1, bioav = "Fi"),
@@ -181,5 +228,4 @@ test_that("error is not invoked when using parameters_table", {
       output_include = list(parameters = TRUE, variables = TRUE)
     )
   )
-
 })
