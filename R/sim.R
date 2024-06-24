@@ -189,6 +189,11 @@ sim <- function (ode = NULL,
         p <- parameters
       }
     }
+    if(!is.null(attr(ode, "iov")$n_bins) && attr(ode, "iov")$n_bins > 1) {
+      if(attr(ode, "iov")$n_bins != (length(iov_bins)-1)) {
+        warning("Number of IOV bins specified for model does not match supplied `iov_bins` argument. This could lead to simulation failures or erroneous output.")
+      }
+    }
     if(is.null(analytical)) {
       if(inherits(ode, "function") && !isTRUE(attr(ode, "cpp"))) {
         stop("Sorry. Non-C++ functions are deprecated as input for ODE.")
