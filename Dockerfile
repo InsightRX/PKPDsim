@@ -1,12 +1,19 @@
-FROM 579831337053.dkr.ecr.us-west-2.amazonaws.com/irx-r-base:latest
+FROM rocker/r-ver:latest
 
 ENV _R_CHECK_TESTS_NLINES_=0
 
-RUN rm -rf /src/PKPDsim
-COPY ./ /src/PKPDsim
 WORKDIR /src/PKPDsim
 
-# Install system and CRAN dependencies
-RUN apt-get update
-RUN apt install -y pandoc qpdf
-RUN Rscript -e "install.packages(c('mockery', 'nlmixr2', 'knitr', 'rmarkdown'), repos = '${RSPM_SNAPSHOT}')"
+COPY ./ /src/PKPDsim
+
+RUN apt-get update && apt-get install -y \
+    pandoc \
+    qpdf \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+    
+RUN Rscript -e "install.packages(c('mockery', 'nlmixr2', 'knitr', 'rmarkdown'), repos = 'https://cloud.r-project.org')"
+
+RUN R CMD check PKPDsim
+
