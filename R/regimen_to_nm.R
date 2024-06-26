@@ -11,7 +11,7 @@
 #' @return Data frame containing doses
 regimen_to_nm <- function(
   reg = NULL,
-  dose_cmt = 1,
+  dose_cmt = NULL,
   n_ind = 1,
   t_obs = NULL,
   obs_cmt = 1,
@@ -19,6 +19,14 @@ regimen_to_nm <- function(
 ) {
   if(is.null(reg) || ! "regimen" %in% class(reg)) {
     stop("No regimen or invalid regimen object supplied.")
+  }
+  if(is.null(dose_cmt)) {
+    if(is.null(reg$cmt)) {
+      warning("No `dose_cmt` specified or `cmt` in regimen, setting dosing compartment to 1.")
+      dose_cmt <- 1
+    } else {
+      dose_cmt <- reg$cmt
+    }
   }
   dat <- data.frame(cbind(
     ID = rep(1:n_ind, each = length(reg$dose_times)),
@@ -30,22 +38,26 @@ regimen_to_nm <- function(
     MDV = 1)
   )
   has_t_inf <- isTRUE(any(reg$t_inf > 0))
-  if(has_t_inf) {
-    dat$RATE <- reg$dose_amts / reg$t_inf
-    dat$RATE[reg$t_inf == 0] <- 0           # rate of zero indicates bolus
-    if(!is.null(bioav[dose_cmt])) {
-      suppressWarnings(
-        bioav_dose <- as.numeric(bioav[dose_cmt])
-      )
-      if(!any(is.na(bioav_dose))) {
-        if(!all(bioav_dose == 1)) {
-          dat$RATE <- dat$RATE * bioav_dose
-          message("Recalculating infusion rates to reflect bioavailability for infusion.")
-        }
-      } else {
-        warning("Bioavailability not specified correctly, cannot correct infusion rates.")
+  if(!is.null(bioav)) {
+    message(paste0(
+      "Applying bioavailability to AMT ",
+      ifelse(has_t_inf, "and RATE ", ""),
+      "column. If bioavailability is handled in NONMEM model (F1, F2, etc.) then use `bioav=NULL`."
+    ))
+    if(class(bioav) %in% c("integer", "numeric")) {
+      bioav_dose <- bioav[dose_cmt]
+      if(any(is.na(bioav_dose))) {
+        warning("Mismatch in specification of `bioav` and dose compartments. Setting unmatched compartments to bioavailability of 1.")
+        bioav_dose[is.na(bioav_dose)] <- 1
       }
+    } else {
+      stop("`bioav` is expected to be a numeric value.")
     }
+    dat$AMT <- dat$AMT * bioav_dose
+  }
+  if(has_t_inf) {
+    dat$RATE <- dat$AMT / reg$t_inf
+    dat$RATE[reg$t_inf == 0] <- 0           # rate of zero indicates bolus
   }
   if(!is.null(t_obs)) {
     obs <- data.frame(
