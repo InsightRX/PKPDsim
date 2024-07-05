@@ -33,7 +33,7 @@ test_that("regimen with infusion correctly recalculates rates when bioavailabili
       t_obs = c(1, 2, 3),
       bioav = "F1"
     ),
-    "Bioavailability not specified correctly"
+    "For compartments where bioavailability is specified"
   )
   expected_cols <- c(
     "ID",
@@ -95,3 +95,34 @@ test_that("rate is calculated for any regimen with an infusion length", {
   expect_equal(c$RATE, c(0, 0, 0, 0, 0, 10, 20, 0))
 })
 
+test_that("throws warning when bioav specified as model parameter and need to convert RATE, but not when not needed", {
+  a <- new_regimen(
+    amt = 10,
+    time = c(1, 2, 3, 4),
+    t_inf = c(0, 0, 1, 1),
+    type = c("oral", "oral", "infusion", "infusion")
+  )
+  expect_message({
+    b <- regimen_to_nm(
+      a,
+      dose_cmt = c(1, 1, 2, 2),
+      t_obs = c(1, 2, 3),
+      bioav = c("Fi", 1)
+    )
+  }, "Recalculating infusion rates")
+  a2 <- new_regimen(
+    amt = 10,
+    time = c(1, 2, 3, 4),
+    t_inf = c(1, 1, 1, 1),  # now an infusion in the sc compartment and infusion lengths are >0, should throw warning!
+    type = c("sc", "sc", "infusion", "infusion")
+  )
+  expect_warning(
+    regimen_to_nm(
+      a2,
+      dose_cmt = c(1, 1, 2, 2),
+      t_obs = c(1, 2, 3),
+      bioav = c("Fi", 1)
+    ),
+    "For compartments where bioavailability is specified"
+  )
+})
