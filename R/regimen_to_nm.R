@@ -37,7 +37,6 @@ regimen_to_nm <- function(
       suppressWarnings(
         bioav_dose <- as.numeric(bioav[dose_cmt])
       )
-      non_na_biov_dose <- !is.na(bioav_dose)
       if(any(is.na(bioav_dose))) {
         if(any(is.na(bioav_dose) & reg$t_inf > 0)) { # only warn when it actually concerns an infusion
           warning("For compartments where bioavailability is specified as model parameter and not as a number, any infusion rates are not corrected for bioavailability.")
