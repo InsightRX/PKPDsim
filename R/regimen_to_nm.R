@@ -37,14 +37,14 @@ regimen_to_nm <- function(
       suppressWarnings(
         bioav_dose <- as.numeric(bioav[dose_cmt])
       )
-      if(!any(is.na(bioav_dose))) {
-        if(!all(bioav_dose == 1)) {
-          dat$RATE <- dat$RATE * bioav_dose
-          message("Recalculating infusion rates to reflect bioavailability for infusion.")
+      if(any(is.na(bioav_dose))) {
+        if(any(is.na(bioav_dose) & reg$t_inf > 0)) { # only warn when it actually concerns an infusion
+          warning("For compartments where bioavailability is specified as model parameter and not as a number, any infusion rates are not corrected for bioavailability.")
         }
-      } else {
-        warning("Bioavailability not specified correctly, cannot correct infusion rates.")
+        bioav_dose[is.na(bioav_dose)] <- 1
       }
+      dat$RATE <- dat$RATE * bioav_dose
+      message("Recalculating infusion rates to reflect bioavailability for infusion.")
     }
   }
   if(!is.null(t_obs)) {
