@@ -1,0 +1,19 @@
+version: '3'
+services:
+  pkpdsim:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pkpdsim:latest
+
+  pkpdsim-aws:
+    build:
+      context: .
+      dockerfile: Dockerfile.aws
+    image: pkpdsim:aws
+
+# docker-compose build
+# docker-compose build pkpdsim
+# docker-compose build pkpdsim-aws
+# docker-compose run pkpdsim
+# docker-compose run pkpdsim-aws
