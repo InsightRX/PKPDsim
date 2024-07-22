@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -138,7 +138,7 @@ model and parameter definitions in <code>nlmixr</code> syntax:</p>
 <span><span class="co">##         y ~ prop(err_prop) + add(err_add)</span></span>
 <span><span class="co">##     })</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;environment: 0x55e69ee624f0&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x558e7af55e68&gt;</span></span></code></pre>
 <p>A full code example is included below.</p>
 <p><em>Note: both nlmixr and the nlmixr-translator in PKPDsim are still
 under active development. Syntax and results may therefore
@@ -210,8 +210,8 @@ change.</em></p>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-weight: bold;">── Time (sec </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$time</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">##            setup covariance   saem table compress    other</span></span>
-<span><span class="co">## elapsed 0.001599   0.016006 10.389 0.061    0.022 1.400395</span></span>
+<span><span class="co">##            setup covariance  saem table compress    other</span></span>
+<span><span class="co">## elapsed 0.002009    0.01601 10.87 0.065    0.022 1.401981</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-weight: bold;">── Population Parameters (</span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixed</span><span style="font-weight: bold;"> or </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixedDf</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">## </span></span>
@@ -229,6 +229,8 @@ change.</em></p>
 <span><span class="co">## </span></span>
 <span><span class="co">##   Full BSV covariance (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$omega</span>) or correlation (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$omegaR</span>; diagonals=SDs) </span></span>
 <span><span class="co">##   Distribution stats (mean/skewness/kurtosis/p-value) available in <span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$shrink</span> </span></span>
+<span><span class="co">##   Information about run found (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$runInfo</span>):</span></span>
+<span><span class="co">##    • subscript out of bounds (index 100 &gt;= vector size 100) </span></span>
 <span><span class="co">##   Censoring (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$censInformation</span>): No censoring</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-weight: bold;">── Fit Data (object </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="font-weight: bold;"> is a modified </span><span style="color: #0000BB; font-weight: bold;">tibble</span><span style="font-weight: bold;">): ──</span></span></span>
