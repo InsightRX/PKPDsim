@@ -50,7 +50,7 @@ pk1 <- new_ode_model(code = "
 
 The input code should adhere to the follow rules:
 
-- the derivaties in the ODE system are defined using `dAdt`
+- the derivatives in the ODE system are defined using `dAdt`omputate
 - array indices for the derivatives and compartments are indicated with `[ ]`. 
 Compartments indices can start at either 0 or 1. If the latter, all indices will
 be reduced by 1 in the translation to C++ code.

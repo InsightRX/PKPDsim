@@ -27,7 +27,7 @@ The names in the covariate list-object should correspond **exactly** with the na
 
 ## Time-varying covariates
 
-Time-varing covariates, such as creatinine values can be implemented easily as well. They just require the additional `times` argument:
+Time-varying covariates, such as creatinine values can be implemented easily as well. They just require the additional `times` argument:
 
 ```{r timevarying-cov}
 covariates <- list(

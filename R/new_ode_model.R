@@ -36,7 +36,7 @@
 #' @param lib_location install into folder (`--library` argument)
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
-#' @param nonmem add nonmem code as attribute to model object
+#' @param nonmem add NONMEM code as attribute to model object
 #' @param comments comments for model
 #' @param version number of library
 #' @param quiet passed on to `system2` as setting for stderr and stdout; how to

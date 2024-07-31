@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_fixed_parameters.R
 \name{get_fixed_parameters}
 \alias{get_fixed_parameters}
-\title{Get fixed parameters from model defintion.}
+\title{Get fixed parameters from model definition.}
 \usage{
 get_fixed_parameters(def)
 }

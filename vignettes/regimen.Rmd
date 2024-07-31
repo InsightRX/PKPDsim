@@ -39,7 +39,7 @@ reg1 <- new_regimen(
 )
 ```
 
-Be careful: if the length of the `amt` vector is not the same as the lenght in `times`, the function will repeat the first `amt` specified. The same goes for the arguments `type`, `cmt`, and `t_inf`.
+Be careful: if the length of the `amt` vector is not the same as the length in `times`, the function will repeat the first `amt` specified. The same goes for the arguments `type`, `cmt`, and `t_inf`.
 
 By default, the `new_regimen()` function assumes the dose is given as bolus. If you want to specify that these should be given as infusion, specify the `type` and `t_inf` arguments:
 

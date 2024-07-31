@@ -1,4 +1,4 @@
-#' Get fixed parameters from model defintion.
+#' Get fixed parameters from model definition.
 #'
 #' Get fixed parameters listed in model definition. This function is used when
 #' parsing model specifications before the model has been compiled. Please see

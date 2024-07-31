@@ -11,7 +11,7 @@ define_tdm_init_model(def)
 objects \code{misc$model_type}, \code{parameters} and \code{variables}}
 }
 \value{
-model defintion with \code{state_init} object added describing how to initializing the compartments.
+model definition with \code{state_init} object added describing how to initializing the compartments.
 }
 \description{
 Currently only available for 1-cmt and 2-cmt IV models

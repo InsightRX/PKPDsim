@@ -14,7 +14,7 @@ sim_core(sim_object = NULL, ode, duplicate_t_obs = FALSE, t_init = 0)
 
 \item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 
-\item{t_init}{time of initization of the ODE system. Usually 0.}
+\item{t_init}{time of initialization of the ODE system. Usually 0.}
 }
 \value{
 Data frame with simulation results

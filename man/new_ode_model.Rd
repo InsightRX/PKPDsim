@@ -121,7 +121,7 @@ new_ode_model(
 
 \item{as_is}{use C-code as-is, don't substitute line-endings or shift indices}
 
-\item{nonmem}{add nonmem code as attribute to model object}
+\item{nonmem}{add NONMEM code as attribute to model object}
 
 \item{comments}{comments for model}
 
