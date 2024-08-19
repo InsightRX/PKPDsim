@@ -16,4 +16,5 @@ vignettes/example-pkpd-model.Rmd
 vignettes/PKPDsim.Rmd
 vignettes/variability.Rmd
 Dockerfile
+docker-compose.yml
 ^CRAN-SUBMISSION$
