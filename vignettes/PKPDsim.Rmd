@@ -32,8 +32,8 @@ The main simulation function in `PKPDsim` is `sim()`. To be able to simulate a d
 The model library in PKPDsim contains a small library of built-in PK and PD models, but of course more interesting is its ability to handle user-specified ODE systems. However, as a first example, let's implement the most simple example from the library:
 
 ```{r load-lib, echo=FALSE}
-library("PKPDsim")
-library("ggplot2")
+library(PKPDsim)
+library(ggplot2)
 ```
 
 ```{r intro-example}
@@ -64,12 +64,12 @@ To check what output was produced by `sim()`, let's plot it (installation of `gg
 ```{r plot-example}
 ggplot(dat, aes(x = t, y = y)) +
   geom_line() +
-  facet_wrap(~ comp)
+  facet_wrap(vars(comp))
 ```
 
 # Custom ODE model
 
-We can write the same exact model using custom ODE code. The following example will also only output the concentration (`only_obs=TRUE`), and not the amounts in each compartment. We're also going to use an infusion instead of bolus injection:
+We can write the same exact model using custom ODE code. The following example will also only output the concentration (`only_obs = TRUE`), and not the amounts in each compartment. We're also going to use an infusion instead of bolus injection:
 
 ```{r custom}
 pk2 <- new_ode_model(
@@ -117,7 +117,7 @@ used for dosing patients.
 
 ## Example usage
 
-To simulate PK, provide the model and parameters to `PKPDsim::sim()` along with
+To simulate PK, provide the model and parameters to `sim()` along with
 a dosing regimen and covariates.
 
 ```{r sample-model-example, eval=FALSE}
