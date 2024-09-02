@@ -12,7 +12,7 @@ This can be implemented using the `n` and `omega` options. The `omega` (nomencla
 The following:
 
 ```{r load-lib, echo=FALSE}
-library("PKPDsim")
+library(PKPDsim)
 ```
 
 ```{r omega}
@@ -49,7 +49,7 @@ dat <- sim(
   omega_matrix = matrix(c(
     0.2, 0.05, 
     0.05, 0.2
-  ), ncol=2)
+  ), ncol = 2)
 )
 ```
 
@@ -68,7 +68,7 @@ dat <- sim(
 )
 ```
 
-Note that using the `cv_to_omega` function assumes the *CV is on the SD-scale* and not on the variance scale (and the definition of CV uses the assumption $$1 + \eta \approx 1 * \exp(\eta)$$).
+Note that using the `cv_to_omega` function assumes the *CV is on the SD-scale* and not on the variance scale (and the definition of CV uses the assumption $1 + \eta \approx 1 * \exp(\eta)$).
 
 # Variability distribution
 
@@ -105,7 +105,7 @@ mod1 <- new_ode_model(
   obs = list(cmt = 2, scale = "V * exp(eta2)"),
   dose = list(cmt = 1, bioav = "F1i")
 )
-reg1 <- new_regimen(amt = 100, n = 2, interval = 12, type="oral")
+reg1 <- new_regimen(amt = 100, n = 2, interval = 12, type = "oral")
 dat <- sim(
   ode = mod1,
   regimen  = reg1,

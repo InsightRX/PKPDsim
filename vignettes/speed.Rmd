@@ -19,7 +19,7 @@ From this structure it is easy to understand that when you would request simulat
 
     dat <- sim(ode = mod, ...., n = 1000)
 
-the pre- and post-processing parts will take relatively minor computational time, since the main part will be the loop simulating the PK for the subjects. However, if instead you would write a loop yourself to simulate 1,000 patients, and would call sim() repeatedly:
+the pre- and post-processing parts will take relatively minor computational time, since the main part will be the loop simulating the PK for the subjects. However, if instead you would write a loop yourself to simulate 1,000 patients, and would call `sim()` repeatedly:
 
     dat <- c()
     for(i in 1:1000) {

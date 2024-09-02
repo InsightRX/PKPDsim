@@ -24,7 +24,7 @@ install.packages("PKPDsim")
 For example, a 1-compartment oral PK model can be obtained using:
 
 ```{r load-lib, echo=FALSE}
-library("PKPDsim")
+library(PKPDsim)
 ```
 
 ```{r new-model}
@@ -48,7 +48,7 @@ pk1 <- new_ode_model(code = "
 ")
 ```
 
-The input code should adhere to the follow rules:
+The input code should adhere to the following rules:
 
 - the derivatives in the ODE system are defined using `dAdt`omputate
 - array indices for the derivatives and compartments are indicated with `[ ]`. 
@@ -170,7 +170,7 @@ pk1 <- new_ode_model(code = "
 
 # Custom model from file
 
-Using the `file=` argument, the model code is read from the specified files. This is just a convenience function, i.e. it allows you to separate models from R code more easily.
+Using the `file` argument, the model code is read from the specified files. This is just a convenience function, i.e. it allows you to separate models from R code more easily.
 
 ```{r model-from-file, eval=FALSE}
 pk1 <- new_ode_model(
