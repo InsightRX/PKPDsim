@@ -152,7 +152,7 @@ it (installation of <code>ggplot2</code> required).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span> <span class="va">comp</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html" class="external-link">vars</a></span><span class="op">(</span><span class="va">comp</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="PKPDsim_files/figure-html/plot-example-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -160,7 +160,7 @@ it (installation of <code>ggplot2</code> required).</p>
 </h2>
 <p>We can write the same exact model using custom ODE code. The
 following example will also only output the concentration
-(<code>only_obs=TRUE</code>), and not the amounts in each compartment.
+(<code>only_obs = TRUE</code>), and not the amounts in each compartment.
 We’re also going to use an infusion instead of bolus injection:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pk2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
@@ -206,8 +206,7 @@ only, and should not be used for dosing patients.</p>
 <h3 id="example-usage">Example usage<a class="anchor" aria-label="anchor" href="#example-usage"></a>
 </h3>
 <p>To simulate PK, provide the model and parameters to
-<code><a href="../reference/sim.html">PKPDsim::sim()</a></code> along with a dosing regimen and
-covariates.</p>
+<code><a href="../reference/sim.html">sim()</a></code> along with a dosing regimen and covariates.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## Create dosing regimen and covariates</span></span>
 <span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
@@ -245,7 +244,7 @@ covariates.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

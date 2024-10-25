@@ -104,7 +104,8 @@ request simulation of 1,000 patients:</p>
 <p>the pre- and post-processing parts will take relatively minor
 computational time, since the main part will be the loop simulating the
 PK for the subjects. However, if instead you would write a loop yourself
-to simulate 1,000 patients, and would call sim() repeatedly:</p>
+to simulate 1,000 patients, and would call <code><a href="../reference/sim.html">sim()</a></code>
+repeatedly:</p>
 <pre><code><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">1000</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu">rbindlist</span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span>ode <span class="op">=</span> <span class="va">mod</span>, <span class="va">....</span>, n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
@@ -156,7 +157,7 @@ outlined above, our benchmarks indicate that simulation speed for
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

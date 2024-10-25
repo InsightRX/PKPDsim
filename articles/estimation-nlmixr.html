@@ -138,7 +138,7 @@ model and parameter definitions in <code>nlmixr</code> syntax:</p>
 <span><span class="co">##         y ~ prop(err_prop) + add(err_add)</span></span>
 <span><span class="co">##     })</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;environment: 0x556a0a3eec88&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x562841e270b8&gt;</span></span></code></pre>
 <p>A full code example is included below.</p>
 <p><em>Note: both nlmixr and the nlmixr-translator in PKPDsim are still
 under active development. Syntax and results may therefore
@@ -170,7 +170,7 @@ change.</em></p>
 <span>  regimen <span class="op">=</span> <span class="va">regimen</span>, </span>
 <span>  parameters <span class="op">=</span> <span class="va">par</span>,</span>
 <span>  omega <span class="op">=</span> <span class="va">omega</span>, </span>
-<span>  only_obs <span class="op">=</span> <span class="cn">T</span>, </span>
+<span>  only_obs <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>  t_obs <span class="op">=</span> <span class="va">t_obs</span>, </span>
 <span>  n <span class="op">=</span> <span class="va">n</span>,</span>
 <span>  res_var <span class="op">=</span> <span class="va">ruv</span></span>
@@ -184,7 +184,7 @@ change.</em></p>
 <span></span>
 <span><span class="co">## Combine observed data and dose data</span></span>
 <span><span class="va">simdat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">doses</span>, <span class="va">conc</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">ID</span>, <span class="va">TIME</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Create nlmixr model object</span></span>
 <span><span class="va">f</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pkpdsim_to_nlmixr.html">pkpdsim_to_nlmixr</a></span><span class="op">(</span></span>
@@ -192,7 +192,7 @@ change.</em></p>
 <span>  parameters <span class="op">=</span> <span class="va">par</span>,</span>
 <span>  omega <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span><span class="op">)</span>,</span>
 <span>  res_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="fl">0.1</span>, add <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span>
-<span>  log_transform <span class="op">=</span> <span class="cn">T</span></span>
+<span>  log_transform <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Perform fit using nlmixr (SAEM)</span></span>
@@ -211,35 +211,35 @@ change.</em></p>
 <span><span class="co">## <span style="font-weight: bold;">── Time (sec </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$time</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##            setup covariance   saem table compress    other</span></span>
-<span><span class="co">## elapsed 0.002191   0.015014 10.293 0.064    0.024 1.409795</span></span>
+<span><span class="co">## elapsed 0.002648   0.018006 10.962 0.083    0.028 1.769346</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-weight: bold;">── Population Parameters (</span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixed</span><span style="font-weight: bold;"> or </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixedDf</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">##          <span style="font-weight: bold;">Est.</span>     <span style="font-weight: bold;">SE</span> <span style="font-weight: bold;">%RSE</span> <span style="font-weight: bold;">Back-transformed(95%CI)</span> <span style="font-weight: bold;">BSV(CV%)</span> <span style="font-weight: bold;">Shrink(SD)%</span></span></span>
-<span><span class="co">## <span style="font-weight: bold;">logCL</span>    1.57 0.0382 2.44       4.79 (4.44, 5.16)     17.1      <span style="color: #BB0000; font-weight: bold;">31.6%</span> </span></span>
-<span><span class="co">## <span style="font-weight: bold;">logV</span>     3.92  0.055  1.4       50.6 (45.4, 56.4)     25.2      <span style="color: #BB0000; font-weight: bold;">31.6%</span> </span></span>
-<span><span class="co">## <span style="font-weight: bold;">err_prop</span> 0.23                                0.23                     </span></span>
-<span><span class="co">## <span style="font-weight: bold;">err_add</span>  1.62                                1.62                     </span></span>
+<span><span class="co">##           <span style="font-weight: bold;">Est.</span>     <span style="font-weight: bold;">SE</span> <span style="font-weight: bold;">%RSE</span> <span style="font-weight: bold;">Back-transformed(95%CI)</span> <span style="font-weight: bold;">BSV(CV%)</span> <span style="font-weight: bold;">Shrink(SD)%</span></span></span>
+<span><span class="co">## <span style="font-weight: bold;">logCL</span>     1.57 0.0399 2.54        4.81 (4.45, 5.2)     20.6      <span style="color: #00BB00; font-weight: bold;">25.7%</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold;">logV</span>      3.92 0.0548  1.4       50.2 (45.1, 55.9)     27.7      <span style="color: #00BB00; font-weight: bold;">26.9%</span> </span></span>
+<span><span class="co">## <span style="font-weight: bold;">err_prop</span> 0.212                               0.212                     </span></span>
+<span><span class="co">## <span style="font-weight: bold;">err_add</span>    1.5                                 1.5                     </span></span>
 <span><span class="co">##  </span></span>
 <span><span class="co">##   Covariance Type (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$covMethod</span>): <span style="font-weight: bold;">linFim</span></span></span>
 <span><span class="co">##   Correlations in between subject variability (BSV) matrix:</span></span>
 <span><span class="co">##     cor:eta_V,eta_CL </span></span>
-<span><span class="co">##           <span style="color: #BB0000; font-weight: bold;">0.761 </span> </span></span>
+<span><span class="co">##           <span style="color: #00BB00; font-weight: bold;">0.689 </span> </span></span>
 <span><span class="co">##  </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##   Full BSV covariance (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$omega</span>) or correlation (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$omegaR</span>; diagonals=SDs) </span></span>
 <span><span class="co">##   Distribution stats (mean/skewness/kurtosis/p-value) available in <span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$shrink</span> </span></span>
 <span><span class="co">##   Information about run found (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$runInfo</span>):</span></span>
-<span><span class="co">##    • subscript out of bounds (index 100 &gt;= vector size 100) </span></span>
+<span><span class="co">##    • 'f' has the following user-defined boundaries: err_prop, err_add which are ignored in 'saem' </span></span>
 <span><span class="co">##   Censoring (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$censInformation</span>): No censoring</span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## <span style="font-weight: bold;">── Fit Data (object </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="font-weight: bold;"> is a modified </span><span style="color: #0000BB; font-weight: bold;">tibble</span><span style="font-weight: bold;">): ──</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># A tibble: 200 × 16</span></span></span>
 <span><span class="co">##   ID     TIME    DV  PRED   RES IPRED  IRES IWRES eta_CL  eta_V     y    A1</span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> 1       8   19.7  13.9   5.82 16.0  3.67  0.911 -<span style="color: #BB0000;">0.156</span> -<span style="color: #BB0000;">0.109</span> 16.0   728.</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> 1      23.5  4.85  3.20  1.64  3.96 0.889 0.478 -<span style="color: #BB0000;">0.156</span> -<span style="color: #BB0000;">0.109</span>  3.96  180.</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> 1      25   38.0  29.7   8.28 33.7  4.38  0.553 -<span style="color: #BB0000;">0.156</span> -<span style="color: #BB0000;">0.109</span> 33.7  <span style="text-decoration: underline;">1</span>528.</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> 1       8   19.7  13.9   5.84 17.1  2.62  0.669 -<span style="color: #BB0000;">0.239</span> -<span style="color: #BB0000;">0.127</span> 17.1   756.</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> 1      23.5  4.85  3.15  1.70  4.54 0.310 0.174 -<span style="color: #BB0000;">0.239</span> -<span style="color: #BB0000;">0.127</span>  4.54  201.</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> 1      25   38.0  29.9   8.16 35.1  2.90  0.383 -<span style="color: #BB0000;">0.239</span> -<span style="color: #BB0000;">0.127</span> 35.1  <span style="text-decoration: underline;">1</span>554.</span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 197 more rows</span></span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: CL &lt;dbl&gt;, V &lt;dbl&gt;, tad &lt;dbl&gt;, dosenum &lt;dbl&gt;</span></span></span></code></pre>
 </div>
@@ -254,7 +254,7 @@ change.</em></p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

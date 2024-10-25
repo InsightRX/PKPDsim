@@ -105,7 +105,7 @@ of the following components:</p>
 </li>
 </ul>
 <p>These list elements can be combined, e.g. for a combined proportional
-and additive error model one would write e.g.:
+and additive error model one would write:
 <code>res_var = list(prop = 0.1, add = 1)</code>, which would give a 10%
 proportional error plus an additive error of 1 concentration unit.</p>
 <p>Below are some examples of the <code>res_var</code> argument</p>
@@ -123,7 +123,7 @@ proportional error plus an additive error of 1 concentration unit.</p>
 <span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">150</span><span class="op">)</span>,</span>
 <span>  res_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>prop <span class="op">=</span> <span class="fl">0.1</span>, add <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  regimen <span class="op">=</span> <span class="va">reg</span>,</span>
-<span>  only_obs<span class="op">=</span><span class="cn">TRUE</span></span>
+<span>  only_obs <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sim1</span>, <span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -135,7 +135,7 @@ proportional error plus an additive error of 1 concentration unit.</p>
 <span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">150</span><span class="op">)</span>,</span>
 <span>  res_var <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>exp <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span>
 <span>  regimen <span class="op">=</span> <span class="va">reg</span>,</span>
-<span>  only_obs<span class="op">=</span><span class="cn">TRUE</span></span>
+<span>  only_obs <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Besides including the residual error at simulation time, there is
 also the option to include it afterwards. For that, the function
@@ -163,7 +163,7 @@ also the option to include it afterwards. For that, the function
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

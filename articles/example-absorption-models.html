@@ -93,11 +93,11 @@ parameter is specified, the lag time will apply to the default dose
 compartment only. Alternatively, it is also possible to specify a vector
 of lag times, with a value for each compartment.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/InsightRX/PKPDsim" class="external-link">"PKPDsim"</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/InsightRX/PKPDsim" class="external-link">PKPDsim</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">pk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
 <span>  code <span class="op">=</span> <span class="st">" dAdt[1] = -KA * A[1]; dAdt[2] = KA*A[1] -(CL/V) * A[2] "</span>,</span>
-<span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">2</span>, scale<span class="op">=</span><span class="st">"V"</span><span class="op">)</span>,</span>
+<span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="st">"V"</span><span class="op">)</span>,</span>
 <span>  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  lagtime <span class="op">=</span> <span class="st">"ALAG"</span></span>
 <span><span class="op">)</span></span>
@@ -160,7 +160,7 @@ will be added soon to PKPDsim.</em></p>
 <span>  parameters <span class="op">=</span> <span class="va">parameters</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  omega <span class="op">=</span> <span class="fu"><a href="../reference/cv_to_omega.html">cv_to_omega</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">0.1</span>, V <span class="op">=</span> <span class="fl">0.1</span>, MTT <span class="op">=</span> <span class="fl">0.2</span>, N <span class="op">=</span><span class="fl">0.1</span>, KA<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">0.1</span>, V <span class="op">=</span> <span class="fl">0.1</span>, MTT <span class="op">=</span> <span class="fl">0.2</span>, N <span class="op">=</span> <span class="fl">0.1</span>, KA <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span>
 <span>    <span class="va">parameters</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  t_obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">36</span>, <span class="fl">.5</span><span class="op">)</span></span>
@@ -177,7 +177,7 @@ will be added soon to PKPDsim.</em></p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

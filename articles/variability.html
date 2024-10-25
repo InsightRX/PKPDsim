@@ -128,7 +128,7 @@ could also have been defined as:</p>
 <span>  omega_matrix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="fl">0.2</span>, <span class="fl">0.05</span>, </span>
 <span>    <span class="fl">0.05</span>, <span class="fl">0.2</span></span>
-<span>  <span class="op">)</span>, ncol<span class="op">=</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Or also using the coefficient of variation and without correlation
 between parameters:</p>
@@ -147,7 +147,7 @@ between parameters:</p>
 <p>Note that using the <code>cv_to_omega</code> function assumes the
 <em>CV is on the SD-scale</em> and not on the variance scale (and the
 definition of CV uses the assumption
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mi>η</mi><mo>≈</mo><mn>1</mn><mo>*</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">1 + \eta \approx 1 * \exp(\eta)</annotation></semantics></math>).</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mi>η</mi><mo>≈</mo><mn>1</mn><mo>*</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">1 + \eta \approx 1 * \exp(\eta)</annotation></semantics></math>).</p>
 <div class="section level2">
 <h2 id="variability-distribution">Variability distribution<a class="anchor" aria-label="anchor" href="#variability-distribution"></a>
 </h2>
@@ -192,7 +192,7 @@ bioavailability using the logit-distribution.</p>
 <span>  obs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">2</span>, scale <span class="op">=</span> <span class="st">"V * exp(eta2)"</span><span class="op">)</span>,</span>
 <span>  dose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>cmt <span class="op">=</span> <span class="fl">1</span>, bioav <span class="op">=</span> <span class="st">"F1i"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">2</span>, interval <span class="op">=</span> <span class="fl">12</span>, type<span class="op">=</span><span class="st">"oral"</span><span class="op">)</span></span>
+<span><span class="va">reg1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">2</span>, interval <span class="op">=</span> <span class="fl">12</span>, type <span class="op">=</span> <span class="st">"oral"</span><span class="op">)</span></span>
 <span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
 <span>  ode <span class="op">=</span> <span class="va">mod1</span>,</span>
 <span>  regimen  <span class="op">=</span> <span class="va">reg1</span>,</span>
@@ -236,7 +236,7 @@ bioavailability using the logit-distribution.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

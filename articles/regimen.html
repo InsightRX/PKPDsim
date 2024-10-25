@@ -140,14 +140,15 @@ code and observation scale.</em></p>
 <div class="section level2">
 <h2 id="steady-state">Steady state<a class="anchor" aria-label="anchor" href="#steady-state"></a>
 </h2>
-<p>Instead of simulating the full concentration time course for a give
+<p>Instead of simulating the full concentration time course for a given
 model, if you want to simulate the PK(PD) at steady state, you can also
-specify the <code>ss=TRUE</code> argument to <code><a href="../reference/new_regimen.html">new_regimen()</a></code>,
-which will then simulate the regimen at steady state. By default, steady
-state is assumed to occur after 5 days (PKPDsim doesn’t check if steady
-state is reached!), but if you want to decrease or increase this you can
-do so by specifying the <code>n_ss</code> argument which takes the
-number of doses to simulate before assuming steady state.</p>
+specify the <code>ss = TRUE</code> argument to
+<code><a href="../reference/new_regimen.html">new_regimen()</a></code>, which will then simulate the regimen at
+steady state. By default, steady state is assumed to occur after 5 days
+(PKPDsim doesn’t check if steady state is reached!), but if you want to
+decrease or increase this you can do so by specifying the
+<code>n_ss</code> argument, which takes the number of doses to simulate
+before assuming steady state.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reg_ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
 <span>  amt <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -175,7 +176,7 @@ number of doses to simulate before assuming steady state.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

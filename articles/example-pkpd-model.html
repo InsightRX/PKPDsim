@@ -86,19 +86,19 @@
 <p>Below is an example of a simple indirect-response model. With PK-PD
 models, the initial state of the PD system often depends on specific
 model parts. We can define the state of the ODE system statically using
-the <code>A_init=</code> argument, but this will not take any parameters
+the <code>A_init</code> argument, but this will not take any parameters
 into account. However, we can also define initial states dynamically
 using the <code>state_init</code> argument, which allow you to specify
 the state of each compartment using code.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/InsightRX/PKPDsim" class="external-link">"PKPDsim"</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://ggplot2.tidyverse.org" class="external-link">"ggplot2"</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/InsightRX/PKPDsim" class="external-link">PKPDsim</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p_pkpd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  CL <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  V  <span class="op">=</span> <span class="fl">50</span>,</span>
 <span>  KIN <span class="op">=</span> <span class="fl">.02</span>,</span>
-<span>  KOUT<span class="op">=</span><span class="fl">.5</span>,</span>
+<span>  KOUT <span class="op">=</span> <span class="fl">.5</span>,</span>
 <span>  EFF <span class="op">=</span> <span class="fl">0.2</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -132,7 +132,7 @@ the state of each compartment using code.</p>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span>, colour <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html" class="external-link">scale_colour_discrete</a></span><span class="op">(</span>guide <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">comp</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html" class="external-link">vars</a></span><span class="op">(</span><span class="va">comp</span><span class="op">)</span>, scales <span class="op">=</span> <span class="st">"free"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="example-pkpd-model_files/figure-html/example-pkpd-1.png" width="700"></p>
 <div class="section level2">
 <h2 id="combine-pk-and-pd-models">Combine PK and PD models<a class="anchor" aria-label="anchor" href="#combine-pk-and-pd-models"></a>
@@ -140,7 +140,7 @@ the state of each compartment using code.</p>
 <p>As shown above, a PK-PD model can be written as a single set of
 differential equations. However, we often develop PK and PD models
 separately and e.g. want to plug various PK models into existing PD
-models. In <code>PKPDsim</code> you can two or more model parts
+models. In <code>PKPDsim</code> you can specify two or more model parts
 separately in a list to the <code>code</code> argument:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pkpd</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span></span>
@@ -163,7 +163,7 @@ one.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

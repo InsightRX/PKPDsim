@@ -128,7 +128,7 @@ well as the systemic drug concentration are outputted.</p>
 <span>  ode <span class="op">=</span> <span class="va">mod</span>, </span>
 <span>  parameters <span class="op">=</span> <span class="va">par</span>, </span>
 <span>  regimen <span class="op">=</span> <span class="va">reg</span>, </span>
-<span>  only_obs <span class="op">=</span> <span class="cn">T</span></span>
+<span>  only_obs <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -142,11 +142,11 @@ for this:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod_1cmt_iv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_1cmt_iv"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span> <span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">4</span>, interval <span class="op">=</span> <span class="fl">12</span>, type <span class="op">=</span> <span class="st">"bolus"</span>,  cmt<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span>amt <span class="op">=</span> <span class="fl">100</span>, n <span class="op">=</span> <span class="fl">4</span>, interval <span class="op">=</span> <span class="fl">12</span>, type <span class="op">=</span> <span class="st">"bolus"</span>,  cmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">cov_table</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  id  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span>,</span>
 <span>  WT  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">45</span>, <span class="fl">50</span>, <span class="fl">60</span><span class="op">)</span>,</span>
-<span>  SCR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">150</span>, <span class="fl">90</span>,<span class="fl">110</span><span class="op">)</span>,</span>
+<span>  SCR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">50</span>, <span class="fl">150</span>, <span class="fl">90</span>, <span class="fl">110</span><span class="op">)</span>,</span>
 <span>  t   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -157,8 +157,8 @@ for this:</p>
 <span>  covariates_table <span class="op">=</span> <span class="va">cov_table</span>,</span>
 <span>  covariates_implementation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>SCR <span class="op">=</span> <span class="st">"interpolate"</span><span class="op">)</span>,</span>
 <span>  n_ind <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  only_obs <span class="op">=</span> <span class="cn">T</span>,</span>
-<span>  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="cn">TRUE</span>, covariates<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  only_obs <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="cn">TRUE</span>, covariates <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Simulating 3 individuals.</span></span></code></pre>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -182,7 +182,7 @@ for this:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
