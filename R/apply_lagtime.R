@@ -13,6 +13,7 @@ apply_lagtime <- function(
   parameters,
   cmt_mapping = NULL
 ) {
+    regimen$nominal_dose_times <- regimen$dose_times # keep original dose_times available
     if(class(lagtime) %in% c("numeric", "integer")) {
       if(length(lagtime) == 1) {
         regimen$dose_times <- regimen$dose_times + lagtime

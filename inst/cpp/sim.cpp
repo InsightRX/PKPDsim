@@ -50,18 +50,6 @@ void pk_code (int i, std::vector<double> times, std::vector<double> doses, doubl
   // insert custom pk event code
 }
 
-int find_first_nonzero(std::vector<double> vect) {
-  // find first nonzero value in vector, returns first value if non found
-  int index = 0;
-  for(int i = 0; i < vect.size(); i++) {
-    if(vect[i] > 0) {
-      index = i;
-      break;
-    }
-  }
-  return(index);
-}
-
 // [[Rcpp::export]]
 List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_bins, double step_size) {
   std::vector<double> t;
@@ -93,9 +81,10 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert A dAdt state_init
   set_covariates(0);
 
-  // set prv_dose to first non-zero dose
-  int idx = find_first_nonzero(doses);
-  prv_dose = doses[idx];
+  // set prv_dose to first dose, if at t=0
+  if(as<NumericVector>(par["nominal_dose_times"])[0] == 0) {
+    prv_dose = as<NumericVector>(par["dose_amts"])[0];
+  }
   t_prv_dose = times[0];
 
   // Main call to ODE solver, initialize any variables in ode code

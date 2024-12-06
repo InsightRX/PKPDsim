@@ -147,6 +147,8 @@ sim <- function (ode = NULL,
   }
   if(!is.null(lagtime)) {
     regimen <- apply_lagtime(regimen, lagtime, parameters, attr(ode, "cmt_mapping"))
+  } else {
+    regimen$nominal_dose_times <- regimen$dose_times
   }
   if(!is.null(attr(ode, "dose")$duration_scale)) {
     regimen <- apply_duration_scale(
@@ -341,6 +343,7 @@ sim <- function (ode = NULL,
     }
     design_i <- design
     p$dose_times <- regimen$dose_times
+    p$nominal_dose_times <- regimen$nominal_dose_times
     p$dose_amts  <- regimen$dose_amts
   }
 
