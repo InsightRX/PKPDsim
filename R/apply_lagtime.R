@@ -13,17 +13,17 @@ apply_lagtime <- function(
   parameters,
   cmt_mapping = NULL
 ) {
-    regimen$nominal_dose_times <- regimen$dose_times # keep original dose_times available
+    regimen$effective_dose_times <- regimen$dose_times # dose times with lag times added
     if(class(lagtime) %in% c("numeric", "integer")) {
       if(length(lagtime) == 1) {
-        regimen$dose_times <- regimen$dose_times + lagtime
+        regimen$effective_dose_times <- regimen$dose_times + lagtime
       } else {
-        regimen$dose_times <- regimen$dose_times + lagtime[regimen$cmt]
+        regimen$effective_dose_times <- regimen$dose_times + lagtime[regimen$cmt]
       }
     }
     if(class(lagtime) %in% c("character")) {
       if(length(lagtime) == 1) {
-        regimen$dose_times <- regimen$dose_times + parameters[[lagtime]]
+        regimen$effective_dose_times <- regimen$dose_times + parameters[[lagtime]]
       } else {
         if(is.null(regimen$cmt)) {
           if(!is.null(cmt_mapping)) {
@@ -34,7 +34,7 @@ apply_lagtime <- function(
         }
         par_tmp <- parameters
         par_tmp[["0"]] <- 0
-        regimen$dose_times <- regimen$dose_times + as.numeric(unlist(par_tmp[lagtime[regimen$cmt]]))
+        regimen$effective_dose_times <- regimen$dose_times + as.numeric(unlist(par_tmp[lagtime[regimen$cmt]]))
       }
     }
     return(regimen)
