@@ -101,13 +101,15 @@ create_event_table <- function(
 
     # add covariate update times as dummy dose
     regimen$evid <- c(rep(1, length(regimen$dose_times)), rep(2, length(covt$time)))
+    regimen$effective_dose_times <- c(regimen$effective_dose_times, covt$time)
     regimen$dose_times <- c(regimen$dose_times, covt$time)
     regimen$dose_amts <- c(regimen$dose_amts, rep(0, length(covt$time)))
     regimen$type <- c(regimen$type, rep("covariate", length(covt$time)))
     regimen$dose_cmt <- c(regimen$dose_cmt, rep(0, length(covt$time)))
     regimen$t_inf <- c(regimen$t_inf, rep(0, length(covt$time)))
 
-    ord <- order(regimen$dose_times)
+    ord <- order(regimen$effective_dose_times)
+    regimen$effective_dose_times <- regimen$effective_dose_times[ord]
     regimen$dose_times <- regimen$dose_times[ord]
     regimen$dose_amts  <- regimen$dose_amts[ord]
     regimen$type <- regimen$type[ord]
@@ -124,26 +126,29 @@ create_event_table <- function(
   # other methods, assume infusion time was provided correctly
   is_bolus <- regimen$type %in% c("oral", "bolus", "sc", "im", "covariate")
   regimen$t_inf[is_bolus] <- 0
-  dos <- data.frame(cbind(t = regimen$dose_times,
+  dos <- data.frame(cbind(t = regimen$effective_dose_times,
                   dose = regimen$dose_amts,
                   type = as.numeric(regimen$t_inf != 0),
                   dum = 0,
                   dose_cmt = regimen$dose_cmt,
                   t_inf = regimen$t_inf,
                   evid = regimen$evid,
+                  dose_time = regimen$dose_times,
                   bioav = bioav,
                   rate = 0))
   if(sum(regimen$t_inf, na.rm = TRUE) > 0) {
     dos$rate[regimen$t_inf > 0] <- regimen$dose_amts[regimen$t_inf > 0] / regimen$t_inf[regimen$t_inf > 0]
   }
+
   if(any(regimen$t_inf > 0)) {
-    dos_t2 <- cbind(t = regimen$dose_times[regimen$t_inf > 0] + regimen$t_inf[regimen$t_inf > 0],
+    dos_t2 <- cbind(t = regimen$effective_dose_times[regimen$t_inf > 0] + regimen$t_inf[regimen$t_inf > 0],
                           dose = 0,
                           type = 1,
                           dum = 1,
                           dose_cmt = regimen$dose_cmt[regimen$t_inf > 0],
                           t_inf = 0,
                           evid = 2,
+                          dose_time = regimen$dose_times[regimen$t_inf > 0] + regimen$t_inf[regimen$t_inf > 0],
                           bioav = 0, #bioav,
                           rate = -dos$rate[regimen$t_inf > 0])
     dos[(length(dos[,1])+1) : (length(dos[,1])+length(dos_t2[,1])),] <- dos_t2
@@ -162,6 +167,7 @@ create_event_table <- function(
          dose_cmt = 0,
          t_inf = 0,
          evid = 0,
+         dose_time = 0,
          bioav = 0,
          rate = 0)
       design <- design[order(design$t, -design$dose),]
@@ -178,6 +184,7 @@ create_event_table <- function(
          dose_cmt = 0,
          t_inf = 0,
          evid = 2,
+         dose_time = 0,
          bioav = 0,
          rate = 0)
       design[(length(design[,1])+1) : (length(design[,1])+length(t_diff)),] <- tmp[order(tmp$t, -tmp$dose),]
@@ -239,14 +246,14 @@ create_event_table <- function(
     # merging can induce multiple doses and/or multiple infusion stop events, should reset those to being observations
     duplicate_event <- design$evid %in% c(1,2) & duplicated(design$idx)
     if(any(duplicate_event)) {
-      design[duplicate_event, c("dose", "rate", "evid", "type", "t_inf", "dose_cmt", "bioav")] <- 0
+      design[duplicate_event, c("dose", "rate", "evid", "dose_time", "type", "t_inf", "dose_cmt", "bioav")] <- 0
     }
     design$idx <- NULL
   }
   design <- design[order(design$t, design$type, design$dum, decreasing=FALSE),]
   if(t_init != 0) { # add event line at t=0, to start integration
      design <- design[c(1, 1:nrow(design)),]
-     design[1, 1:9] <- c(0, 0, 0, 0, 0, 0, 2, 0, 0)
+     design[1, 1:9] <- c(0, 0, 0, 0, 0, 0, 0, 2, 0, 0)
   }
 
   return(design)

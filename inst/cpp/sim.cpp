@@ -50,13 +50,30 @@ void pk_code (int i, std::vector<double> times, std::vector<double> doses, doubl
   // insert custom pk event code
 }
 
+int find_dose_at_t0(std::vector<double> time, std::vector<int> evid) {
+  // find row index for dose (evid=1) at time=0 (doesn't have to be first event row)
+  // returns 0 if no dose given at t=0
+  int index = 0;
+  for(int i = 0; i < time.size(); i++) {
+    if(time[i] > 0) {
+      break;
+    } else {
+      if(evid[i] == 1) {
+        index = i;
+        break;
+      }
+    }
+  }
+  return(index);
+}
+
 // [[Rcpp::export]]
 List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_bins, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
   // insert observation variable definition
   double t_start, t_end;
-  std::vector<double> times, doses, dummy, rates;
+  std::vector<double> times, doses, dose_times, dummy, rates;
   std::vector<int> dose_cmt, dose_type, evid, obs_type, y_type;
   // insert variable definitions
   times = as<std::vector<double> >(design["t"]);
@@ -65,13 +82,13 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   dummy = as<std::vector<double> >(design["dum"]);
   rates = as<std::vector<double> >(design["rate"]);
   dose_cmt = as<std::vector<int> >(design["dose_cmt"]);
+  dose_times = as<std::vector<double> >(design["dose_time"]);
   dose_type = as<std::vector<int> >(design["type"]);
   obs_type = as<std::vector<int> >(design["obs_type"]);
   int len = times.size();
   int start;
   memset(rate, 0, sizeof(rate));
   // insert observation compartment
-  // insert bioavailability definition
   // insert covariate definitions
   // insert_parameter_definitions
 
@@ -81,9 +98,12 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
   set_covariates(0);
-  prv_dose = doses[0];
-  t_prv_dose = times[0];
 
+  // set prv_dose to first non-zero dose
+  int idx = find_dose_at_t0(dose_times, evid);
+  prv_dose = doses[idx];
+  t_prv_dose = dose_times[idx];
+  
   // Main call to ODE solver, initialize any variables in ode code
   ode(A_dum, dAdt_dum, 0);
 
@@ -103,7 +123,7 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
     set_covariates(i);
 
     if(evid[i] == 1) {
-      t_prv_dose = times[i];
+      t_prv_dose = dose_times[i];
       prv_dose = doses[i];
     }
     // insert time-dependent covariates scale
