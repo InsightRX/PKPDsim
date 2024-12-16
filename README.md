@@ -1,5 +1,11 @@
 # PKPDsim <img src="man/figures/hexsticker.png" align="right" width = "200"/>
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/InsightRX/PKPDsim/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/InsightRX/PKPDsim/actions/workflows/R-CMD-check.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/PKPDsim)](https://CRAN.R-project.org/package=PKPDsim)
+[![R-universe status](https://insightrx.r-universe.dev/badges/PKPDsim)](https://insightrx.r-universe.dev/PKPDsim)
+<!-- badges: end -->
+
 PKPDsim is a library for numerical integration of ODE systems, in particular pharmacokinetic-pharmacodynamic (PK-PD) mixed-effects models.
 
 ## Installation
@@ -8,29 +14,35 @@ The development version of PKPDsim always has the most up-to-date improvements
 and bug fixes. We aim to release PKPDsim on CRAN at least once a year,
 depending on the number and impact of updates made to the development version.
 
-The CRAN version of PKPDsim can be installed using:
+The [CRAN](https://cran.r-project.org/package=PKPDsim) version of PKPDsim can be installed using:
 
-```
+```r
 install.packages("PKPDsim")
 ```
 
-The development version of PKPDsim can be installed using:
+The development version of PKPDsim can be installed from [GitHub](https://github.com/InsightRX/PKPDsim) or [R-universe](https://insightrx.r-universe.dev/PKPDsim) using:
 
-```
+```r
+# Install from GitHub:
 devtools::install_github("InsightRX/PKPDsim")
+
+# Install from R-universe:
+install.packages("PKPDsim", repos = "https://insightrx.r-universe.dev")
 ```
 
 A number of models from the literature have been made available for use in
 PKPD simulations. To see which models are available for installation, run:
 
-```
+```r
 available_default_literature_models()
 ```
 
 You can install these models as packages using the following commands:
-```
+
+```r
 # To install a single model:
 install_default_literature_model("pk_busulfan_mccune")
+
 # To install all supplied models:
 install_default_literature_model("all")
 ```
