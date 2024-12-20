@@ -33,8 +33,8 @@ reg1 <- new_regimen(
 )
 iov_var <- 0.3 ^ 2 # 30% IOV
 
-test_that("Throws warning when `iov_bins` length doesn't match number of specified bins", {
-  expect_warning({
+test_that("Throws error when number of `iov_bins` is higher than allowed for model", {
+  expect_error({
     sim(
       ode = pk1,
       parameters = pars,
@@ -52,32 +52,29 @@ test_that("Throws warning when `iov_bins` length doesn't match number of specifi
       only_obs = TRUE,
       output_include = list(parameters = TRUE, variables = TRUE)
     )
-  }, "Number of IOV bins specified")
-  Rcpp_v <- unlist(packageVersion("Rcpp"))
-  if(Rcpp_v[1] >= 1 && Rcpp_v[2] >= 0 && (Rcpp_v[3] >= 13 || isTRUE(Rcpp_v[3] >= 12 && Rcpp_v[4] >= 4))) {
-    ## if-statement can be removed when Rcpp on CRAN >= 1.0.12.4
-    expect_warning({
-      expect_warning({
-        sim(
-          ode = pk1,
-          parameters = pars,
-          regimen = reg1,
-          omega = c(
-            iov_var, # IOV in CL
-            0, iov_var,
-            0, 0, iov_var,
-            0, 0, 0, iov_var,
-            0, 0, 0, 0, 0.3 # IIV in CL
-          ),
-          n = 1,
-          iov_bins = c(0, 24, 999), # one bin too few
-          omega_type = "normal",
-          only_obs = TRUE,
-          output_include = list(parameters = TRUE, variables = TRUE)
-        )
-      }, "Number of IOV bins specified")
-    }, "subscript out of bounds") # only thrown when Rcpp >= 1.0.12.4
-  }
+  }, "Number of allowed IOV bins for model is lower")
+})
+
+test_that("Throws warning when number of `iov_bins` is lower than allowed for model", {
+  expect_warning({
+    sim(
+      ode = pk1,
+      parameters = pars,
+      regimen = reg1,
+      omega = c(
+        iov_var, # IOV in CL
+        0, iov_var,
+        0, 0, iov_var,
+        0, 0, 0, iov_var,
+        0, 0, 0, 0, 0.3 # IIV in CL
+      ),
+      n = 1,
+      iov_bins = c(0, 24, 999), # one bin too few
+      omega_type = "normal",
+      only_obs = TRUE,
+      output_include = list(parameters = TRUE, variables = TRUE)
+    )}, "Number of allowed IOV bins for model is higher"
+  )
 })
 
 test_that("IOV is added to parameters", {
