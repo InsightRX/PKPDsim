@@ -61,7 +61,11 @@ sim(
 
 \item{res_var}{residual variability. Expected a list with arguments \code{prop}, \code{add}, and/or \code{exp}. NULL by default.}
 
-\item{iov_bins}{allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. \code{iov_bins = c(0, 24, 48, 72, 9999)}.}
+\item{iov_bins}{allow override of the default IOV bins for a model. Specified
+as a vector of timepoints specifying the bin separators, e.g.
+\code{iov_bins = c(0, 24, 48, 72, 9999)}. A warning will be thrown when less bins
+are requested than was defined for the model during compilation. When the
+number of bins is higher than defined for the model an error will be thrown.}
 
 \item{seed}{set seed for reproducible results}
 
