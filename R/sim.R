@@ -10,7 +10,11 @@
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
-#' @param iov_bins allow override of the default IOV bins for a model. Specified as a vector of timepoints specifying the bin separators, e.g. `iov_bins = c(0, 24, 48, 72, 9999)`.
+#' @param iov_bins allow override of the default IOV bins for a model. Specified
+#' as a vector of timepoints specifying the bin separators, e.g.
+#' `iov_bins = c(0, 24, 48, 72, 9999)`. A warning will be thrown when less bins
+#' are requested than was defined for the model during compilation. When the
+#' number of bins is higher than defined for the model an error will be thrown.
 #' @param seed set seed for reproducible results
 #' @param sequence if not NULL specifies the pseudo-random sequence to use, e.g. "halton" or "sobol". See `mvrnorm2` for more details.
 #' @param n_ind number of individuals to simulate
@@ -190,8 +194,10 @@ sim <- function (ode = NULL,
       }
     }
     if(!is.null(attr(ode, "iov")$n_bins) && attr(ode, "iov")$n_bins > 1) {
-      if(attr(ode, "iov")$n_bins != (length(iov_bins)-1)) {
-        warning("Number of IOV bins specified for model does not match supplied `iov_bins` argument. This could lead to simulation failures or erroneous output.")
+      if(attr(ode, "iov")$n_bins < (length(iov_bins)-1)) {
+        stop("Number of allowed IOV bins for model is lower than number of bins supplied in `iov_bins`. Please reduce the number of requested IOV bins in the `sim()` call, or increase the number of IOV bins allowed for the model.")
+      } else if (attr(ode, "iov")$n_bins > (length(iov_bins)-1)) {
+        warning("Number of allowed IOV bins for model is higher than number of bins supplied in `iov_bins`.")
       }
     }
     if(is.null(analytical)) {
