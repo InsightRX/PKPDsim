@@ -8,8 +8,8 @@
 <title>Residual error • PKPDsim</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Residual error">
 </head>
 <body>
@@ -109,8 +109,10 @@ and additive error model one would write:
 <code>res_var = list(prop = 0.1, add = 1)</code>, which would give a 10%
 proportional error plus an additive error of 1 concentration unit.</p>
 <p>Below are some examples of the <code>res_var</code> argument</p>
+<pre><code><span><span class="co">## Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">##   object 'type_sum.accel' not found</span></span></code></pre>
 <p>Combined proportional and additive:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_ode_model.html">new_ode_model</a></span><span class="op">(</span><span class="st">"pk_1cmt_iv"</span><span class="op">)</span></span>
 <span><span class="va">reg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/new_regimen.html">new_regimen</a></span><span class="op">(</span></span>
 <span>  amt <span class="op">=</span> <span class="fl">1000</span>,</span>
@@ -129,7 +131,7 @@ proportional error plus an additive error of 1 concentration unit.</p>
 <span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="error_files/figure-html/example-1.png" width="700"></p>
 <p>Exponential:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sim.html">sim</a></span><span class="op">(</span></span>
 <span>  <span class="va">mod</span>,</span>
 <span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>CL <span class="op">=</span> <span class="fl">5</span>, V <span class="op">=</span> <span class="fl">150</span><span class="op">)</span>,</span>
@@ -140,7 +142,7 @@ proportional error plus an additive error of 1 concentration unit.</p>
 <p>Besides including the residual error at simulation time, there is
 also the option to include it afterwards. For that, the function
 <code><a href="../reference/add_ruv.html">add_ruv()</a></code> is useful.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim3</span> <span class="op">&lt;-</span> <span class="va">sim1</span></span>
 <span><span class="va">sim3</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/add_ruv.html">add_ruv</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">sim3</span><span class="op">$</span><span class="va">y</span>, </span>
