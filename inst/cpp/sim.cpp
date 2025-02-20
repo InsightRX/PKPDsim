@@ -42,6 +42,19 @@ ode_out sim_cpp (const NumericVector Ainit, double t_start, double t_end, double
   return(tmp);
 }
 
+int first_dose_index(std::vector<double> time, std::vector<int> evid) {
+  // find row index for first dose (evid=1, doesn't have to be first event row)
+  // returns 0 if no dose given at all
+  int index = 0;
+  for(int i = 0; i < time.size(); i++) {
+    if(evid[i] == 1) {
+      index = i;
+      break;
+    }
+  }
+  return(index);
+}
+
 void set_covariates(int i) {
   // insert covariates for integration period
 }
@@ -76,12 +89,13 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // insert_parameter_definitions
 
   // Initialize parameters, compartments, etc:
+  int idx = first_dose_index(times, evid);
+  prv_dose = doses[idx];
+  pk_code(0, times, doses, prv_dose, dose_cmt, dose_type, iov_bin);
 
-  pk_code(0, times, doses, doses[0], dose_cmt, dose_type, iov_bin);
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
   set_covariates(0);
-  prv_dose = doses[0];
   t_prv_dose = times[0];
 
   // Main call to ODE solver, initialize any variables in ode code

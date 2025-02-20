@@ -72,3 +72,47 @@ test_that("return_event_table=TRUE returns an appropriate event table with covar
     )
   )
 })
+
+test_that("sim works properly for a model where bioavailability is dependent on dose", {
+  skip_on_cran()
+  reg <- new_regimen(amt = 1000, n = 4, interval = 12, type = 'oral')
+  pars <- list(
+    "TLAG" = 0.21,
+    "KA" = 3.9,
+    "CL" = 17.0,
+    "V" = 68,
+    "F1" = 1
+  )
+  mod <- new_ode_model( # simplified from de Winter / mmf with CSA
+    code = "
+    F1i = F1_avg \
+    dAdt[0] = -KA*A[0] \
+    dAdt[1] = +KA*A[0] - (CLi/Vi)*A[1]
+    dAdt[2] = A[1]/Vi \
+  ",
+    pk_code = "
+    TLAGi = TLAG \
+    DS = prv_dose \
+    if (DS < 250) { \
+      DS = 250 \
+    } \
+    F1_avg = F1 * pow(DS/1000, -0.15) \
+    KAi   = KA \
+    CLi   = CL \
+    Vi    = V
+    ",
+    lagtime = c("TLAG", 0, 0),
+    obs = list(cmt = 2, scale = "V"),
+    dose = list(cmt = 1, bioav = 1),
+    declare_variables = c("CLi", "Vi", "KAi", "DS", "TLAGi", "F1_avg"),
+    parameters = pars
+  )
+  dat <- sim_ode(
+    ode = mod,
+    regimen = reg,
+    parameters = pars,
+    output_include = list(variables = T, parameters = T),
+    only_obs = FALSE
+  )
+  expect_true(all(round(dat$F1_avg, 5) == 1)) # should all be 1 from the first value, with no NAs
+})
