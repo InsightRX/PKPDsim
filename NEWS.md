@@ -1,3 +1,14 @@
+# PKPDsim 1.4.1
+
+This release fixes a few minor issues:
+
+- an edge case where dose-dependent variables or parameters were not correctly initialized
+- a bug in the Cpp template for ODE models related to IOV bins that could potentially result in runtime error
+
+Also:
+- small improvements to the README
+- grammar and code style fixes in vignettes
+
 # PKPDsim 1.4.0
 
 This release fixes an issue introduced with an upgrade in Rcpp (1.0.13), as described here: https://github.com/RcppCore/Rcpp/issues/1311.

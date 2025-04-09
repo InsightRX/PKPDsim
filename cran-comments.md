@@ -1,3 +1,23 @@
+## Version 1.4.1
+
+The previous version of PKPDsim was removed from CRAN due to an issue which CRAN
+requested to fix. We apologize for the inability to address the issue within the
+time give. It is unclear at this point, however, what the original issue was, 
+since the log files have been removed as well.
+
+Running R checks on all platform of the current release version resulted in no 
+errors or warnings on any platforms, and only a pre-existing NOTE (see response
+on version 1.3.0).
+
+The current release fixes a few minor issues:
+
+- an edge case where dose-dependent variables or parameters were not correctly initialized
+- a bug in the Cpp template for ODE models related to IOV bins that could potentially result in runtime error
+
+Also:
+- small improvements to the README
+- grammar and code style fixes in vignettes
+
 ## Version 1.4.0
 
 This release fixes an issue introduced with an upgrade in Rcpp (1.0.13), as described here: https://github.com/RcppCore/Rcpp/issues/1311.
