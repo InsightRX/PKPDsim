@@ -105,6 +105,7 @@ test_that("Matrix where numerical solver issues result in very tiny complex comp
   ),
   nrow = 16
   )
+  is_x_positive_def <- is_positive_definite(x)
   expect_true(is_x_positive_def)
 })
 
