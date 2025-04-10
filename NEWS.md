@@ -8,6 +8,7 @@ This release fixes a few minor issues:
 Also:
 - small improvements to the README
 - grammar and code style fixes in vignettes
+- removed test for warning in `is_positive_definite()` that is not thrown on macos-arm64
 
 # PKPDsim 1.4.0
 

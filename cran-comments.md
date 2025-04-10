@@ -1,22 +1,14 @@
 ## Version 1.4.1
 
 The previous version of PKPDsim was removed from the CRAN repository due to an 
-issue which CRAN requested to fix. 
+issue which CRAN requested to fix. We apologize for the inability to address the
+issue within the allotted time. We have addressed the issue now (i.e. removed a 
+test with slightly different behavior on macos-arm64 compared to other 
+platforms).
 
-We apologize for the inability to address the issue within the allotted time. 
-It is unclear to us at this point, however, what the original issue was, 
-since the log files have been removed as well. No updates were made to the 
-PKPDsim version on CRAN in the months prior to the issue being reported, and 
-it seems also no changes were made to CRAN policies in the past 8 months 
-(https://github.com/eddelbuettel/crp).
+We're therefore resubmitting PKPDsim to CRAN, and including these minor fixes:
 
-Running R checks on all platform of the current release version resulted in no 
-errors or warnings on any platforms 
-(https://github.com/InsightRX/PKPDsim/actions/runs/14363056100), and only a 
-pre-existing NOTE (see response on version 1.3.0 below).
-
-We're therefore resubmitting PKPDsim to CRAN, while including a few minor fixes:
-
+- removed test for warning in `is_positive_definite()` that is not thrown on macos-arm64
 - fixed an edge case where dose-dependent variables or parameters were not correctly initialized
 - fixed a bug in the Cpp template for ODE models related to IOV bins that could potentially result in runtime error
 

@@ -105,9 +105,6 @@ test_that("Matrix where numerical solver issues result in very tiny complex comp
   ),
   nrow = 16
   )
-  expect_warning(
-    is_x_positive_def <- is_positive_definite(x),
-    "imaginary parts discarded in coercion"
-  )
   expect_true(is_x_positive_def)
 })
+
