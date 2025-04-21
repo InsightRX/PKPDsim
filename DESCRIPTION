@@ -1,8 +1,8 @@
 Package: PKPDsim
 Type: Package
 Title: Tools for Performing Pharmacokinetic-Pharmacodynamic Simulations
-Version: 1.4.0
-Date: 2024-08-19
+Version: 1.4.1
+Date: 2025-04-09
 Authors@R: c(
         person("Ron", "Keizer", email = "ron@insight-rx.com", role = c("aut", "cre")),
         person("Jasmine", "Hughes", email = "jasmine@insight-rx.com", role = "aut"),
@@ -27,9 +27,10 @@ Description: Simulate dose regimens for pharmacokinetic-pharmacodynamic (PK-PD)
 License: MIT + file LICENSE
 URL: https://github.com/InsightRX/PKPDsim,
     https://insightrx.github.io/PKPDsim/
+Language: en-US
 LazyData: TRUE
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Config/Needs/website: tidyverse, nlmixr2
 Encoding: UTF-8
