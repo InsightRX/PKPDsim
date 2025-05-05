@@ -180,6 +180,7 @@ sim <- function (ode = NULL,
     } else {
       cpp <- FALSE
     }
+
     ## Add _kappa parameters (IOV) if not specified by user but required by model
     if(!is.null(attr(ode, "parameters"))) {
       p_mod <- attr(ode, "parameters")
@@ -192,6 +193,10 @@ sim <- function (ode = NULL,
         }
         p <- parameters
       }
+    }
+    ## Throw warning when iov_bins supplied but no IOV in model, and reset iov_bins
+    if(!is.null(iov_bins) && !is.null(attr(ode, "iov")$n_bins) && attr(ode, "iov")$n_bins == 1) {
+      stop("No IOV implemented for this model, please set `iov_bins` argument to `NULL`.")
     }
     if(!is.null(attr(ode, "iov")$n_bins) && attr(ode, "iov")$n_bins > 1) {
       if(attr(ode, "iov")$n_bins < (length(iov_bins)-1)) {
