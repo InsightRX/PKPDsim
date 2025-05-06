@@ -7,7 +7,21 @@ pars <- list(
   "V" = 50,
   "KA" = 1
 )
-
+pars0 <- list(
+  "CL" = 5,
+  "V" = 50,
+  "KA" = 1
+)
+pk0 <- new_ode_model( # no IOV
+  code = "
+      dAdt[1] = -KA * A[1]
+      dAdt[2] = +KA * A[1] -(CL/V) * A[2]
+    ",
+  obs = list(cmt = 2, scale = "V"),
+  dose = list(cmt = 1, bioav = 1),
+  parameters = names(pars0),
+  cpp_show_code = F
+)
 pk1 <- new_ode_model(
   code = "
       CL_iov = CL * exp(kappa_CL + eta_CL);
@@ -24,7 +38,6 @@ pk1 <- new_ode_model(
   parameters = names(pars),
   cpp_show_code = F
 )
-
 reg1 <- new_regimen(
   amt = 100,
   interval = 24,
@@ -32,6 +45,24 @@ reg1 <- new_regimen(
   type = "infusion"
 )
 iov_var <- 0.3 ^ 2 # 30% IOV
+
+test_that("Throws error when `iov_bins` supplied but not present in model", {
+  expect_error({
+    sim(
+      ode = pk0,
+      parameters = pars0,
+      regimen = reg1,
+      omega = c(
+        0.3 # IIV in CL
+      ),
+      n = 1,
+      iov_bins = c(0, 24, 48, 72, 999), # !!
+      omega_type = "normal",
+      only_obs = TRUE,
+      output_include = list(parameters = TRUE, variables = TRUE)
+    )
+  }, "No IOV implemented for this model")
+})
 
 test_that("Throws error when number of `iov_bins` is higher than allowed for model", {
   expect_error({
