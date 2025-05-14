@@ -120,9 +120,9 @@ create_event_table <- function(
   }
 
   # parse list to a design (data.frame)
-  # For boluses, oral, sc, im, and covariates, set infusion time to 0. For all
+  # For boluses, oral, and covariates, set infusion time to 0. For all
   # other methods, assume infusion time was provided correctly
-  is_bolus <- regimen$type %in% c("oral", "bolus", "sc", "im", "covariate")
+  is_bolus <- regimen$type %in% c("bolus", "covariate") | grepl("oral", regimen$type)
   regimen$t_inf[is_bolus] <- 0
   dos <- data.frame(cbind(t = regimen$dose_times,
                   dose = regimen$dose_amts,
