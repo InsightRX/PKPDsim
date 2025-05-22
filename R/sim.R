@@ -355,7 +355,7 @@ sim <- function (ode = NULL,
       if(is.null(covariates_table)) {
         design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
       } else {
-        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates[[1]], model = ode, obs_type = obs_type)
+        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates_table[[1]], model = ode, obs_type = obs_type)
       }
       if(return_event_table) {
         return(design)
