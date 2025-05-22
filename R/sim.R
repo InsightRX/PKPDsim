@@ -160,7 +160,20 @@ sim <- function (ode = NULL,
       attr(ode, "cmt_mapping")
     )
   }
-  if(t_init != 0) regimen$dose_times <- regimen$dose_times + t_init
+  if(t_init != 0) {
+    regimen$dose_times <- regimen$dose_times + t_init
+    if (!is.null(covariates)) {
+      for (key in names(covariates)) {
+        covariates[[key]] <- new_covariate(
+          value = covariates[[key]]$value,
+          times = covariates[[key]]$times + t_init,
+          implementation = covariates[[key]]$implementation
+        )
+      }
+    } else if (!is.null(covariates_table)) {
+      covariates_table$t <- covariates_table$t + t_init
+    }
+  }
   p <- as.list(parameters)
   if(!is.null(t_obs)) {
     t_obs <- round(t_obs, 6)
