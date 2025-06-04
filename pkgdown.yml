@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.2
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   covariates: covariates.html
@@ -16,7 +16,7 @@ articles:
   simulation: simulation.html
   speed: speed.html
   variability: variability.html
-last_built: 2025-05-14T19:28Z
+last_built: 2025-06-04T19:20Z
 urls:
   reference: https://insightrx.github.io/PKPDsim/reference
   article: https://insightrx.github.io/PKPDsim/articles
