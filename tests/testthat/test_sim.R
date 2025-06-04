@@ -116,3 +116,108 @@ test_that("sim works properly for a model where bioavailability is dependent on 
   )
   expect_true(all(round(dat$F1_avg, 5) == 1)) # should all be 1 from the first value, with no NAs
 })
+
+test_that("covariates and doses are shifted correctly when t_init != 0", {
+  # example covs use both interpolation and locf methods.
+  covs <- list(
+    CR = new_covariate(
+      value = c(0.5, 0.9),
+      times = c(3, 30),
+      implementation = "interpolate"
+    ),
+    CRRT = new_covariate(
+      value = c(0, 1),
+      times = c(0, 30),
+      implementation = "locf"
+    )
+  )
+
+  # use return_event_table = TRUE since we can just check that the event table
+  # is correct, we don't need to simulate the whole ODE
+  evtab1 <- sim_ode(
+    mod_1cmt_iv,
+    parameters = par,
+    covariates = covs,
+    regimen = reg,
+    t_obs = t_obs,
+    t_init = 48,
+    return_event_table = TRUE
+  )
+
+  # the first observations for both covs should be the same as the initial
+  # available observations, with no gradient:
+  row1 <- evtab1[1,]
+  expect_equal(row1$cov_CR, covs$CR$value[1])
+  expect_equal(row1$cov_CRRT, covs$CRRT$value[1])
+  expect_equal(row1$gradients_CR, 0)
+  expect_equal(row1$gradients_CRRT, 0)
+
+  # the event table should have rows for covariate changes at t = 3 + 48 and
+  # t = 30 + 48
+  CR_change <- evtab1[which(evtab1$gradients_CR > 0)[1], ]
+  CRRT_change <- evtab1[which(evtab1$cov_CRRT > 0)[1], ]
+  expect_equal(CR_change$t, 3 + 48)
+  expect_equal(CRRT_change$t, 30 + 48)
+  expect_equal(CR_change$evid, 2)
+  expect_equal(CRRT_change$evid, 2)
+
+  # the first dose value should be at t = 0 + 48
+  first_dose <- evtab1[which(evtab1$evid == 1)[1], ]
+  expect_equal(first_dose$t, 0 + 48)
+  expect_equal(first_dose, evtab1[which(evtab1$dose > 0)[1], ])
+
+  # also works fine when covs are NULL
+  evtab2 <- sim_ode(
+    mod_1cmt_iv,
+    parameters = par,
+    covariates = NULL,
+    regimen = reg,
+    t_obs = t_obs,
+    t_init = 48,
+    return_event_table = TRUE
+  )
+  # the first dose value should be at t = 0 + 48
+  first_dose <- evtab2[which(evtab2$evid == 1)[1], ]
+  expect_equal(first_dose$t, 0 + 48)
+  expect_equal(first_dose, evtab2[which(evtab2$dose > 0)[1], ])
+})
+
+
+
+test_that("covariates_table and doses are shifted correctly when t_init != 0", {
+  cov_table <- data.frame(
+    id = c(1, 1),
+    SCR = c(50, 150),
+    t = c(3, 13)
+  )
+
+  # use return_event_table = TRUE since we can just check that the event table
+  # is correct, we don't need to simulate the whole ODE
+  attr( mod_1cmt_iv, "covariates") <- "SCR" # req'd to add cov to event table
+  evtab1 <- suppressMessages(sim_ode(
+    mod_1cmt_iv,
+    parameters = par,
+    covariates_table = cov_table,
+    regimen = reg,
+    t_obs = t_obs,
+    t_init = 91,
+    return_event_table = TRUE
+  ))
+
+  # the first observation should be the same as the initial available
+  # observations, with no gradient:
+  row1 <- evtab1[1,]
+  expect_equal(row1$cov_SCR, cov_table$SCR[1])
+  expect_equal(row1$gradients_SCR, 0)
+
+  # the event table should have a row for covariate changes at t = 3 + 91
+  SCR_change <- evtab1[which(evtab1$gradients_SCR > 0)[1], ]
+  expect_equal(SCR_change$t, 3 + 91)
+  expect_equal(SCR_change$evid, 2)
+
+  # the first dose value should be at t = 0 + 91
+  first_dose <- evtab1[which(evtab1$evid == 1)[1], ]
+  expect_equal(first_dose$t, 0 + 91)
+  expect_equal(first_dose, evtab1[which(evtab1$dose > 0)[1], ])
+})
+
