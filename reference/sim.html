@@ -123,7 +123,10 @@
 
 
 <dt id="arg-mixture-group">mixture_group<a class="anchor" aria-label="anchor" href="#arg-mixture-group"></a></dt>
-<dd><p>mixture group for models containing mixtures. Should be either <code>1</code> or <code>2</code>, since only two groups are currently allowed.</p></dd>
+<dd><p>mixture group for models containing mixtures. If
+individual PK parameters are supplied, this value should be <code>NULL</code>. If
+population PK parameters are supplied, a value of <code>1</code> or <code>2</code> should be
+passed, since currently only two mixture groups are supported.</p></dd>
 
 
 <dt id="arg-omega">omega<a class="anchor" aria-label="anchor" href="#arg-omega"></a></dt>
