@@ -6,7 +6,10 @@
 #' @param analytical string specifying analytical equation model to use (similar to ADVAN1-5 in NONMEM). If specified, will not use ODEs.
 #' @param parameters model parameters
 #' @param parameters_table dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.
-#' @param mixture_group mixture group for models containing mixtures. Should be either `1` or `2`, since only two groups are currently allowed.
+#' @param mixture_group mixture group for models containing mixtures. If
+#'   individual PK parameters are supplied, this value should be `NULL`. If
+#'   population PK parameters are supplied, a value of `1` or `2` should be
+#'   passed, since currently only two mixture groups are supported.
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
 #' @param omega_type exponential or normal, specified as vector
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
