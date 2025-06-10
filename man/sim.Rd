@@ -53,7 +53,10 @@ sim(
 
 \item{parameters_table}{dataframe of parameters (with parameters as columns) containing parameter estimates for individuals to simulate. Formats accepted: data.frame, data.table, or list of lists.}
 
-\item{mixture_group}{mixture group for models containing mixtures. Should be either \code{1} or \code{2}, since only two groups are currently allowed.}
+\item{mixture_group}{mixture group for models containing mixtures. If
+individual PK parameters are supplied, this value should be \code{NULL}. If
+population PK parameters are supplied, a value of \code{1} or \code{2} should be
+passed, since currently only two mixture groups are supported.}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
