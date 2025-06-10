@@ -1,0 +1,17 @@
+include README.md
+include README_python.md
+include LICENSE
+include pyproject.toml
+recursive-include pkpdsim *.py
+recursive-include tests *.py
+recursive-include examples *.py
+exclude *.pyc
+exclude */__pycache__/*
+exclude .git/*
+exclude .github/*
+exclude R/*
+exclude man/*
+exclude inst/*
+exclude vignettes/*
+exclude src/*
+exclude tests/testthat/*
