@@ -233,7 +233,8 @@ create_event_table <- function(
   design <- design[design$t <= max(t_obs),]
   if(!is.null(obs_type)) {
     design$idx <- 1:nrow(design)
-    design <- merge(design, data.frame(t = t_obs, obs_type), all=TRUE)
+    design$t_rounded <- round(design$t, 6)
+    design <- merge(design, data.frame(t_rounded = t_obs, obs_type), all = TRUE)
     design$obs_type <- ifelse(is.na(design$obs_type), 0, as.integer(design$obs_type))
 
     # merging can induce multiple doses and/or multiple infusion stop events, should reset those to being observations
@@ -242,6 +243,7 @@ create_event_table <- function(
       design[duplicate_event, c("dose", "rate", "evid", "type", "t_inf", "dose_cmt", "bioav")] <- 0
     }
     design$idx <- NULL
+    design$t_rounded <- NULL
   }
   design <- design[order(design$t, design$type, design$dum, decreasing=FALSE),]
   if(t_init != 0) { # add event line at t=0, to start integration
