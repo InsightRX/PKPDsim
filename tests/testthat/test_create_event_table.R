@@ -135,3 +135,40 @@ test_that("useful cmt_mapping mismatch error is thrown", {
   )
 })
 
+test_that("identically-timed but different levels of precision in TDM vs covs", {
+  # here, t_init is non-zero with a value of 1.283. Covariate times have also
+  # been shifted accordingly. It's possible for a merge issue to insert NAs
+  reg <- PKPDsim::new_regimen(
+    type = rep("infusion", 10L),
+    t_inf = rep(c(2, 1.5), c(1L, 9L)),
+    times = c(
+      0, 20.0833333333333, 32.31666666666667, 45.63333333333333, 56.6,
+      93.18333333333334, 117.083333333333329, 141.85, 166.1, 212.7
+    ),
+    amt = rep(c(1750, 1500, 1250), c(1L, 3L, 6L)),
+  )
+  covs <- list(
+    CR = PKPDsim::new_covariate(
+      value = c(
+        0.756, 0.76, 0.71, 0.66, 0.7, 0.71, 0.67, 0.76, 0.72, 0.64, 0.68, 0.62,
+        0.57, 0.64, 0.64, 0.71, 0.71, 0.71, 0.8, 0.71, 0.71, 0.67
+      ),
+      times = c(
+        0, 4.817, 13.033, 38.517, 50.3, 63.367, 85.183, 111.933, 134.683,
+        146.333, 158.017, 176.8, 182.983, 189.517, 195.85, 201.2, 206.417,
+        215.867, 218.917, 224.217, 229.867
+      ) + 1.283,
+      implementation = "interpolate"
+    )
+  )
+  res <- create_event_table(
+    regimen = reg,
+    t_max = 185.266, t_tte = NULL, t_init = 1.283,
+    t_obs = c(-1.283, 69.883, 85.183, 134.683, 182.983),
+    p = list(), covariates = covs,
+    model = mod_2cmt_iv,
+    obs_type = rep(1, 5)
+  )
+  expect_equal(sum(is.na(res)), 0)
+  expect_equal(dim(res), c(36, 13))
+})
