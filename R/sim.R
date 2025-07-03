@@ -152,9 +152,6 @@ sim <- function (ode = NULL,
       lagtime <- attr(ode, "lagtime")
     }
   }
-  if(!is.null(lagtime)) {
-    regimen <- apply_lagtime(regimen, lagtime, parameters, attr(ode, "cmt_mapping"))
-  }
   if(!is.null(attr(ode, "dose")$duration_scale)) {
     regimen <- apply_duration_scale(
       regimen,
@@ -507,11 +504,12 @@ sim <- function (ode = NULL,
 
     #################### Main call to ODE solver / analytical eq solver #######################
     if(!is.null(ode)) {
-      tmp <- ode(A_init, design_i, p_i, iov_bins, int_step_size)
+      tmp <- ode(A_init, design_i, p_i, iov_bins, lagtime, int_step_size)
     } else {
       tmp <- analytical_eqn_wrapper(analytical, design_i, p_i)
     }
     #####################################################################
+    browser()
 
     tmp$y <- matrix(unlist(tmp$y), nrow = length(tmp$time), byrow = TRUE)
     tmp <- as.data.frame(tmp)
