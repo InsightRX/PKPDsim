@@ -84,13 +84,27 @@ NumericVector lagtime_to_numeric(SEXP lagtime, List parameters) {
   return(lagtime_numeric);
 }
 
-List apply_lagtime(List design, NumericVector lagtime) {
+List apply_lagtime(List design, NumericVector tlag, int n_comp) {
 
   List new_design = clone(design);
   std::vector<double> times = as<std::vector<double> >(new_design["t"]);
   std::vector<int> evid = as<std::vector<int> >(new_design["evid"]);
   std::vector<int> cmt = as<std::vector<int> >(new_design["dose_cmt"]);
   
+  NumericVector lagtime;
+  if(tlag.size() < n_comp) { // fill in with zeroes, if needed
+    int current_size = tlag.size();
+    lagtime = NumericVector(n_comp);
+    for(int i = 0; i < current_size; i++) {
+      lagtime[i] = tlag[i];
+    }
+    for(int i = current_size; i < n_comp; i++) {
+      lagtime[i] = 0.0;
+    }
+  } else {
+    lagtime = tlag;
+  }
+
   // Apply lagtime to dose events (evid == 1)
   for(int i = 0; i < times.size(); i++) {
     if(evid[i] == 1) {
@@ -149,7 +163,7 @@ List sim_wrapper_cpp (NumericVector A, List input_design, List par, NumericVecto
 
   // Handle lagtime parameter - can be numeric or character
   NumericVector lagtime_numeric = lagtime_to_numeric(lagtime, par);
-  List design = apply_lagtime(input_design, lagtime_numeric);
+  List design = apply_lagtime(input_design, lagtime_numeric, n_comp);
   
   times = as<std::vector<double> >(design["t"]);
   doses = as<std::vector<double> >(design["dose"]);

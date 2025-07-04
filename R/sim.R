@@ -231,6 +231,9 @@ sim <- function (ode = NULL,
     } else {
       size <- attr(analytical, "size")
     }
+    if(is.null(lagtime)) {
+      lagtime <- rep(0, size) # needs to have at least 1 zero value, cannot be NULL when passed to cpp func
+    }
     if(is.null(ode) && is.null(analytical)) {
       stop("Please specify at least the required arguments 'ode' or 'analytical' for simulations.")
     }
