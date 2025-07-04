@@ -16,6 +16,7 @@ sim_core <- function(
              design = sim_object$design,
              par = sim_object$p,
              iov_bins = sim_object$iov_bins,
+             lagtime = c(0),
              step_size = sim_object$int_step_size)
   out <- data.frame(t = tmp$time, y = tmp$obs, obs_type = tmp$obs_type)
   if(duplicate_t_obs) {

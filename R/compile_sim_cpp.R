@@ -272,11 +272,19 @@ compile_sim_cpp <- function(
   }
 
   if(compile) {
-    main_cpp <- copy_cpp_files_to_tempfolder(sim_func)
-    Rcpp::sourceCpp(file = main_cpp, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
+    res <- copy_cpp_files_to_tempfolder(sim_func)
+    withr::with_dir(res$folder, {
+      Rcpp::sourceCpp(
+        file = res$main_cpp,
+        rebuild = TRUE, 
+        env = globalenv(), 
+        verbose = verbose, 
+        showOutput = verbose
+      )
+    })
     Sys.setenv("PKG_CXXFLAGS" = flg)
   }
-  
+
   return(list(
     ode = ode_def_cpp,
     cpp = sim_func
@@ -288,12 +296,15 @@ copy_cpp_files_to_tempfolder <- function(sim_func) {
   tmp_folder <- tempdir()
   existing_files <- c(
     dir(tmp_folder, pattern = "\\.cpp$"),
-    dir(tmp_folder, pattern = "\\.h$")
+    dir(tmp_folder, pattern = "\\.h$"),
+    dir(tmp_folder, pattern = "\\.o$")
   )
   for(f in existing_files) {
     unlink(file.path(tmp_folder, f))
   }
   main_cpp <- file.path(tmp_folder, "sim.cpp")
+  if(file.exists(main_cpp))
+    unlink(main_cpp)
   writeLines(sim_func, main_cpp)
   files_to_copy <- setdiff(c(
     dir(system.file(package="PKPDsim", "cpp"), pattern = "\\.cpp$"),
@@ -305,5 +316,9 @@ copy_cpp_files_to_tempfolder <- function(sim_func) {
       file.path(tmp_folder, f)
     )
   }
-  main_cpp
+  list(
+    main_cpp = main_cpp,
+    folder = tmp_folder      
+  )
+
 }
