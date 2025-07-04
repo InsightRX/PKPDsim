@@ -270,12 +270,40 @@ compile_sim_cpp <- function(
   if(length(grep("-w", flg)) == 0) {
     Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
   }
+
   if(compile) {
-    Rcpp::sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
+    main_cpp <- copy_cpp_files_to_tempfolder(sim_func)
+    Rcpp::sourceCpp(file = main_cpp, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
     Sys.setenv("PKG_CXXFLAGS" = flg)
   }
+  
   return(list(
     ode = ode_def_cpp,
     cpp = sim_func
   ))
+}
+
+## Copy cpp and header files to temp folder (first remove existing files)
+copy_cpp_files_to_tempfolder <- function(sim_func) {
+  tmp_folder <- tempdir()
+  existing_files <- c(
+    dir(tmp_folder, pattern = "\\.cpp$"),
+    dir(tmp_folder, pattern = "\\.h$")
+  )
+  for(f in existing_files) {
+    unlink(file.path(tmp_folder, f))
+  }
+  main_cpp <- file.path(tmp_folder, "sim.cpp")
+  writeLines(sim_func, main_cpp)
+  files_to_copy <- setdiff(c(
+    dir(system.file(package="PKPDsim", "cpp"), pattern = "\\.cpp$"),
+    dir(system.file(package="PKPDsim", "cpp"), pattern = "\\.h$")
+  ), "sim.cpp")
+  for(f in files_to_copy) {
+    file.copy(
+      system.file(package="PKPDsim", "cpp", f), 
+      file.path(tmp_folder, f)
+    )
+  }
+  main_cpp
 }
