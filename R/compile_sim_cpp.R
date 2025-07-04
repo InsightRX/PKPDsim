@@ -272,16 +272,13 @@ compile_sim_cpp <- function(
   }
 
   if(compile) {
-    res <- copy_cpp_files_to_tempfolder(sim_func)
-    withr::with_dir(res$folder, {
-      Rcpp::sourceCpp(
-        file = res$main_cpp,
-        rebuild = TRUE, 
-        env = globalenv(), 
-        verbose = verbose, 
-        showOutput = verbose
-      )
-    })
+    Rcpp::sourceCpp(
+      code = sim_func,
+      rebuild = TRUE, 
+      env = globalenv(), 
+      verbose = verbose, 
+      showOutput = verbose
+    )
     Sys.setenv("PKG_CXXFLAGS" = flg)
   }
 
