@@ -55,6 +55,27 @@ int first_dose_index(std::vector<double> time, std::vector<int> evid) {
   return(index);
 }
 
+NumericVector lagtime_to_numeric(SEXP lagtime, List parameters) {
+   NumericVector lagtime_numeric;
+  if (TYPEOF(lagtime) == REALSXP) {
+    lagtime_numeric = as<NumericVector>(lagtime);
+  } else if (TYPEOF(lagtime) == STRSXP) {
+    CharacterVector lagtime_char = as<CharacterVector>(lagtime);
+    lagtime_numeric = NumericVector(lagtime_char.size());
+    for (int i = 0; i < lagtime_char.size(); i++) {
+      String param_name = lagtime_char[i];
+      if (parameters.containsElementNamed(param_name.get_cstring())) {
+        lagtime_numeric[i] = as<double>(parameters[param_name]);
+      } else {
+        lagtime_numeric[i] = 0.0; // default value
+      }
+    }
+  } else {
+    stop("lagtime must be either numeric or character vector");
+  }
+  return(lagtime_numeric);
+}
+
 List apply_lagtime(List design, NumericVector lagtime) {
 
   List new_design = clone(design);
@@ -117,7 +138,7 @@ void pk_code (int i, std::vector<double> times, std::vector<double> doses, doubl
 }
 
 // [[Rcpp::export]]
-List sim_wrapper_cpp (NumericVector A, List input_design, List par, NumericVector iov_bins, NumericVector lagtime, double step_size) {
+List sim_wrapper_cpp (NumericVector A, List input_design, List par, NumericVector iov_bins, SEXP lagtime, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
   // insert observation variable definition
@@ -125,8 +146,11 @@ List sim_wrapper_cpp (NumericVector A, List input_design, List par, NumericVecto
   std::vector<double> times, doses, dummy, rates;
   std::vector<int> dose_cmt, dose_type, evid, obs_type, y_type;
   // insert variable definitions
-  List design = apply_lagtime(input_design, lagtime);
 
+  // Handle lagtime parameter - can be numeric or character
+  NumericVector lagtime_numeric = lagtime_to_numeric(lagtime, par);
+  List design = apply_lagtime(input_design, lagtime_numeric);
+  
   times = as<std::vector<double> >(design["t"]);
   doses = as<std::vector<double> >(design["dose"]);
   evid = as<std::vector<int> >(design["evid"]);
@@ -151,8 +175,7 @@ List sim_wrapper_cpp (NumericVector A, List input_design, List par, NumericVecto
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
   set_covariates(0);
-  t_prv_dose = times[0];
-
+  
   // Main call to ODE solver, initialize any variables in ode code
   ode(A_dum, dAdt_dum, 0);
 

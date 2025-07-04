@@ -509,7 +509,6 @@ sim <- function (ode = NULL,
       tmp <- analytical_eqn_wrapper(analytical, design_i, p_i)
     }
     #####################################################################
-    browser()
 
     tmp$y <- matrix(unlist(tmp$y), nrow = length(tmp$time), byrow = TRUE)
     tmp <- as.data.frame(tmp)
