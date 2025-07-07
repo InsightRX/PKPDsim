@@ -602,6 +602,12 @@ sim <- function (ode = NULL,
   all_names <- unique(c(par_names, cov_names, var_names))
   all_names <- intersect(all_names, names(comb)) # only cols that appear in data
 
+  ## remove dose-times from regimen, leave ones that were also in t_obs
+  # comb |> dplyr::filter(t >= 24 & t <= 27 & comp == 2)
+  dose_times <- design_i[design_i$evid > 0, ]$t
+  # comb <- comb[! (comb$t %in% dose_times & duplicated(paste(comb$comp, comb$t, sep="_"))),]
+  comb <- comb[! (comb$t %in% dose_times & duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_"))),]
+
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too
     comb <- comb[!duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_")),]
