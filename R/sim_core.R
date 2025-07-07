@@ -11,13 +11,16 @@ sim_core <- function(
   sim_object = NULL,
   ode,
   duplicate_t_obs = FALSE,
-  t_init = 0) {
-  tmp <- ode(A = sim_object$A_init,
-             design = sim_object$design,
-             par = sim_object$p,
-             iov_bins = sim_object$iov_bins,
-             lagtime = c(0),
-             step_size = sim_object$int_step_size)
+  t_init = 0
+) {
+  tmp <- ode(
+    A = sim_object$A_init,
+    design = sim_object$design,
+    par = sim_object$p,
+    iov_bins = sim_object$iov_bins,
+    lagtime = c(0),
+    step_size = sim_object$int_step_size
+  )
   out <- data.frame(t = tmp$time, y = tmp$obs, obs_type = tmp$obs_type)
   if(duplicate_t_obs) {
     # use match to ensure that duplicates in t_obs is possible

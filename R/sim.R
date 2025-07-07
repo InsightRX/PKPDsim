@@ -608,8 +608,8 @@ sim <- function (ode = NULL,
   ## remove dose-times from regimen
   ## but leave ones that were also in t_obs
   ## also leave extra obs when bolus, because this may be needed (controllec below using `extra_t_obs`)
-  dose_times <- design_i[design_i$evid > 0 & design_i$type != 0, ]$t
-  comb <- comb[! (comb$t %in% dose_times & duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_"))),]
+  dose_times <- design_i[design_i$evid > 0, ]$t
+  comb <- comb[! (comb$t %in% dose_times & duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, comb$y, sep="_"))),]
 
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too

@@ -152,7 +152,7 @@ List apply_lagtime(List design, NumericVector tlag, int n_comp) {
 }
 
 // [[Rcpp::export]]
-List sim_wrapper_cpp (NumericVector A, List input_design, List par, NumericVector iov_bins, SEXP lagtime, double step_size) {
+List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_bins, SEXP lagtime, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
   // insert observation variable definition
@@ -163,16 +163,16 @@ List sim_wrapper_cpp (NumericVector A, List input_design, List par, NumericVecto
 
   // Handle lagtime parameter - can be numeric or character
   NumericVector lagtime_numeric = lagtime_to_numeric(lagtime, par);
-  List design = apply_lagtime(input_design, lagtime_numeric, n_comp);
+  List events = apply_lagtime(design, lagtime_numeric, n_comp);
   
-  times = as<std::vector<double> >(design["t"]);
-  doses = as<std::vector<double> >(design["dose"]);
-  evid = as<std::vector<int> >(design["evid"]);
-  dummy = as<std::vector<double> >(design["dum"]);
-  rates = as<std::vector<double> >(design["rate"]);
-  dose_cmt = as<std::vector<int> >(design["dose_cmt"]);
-  dose_type = as<std::vector<int> >(design["type"]);
-  obs_type = as<std::vector<int> >(design["obs_type"]);
+  times = as<std::vector<double> >(events["t"]);
+  doses = as<std::vector<double> >(events["dose"]);
+  evid = as<std::vector<int> >(events["evid"]);
+  dummy = as<std::vector<double> >(events["dum"]);
+  rates = as<std::vector<double> >(events["rate"]);
+  dose_cmt = as<std::vector<int> >(events["dose_cmt"]);
+  dose_type = as<std::vector<int> >(events["type"]);
+  obs_type = as<std::vector<int> >(events["obs_type"]);
   int len = times.size();
   int start;
   memset(rate, 0, sizeof(rate));
