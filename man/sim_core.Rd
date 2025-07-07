@@ -5,19 +5,27 @@
 \title{Only core function of the simulation function, always just returns observations.
 Mostly useful for estimations / optimal design. Has no checks (for speed)!}
 \usage{
-sim_core(sim_object = NULL, ode, duplicate_t_obs = FALSE, t_init = 0)
+sim_core(
+  sim_object = NULL,
+  ode,
+  duplicate_t_obs = FALSE,
+  t_init = 0,
+  lagtime = c(0)
+)
 }
 \arguments{
 \item{sim_object}{list with design and simulation parameters}
 
-\item{ode}{ode}
+\item{ode}{function describing the ODE system}
 
 \item{duplicate_t_obs}{allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.}
 
-\item{t_init}{time of initialization of the ODE system. Usually 0.}
+\item{t_init}{initialization time before first dose, default 0.}
+
+\item{lagtime}{either a value (numeric) or a parameter (character) or NULL.}
 }
 \value{
-Data frame with simulation results
+data.frame with simulation results
 }
 \description{
 Only core function of the simulation function, always just returns observations.

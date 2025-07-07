@@ -1,24 +1,26 @@
 #' Only core function of the simulation function, always just returns observations.
 #' Mostly useful for estimations / optimal design. Has no checks (for speed)!
 #'
+#' @inheritParams sim
 #' @param sim_object list with design and simulation parameters
-#' @param ode ode
-#' @param duplicate_t_obs allow duplicate t_obs in output? E.g. for optimal design calculations when t_obs = c(0,1,2,2,3). Default is FALSE.
-#' @param t_init time of initialization of the ODE system. Usually 0.
+#' 
 #' @export
-#' @return Data frame with simulation results
+#' 
+#' @return data.frame with simulation results
+#' 
 sim_core <- function(
   sim_object = NULL,
   ode,
   duplicate_t_obs = FALSE,
-  t_init = 0
+  t_init = 0,
+  lagtime = c(0)
 ) {
   tmp <- ode(
     A = sim_object$A_init,
     design = sim_object$design,
     par = sim_object$p,
     iov_bins = sim_object$iov_bins,
-    lagtime = c(0),
+    lagtime = lagtime,
     step_size = sim_object$int_step_size
   )
   out <- data.frame(t = tmp$time, y = tmp$obs, obs_type = tmp$obs_type)
