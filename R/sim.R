@@ -93,7 +93,7 @@ sim <- function (ode = NULL,
                  n_ind = 1,
                  event_table = NULL,
                  regimen = NULL,
-                 lagtime = c(0),
+                 lagtime = NULL,
                  covariates = NULL,
                  covariates_table = NULL,
                  covariates_implementation = list(),
@@ -151,6 +151,9 @@ sim <- function (ode = NULL,
     if(is.null(lagtime)) { # only override from metadata if not specified by user
       lagtime <- attr(ode, "lagtime")
     }
+  }
+  if(is.null(lagtime)) {
+    lagtime <- c(0)
   }
   if(!is.null(attr(ode, "dose")$duration_scale)) {
     regimen <- apply_duration_scale(
@@ -602,10 +605,10 @@ sim <- function (ode = NULL,
   all_names <- unique(c(par_names, cov_names, var_names))
   all_names <- intersect(all_names, names(comb)) # only cols that appear in data
 
-  ## remove dose-times from regimen, leave ones that were also in t_obs
-  # comb |> dplyr::filter(t >= 24 & t <= 27 & comp == 2)
-  dose_times <- design_i[design_i$evid > 0, ]$t
-  # comb <- comb[! (comb$t %in% dose_times & duplicated(paste(comb$comp, comb$t, sep="_"))),]
+  ## remove dose-times from regimen
+  ## but leave ones that were also in t_obs
+  ## also leave extra obs when bolus, because this may be needed (controllec below using `extra_t_obs`)
+  dose_times <- design_i[design_i$evid > 0 & design_i$type != 0, ]$t
   comb <- comb[! (comb$t %in% dose_times & duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, sep="_"))),]
 
   if(!extra_t_obs) {

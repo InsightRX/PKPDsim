@@ -11,7 +11,7 @@ test_that("Double absorption models work appropriately", {
       bioav = c(0.3, 0.6, 0.9)
     ),
     lagtime = c(0, 1.5),
-    cpp = F
+    cpp = T
   )
   reg <- new_regimen(amt = 100, n = 12, interval = 12, type = "oral")
   res <- sim(
@@ -25,7 +25,8 @@ test_that("Double absorption models work appropriately", {
     ),
     only_obs = F,
     output_include = list(variables=TRUE),
-    t_obs = seq(0, 24, .1)
+    t_obs = seq(0, 24, .1),
+    return_design = F
   )
   expect_equal(attr(mod, "dose")$duplicate, 2)
   expect_equal(round(res[res$comp == 1 & res$t == 0.1, ]$y, 2), 27.15) # abs comp 1

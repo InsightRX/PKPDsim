@@ -105,7 +105,7 @@ List apply_lagtime(List design, NumericVector tlag, int n_comp) {
     lagtime = tlag;
   }
 
-  // Apply lagtime to dose events (evid == 1)
+  // Apply lagtime to dose events (evid == 1)  
   for(int i = 0; i < times.size(); i++) {
     if(evid[i] == 1) {
       times[i] += lagtime[cmt[i]-1];
