@@ -147,14 +147,7 @@ sim <- function (ode = NULL,
       regimen <- merge_regimen(list(regimen, regimen_dupl))
     }
   }
-  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime")[1] != "undefined" && attr(ode, "lagtime")[1] != "NULL") {
-    if(is.null(lagtime)) { # only override from metadata if not specified by user
-      lagtime <- attr(ode, "lagtime")
-    }
-  }
-  if(is.null(lagtime)) {
-    lagtime <- c(0)
-  }
+  lagtime <- parse_lagtime(lagtime, ode)
   if(!is.null(attr(ode, "dose")$duration_scale)) {
     regimen <- apply_duration_scale(
       regimen,
