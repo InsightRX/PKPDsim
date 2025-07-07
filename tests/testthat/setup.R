@@ -9,7 +9,7 @@ mod_1cmt_oral_lagtime <- new_ode_model(
   lagtime = c("TLAG", 0),
   obs = list(cmt = 2, scale = "V"),
   dose = list(cmt = 1, bioav = 1),
-  parameters = pars
+  parameters = list(CL = 5, V = 50, KA = 0.5, TLAG = 0.83)
 )
 oral_1cmt_allometric <- new_ode_model( # also timevarying and dose-dependence factor
   code = "
