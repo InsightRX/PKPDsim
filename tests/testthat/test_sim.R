@@ -38,7 +38,6 @@ test_that("return_event_table=TRUE returns an appropriate event table", {
 })
 
 test_that("return_event_table=TRUE returns an appropriate event table with covariate", {
-  mod_1cmt_iv <- new_ode_model("pk_1cmt_iv")
   covs <- list(CRCL = new_covariate(value = c(70, 80), t = c(0, 24)), WT = new_covariate(70))
   evtab2 <- sim_ode(
     mod_1cmt_iv,

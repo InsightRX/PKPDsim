@@ -189,7 +189,8 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   // call ode() once to pre-calculate any initial variables
   // insert A dAdt state_init
   set_covariates(0);
-  
+  t_prv_dose = times[0];
+
   // Main call to ODE solver, initialize any variables in ode code
   ode(A_dum, dAdt_dum, 0);
 
