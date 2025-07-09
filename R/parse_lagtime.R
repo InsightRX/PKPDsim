@@ -6,7 +6,8 @@
 #' 
 parse_lagtime <- function(
   lagtime,
-  ode
+  ode,
+  parameters
 ) {
   lagtime_ode <- attr(ode, "lagtime")
   # override from ode if not specified by user and defined in ode
@@ -16,5 +17,11 @@ parse_lagtime <- function(
   if(is.null(lagtime)) {
     lagtime <- 0
   }
+  if(inherits(lagtime, "character")) {
+    idx <- grep("[a-zA-Z]", lagtime) # only pick character names, not "0"
+    if(! all(lagtime[idx] %in% names(parameters))) {
+      warning("Lagtime parameter(s) not found. Please check model and parameters.")
+    }
+  } 
   lagtime
 }

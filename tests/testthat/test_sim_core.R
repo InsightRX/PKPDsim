@@ -32,17 +32,6 @@ test_that("sim core works for absorption model with lagtime", {
     )$y
     return(res)
   }
-  f_core_nolag <- function() {
-    obj <- sim(
-      ode = mod_1cmt_oral_lagtime, 
-      regimen = reg, 
-      parameters = par, 
-      only_obs = TRUE, 
-      t_obs=c(0:24), 
-      return_design=TRUE
-    )
-    sim_core(obj, ode = mod_1cmt_oral_lagtime)$y
-  }
   f_core <- function() {
     obj <- sim(
       ode = mod_1cmt_oral_lagtime, 

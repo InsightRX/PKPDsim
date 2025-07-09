@@ -147,7 +147,7 @@ sim <- function (ode = NULL,
       regimen <- merge_regimen(list(regimen, regimen_dupl))
     }
   }
-  lagtime <- parse_lagtime(lagtime, ode)
+  lagtime <- parse_lagtime(lagtime, ode, parameters)
   if(!is.null(attr(ode, "dose")$duration_scale)) {
     regimen <- apply_duration_scale(
       regimen,
