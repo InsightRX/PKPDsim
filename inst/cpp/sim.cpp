@@ -89,6 +89,7 @@ List apply_lagtime(List design, NumericVector tlag, int n_comp) {
   List new_design = clone(design);
   std::vector<double> times = as<std::vector<double> >(new_design["t"]);
   std::vector<int> evid = as<std::vector<int> >(new_design["evid"]);
+  std::vector<int> rate = as<std::vector<int> >(new_design["rate"]);
   std::vector<int> cmt = as<std::vector<int> >(new_design["dose_cmt"]);
   
   NumericVector lagtime;
@@ -107,7 +108,7 @@ List apply_lagtime(List design, NumericVector tlag, int n_comp) {
 
   // Apply lagtime to dose events (evid == 1)  
   for(int i = 0; i < times.size(); i++) {
-    if(evid[i] == 1) {
+    if(evid[i] == 1 | (evid[i] == 2 & rate[i] != 0)) { // dose events or infusion stop events
       times[i] += lagtime[cmt[i]-1];
     }
   }
