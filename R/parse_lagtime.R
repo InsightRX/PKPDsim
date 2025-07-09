@@ -11,7 +11,7 @@ parse_lagtime <- function(
 ) {
   lagtime_ode <- attr(ode, "lagtime")
   # override from ode if not specified by user and defined in ode
-  if(is.null(lagtime) && !is.null(lagtime_ode) && !lagtime_ode %in% c("NULL", "undefined")) {
+  if(is.null(lagtime) && !is.null(lagtime_ode) && lagtime_ode[1] != "NULL" && lagtime_ode[1] != "undefined") {
     lagtime <- lagtime_ode
   }
   if(is.null(lagtime)) {
