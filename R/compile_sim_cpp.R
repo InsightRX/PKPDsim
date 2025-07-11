@@ -270,10 +270,18 @@ compile_sim_cpp <- function(
   if(length(grep("-w", flg)) == 0) {
     Sys.setenv("PKG_CXXFLAGS" = paste(flg, "-w"))
   }
+
   if(compile) {
-    Rcpp::sourceCpp(code=sim_func, rebuild = TRUE, env = globalenv(), verbose = verbose, showOutput = verbose)
+    Rcpp::sourceCpp(
+      code = sim_func,
+      rebuild = TRUE, 
+      env = globalenv(), 
+      verbose = verbose, 
+      showOutput = verbose
+    )
     Sys.setenv("PKG_CXXFLAGS" = flg)
   }
+
   return(list(
     ode = ode_def_cpp,
     cpp = sim_func

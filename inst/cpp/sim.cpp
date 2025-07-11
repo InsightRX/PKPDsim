@@ -63,8 +63,97 @@ void pk_code (int i, std::vector<double> times, std::vector<double> doses, doubl
   // insert custom pk event code
 }
 
+NumericVector lagtime_to_numeric(SEXP lagtime, List parameters) {
+   NumericVector lagtime_numeric;
+  if (TYPEOF(lagtime) == REALSXP) {
+    lagtime_numeric = as<NumericVector>(lagtime);
+  } else if (TYPEOF(lagtime) == STRSXP) {
+    CharacterVector lagtime_char = as<CharacterVector>(lagtime);
+    lagtime_numeric = NumericVector(lagtime_char.size());
+    for (int i = 0; i < lagtime_char.size(); i++) {
+      String param_name = lagtime_char[i];
+      if (parameters.containsElementNamed(param_name.get_cstring())) {
+        lagtime_numeric[i] = as<double>(parameters[param_name]);
+      } else {
+        lagtime_numeric[i] = 0.0; // default value
+      }
+    }
+  } else {
+    stop("lagtime must be either numeric or character vector");
+  }
+  return(lagtime_numeric);
+}
+
+List apply_lagtime(List design, NumericVector tlag, int n_comp) {
+
+  List new_design = clone(design);
+  std::vector<double> times = as<std::vector<double> >(new_design["t"]);
+  std::vector<int> evid = as<std::vector<int> >(new_design["evid"]);
+  std::vector<int> rate = as<std::vector<int> >(new_design["rate"]);
+  std::vector<int> cmt = as<std::vector<int> >(new_design["dose_cmt"]);
+  
+  NumericVector lagtime;
+  if(tlag.size() < n_comp) { // fill in with zeroes, if needed
+    int current_size = tlag.size();
+    lagtime = NumericVector(n_comp);
+    for(int i = 0; i < current_size; i++) {
+      lagtime[i] = tlag[i];
+    }
+    for(int i = current_size; i < n_comp; i++) {
+      lagtime[i] = 0.0;
+    }
+  } else {
+    lagtime = tlag;
+  }
+
+  // Apply lagtime to dose events (evid == 1)  
+  for(int i = 0; i < times.size(); i++) {
+    if(evid[i] == 1 | (evid[i] == 2 & rate[i] != 0)) { // dose events or infusion stop events
+      times[i] += lagtime[cmt[i]-1];
+    }
+  }
+
+  // Create sorted index according to "t"
+  std::vector<size_t> indices(times.size());
+  std::iota(indices.begin(), indices.end(), 0); // Fill with 0, 1, 2, ...
+  std::sort(indices.begin(), indices.end(), [&times](size_t i1, size_t i2) {
+    return times[i1] < times[i2];
+  });
+  
+  // Reorder all elements in `t` in new_design
+  std::vector<double> sorted_times(times.size());
+  for (size_t i = 0; i < indices.size(); i++) {
+    sorted_times[i] = times[indices[i]];
+  }
+  new_design["t"] = sorted_times;
+  
+  // Sort all other vectors in the design object
+  for (const char* key : {"dose", "type", "dum", "dose_cmt", "t_inf", "evid", "bioav", "rate", "obs_type"}) {
+    if (new_design.containsElementNamed(key)) {
+      SEXP vec = new_design[key];
+      if (TYPEOF(vec) == REALSXP) {
+        std::vector<double> old_vec = as<std::vector<double> >(vec);
+        std::vector<double> new_vec(old_vec.size());
+        for (size_t i = 0; i < indices.size(); i++) {
+          new_vec[i] = old_vec[indices[i]];
+        }
+        new_design[key] = new_vec;
+      } else if (TYPEOF(vec) == INTSXP) {
+        std::vector<int> old_vec = as<std::vector<int> >(vec);
+        std::vector<int> new_vec(old_vec.size());
+        for (size_t i = 0; i < indices.size(); i++) {
+          new_vec[i] = old_vec[indices[i]];
+        }
+        new_design[key] = new_vec;
+      }
+    }
+  }
+  
+  return new_design;
+}
+
 // [[Rcpp::export]]
-List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_bins, double step_size) {
+List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_bins, SEXP lagtime, double step_size) {
   std::vector<double> t;
   std::vector<state_type> y;
   // insert observation variable definition
@@ -72,14 +161,19 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   std::vector<double> times, doses, dummy, rates;
   std::vector<int> dose_cmt, dose_type, evid, obs_type, y_type;
   // insert variable definitions
-  times = as<std::vector<double> >(design["t"]);
-  doses = as<std::vector<double> >(design["dose"]);
-  evid = as<std::vector<int> >(design["evid"]);
-  dummy = as<std::vector<double> >(design["dum"]);
-  rates = as<std::vector<double> >(design["rate"]);
-  dose_cmt = as<std::vector<int> >(design["dose_cmt"]);
-  dose_type = as<std::vector<int> >(design["type"]);
-  obs_type = as<std::vector<int> >(design["obs_type"]);
+
+  // Handle lagtime parameter - can be numeric or character
+  NumericVector lagtime_numeric = lagtime_to_numeric(lagtime, par);
+  List events = apply_lagtime(design, lagtime_numeric, n_comp);
+  
+  times = as<std::vector<double> >(events["t"]);
+  doses = as<std::vector<double> >(events["dose"]);
+  evid = as<std::vector<int> >(events["evid"]);
+  dummy = as<std::vector<double> >(events["dum"]);
+  rates = as<std::vector<double> >(events["rate"]);
+  dose_cmt = as<std::vector<int> >(events["dose_cmt"]);
+  dose_type = as<std::vector<int> >(events["type"]);
+  obs_type = as<std::vector<int> >(events["obs_type"]);
   int len = times.size();
   int start;
   memset(rate, 0, sizeof(rate));

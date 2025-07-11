@@ -152,10 +152,9 @@ create_event_table <- function(
   design <- dos[order(dos$t, -dos$dose),]
   if(!is.null(t_obs) && length(t_obs) != 0) { # make sure observation times are in dataset
     t_obs <- round(t_obs, 6)
-    t_diff <- setdiff(t_obs, design$t)
-    if(length(t_diff) > 0) {
-      design[(length(design[,1])+1) : (length(design[,1])+length(t_diff)),] <- cbind(
-         t = t_diff,
+    if(length(t_obs) > 0) {
+      design[(length(design[,1])+1) : (length(design[,1])+length(t_obs)),] <- cbind(
+         t = t_obs,
          dose = 0,
          type = 0,
          dum = 0,

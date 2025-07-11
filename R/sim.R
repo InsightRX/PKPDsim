@@ -147,14 +147,7 @@ sim <- function (ode = NULL,
       regimen <- merge_regimen(list(regimen, regimen_dupl))
     }
   }
-  if(!is.null(attr(ode, "lagtime")) && attr(ode, "lagtime")[1] != "undefined" && attr(ode, "lagtime")[1] != "NULL") {
-    if(is.null(lagtime)) { # only override from metadata if not specified by user
-      lagtime <- attr(ode, "lagtime")
-    }
-  }
-  if(!is.null(lagtime)) {
-    regimen <- apply_lagtime(regimen, lagtime, parameters, attr(ode, "cmt_mapping"))
-  }
+  lagtime <- parse_lagtime(lagtime, ode, parameters)
   if(!is.null(attr(ode, "dose")$duration_scale)) {
     regimen <- apply_duration_scale(
       regimen,
@@ -233,6 +226,9 @@ sim <- function (ode = NULL,
       }
     } else {
       size <- attr(analytical, "size")
+    }
+    if(is.null(lagtime)) {
+      lagtime <- rep(0, size) # needs to have at least 1 zero value, cannot be NULL when passed to cpp func
     }
     if(is.null(ode) && is.null(analytical)) {
       stop("Please specify at least the required arguments 'ode' or 'analytical' for simulations.")
@@ -507,7 +503,7 @@ sim <- function (ode = NULL,
 
     #################### Main call to ODE solver / analytical eq solver #######################
     if(!is.null(ode)) {
-      tmp <- ode(A_init, design_i, p_i, iov_bins, int_step_size)
+      tmp <- ode(A_init, design_i, p_i, iov_bins, lagtime, int_step_size)
     } else {
       tmp <- analytical_eqn_wrapper(analytical, design_i, p_i)
     }
@@ -601,6 +597,12 @@ sim <- function (ode = NULL,
   }
   all_names <- unique(c(par_names, cov_names, var_names))
   all_names <- intersect(all_names, names(comb)) # only cols that appear in data
+
+  ## remove dose-times from regimen
+  ## but leave ones that were also in t_obs
+  ## also leave extra obs when bolus, because this may be needed (controlled below using `extra_t_obs`)
+  dose_times <- design_i[design_i$evid > 0, ]$t
+  comb <- comb[! (comb$t %in% dose_times & duplicated(paste(comb$id, comb$comp, comb$t, comb$obs_type, comb$y, sep="_"))),]
 
   if(!extra_t_obs) {
     ## include the observations at which a bolus dose is added into the output object too

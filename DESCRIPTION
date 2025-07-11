@@ -1,8 +1,8 @@
 Package: PKPDsim
 Type: Package
 Title: Tools for Performing Pharmacokinetic-Pharmacodynamic Simulations
-Version: 1.4.1
-Date: 2025-04-09
+Version: 1.5.0
+Date: 2025-07-08
 Authors@R: c(
         person("Ron", "Keizer", email = "ron@insight-rx.com", role = c("aut", "cre")),
         person("Jasmine", "Hughes", email = "jasmine@insight-rx.com", role = "aut"),
