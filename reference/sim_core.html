@@ -9,7 +9,7 @@ Mostly useful for estimations / optimal design. Has no checks (for speed)!"></he
 
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,13 @@ Mostly useful for estimations / optimal design. Has no checks (for speed)!</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sim_core</span><span class="op">(</span>sim_object <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">ode</span>, duplicate_t_obs <span class="op">=</span> <span class="cn">FALSE</span>, t_init <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sim_core</span><span class="op">(</span></span>
+<span>  sim_object <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">ode</span>,</span>
+<span>  duplicate_t_obs <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  t_init <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  lagtime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -76,7 +82,7 @@ Mostly useful for estimations / optimal design. Has no checks (for speed)!</p>
 
 
 <dt id="arg-ode">ode<a class="anchor" aria-label="anchor" href="#arg-ode"></a></dt>
-<dd><p>ode</p></dd>
+<dd><p>function describing the ODE system</p></dd>
 
 
 <dt id="arg-duplicate-t-obs">duplicate_t_obs<a class="anchor" aria-label="anchor" href="#arg-duplicate-t-obs"></a></dt>
@@ -84,12 +90,16 @@ Mostly useful for estimations / optimal design. Has no checks (for speed)!</p>
 
 
 <dt id="arg-t-init">t_init<a class="anchor" aria-label="anchor" href="#arg-t-init"></a></dt>
-<dd><p>time of initialization of the ODE system. Usually 0.</p></dd>
+<dd><p>initialization time before first dose, default 0.</p></dd>
+
+
+<dt id="arg-lagtime">lagtime<a class="anchor" aria-label="anchor" href="#arg-lagtime"></a></dt>
+<dd><p>either a value (numeric) or a parameter (character) or NULL.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Data frame with simulation results</p>
+    <p>data.frame with simulation results</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

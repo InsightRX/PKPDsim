@@ -42,7 +42,6 @@
 <url><loc>https://insightrx.github.io/PKPDsim/reference/advan_process_infusion_doses.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/analytical_eqn_wrapper.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/apply_duration_scale.html</loc></url>
-<url><loc>https://insightrx.github.io/PKPDsim/reference/apply_lagtime.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/available_default_literature_models.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/bioavailability_to_R_code.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/calc_auc_analytic.html</loc></url>
@@ -88,6 +87,7 @@
 <url><loc>https://insightrx.github.io/PKPDsim/reference/nlmixr_parse_parameters.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/nm_to_regimen.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/now_utc.html</loc></url>
+<url><loc>https://insightrx.github.io/PKPDsim/reference/parse_lagtime.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/parse_obs_types.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/pkdata.html</loc></url>
 <url><loc>https://insightrx.github.io/PKPDsim/reference/pkpdsim_to_nlmixr.html</loc></url>

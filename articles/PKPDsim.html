@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">PKPDsim</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -140,13 +140,13 @@ the “long” format, i.e. one row per observed timepoint, and split by
 compartment:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##     id t comp         y obs_type</span></span>
-<span><span class="co">## 1    1 0    1 100.00000        1</span></span>
-<span><span class="co">## 4    1 1    1  60.65307        1</span></span>
-<span><span class="co">## 40   1 2    1  36.78794        1</span></span>
-<span><span class="co">## 76   1 3    1  22.31302        1</span></span>
-<span><span class="co">## 112  1 4    1  13.53353        1</span></span>
-<span><span class="co">## 148  1 5    1   8.20850        1</span></span></code></pre>
+<pre><code><span><span class="co">##     id t comp        y obs_type</span></span>
+<span><span class="co">## 1    1 0    1  0.00000        1</span></span>
+<span><span class="co">## 4    1 1    1 60.65307        1</span></span>
+<span><span class="co">## 38   1 2    1 36.78794        1</span></span>
+<span><span class="co">## 72   1 3    1 22.31302        1</span></span>
+<span><span class="co">## 106  1 4    1 13.53353        1</span></span>
+<span><span class="co">## 140  1 5    1  8.20850        1</span></span></code></pre>
 <p>To check what output was produced by <code><a href="../reference/sim.html">sim()</a></code>, let’s plot
 it (installation of <code>ggplot2</code> required).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
