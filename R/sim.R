@@ -429,7 +429,7 @@ sim <- function (ode = NULL,
     p_i <- p
     if(!is.null(covariates_table)) {
       covariates_tmp <- covariates_table[[i]]
-      design_i <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]], model = ode, obs_type = obs_type)
+      design_i <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init + t_ss, p_i, covariates_table[[i]], model = ode, obs_type = obs_type)
     } else {
       covariates_tmp <- covariates
     }
@@ -450,13 +450,13 @@ sim <- function (ode = NULL,
       if(is.null(obs_type)) {
         obs_type <- rep(1, length(t_obs))
       }
-      design_i <- create_event_table(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_tmp)
+      design_i <- create_event_table(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init + t_ss, p_i, covariates_tmp)
       if(inherits(regimen, "regimen_multiple")) {
         p_i$dose_times <- regimen[[i]]$dose_times
         p_i$dose_amts <- regimen[[i]]$dose_amts
       }
     }
-    t_obs <- round(t_obs + t_init, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
+    t_obs <- round(t_obs + t_init + t_ss, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
     if (!is.null(omega)) {
       n_om <- nrow(omega_mat)
       if(length(omega_type) == 1) {
