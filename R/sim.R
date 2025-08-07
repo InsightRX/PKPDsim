@@ -135,6 +135,9 @@ sim <- function (ode = NULL,
     t_ss <- 0
     regimen_orig <- regimen
   }
+  # if we have both TDM before the first dose and steady state dosing, we want
+  # to shift dosing only as much as we need to.
+  t_init <- pmax(0, t_init - t_ss)
   ## Add duplicate "doses" to regimen, e.g. for double-absorption compartments
   dose_dupl <- attr(ode, "dose")$duplicate
   if(!is.null(dose_dupl)) {
@@ -156,25 +159,25 @@ sim <- function (ode = NULL,
       attr(ode, "cmt_mapping")
     )
   }
-  if(t_init != 0) {
+  if(t_init != 0 || t_ss != 0) {
     regimen$dose_times <- regimen$dose_times + t_init
     if (!is.null(covariates)) {
       for (key in names(covariates)) {
         covariates[[key]] <- new_covariate(
           value = covariates[[key]]$value,
-          times = covariates[[key]]$times + t_init,
+          times = covariates[[key]]$times + t_init + t_ss,
           implementation = covariates[[key]]$implementation
         )
       }
     } else if (!is.null(covariates_table)) {
-      covariates_table$t <- covariates_table$t + t_init
+      covariates_table$t <- covariates_table$t + t_init + t_ss
     }
   }
   p <- as.list(parameters)
   if(!is.null(t_obs)) {
     t_obs <- round(t_obs, 6)
   }
-  t_obs_orig <- t_obs + t_init
+  t_obs_orig <- t_obs + t_init # t_ss was already added above
   if(checks) {
     if(!is.null(parameters) && !is.null(parameters_table)) {
       stop("Both `parameters` and `parameters_table` are specified!")
@@ -345,16 +348,16 @@ sim <- function (ode = NULL,
     if(is.null(t_obs)) { # find reasonable default to output
       t_obs <- get_t_obs_from_regimen(
         regimen, obs_step_size, t_max,
-        covariates, extra_t_obs, t_init = t_init)
+        covariates, extra_t_obs, t_init = t_init + t_ss)
     }
     if(is.null(obs_type)) {
       obs_type <- rep(1, length(t_obs))
     }
     if(is.null(event_table)) {
       if(is.null(covariates_table)) {
-        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
+        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init + t_ss, p, covariates, model = ode, obs_type = obs_type)
       } else {
-        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates_table[[1]], model = ode, obs_type = obs_type)
+        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init + t_ss, p, covariates_table[[1]], model = ode, obs_type = obs_type)
       }
       if(return_event_table) {
         return(design)
@@ -630,7 +633,7 @@ sim <- function (ode = NULL,
       ruv = res_var,
       obs_type = comb[comb$comp == 'obs',]$obs_type)
   }
-  comb$t <- comb$t - t_init
+  comb$t <- comb$t - t_init - t_ss
 
   class(comb) <- c("PKPDsim_data", class(comb))
   attr(comb, "regimen") <- regimen_orig
