@@ -128,7 +128,6 @@ sim <- function (ode = NULL,
     regimen_orig <- regimen
     regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
     t_ss <- max(regimen_orig$ss_regimen$dose_times) + regimen_orig$ss_regimen$interval
-    t_obs <- t_obs + t_ss
     if(!is.null(t_max)) t_max <- t_max + t_ss
     ## Also adjust the times for the covariates!
   } else {
@@ -633,7 +632,7 @@ sim <- function (ode = NULL,
       ruv = res_var,
       obs_type = comb[comb$comp == 'obs',]$obs_type)
   }
-  comb$t <- comb$t - t_init - t_ss
+  comb$t <- comb$t - t_init
 
   class(comb) <- c("PKPDsim_data", class(comb))
   attr(comb, "regimen") <- regimen_orig
