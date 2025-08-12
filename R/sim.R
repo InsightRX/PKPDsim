@@ -129,7 +129,7 @@ sim <- function (ode = NULL,
     regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
     t_ss <- max(regimen_orig$ss_regimen$dose_times) + regimen_orig$ss_regimen$interval
     if(!is.null(t_max)) t_max <- t_max + t_ss
-    ## Also adjust the times for the covariates!
+    # covariate times get adjusted below, along with t_init adjustment
   } else {
     t_ss <- 0
     regimen_orig <- regimen

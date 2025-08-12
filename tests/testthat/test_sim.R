@@ -456,3 +456,56 @@ test_that("covariates_table shifted correctly when steady state reg + t_init", {
   expect_equal(first_dose$t, 140 - t_ss)
   expect_equal(first_dose, evtab2[which(evtab2$dose > 0)[1], ])
 })
+
+test_that("times are recalculated correctly after steady-state regimen added", {
+  covs <- list(
+    SCR = new_covariate(
+      value = c(0.5, 0.9),
+      times = c(3, 30),
+      implementation = "interpolate"
+    ),
+    CRRT = new_covariate(
+      value = c(0, 1),
+      times = c(0, 30),
+      implementation = "locf"
+    )
+  )
+
+  reg <- new_regimen(
+    amt = 1000, interval = 12, n = 6, t_inf = 1, type = "infusion",
+    ss = TRUE
+  )
+  t_obs <- c(0, 3, 24, 30, 48)
+  attr( mod_1cmt_iv, "covariates") <- "SCR" # req'd to add cov to event table
+  res <- suppressMessages(sim(
+    mod_1cmt_iv,
+    parameters = par,
+    covariates = covs,
+    regimen = reg,
+    t_obs = t_obs,
+    t_init = 0,
+    only_obs = TRUE,
+    output_include = list(covariates = TRUE)
+  ))
+
+  # we expect SCR before t = 3 to be 0.5, SCR after t = 30 to be 0.9, and
+  # a gradient applied in between
+  expect_equal(res$SCR, c(0.5, 0.5, 0.811111111111111, 0.9, 0.9))
+
+  # t_obs passed as argument should match returned values
+  expect_equal(res$t, t_obs)
+
+  # the above should also be true if t_init > steady state duration
+  res <- suppressMessages(sim(
+    mod_1cmt_iv,
+    parameters = par,
+    covariates = covs,
+    regimen = reg,
+    t_obs = t_obs,
+    t_init = max(reg$ss_regimen$dose_times) + 24,
+    only_obs = TRUE,
+    output_include = list(covariates = TRUE)
+  ))
+  expect_equal(res$SCR, c(0.5, 0.5, 0.811111111111111, 0.9, 0.9))
+  expect_equal(res$t, t_obs)
+})
