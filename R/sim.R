@@ -128,8 +128,8 @@ sim <- function (ode = NULL,
     regimen_orig <- regimen
     regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
     t_ss <- max(regimen_orig$ss_regimen$dose_times) + regimen_orig$ss_regimen$interval
-    if(!is.null(t_max)) t_max <- t_max + t_ss
     # covariate times get adjusted below, along with t_init adjustment
+    # t_max gets adjusted in `create_event_table`, t_obs gets adjust later
   } else {
     t_ss <- 0
     regimen_orig <- regimen
@@ -176,7 +176,7 @@ sim <- function (ode = NULL,
   if(!is.null(t_obs)) {
     t_obs <- round(t_obs, 6)
   }
-  t_obs_orig <- t_obs + t_init # t_ss was already added above
+  t_obs_orig <- t_obs + t_init
   if(checks) {
     if(!is.null(parameters) && !is.null(parameters_table)) {
       stop("Both `parameters` and `parameters_table` are specified!")
@@ -344,10 +344,13 @@ sim <- function (ode = NULL,
   if(inherits(regimen, "regimen_multiple")) {
     n_ind <- length(regimen)
   } else {
-    if(is.null(t_obs)) { # find reasonable default to output
+    if(is.null(t_obs)) {
+      # find reasonable default to output. Since regimen has already been
+      # updated to include steady state doses, do not need to pass t_ss
       t_obs <- get_t_obs_from_regimen(
         regimen, obs_step_size, t_max,
-        covariates, extra_t_obs, t_init = t_init + t_ss)
+        covariates, extra_t_obs, t_init = t_init
+      )
     }
     if(is.null(obs_type)) {
       obs_type <- rep(1, length(t_obs))
@@ -455,7 +458,9 @@ sim <- function (ode = NULL,
         p_i$dose_amts <- regimen[[i]]$dose_amts
       }
     }
-    t_obs <- round(t_obs + t_init + t_ss, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
+    # design_i will already have adjusted t_obs for t_init and t_ss but we need
+    # it updated in this scope too. Ensure precision is not too high.
+    t_obs <- round(t_obs + t_init + t_ss, 6)
     if (!is.null(omega)) {
       n_om <- nrow(omega_mat)
       if(length(omega_type) == 1) {
