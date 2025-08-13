@@ -129,7 +129,7 @@ sim <- function (ode = NULL,
     regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
     t_ss <- max(regimen_orig$ss_regimen$dose_times) + regimen_orig$ss_regimen$interval
     # covariate times get adjusted below, along with t_init adjustment
-    # t_max gets adjusted in `create_event_table`, t_obs gets adjust later
+    # t_max & t_obs are adjusted later
   } else {
     t_ss <- 0
     regimen_orig <- regimen
@@ -137,6 +137,8 @@ sim <- function (ode = NULL,
   # if we have both TDM before the first dose and steady state dosing, we want
   # to shift dosing only as much as we need to.
   t_init <- pmax(0, t_init - t_ss)
+  # adjust max simulation time based on time shifts + specified obs
+  if (!is.null(t_max)) t_max <- t_max + t_init + t_ss
   ## Add duplicate "doses" to regimen, e.g. for double-absorption compartments
   dose_dupl <- attr(ode, "dose")$duplicate
   if(!is.null(dose_dupl)) {

@@ -509,3 +509,51 @@ test_that("times are recalculated correctly after steady-state regimen added", {
   expect_equal(res$SCR, c(0.5, 0.5, 0.811111111111111, 0.9, 0.9))
   expect_equal(res$t, t_obs)
 })
+
+test_that("t_max is shifted correctly when t_ss != 0", {
+  reg <- new_regimen(
+    amt = 1000, interval = 12, n = 6, t_inf = 1, type = "infusion",
+    ss = TRUE
+  )
+  t_ss <- max(reg$ss_regimen$dose_times) + reg$interval # 120
+
+  # check case where t_obs < t_max
+  evtab1 <- suppressMessages(sim(
+    mod_1cmt_iv,
+    parameters = par,
+    regimen = reg,
+    t_obs = c(2, 48),
+    t_init = 0,
+    t_max = 50,
+    return_event_table = TRUE
+  ))
+  expect_true(max(evtab1$t) <= 48 + t_ss)
+  expect_equal(sum(is.na(evtab1)), 0)
+  expect_equal(evtab1$t[evtab1$evid == 1], seq(0, 168, 12))
+
+  # check case where t_max < t_obs
+  evtab2 <- suppressMessages(sim(
+    mod_1cmt_iv,
+    parameters = par,
+    regimen = reg,
+    t_obs = c(2, 48),
+    t_init = 0,
+    t_max = 40, # before max t_obs
+    return_event_table = TRUE
+  ))
+  expect_true(max(evtab2$t) <= 48 + t_ss) # t_max is max(t_obs)
+  expect_equal(sum(is.na(evtab2)), 0)
+  expect_equal(evtab2$t[evtab2$evid == 1], seq(0, 168, 12))
+
+  # check case where no t_obs
+  evtab3 <- suppressMessages(sim(
+    mod_1cmt_iv,
+    parameters = par,
+    regimen = reg,
+    t_obs = NULL,
+    t_init = 0,
+    t_max = 40,
+    return_event_table = TRUE
+  ))
+  expect_equal(sum(is.na(evtab3)), 0)
+})
