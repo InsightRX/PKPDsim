@@ -135,7 +135,9 @@ sim <- function (ode = NULL,
     regimen_orig <- regimen
   }
   # if we have both TDM before the first dose and steady state dosing, we want
-  # to shift dosing only as much as we need to.
+  # to shift dosing only as much as we need to. Keep t_init and t_ss as separate
+  # variables, however, since we need to refer to these time shifts in different
+  # places.
   t_init <- pmax(0, t_init - t_ss)
   # adjust max simulation time based on time shifts + specified obs
   if (!is.null(t_max)) t_max <- t_max + t_init + t_ss
