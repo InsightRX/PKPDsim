@@ -128,13 +128,19 @@ sim <- function (ode = NULL,
     regimen_orig <- regimen
     regimen <- join_regimen(regimen_orig$ss_regimen, regimen, interval = regimen_orig$ss_regimen$interval)
     t_ss <- max(regimen_orig$ss_regimen$dose_times) + regimen_orig$ss_regimen$interval
-    t_obs <- t_obs + t_ss
-    if(!is.null(t_max)) t_max <- t_max + t_ss
-    ## Also adjust the times for the covariates!
+    # covariate times get adjusted below, along with t_init adjustment
+    # t_max & t_obs are adjusted later
   } else {
     t_ss <- 0
     regimen_orig <- regimen
   }
+  # if we have both TDM before the first dose and steady state dosing, we want
+  # to shift dosing only as much as we need to. Keep t_init and t_ss as separate
+  # variables, however, since we need to refer to these time shifts in different
+  # places.
+  t_init <- pmax(0, t_init - t_ss)
+  # adjust max simulation time based on time shifts + specified obs
+  if (!is.null(t_max)) t_max <- t_max + t_init + t_ss
   ## Add duplicate "doses" to regimen, e.g. for double-absorption compartments
   dose_dupl <- attr(ode, "dose")$duplicate
   if(!is.null(dose_dupl)) {
@@ -156,18 +162,18 @@ sim <- function (ode = NULL,
       attr(ode, "cmt_mapping")
     )
   }
-  if(t_init != 0) {
+  if(t_init != 0 || t_ss != 0) {
     regimen$dose_times <- regimen$dose_times + t_init
     if (!is.null(covariates)) {
       for (key in names(covariates)) {
         covariates[[key]] <- new_covariate(
           value = covariates[[key]]$value,
-          times = covariates[[key]]$times + t_init,
+          times = covariates[[key]]$times + t_init + t_ss,
           implementation = covariates[[key]]$implementation
         )
       }
     } else if (!is.null(covariates_table)) {
-      covariates_table$t <- covariates_table$t + t_init
+      covariates_table$t <- covariates_table$t + t_init + t_ss
     }
   }
   p <- as.list(parameters)
@@ -342,19 +348,22 @@ sim <- function (ode = NULL,
   if(inherits(regimen, "regimen_multiple")) {
     n_ind <- length(regimen)
   } else {
-    if(is.null(t_obs)) { # find reasonable default to output
+    if(is.null(t_obs)) {
+      # find reasonable default to output. Since regimen has already been
+      # updated to include steady state doses, do not need to pass t_ss
       t_obs <- get_t_obs_from_regimen(
         regimen, obs_step_size, t_max,
-        covariates, extra_t_obs, t_init = t_init)
+        covariates, extra_t_obs, t_init = t_init
+      )
     }
     if(is.null(obs_type)) {
       obs_type <- rep(1, length(t_obs))
     }
     if(is.null(event_table)) {
       if(is.null(covariates_table)) {
-        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates, model = ode, obs_type = obs_type)
+        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init + t_ss, p, covariates, model = ode, obs_type = obs_type)
       } else {
-        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p, covariates_table[[1]], model = ode, obs_type = obs_type)
+        design <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init + t_ss, p, covariates_table[[1]], model = ode, obs_type = obs_type)
       }
       if(return_event_table) {
         return(design)
@@ -426,7 +435,7 @@ sim <- function (ode = NULL,
     p_i <- p
     if(!is.null(covariates_table)) {
       covariates_tmp <- covariates_table[[i]]
-      design_i <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_table[[i]], model = ode, obs_type = obs_type)
+      design_i <- create_event_table(regimen, t_max, t_obs, t_tte, t_init = t_init + t_ss, p_i, covariates_table[[i]], model = ode, obs_type = obs_type)
     } else {
       covariates_tmp <- covariates
     }
@@ -447,13 +456,15 @@ sim <- function (ode = NULL,
       if(is.null(obs_type)) {
         obs_type <- rep(1, length(t_obs))
       }
-      design_i <- create_event_table(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init, p_i, covariates_tmp)
+      design_i <- create_event_table(regimen[[i]], t_max, t_obs, t_tte, t_init = t_init + t_ss, p_i, covariates_tmp)
       if(inherits(regimen, "regimen_multiple")) {
         p_i$dose_times <- regimen[[i]]$dose_times
         p_i$dose_amts <- regimen[[i]]$dose_amts
       }
     }
-    t_obs <- round(t_obs + t_init, 6) # make sure the precision is not too high, otherwise NAs will be generated when t_obs specified
+    # design_i will already have adjusted t_obs for t_init and t_ss but we need
+    # it updated in this scope too. Ensure precision is not too high.
+    t_obs <- round(t_obs + t_init + t_ss, 6)
     if (!is.null(omega)) {
       n_om <- nrow(omega_mat)
       if(length(omega_type) == 1) {

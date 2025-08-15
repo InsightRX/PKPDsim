@@ -196,7 +196,10 @@ create_event_table <- function(
       t_tte <- t_tte + t_init
       if(is.null(t_tte) || is.na(t_max) || t_max < max(t_tte)) { t_max <- max(t_tte) }
     }
+  } else if (!is.null(t_obs)) {
+    t_max <- max(c(t_max, t_obs))
   }
+
   design <- design[design$t <= t_max,]
   design[length(design[,1])+1,] <- utils::tail(design,1)
   design[length(design[,1]), c("t", "dose")] <- c(t_max,0)
