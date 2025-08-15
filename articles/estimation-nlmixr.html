@@ -138,7 +138,7 @@ model and parameter definitions in <code>nlmixr</code> syntax:</p>
 <span><span class="co">##         y ~ prop(err_prop) + add(err_add)</span></span>
 <span><span class="co">##     })</span></span>
 <span><span class="co">## }</span></span>
-<span><span class="co">## &lt;environment: 0x560759e570d0&gt;</span></span></code></pre>
+<span><span class="co">## &lt;environment: 0x5582931380a0&gt;</span></span></code></pre>
 <p>A full code example is included below.</p>
 <p><em>Note: both nlmixr and the nlmixr-translator in PKPDsim are still
 under active development. Syntax and results may therefore
@@ -196,52 +196,20 @@ change.</em></p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## Perform fit using nlmixr (SAEM)</span></span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/nlmixr2est/reference/nlmixr2.html" class="external-link">nlmixr</a></span><span class="op">(</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">nlmixr</span><span class="op">(</span></span>
 <span>  object <span class="op">=</span> <span class="va">f</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">simdat</span>,</span>
 <span>  est <span class="op">=</span> <span class="st">"saem"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span></span></code></pre></div>
-<pre><code><span><span class="co">## <span style="font-weight: bold;">── </span><span style="color: #0000BB; font-weight: bold;">nlmix</span><span style="color: #BB0000; font-weight: bold;">r²</span><span style="font-weight: bold;"> </span><span style="color: #BBBB00; font-weight: bold;">SAEM </span><span style="color: #555555; font-weight: bold; font-style: italic;">OBJF by FOCEi approximation</span><span style="font-weight: bold;"> ──</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##  Gaussian/Laplacian Likelihoods: AIC(<span style="color: #BBBB00;">fit</span>) or <span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$objf</span> etc. </span></span>
-<span><span class="co">##  FOCEi CWRES &amp; Likelihoods: addCwres(<span style="color: #BBBB00;">fit</span>) </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold;">── Time (sec </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$time</span><span style="font-weight: bold;">): ──</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##            setup covariance   saem table compress    other</span></span>
-<span><span class="co">## elapsed 0.002966   0.019012 11.136 0.085    0.026 1.810022</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold;">── Population Parameters (</span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixed</span><span style="font-weight: bold;"> or </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="color: #0000BB; font-weight: bold;">$parFixedDf</span><span style="font-weight: bold;">): ──</span></span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##           <span style="font-weight: bold;">Est.</span>     <span style="font-weight: bold;">SE</span> <span style="font-weight: bold;">%RSE</span> <span style="font-weight: bold;">Back-transformed(95%CI)</span> <span style="font-weight: bold;">BSV(CV%)</span> <span style="font-weight: bold;">Shrink(SD)%</span></span></span>
-<span><span class="co">## <span style="font-weight: bold;">logCL</span>     1.57 0.0399 2.54        4.81 (4.45, 5.2)     20.6      <span style="color: #00BB00; font-weight: bold;">25.7%</span> </span></span>
-<span><span class="co">## <span style="font-weight: bold;">logV</span>      3.92 0.0548  1.4       50.2 (45.1, 55.9)     27.7      <span style="color: #00BB00; font-weight: bold;">26.9%</span> </span></span>
-<span><span class="co">## <span style="font-weight: bold;">err_prop</span> 0.212                               0.212                     </span></span>
-<span><span class="co">## <span style="font-weight: bold;">err_add</span>    1.5                                 1.5                     </span></span>
-<span><span class="co">##  </span></span>
-<span><span class="co">##   Covariance Type (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$covMethod</span>): <span style="font-weight: bold;">linFim</span></span></span>
-<span><span class="co">##   Correlations in between subject variability (BSV) matrix:</span></span>
-<span><span class="co">##     cor:eta_V,eta_CL </span></span>
-<span><span class="co">##           <span style="color: #00BB00; font-weight: bold;">0.689 </span> </span></span>
-<span><span class="co">##  </span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">##   Full BSV covariance (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$omega</span>) or correlation (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$omegaR</span>; diagonals=SDs) </span></span>
-<span><span class="co">##   Distribution stats (mean/skewness/kurtosis/p-value) available in <span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$shrink</span> </span></span>
-<span><span class="co">##   Information about run found (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$runInfo</span>):</span></span>
-<span><span class="co">##    • 'f' has the following user-defined boundaries: err_prop, err_add which are ignored in 'saem' </span></span>
-<span><span class="co">##   Censoring (<span style="color: #BBBB00;">fit</span><span style="color: #0000BB; font-weight: bold;">$censInformation</span>): No censoring</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## <span style="font-weight: bold;">── Fit Data (object </span><span style="color: #BBBB00; font-weight: bold;">fit</span><span style="font-weight: bold;"> is a modified </span><span style="color: #0000BB; font-weight: bold;">tibble</span><span style="font-weight: bold;">): ──</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># A tibble: 200 × 16</span></span></span>
-<span><span class="co">##   ID     TIME    DV  PRED   RES IPRED  IRES IWRES eta_CL  eta_V     y    A1</span></span>
-<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> 1       8   19.7  13.9   5.84 17.1  2.62  0.669 -<span style="color: #BB0000;">0.239</span> -<span style="color: #BB0000;">0.127</span> 17.1   756.</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> 1      23.5  4.85  3.15  1.70  4.54 0.310 0.174 -<span style="color: #BB0000;">0.239</span> -<span style="color: #BB0000;">0.127</span>  4.54  201.</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> 1      25   38.0  29.9   8.16 35.1  2.90  0.383 -<span style="color: #BB0000;">0.239</span> -<span style="color: #BB0000;">0.127</span> 35.1  <span style="text-decoration: underline;">1</span>554.</span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 197 more rows</span></span></span>
-<span><span class="co">## <span style="color: #949494;"># ℹ 4 more variables: CL &lt;dbl&gt;, V &lt;dbl&gt;, tad &lt;dbl&gt;, dosenum &lt;dbl&gt;</span></span></span></code></pre>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mi>C</mi><mi>L</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mi>C</mi><mi>L</mi></mrow><mo>+</mo><mrow><mi>e</mi><mi>t</mi><mi>a</mi><mi>_</mi><mi>C</mi><mi>L</mi></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>V</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mi>V</mi></mrow><mo>+</mo><mrow><mi>e</mi><mi>t</mi><mi>a</mi><mi>_</mi><mi>V</mi></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mfrac><mrow><mi>d</mi><mspace width="0.222em"></mspace><mi>A</mi><mn>1</mn></mrow><mrow><mi>d</mi><mi>t</mi></mrow></mfrac></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mo>−</mo><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>C</mi><mi>L</mi></mrow><mi>V</mi></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>×</mo><mrow><mi>A</mi><mn>1</mn></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>y</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mfrac><mrow><mi>A</mi><mn>1</mn></mrow><mi>V</mi></mfrac></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"><mi>y</mi></mtd><mtd columnalign="left" style="text-align: left"><mo>∼</mo><mi>p</mi><mi>r</mi><mi>o</mi><mi>p</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>e</mi><mi>r</mi><mi>r</mi><mi>_</mi><mi>p</mi><mi>r</mi><mi>o</mi><mi>p</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>a</mi><mi>d</mi><mi>d</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>e</mi><mi>r</mi><mi>r</mi><mi>_</mi><mi>a</mi><mi>d</mi><mi>d</mi><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">\begin{align*}
+{CL} &amp; = \exp\left({logCL}+{eta\_CL}\right) \\
+{V} &amp; = \exp\left({logV}+{eta\_V}\right) \\
+\frac{d \: A1}{dt} &amp; = -\left(\frac{{CL}}{{V}}\right) {\times} {A1} \\
+{y} &amp; = \frac{{A1}}{{V}} \\
+{y} &amp; \sim prop({err\_prop})+add({err\_add})
+\end{align*}</annotation></semantics></math></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
