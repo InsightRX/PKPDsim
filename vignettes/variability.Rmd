@@ -46,7 +46,7 @@ dat <- sim(
   parameters = parameters,
   regimen = regimen,
   n = 50,
-  omega_matrix = matrix(c(
+  omega = matrix(c(
     0.2, 0.05, 
     0.05, 0.2
   ), ncol = 2)
