@@ -40,8 +40,7 @@ sim(
   verbose = FALSE,
   return_event_table = FALSE,
   return_design = FALSE,
-  output_include = list(parameters = FALSE, covariates = FALSE),
-  ...
+  output_include = list(parameters = FALSE, covariates = FALSE)
 )
 }
 \arguments{
@@ -60,7 +59,11 @@ passed, since currently only two mixture groups are supported.}
 
 \item{omega}{vector describing the lower-diagonal of the between-subject variability matrix}
 
-\item{omega_type}{exponential or normal, specified as vector}
+\item{omega_type}{\code{exponential} or \code{normal}, specified as vector or single
+value. This specifies the shape of the between-subject variability terms.
+\code{exponential} corresponds to this NONMEM code \code{PAR = TVPAR * EXP(ETA(x))},
+while \code{normal} corresponds to \code{PAR = TVPAR + ETA(x)}. Default is
+\code{exponential}.}
 
 \item{res_var}{residual variability. Expected a list with arguments \code{prop}, \code{add}, and/or \code{exp}. NULL by default.}
 
@@ -123,8 +126,6 @@ number of bins is higher than defined for the model an error will be thrown.}
 \item{return_design}{returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with \code{sim_core()}, e.g. for estimation and optimal design.}
 
 \item{output_include}{list specifying what to include in output table, with keys \code{parameters} and \code{covariates}. Both are FALSE by default.}
-
-\item{...}{extra parameters}
 }
 \value{
 a data frame of compartments with associated concentrations at requested times
