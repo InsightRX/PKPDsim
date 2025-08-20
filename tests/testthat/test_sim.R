@@ -491,7 +491,6 @@ test_that("times are recalculated correctly after steady-state regimen added", {
   # we expect SCR before t = 3 to be 0.5, SCR after t = 30 to be 0.9, and
   # a gradient applied in between
   expect_equal(res$SCR, c(0.5, 0.5, 0.811111111111111, 0.9, 0.9))
-
   # t_obs passed as argument should match returned values
   expect_equal(res$t, t_obs)
 
@@ -507,6 +506,22 @@ test_that("times are recalculated correctly after steady-state regimen added", {
     output_include = list(covariates = TRUE)
   ))
   expect_equal(res$SCR, c(0.5, 0.5, 0.811111111111111, 0.9, 0.9))
+  expect_equal(res$t, t_obs)
+
+  # the above should also be true if t_init != 0 and there's an observation
+  # before t == 0
+  t_obs <- c(-15, 0, 3, 24, 30, 48)
+  res <- suppressMessages(sim(
+    mod_1cmt_iv,
+    parameters = par,
+    covariates = covs,
+    regimen = reg,
+    t_obs = t_obs,
+    t_init = 15,
+    only_obs = TRUE,
+    output_include = list(covariates = TRUE)
+  ))
+  expect_equal(res$SCR, c(0.5, 0.5, 0.5, 0.811111111111111, 0.9, 0.9))
   expect_equal(res$t, t_obs)
 })
 

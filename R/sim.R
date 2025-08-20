@@ -138,6 +138,7 @@ sim <- function (ode = NULL,
   # to shift dosing only as much as we need to. Keep t_init and t_ss as separate
   # variables, however, since we need to refer to these time shifts in different
   # places.
+  t_init_orig <- t_init
   t_init <- pmax(0, t_init - t_ss)
   # adjust max simulation time based on time shifts + specified obs
   if (!is.null(t_max)) t_max <- t_max + t_init + t_ss
@@ -631,7 +632,7 @@ sim <- function (ode = NULL,
   if(!is.null(regimen_orig$ss_regimen)) {
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
     comb$t <- as.num(comb$t) - t_ss
-    comb <- comb[comb$t >= 0,]
+    comb <- comb[comb$t >= pmin(0, t_init_orig - t_ss),]
   }
 
   ## add residual variability
