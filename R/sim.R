@@ -138,7 +138,6 @@ sim <- function (ode = NULL,
   # to shift dosing only as much as we need to. Keep t_init and t_ss as separate
   # variables, however, since we need to refer to these time shifts in different
   # places.
-  t_init_orig <- t_init
   t_init <- pmax(0, t_init - t_ss)
   # adjust max simulation time based on time shifts + specified obs
   if (!is.null(t_max)) t_max <- t_max + t_init + t_ss
@@ -626,13 +625,14 @@ sim <- function (ode = NULL,
   colnames(grid) <- c("t_obs_type", "id", "comp")
   comb$t_obs_type <- paste(comb$t, comb$obs_type, sep = "_")
   comb$rownr <- 1:nrow(comb) # keep row-ordering during merge
+  # Extract all timepoints requested, note that times are still shifted by t_ss
+  # and/or t_init
   comb <- merge(grid, comb, all=FALSE)[, c("id", "t_obs_type", "t", "comp", "y", "obs_type", "rownr", all_names)]
   rm_cols <- which(colnames(comb) %in% c("t_obs_type", "rownr"))
   comb <- comb[order(comb$id, comb$comp, comb$t, comb$obs_type, comb$rownr, decreasing=FALSE), -rm_cols]
   if(!is.null(regimen_orig$ss_regimen)) {
     t_ss <- utils::tail(regimen_orig$ss_regimen$dose_times,1) + regimen_orig$ss_regimen$interval
     comb$t <- as.num(comb$t) - t_ss
-    comb <- comb[comb$t >= pmin(0, t_init_orig - t_ss),]
   }
 
   ## add residual variability
