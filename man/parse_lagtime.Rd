@@ -4,12 +4,14 @@
 \alias{parse_lagtime}
 \title{Parse lagtime specified to main sim() function}
 \usage{
-parse_lagtime(lagtime, ode)
+parse_lagtime(lagtime, ode, parameters)
 }
 \arguments{
 \item{lagtime}{either a value (numeric) or a parameter (character) or NULL.}
 
 \item{ode}{function describing the ODE system}
+
+\item{parameters}{model parameters}
 }
 \value{
 a vector of character or numeric values

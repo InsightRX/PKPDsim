@@ -38,22 +38,8 @@ dat <- sim(
 )
 ```
 
-will simulate out data for 50 patients, assuming an Omega matrix as defined above. Alternatively, the $\Omega$ could also have been defined as:
-
-```{r omega-2}
-dat <- sim(
-  ode = model,
-  parameters = parameters,
-  regimen = regimen,
-  n = 50,
-  omega_matrix = matrix(c(
-    0.2, 0.05, 
-    0.05, 0.2
-  ), ncol = 2)
-)
-```
-
-Or also using the coefficient of variation and without correlation between parameters:
+will simulate out data for 50 patients, assuming an Omega matrix as defined above. 
+Alternatively, the coefficient of variation can be specified (assuming no correlation between parameters):
 
 ```{r omega-3}
 dat <- sim(

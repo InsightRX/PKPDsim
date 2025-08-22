@@ -111,7 +111,7 @@ test_that("Two compartment model", {
     parameters = par2,
     t_obs = t_obs,
     regimen = reg,
-    mega = omega2
+    omega = omega2
   )
   v2 <- get_var_y(
     model = mod_2cmt_iv,
@@ -123,8 +123,8 @@ test_that("Two compartment model", {
     n_ind = 2000
   )
 
-  expect_true(all(abs(((v1$regular - v2$regular)/v2$regular)) < 0.2))
-  expect_equal(round(v1$regular, 3), c(2.282, 1.028))
+  expect_true(all(abs(((v1$regular - v2$regular)/v2$regular)) < 0.05))
+  expect_equal(round(v1$regular, 3), c(2.729, 1.181))
 
 })
 
@@ -148,7 +148,7 @@ test_that("One compartment with MM kinetics", {
     parameters = par3,
     t_obs = t_obs,
     regimen = reg,
-    mega = omega3
+    omega = omega3
   )
   v2 <- get_var_y(
     model = mod3,
@@ -160,7 +160,7 @@ test_that("One compartment with MM kinetics", {
     n_ind = 2000
   )
 
-  expect_true(all(abs(v1$regular - v2$regular)/res$y < 0.5))
-  expect_equal(round(v1$regular, 3), c(0.120, 4.206))
+  expect_true(all(abs(v1$regular - v2$regular)/res$y < 0.05))
+  expect_equal(round(v1$regular, 3), c(2.964, 5.246))
 
 })
