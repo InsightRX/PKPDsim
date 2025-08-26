@@ -11,7 +11,11 @@
 #'   population PK parameters are supplied, a value of `1` or `2` should be
 #'   passed, since currently only two mixture groups are supported.
 #' @param omega vector describing the lower-diagonal of the between-subject variability matrix
-#' @param omega_type exponential or normal, specified as vector
+#' @param omega_type `exponential` or `normal`, specified as vector or single 
+#' value. This specifies the shape of the between-subject variability terms.
+#' `exponential` corresponds to this NONMEM code `PAR = TVPAR * EXP(ETA(x))`, 
+#' while `normal` corresponds to `PAR = TVPAR + ETA(x)`. Default is
+#' `exponential`.
 #' @param res_var residual variability. Expected a list with arguments `prop`, `add`, and/or `exp`. NULL by default.
 #' @param iov_bins allow override of the default IOV bins for a model. Specified
 #' as a vector of timepoints specifying the bin separators, e.g.
@@ -45,7 +49,7 @@
 #' @param return_event_table return the event table for the simulation only, does not run the actual simulation. Useful for iterative use of sim().
 #' @param return_design returns the design (event table and several other details) for the simulation, does not run the actual simulation. Useful for iterative functions like estimation in combination with `sim_core()`, e.g. for estimation and optimal design.
 #' @param verbose show more output
-#' @param ... extra parameters
+#' 
 #' @return a data frame of compartments with associated concentrations at requested times
 #' @export
 #' @seealso \link{sim_ode_shiny}
@@ -114,8 +118,7 @@ sim <- function (ode = NULL,
                  verbose = FALSE,
                  return_event_table = FALSE,
                  return_design = FALSE,
-                 output_include = list(parameters = FALSE, covariates = FALSE),
-                 ...
+                 output_include = list(parameters = FALSE, covariates = FALSE)
                  ) {
 
   if(!is.null(t_obs)) {
