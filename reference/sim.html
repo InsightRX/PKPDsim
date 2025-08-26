@@ -97,8 +97,7 @@
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_event_table <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  return_design <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="cn">FALSE</span>, covariates <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  output_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>parameters <span class="op">=</span> <span class="cn">FALSE</span>, covariates <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -134,7 +133,11 @@ passed, since currently only two mixture groups are supported.</p></dd>
 
 
 <dt id="arg-omega-type">omega_type<a class="anchor" aria-label="anchor" href="#arg-omega-type"></a></dt>
-<dd><p>exponential or normal, specified as vector</p></dd>
+<dd><p><code>exponential</code> or <code>normal</code>, specified as vector or single
+value. This specifies the shape of the between-subject variability terms.
+<code>exponential</code> corresponds to this NONMEM code <code>PAR = TVPAR * EXP(ETA(x))</code>,
+while <code>normal</code> corresponds to <code>PAR = TVPAR + ETA(x)</code>. Default is
+<code>exponential</code>.</p></dd>
 
 
 <dt id="arg-res-var">res_var<a class="anchor" aria-label="anchor" href="#arg-res-var"></a></dt>
@@ -255,10 +258,6 @@ number of bins is higher than defined for the model an error will be thrown.</p>
 
 <dt id="arg-output-include">output_include<a class="anchor" aria-label="anchor" href="#arg-output-include"></a></dt>
 <dd><p>list specifying what to include in output table, with keys <code>parameters</code> and <code>covariates</code>. Both are FALSE by default.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>extra parameters</p></dd>
 
 </dl></div>
     <div class="section level2">
