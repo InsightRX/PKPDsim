@@ -41,8 +41,7 @@
   },
   "fixed": [
     "TH_CRCL",
-    "TDM_INIT",
-    "TH_CVVH"
+    "TDM_INIT"
   ],
   "omega_matrix": [
     0.0729,
