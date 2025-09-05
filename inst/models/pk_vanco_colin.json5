@@ -50,8 +50,7 @@
     0.684
   ],
   "fixed": [
-    "Q",
-    "TDM_INIT"
+    "Q"
   ],
   "iov": null,
   "ruv": {
@@ -89,7 +88,7 @@
   "misc": {
     "model_type": "2cmt_iv",
     "linearity": "linear",
-    "init_parameter": true
+    "init_parameter": false
   },
   "references": [
     {

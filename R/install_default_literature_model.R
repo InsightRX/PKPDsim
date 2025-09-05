@@ -13,7 +13,10 @@
 #' }
 #' @export
 
-install_default_literature_model <- function(model, ...) {
+install_default_literature_model <- function(
+  model,
+  ...
+) {
   if (model == "all") {
     for (m in available_default_literature_models()) {
       install_default_literature_model(m, ...)
@@ -27,7 +30,8 @@ install_default_literature_model <- function(model, ...) {
         package = "PKPDsim"
       ),
       install_all = TRUE,
-      to_package = TRUE
+      to_package = TRUE,
+      ...
     )
   }
 }

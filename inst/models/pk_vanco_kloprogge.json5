@@ -57,8 +57,7 @@
   },
   "fixed": [
     "Q",
-    "V2",
-    "TDM_INIT"
+    "V2"
   ],
   "omega_matrix": [
     0.2263512,
@@ -74,7 +73,7 @@
   "misc": {
     "model_type": "2cmt_iv",
     "linearity": "linear",
-    "init_parameter": true
+    "init_parameter": false
   },
   "references": [
     {
