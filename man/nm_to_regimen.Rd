@@ -4,10 +4,17 @@
 \alias{nm_to_regimen}
 \title{Create a regimen from NONMEM data}
 \usage{
-nm_to_regimen(data, reset_time = TRUE, first_only = FALSE)
+nm_to_regimen(
+  data,
+  dose_cmts = c(`1` = "infusion"),
+  reset_time = TRUE,
+  first_only = FALSE
+)
 }
 \arguments{
 \item{data}{NONMEM-type dataset}
+
+\item{dose_cmts}{map from compartment number to dose type, defaults to compartment 1 being an infusion dose}
 
 \item{reset_time}{start time for each simulated patient at 0, irrespective of design in dataset}
 

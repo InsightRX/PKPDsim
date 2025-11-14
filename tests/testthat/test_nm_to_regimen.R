@@ -19,6 +19,13 @@ test_that("Required column checks occur", {
     ),
     "EVID column is required"
   )
+
+  expect_error(
+    nm_to_regimen(
+      data.frame(AMT = 100, TIME = 0, EVID = 0)
+    ),
+    "CMT column is required"
+  )
 })
 
 test_that("NM-style dataframe for 1 ID converted to regimen", {
@@ -26,6 +33,7 @@ test_that("NM-style dataframe for 1 ID converted to regimen", {
     ID = 1,
     EVID = c(1, 1, 0, 1, 1, 0),
     AMT = c(100, 100, 0, 200, 200, 0),
+    CMT = 1,
     TIME = c(0, 12, 23, 25, 36, 47),
     RATE = c(100, 100, 0, 200, 400, 0),
     DV = c(0, 0, 5, 0, 0, 12)
@@ -42,11 +50,12 @@ test_that("Bolus/oral doses handled", {
   pt2 <- data.frame(
     ID = 1,
     EVID = c(1, 1, 0, 1, 1, 0),
+    CMT = 1,
     AMT = c(100, 100, 0, 200, 200, 0),
     TIME = c(0, 12, 23, 25, 36, 47),
     DV = c(0, 0, 5, 0, 0, 12)
   )
-  reg2 <- nm_to_regimen(pt2)
+  reg2 <- nm_to_regimen(pt2, dose_cmts = c("1" = "bolus"))
   expect_true(inherits(reg2, "regimen"))
   expect_equal(reg2$dose_amts, c(100, 100, 200, 200))
   expect_equal(reg2$dose_times, c(0, 12, 25, 36))
@@ -58,6 +67,7 @@ test_that("Multiple regimens from NONMEM-style dataset", {
   nm <- data.frame(
     ID = c(1, 1, 1, 2, 2, 2),
     EVID = c(1, 1, 0, 1, 1, 0),
+    CMT = 1,
     AMT = c(100, 100, 0, 200, 200, 0),
     TIME = c(0, 12, 23, 0, 24, 47),
     DV = c(0, 0, 5, 0, 0, 12)
@@ -70,4 +80,26 @@ test_that("Multiple regimens from NONMEM-style dataset", {
   expect_equal(multi_regs[[2]]$dose_times, c(0, 24))
   expect_equal(multi_regs[[1]]$dose_amts, c(100, 100))
   expect_equal(multi_regs[[2]]$dose_amts, c(200, 200))
+})
+
+test_that("Doses in different compartments handled", {
+  pt2 <- data.frame(
+    ID = 1,
+    EVID = c(1, 1, 0, 1, 1, 0, 1, 1, 0),
+    CMT = c(2, 2, 2, 2, 2, 2, 1, 1, 2), # last two doses are oral
+    AMT = c(100, 100, 0, 200, 200, 0, 150, 150, 0),
+    TIME = c(0, 12, 23, 25, 36, 47, 48, 60, 71),
+    RATE = c(100, 100, 0, 200, 400, 0, 0, 0, 0),
+    DV = c(0, 0, 5, 0, 0, 12, 0, 0, 14)
+  )
+  cmt_mapping <- c(
+    "1" = "oral",
+    "2" = "infusion"
+  )
+  reg2 <- nm_to_regimen(pt2, cmt_mapping)
+  expect_true(inherits(reg2, "regimen"))
+  expect_equal(reg2$dose_amts, c(100, 100, 200, 200, 150, 150))
+  expect_equal(reg2$dose_times, c(0, 12, 25, 36, 48, 60))
+  expect_equal(reg2$t_inf, c(1, 1, 1, 0.5, 0, 0))
+  expect_equal(reg2$type, c(rep("infusion", 4), rep("oral", 2)))
 })
