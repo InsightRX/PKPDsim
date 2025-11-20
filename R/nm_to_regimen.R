@@ -2,16 +2,16 @@
 #'
 #' Create a regimen based on a NONMEM, or NONMEM-like dataset
 #' @param data NONMEM-type dataset
-#' @param dose_cmts map from compartment number to dose type, defaults to compartment 1 being an infusion dose
 #' @param reset_time start time for each simulated patient at 0, irrespective of design in dataset
 #' @param first_only use only design from first individual in dataset
+#' @param dose_cmts map from compartment number to dose type, defaults to compartment 1 being an infusion dose
 #' @export
 #' @return Regimen object
 nm_to_regimen <- function(
   data,
-  dose_cmts = c("1" = "infusion"),
   reset_time = TRUE,
-  first_only = FALSE
+  first_only = FALSE,
+  dose_cmts = NULL
 ) {
   colnames(data) <- tolower(colnames(data))
   if(!"evid" %in% colnames(data)) {
@@ -22,9 +22,6 @@ nm_to_regimen <- function(
   }
   if(! "time" %in% colnames(data)) {
     stop("TIME column is required in source dataset!")
-  }
-  if(! "cmt" %in% colnames(data)) {
-    stop("CMT column is required in source dataset!")
   }
   m <- match(c("id", "mdv", "evid", "amt", "time", "rate", "cmt"), colnames(data), 0)
   m <- m[m>0]
@@ -40,14 +37,31 @@ nm_to_regimen <- function(
     if(reset_time) {
       tmp$time <- tmp$time - min(tmp$time)
     }
-    # map cmt to dose type
-    reg[[i]] <- new_regimen(
-      amt = tmp$amt,
-      times = tmp$time,
-      cmt = tmp$cmt,
-      type = unname(unlist(dose_cmts[as.character(tmp$cmt)])),
-      t_inf = ifelse(is.na(tmp$rate), NA, tmp$amt / tmp$rate)
-    )
+    if (!is.null(dose_cmts)){
+      # map cmt to dose type
+      reg[[i]] <- new_regimen(
+        amt = tmp$amt,
+        times = tmp$time,
+        cmt = tmp$cmt,
+        type = unname(unlist(dose_cmts[as.character(tmp$cmt)])),
+        t_inf = ifelse(is.na(tmp$rate), NA, tmp$amt / tmp$rate)
+      )
+    } else if ("rate" %in% colnames(doses) &! 0 %in% doses$rate){
+      # if rate exists and is non-zero, assume infusion
+      reg[[i]] <- new_regimen(
+        amt = tmp$amt, 
+        times = tmp$time,
+        type = "infusion",
+        t_inf = tmp$amt / tmp$rate
+      )
+    } else {
+      # assume bolus
+      reg[[i]] <- new_regimen(
+        amt = tmp$amt, 
+        times = tmp$time,
+         type = "bolus"
+      )
+    }
   }
   if(length(ids) == 1) {
     return(reg[[1]])

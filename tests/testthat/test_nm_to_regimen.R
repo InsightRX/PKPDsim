@@ -19,21 +19,13 @@ test_that("Required column checks occur", {
     ),
     "EVID column is required"
   )
-
-  expect_error(
-    nm_to_regimen(
-      data.frame(AMT = 100, TIME = 0, EVID = 0)
-    ),
-    "CMT column is required"
-  )
 })
 
-test_that("NM-style dataframe for 1 ID converted to regimen", {
+test_that("Assume infusion if no compartment but RATE given", {
   pt1 <- data.frame(
     ID = 1,
     EVID = c(1, 1, 0, 1, 1, 0),
     AMT = c(100, 100, 0, 200, 200, 0),
-    CMT = 1,
     TIME = c(0, 12, 23, 25, 36, 47),
     RATE = c(100, 100, 0, 200, 400, 0),
     DV = c(0, 0, 5, 0, 0, 12)
@@ -44,6 +36,21 @@ test_that("NM-style dataframe for 1 ID converted to regimen", {
   expect_equal(reg1$dose_times, c(0, 12, 25, 36))
   expect_equal(reg1$t_inf, c(1, 1, 1, 0.5))
   expect_equal(reg1$type, rep("infusion", 4))
+})
+
+test_that("Assume bolus if no compartment and no RATE given", {
+  pt1 <- data.frame(
+    ID = 1,
+    EVID = c(1, 1, 0, 1, 1, 0),
+    AMT = c(100, 100, 0, 200, 200, 0),
+    TIME = c(0, 12, 23, 25, 36, 47),
+    DV = c(0, 0, 5, 0, 0, 12)
+  )
+  reg1 <- nm_to_regimen(pt1)
+  expect_true(inherits(reg1, "regimen"))
+  expect_equal(reg1$dose_amts, c(100, 100, 200, 200))
+  expect_equal(reg1$dose_times, c(0, 12, 25, 36))
+  expect_equal(reg1$type, rep("bolus", 4))
 })
 
 test_that("Bolus/oral doses handled", {
@@ -96,7 +103,7 @@ test_that("Doses in different compartments handled", {
     "1" = "oral",
     "2" = "infusion"
   )
-  reg2 <- nm_to_regimen(pt2, cmt_mapping)
+  reg2 <- nm_to_regimen(pt2, dose_cmts = cmt_mapping)
   expect_true(inherits(reg2, "regimen"))
   expect_equal(reg2$dose_amts, c(100, 100, 200, 200, 150, 150))
   expect_equal(reg2$dose_times, c(0, 12, 25, 36, 48, 60))
