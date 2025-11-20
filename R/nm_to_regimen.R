@@ -37,7 +37,7 @@ nm_to_regimen <- function(
     if(reset_time) {
       tmp$time <- tmp$time - min(tmp$time)
     }
-    if (!is.null(dose_cmts)){
+    if (!is.null(dose_cmts) & !is.null(tmp$cmt)){
       # map cmt to dose type
       reg[[i]] <- new_regimen(
         amt = tmp$amt,
