@@ -1,18 +1,5 @@
 {
   "id": "pk_cefepime_an",
-  "description": "PK model for cefepime in critically ill adults",
-  "drug": "cefepime",
-  "category": "antibacterial",
-  "age_categories": [ "adults" ],
-  "subpopulations": [ "critically_ill" ],
-  "equations": [
-    'CL_i = CL_{r,nonCRRT} * \\frac{CLCR_{LBW}}{54} + CL_{nr}',
-    'V_{1,i} = V_{1,base} * (WT/90)',
-    'Q_i = Q_{base}',
-    'V_{2,i} = V_{2,base}',
-    '\\frac{dA_1}{dt} = -(CL_i/V_i) * A_1 - (Q_i/V_i) * A_1 + (Q_i/V_{2,i}) * A_2',
-    '\\frac{dA_2}{dt} = (Q_i/V_i) * A_1 - (Q_i/V_{2,i}) * A_2'
-  ],
   "ode_code": "\
     dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
     dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
@@ -49,7 +36,7 @@
   "n_comp": 7,
   "obs": { "cmt": 1, "variable": ["CONC"] },
   "dose": { "cmt": 1, "bioav": [1] },
-  "cmt_mapping": { 
+  "cmt_mapping": {
     "infusion": 1,
     "infusion_iiv": 1,
     "infusion_civ": 1
@@ -67,13 +54,6 @@
     "Q",
     "CLnr"
   ],
-  "units": {
-    "CL": "L/hr",
-    "V": "L/kg",
-    "Vi": "L",
-    "Q": "L/hr",
-    "V2": "L"
-  },
   "iiv": {
     "CL": 0.299,
     "V": 0.654,
@@ -108,28 +88,5 @@
       "url": "https://academic.oup.com/jac/article-abstract/78/6/1460/7127727"
     }
   ],
-  "active": true,
-  "build": true,
-  "admin": [
-    {
-      "implementer": { "name": "Jasmine Hughes", "email": "jasmine@insight-rx.com" },
-      "format": "PKPDsim"
-    },
-    {
-      "implementer": { "name": "Jordan Brooks", "email": "jordan.brooks@insight-rx.com" },
-      "format": "NONMEM"
-    }
-  ],
-  "implementations": {
-    "nonmem": "pk_cefepime_an.mod"
-  },
-  "comments": [
-    "Assumes Green method for determining LBW."
-  ],
-  "validation": {
-    "implementation": true,
-    "numerical": true,
-    "clinical": false
-  },
   "version": "0.1.8"
 }
