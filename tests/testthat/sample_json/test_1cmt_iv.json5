@@ -18,5 +18,11 @@
     "linearity": "linear",
     "init_parameter": true
   },
+  "build": true,
+  "validation": {
+    "implementation": true,
+    "numerical": true,
+    "clinical": false
+  },
   "version": "0.2.0"
 }
