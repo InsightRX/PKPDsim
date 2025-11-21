@@ -1,0 +1,57 @@
+{
+  "id": "pk_vanco_tong",
+  "description": "PK model for vancomycin in adults with or without hemodialysis, adapted from Goti et al. (2018)",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Q/Vi)*A[0] + (Q/V2)*A[1];\
+    dAdt[1] = +(Q/Vi)*A[0] - (Q/V2)*A[1];\
+    dAdt[2] = A[0]/Vi;",
+  "pk_code": "\
+    CRcalc = CR;\
+    CRCLi = min((140.0 - AGE) * WT * pow(0.85, (1-SEX)) / (72.0 * CRcalc), 150.0); \
+    CLi = CL * pow((CRCLi/120.0), TH_CRCL) * pow(TH_DIAL_CL, DIAL);\
+    CLtot = CLi + CL_HEMO;\
+    Vi = V * (WT/70.0) * pow(TH_DIAL_V, DIAL);\
+    V2i = V2;\
+    Qi = Q \
+  ",
+  "n_comp": 3,
+  "obs": { "cmt": 1, "scale": "V * (WT/70.0) * pow(TH_DIAL_V, DIAL)" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": ["WT", "SEX", "AGE", "CR", "DIAL", "CL_HEMO"],
+  "variables": ["CLi", "Qi", "Vi", "V2i", "CRCLi", "CLtot", "CRcalc"],
+  "parameters" : {
+    "CL": 4.5,
+    "V": 58.4,
+    "V2": 38.4,
+    "Q": 6.5,
+    "TH_CRCL": 0.8,
+    "TH_DIAL_CL": 0.7,
+    "TH_DIAL_V": 0.5
+  },
+  "fixed": [
+    "Q",
+    "TH_CRCL",
+    "TH_DIAL_CL",
+    "TH_DIAL_V"
+  ],
+  "omega_matrix": [
+    0.1584,
+    0, 0.6659,
+    0, 0, 0.326
+  ],
+  "ruv": {
+    "prop": [0.197],
+    "add": [1.42]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "comments": [
+    "The residual error magnitude was reduced from 22.7% proportional + 3.4 mg/L additive to 19.7% proportional and 1.42 mg/L additive (the average of Thomson and Colin models) to be more realistic and in line with other models, and to improve MAP estimation stability.",
+    "In the published Goti et al, 2018 model, serum creatinine is rounded to 1 mg/dL if the patient is older than 65 years old with a sCr < 1 mg/dL. This model does not make that rounding assumption."
+  ],
+  "version": "0.2.14"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "pk_vanco_adane",
+  "ode_code": "\
+    dAdt[0] = -(CLi/Vi)*A[0] \
+    dAdt[1] = A[0]/Vi ",
+  "pk_code": "\
+    BSA = pow(WT,0.425) * pow(HT,0.725) * 0.007184 \
+    CLi = CL * (CRCL/7.5) * (1.73/BSA) + CL_HEMO \
+    Vi = V * WT \
+  ",
+  "n_comp": 2,
+  "obs": { "cmt": 1, "scale": "V * WT" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "WT", "HT", "CRCL", "CL_HEMO" ],
+  "variables": ["CLi", "Vi", "BSA"],
+  "parameters" : {
+    "V": 0.51,
+    "CL": 6.54
+  },
+  "fixed": [],
+  "omega_matrix": [
+    0.057121,
+    0, 0.071289
+  ],
+  "ruv": {
+    "prop": [0.189],
+    "add": [0.0001]
+  },
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Adane, E.D. et al. Pharmacotherapy. 2015",
+      "url": "https://www.ncbi.nlm.nih.gov/pubmed/25644478"
+    }
+  ],
+  "comments": [
+    "A negligible additive error was added to stabilize MAP Bayesian estimation."
+  ],
+  "version": "0.2.14"
+}

@@ -1,0 +1,73 @@
+{
+  "id": "pk_vanco_brooks",
+  "description": "PK model for vancomycin in adults age 18-35 years",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1] \
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    dAdt[2] = A[0]/Vi ",
+  "pk_code": "\
+    BMI = WT / pow((HT/100.0), 2.0) \
+    if(SEX == 1) {  \
+      FFM = (9270.0 * WT) / (6680.0 + 216.0 * BMI) ;\
+    } else { \
+      FFM = (9270.0 * WT) / (8780.0 + 244.0 * BMI) ;\
+    } \
+    if(SEX == 0) { \
+      A1 = -0.241 \
+      K = 0.7 \
+      FSEX = 1.012 \
+    } else { \
+      A1 = -0.302 \
+      K = 0.9 \
+      FSEX = 1.0 \
+    } \
+    if(CR >= K) { \
+      A1 = -1.2 \
+    } \
+    CKDEPI = (142.0/16.66667) * pow(CR/K, A1) * pow(0.9938, AGE) * FSEX \
+    BSA = pow(WT,0.425) * pow(HT,0.725) * 0.007184  \
+    CRCL = CKDEPI * BSA / 1.73 \
+    CLi = CL * pow(CRCL/6.0, 0.945165)  * pow(FFM / 55.0, 0.27415) \
+    CLtot = CLi + CL_HEMO \
+    Vi = V * FFM / 55.0 \
+    V2i = V2 * FFM / 55.0 \
+    Qi = Q * pow(FFM / 55.0, 0.27415) \
+  ",
+  "n_comp": 3,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": ["WT", "AGE", "SEX", "CR", "HT", "CL_HEMO"],
+  "variables": [
+    "CLi", "Vi", "V2i", "Qi", "CLtot", "CRCL", "BSA",
+    "FFM", "CKDEPI", "BMI", "A1", "K", "FSEX"
+  ],
+  "parameters" : {
+    "CL": 4.2622,
+    "V": 40.7349,
+    "V2": 48.7348,
+    "Q": 2.9295
+  },
+  "fixed": ["Q"],
+  "omega_matrix": [
+    0.10504,
+    0.0550392, 0.0648416,
+    0, 0.068372, 0.882951
+  ],
+  "ruv": {
+    "prop": [0.160962],
+    "add": [0.92]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Brooks et al., in review, 2025"
+    }
+  ],
+  "version": "0.1.7"
+}

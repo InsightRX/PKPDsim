@@ -1,0 +1,56 @@
+{
+  "id": "pk_vanco_hughes",
+  "description": "PK model for vancomycin in obese adults",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Q/Vi)*A[0] + (Q/V2i)*A[1] \
+    dAdt[1] = +(Q/Vi)*A[0] - (Q/V2i)*A[1] \
+    dAdt[2] = A[0]/Vi ",
+  "pk_code": "\
+    BMI = WT / pow((HT/100.0), 2.0) \
+    if(SEX == 1) {  \
+      FFM = (9270.0 * WT) / (6680.0 + 216.0 * BMI) ;\
+    } else { \
+      FFM = (9270.0 * WT) / (8780.0 + 244.0 * BMI) ;\
+    } \
+    CRCL = (140.0 - AGE) * FFM * pow(0.85, 1-SEX) / (72.0 * CR) \
+    CLi = CL * pow(CRCL/100.0, 0.8509) \
+    CLtot = CLi + CL_HEMO \
+    Vi = V * FFM / 70.0 \
+    V2i = V2 * FFM / 70.0 \
+  ",
+  "n_comp": 3,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": ["WT", "AGE", "SEX", "CR", "HT", "CL_HEMO"],
+  "variables": ["CLi", "Vi", "V2i", "CLtot", "FFM", "CRCL", "BMI"],
+  "parameters" : {
+    "CL": 5.0627,
+    "V": 64.339,
+    "V2": 59.019,
+    "Q": 6.2402
+  },
+  "fixed": ["Q"],
+  "omega_matrix": [
+    0.0473154,
+    0.00271032, 0.0322236,
+    0.0132618, 0.138593, 0.634656
+  ],
+  "ruv": {
+    "prop": [0.1334],
+    "add": [0.001]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Hughes, M.S.A. et al., TDM (2024)",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38758633/"
+    }
+  ],
+  "version": "0.1.8"
+}
