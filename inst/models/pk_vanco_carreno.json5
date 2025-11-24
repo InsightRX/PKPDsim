@@ -1,0 +1,54 @@
+{
+  "id": "pk_vanco_carreno",
+  "description": "PK model for vancomycin in obese adults (110-250 kg)",
+  "ode_code": "\
+    CLi = SCLInter + SCLSlope * (CRCL*16.667) + CL_HEMO \
+    Vi = V \
+    Qi = K12 * Vi \
+    V2i = Qi / K21 \
+    dAdt[0] = -(CLi/V)*A[0] - K12*A[0] + K21*A[1] \
+    dAdt[1] = K12*A[0] - K21*A[1] \
+    dAdt[2] = A[0]/V ",
+  "pk_code": "",
+  "n_comp": 3,
+  "obs": { "cmt": 1, "scale": "V" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "CRCL", "CL_HEMO" ],
+  "variables": ["CLi", "Qi", "Vi", "V2i"],
+  "parameters" : {
+    "V": 25.76,
+    "SCLSlope": 0.036,
+    "K12": 2.29,
+    "K21": 1.44,
+    "SCLInter" : 0.18
+  },
+  "fixed": [],
+  "omega_matrix": [
+    0.20559,
+    0, 0.30864,
+    0,    0, 1.11676,
+    0,    0, 0, 1.4433,
+    0,    0, 0,    0, 0.057068
+  ],
+  "ruv": {
+    "prop": [0.1],
+    "add": [0.1]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Carreno JJ et al. Antimicrob. Agents Chemother. 2017",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5404576/"
+    }
+  ],
+  "comments": [
+    "Described as Model 4 in this publication. BMI ranges and not weights should be considered for determining whether patient matches model development population."
+  ],
+  "version": "0.2.18"
+}

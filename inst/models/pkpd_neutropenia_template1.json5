@@ -55,7 +55,7 @@
     ]
   },
   "ltbs": true,
-  "omega": [
+  "omega_matrix": [
     0.09,
     0,
     0.09,
