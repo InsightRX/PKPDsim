@@ -1,0 +1,283 @@
+# Simulate ODE or analytical equation
+
+Simulates a specified regimen using ODE system or analytical equation
+
+## Usage
+
+``` r
+sim(
+  ode = NULL,
+  analytical = NULL,
+  parameters = NULL,
+  parameters_table = NULL,
+  mixture_group = NULL,
+  omega = NULL,
+  omega_type = "exponential",
+  res_var = NULL,
+  iov_bins = NULL,
+  seed = NULL,
+  sequence = NULL,
+  n_ind = 1,
+  event_table = NULL,
+  regimen = NULL,
+  lagtime = NULL,
+  covariates = NULL,
+  covariates_table = NULL,
+  covariates_implementation = list(),
+  covariate_model = NULL,
+  A_init = NULL,
+  only_obs = FALSE,
+  obs_step_size = NULL,
+  int_step_size = 0.01,
+  t_max = NULL,
+  t_obs = NULL,
+  t_tte = NULL,
+  t_init = 0,
+  obs_type = NULL,
+  duplicate_t_obs = FALSE,
+  extra_t_obs = TRUE,
+  rtte = FALSE,
+  checks = TRUE,
+  verbose = FALSE,
+  return_event_table = FALSE,
+  return_design = FALSE,
+  output_include = list(parameters = FALSE, covariates = FALSE)
+)
+```
+
+## Arguments
+
+- ode:
+
+  function describing the ODE system
+
+- analytical:
+
+  string specifying analytical equation model to use (similar to
+  ADVAN1-5 in NONMEM). If specified, will not use ODEs.
+
+- parameters:
+
+  model parameters
+
+- parameters_table:
+
+  dataframe of parameters (with parameters as columns) containing
+  parameter estimates for individuals to simulate. Formats accepted:
+  data.frame, data.table, or list of lists.
+
+- mixture_group:
+
+  mixture group for models containing mixtures. If individual PK
+  parameters are supplied, this value should be `NULL`. If population PK
+  parameters are supplied, a value of `1` or `2` should be passed, since
+  currently only two mixture groups are supported.
+
+- omega:
+
+  vector describing the lower-diagonal of the between-subject
+  variability matrix
+
+- omega_type:
+
+  `exponential` or `normal`, specified as vector or single value. This
+  specifies the shape of the between-subject variability terms.
+  `exponential` corresponds to this NONMEM code
+  `PAR = TVPAR * EXP(ETA(x))`, while `normal` corresponds to
+  `PAR = TVPAR + ETA(x)`. Default is `exponential`.
+
+- res_var:
+
+  residual variability. Expected a list with arguments `prop`, `add`,
+  and/or `exp`. NULL by default.
+
+- iov_bins:
+
+  allow override of the default IOV bins for a model. Specified as a
+  vector of timepoints specifying the bin separators, e.g.
+  `iov_bins = c(0, 24, 48, 72, 9999)`. A warning will be thrown when
+  less bins are requested than was defined for the model during
+  compilation. When the number of bins is higher than defined for the
+  model an error will be thrown.
+
+- seed:
+
+  set seed for reproducible results
+
+- sequence:
+
+  if not NULL specifies the pseudo-random sequence to use, e.g. "halton"
+  or "sobol". See `mvrnorm2` for more details.
+
+- n_ind:
+
+  number of individuals to simulate
+
+- event_table:
+
+  use a previously created `design` object used for ODE simulation
+  instead of calling create_event_table() to create a new one.
+  Especially useful for repeated calling of sim(), such as in
+  optimizations or optimal design analysis. Also see
+  [`sim_core()`](https://insightrx.github.io/PKPDsim/reference/sim_core.md)
+  for even faster simulations using precalculated `design` objects.
+
+- regimen:
+
+  a regimen object created using the regimen() function
+
+- lagtime:
+
+  either a value (numeric) or a parameter (character) or NULL.
+
+- covariates:
+
+  list of covariates (for single individual) created using
+  [`new_covariate()`](https://insightrx.github.io/PKPDsim/reference/new_covariate.md)
+  function
+
+- covariates_table:
+
+  data.frame (or unnamed list of named lists per individual) with
+  covariate values
+
+- covariates_implementation:
+
+  used only for `covariates_table`, a named list of covariate
+  implementation methods per covariate, e.g.
+  `list(WT = "interpolate", BIN = "locf")`
+
+- covariate_model:
+
+  R code used to pre-calculate effective parameters for use in
+  ADVAN-style analytical equations. Not used in ODE simulations.
+
+- A_init:
+
+  vector with the initial state of the ODE system
+
+- only_obs:
+
+  only return the observations
+
+- obs_step_size:
+
+  the step size between the observations
+
+- int_step_size:
+
+  the step size for the numerical integrator
+
+- t_max:
+
+  maximum simulation time, if not specified will pick the end of the
+  regimen as maximum
+
+- t_obs:
+
+  vector of observation times, only output these values (only used when
+  t_obs==NULL)
+
+- t_tte:
+
+  vector of observation times for time-to-event simulation
+
+- t_init:
+
+  initialization time before first dose, default 0.
+
+- obs_type:
+
+  vector of observation types. Only valid in combination with equal
+  length vector `t_obs`.
+
+- duplicate_t_obs:
+
+  allow duplicate t_obs in output? E.g. for optimal design calculations
+  when t_obs = c(0,1,2,2,3). Default is FALSE.
+
+- extra_t_obs:
+
+  include extra t_obs in output for bolus doses? This is only activated
+  when `t_obs` is not specified manually. E.g. for a bolus dose at t=24,
+  if FALSE, PKPDsim will output only the trough, so for bolus doses you
+  might want to switch this setting to TRUE. When set to "auto"
+  (default), it will be TRUE by default, but will switch to FALSE
+  whenever `t_obs` is specified manually.
+
+- rtte:
+
+  should repeated events be allowed (FALSE by default)
+
+- checks:
+
+  perform input checks? Default is TRUE. For calculations where sim_ode
+  is invoked many times (e.g. population estimation, optimal design) it
+  makes sense to switch this to FALSE (after confirming the input is
+  correct) to improve speed.
+
+- verbose:
+
+  show more output
+
+- return_event_table:
+
+  return the event table for the simulation only, does not run the
+  actual simulation. Useful for iterative use of sim().
+
+- return_design:
+
+  returns the design (event table and several other details) for the
+  simulation, does not run the actual simulation. Useful for iterative
+  functions like estimation in combination with
+  [`sim_core()`](https://insightrx.github.io/PKPDsim/reference/sim_core.md),
+  e.g. for estimation and optimal design.
+
+- output_include:
+
+  list specifying what to include in output table, with keys
+  `parameters` and `covariates`. Both are FALSE by default.
+
+## Value
+
+a data frame of compartments with associated concentrations at requested
+times
+
+Simulated regimen
+
+## See also
+
+[sim_ode_shiny](https://insightrx.github.io/PKPDsim/reference/sim_ode_shiny.md)
+
+## Examples
+
+``` r
+# \donttest{
+p <- list(
+  CL = 38.48,
+  V  = 7.4,
+  Q  = 7.844,
+  V2 = 5.19,
+  Q2  = 9.324,
+  V3 = 111
+)
+
+omega <- c(0.3,       # IIV CL
+           0.1, 0.3)  # IIV V
+
+r1 <- new_regimen(
+  amt = 100,
+  times = c(0, 24, 36),
+  type = "infusion"
+)
+
+mod <- new_ode_model("pk_3cmt_iv")
+dat <- sim(
+  ode = mod,
+  parameters = p,
+  omega = omega,
+  n_ind = 20,
+  regimen = r1
+)
+# }
+```

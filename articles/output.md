@@ -1,0 +1,100 @@
+# Output
+
+Output from
+[`sim()`](https://insightrx.github.io/PKPDsim/reference/sim.md) is in
+the form of a `data.frame`. The output is in the long format, and split
+by compartment. This makes the output ready for plotting e.g. with
+`ggplot2`.
+
+By default,
+[`sim()`](https://insightrx.github.io/PKPDsim/reference/sim.md) will
+return data for all compartments. If you are only interested in the
+observation data (i.e. the concentrations in the case of PK), you can
+select only those by specifying the `only_obs = TRUE` option. Please
+note that the `comp` column in the dataset will have the indices for all
+the compartments, as well as an extra set of rows for the `"obs"`
+(observation) data, which is scaled by the scaling factor specified in
+the model.
+
+The output for the observation, as well as the compartment from which
+the observation is taken can be set using the `obs` argument:
+
+``` r
+mod <- new_ode_model(code = "
+  dAdt[1] = -KA * A[1];
+  dAdt[2] = -(CL/V) * A[2] + KA*A[1];
+", obs = list(cmt = 2, scale = "V"))
+```
+
+## Multiple observation types
+
+If you would like to output more than one observation type, such as the
+concentration of the parent drug and the concentration of the
+metabolite, you can control that using the `obs` argument. Below is an
+example where the amount in the absorption compartment as well as the
+systemic drug concentration are outputted.
+
+``` r
+mod <- new_ode_model(code = "
+    dAdt[1] = -KA * A[1];
+    dAdt[2] = -(CL/V) * A[2] + KA*A[1];
+  ", 
+  obs = list(
+    cmt = c(2, 2),
+    scale = c(1, "V"),
+    label = c("abs", "conc")
+  )
+)
+par <- list(CL = 5, V = 50, KA = .5)
+reg <- new_regimen(amt = 100, n = 5, interval = 12)
+res <- sim(
+  ode = mod, 
+  parameters = par, 
+  regimen = reg, 
+  only_obs = TRUE
+)
+```
+
+## Parameters, variables, and covariates
+
+It is often useful to include model parameters, generated variables,
+and/or covariates in the output table as well, especially if covariates
+and between-subject variability is included in the simulation, or for
+debugging models. You can use the `output_include` argument for this:
+
+``` r
+mod_1cmt_iv <- new_ode_model("pk_1cmt_iv")
+p <- list(CL = 5, V = 50)
+reg <- new_regimen(amt = 100, n = 4, interval = 12, type = "bolus",  cmt = 1)
+cov_table <- data.frame(
+  id  = c(1, 1, 2, 3),
+  WT  = c(40, 45, 50, 60),
+  SCR = c(50, 150, 90, 110),
+  t   = c(0, 5, 0, 0)
+)
+
+dat <- sim(
+  ode = mod_1cmt_iv,
+  parameters = p,
+  regimen = reg,
+  covariates_table = cov_table,
+  covariates_implementation = list(SCR = "interpolate"),
+  n_ind = 3,
+  only_obs = TRUE,
+  output_include = list(parameters = TRUE, covariates = TRUE)
+)
+```
+
+    ## Simulating 3 individuals.
+
+``` r
+head(dat)
+```
+
+    ##     id t comp        y obs_type CL  V WT SCR
+    ## 1    1 0  obs 0.000000        1  5 50 40  50
+    ## 4    1 1  obs 1.809675        1  5 50 41  70
+    ## 40   1 2  obs 1.637462        1  5 50 42  90
+    ## 76   1 3  obs 1.481636        1  5 50 43 110
+    ## 112  1 4  obs 1.340640        1  5 50 44 130
+    ## 142  1 5  obs 1.213061        1  5 50 45 150

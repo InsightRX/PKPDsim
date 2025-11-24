@@ -1,0 +1,104 @@
+# Dose regimen for sim_ode
+
+Create a dosing regimen for use with sim_ode
+
+## Usage
+
+``` r
+new_regimen(
+  amt = 100,
+  interval = NULL,
+  n = 3,
+  times = NULL,
+  type = NULL,
+  t_inf = NULL,
+  rate = NULL,
+  t_lag = NULL,
+  cmt = NULL,
+  checks = TRUE,
+  ss = FALSE,
+  n_ss = NULL,
+  first_dose_time = now_utc()
+)
+```
+
+## Arguments
+
+- amt:
+
+  dosing amount, either a single value (which will repeated for multiple
+  doses), or a vector with doses for each administration
+
+- interval:
+
+  dosing interval (requires n as argument)
+
+- n:
+
+  number of doses (requires interval as argument)
+
+- times:
+
+  vector describing dosing times. Overrides specified times using
+  interval and n arguments
+
+- type:
+
+  either "infusion", "bolus", "oral", "sc" (subcutaneous), or "im"
+  (intramuscular).
+
+- t_inf:
+
+  infusion time (if `type`==`infusion`)
+
+- rate:
+
+  infusion rate (if `type`==`infusion`). `NULL` by default. If
+  specified, overrides `t_inf`
+
+- t_lag:
+
+  lag time (can be applied to any dose type, not only oral). Will just
+  be added to `times`
+
+- cmt:
+
+  vector of dosing compartments (optional, if NULL will dosing
+  compartment defined in model will be used)
+
+- checks:
+
+  input checks. Remove to increase speed (e.g. for population-level
+  estimation or optimal design)
+
+- ss:
+
+  steady state? boolean value whether to simulate out to steady state
+  first (steady state will be based on specified `amt` and `interval`,
+  `times` will be ignored).
+
+- n_ss:
+
+  how many doses to simulate before assumed steady state. Default is 4
+  \* 24 / `interval`.
+
+- first_dose_time:
+
+  datetime stamp of first dose (of class `POSIXct`). Default is current
+  date time.
+
+## Value
+
+a list containing calculated VPC information, and a ggplot2 object
+
+## See also
+
+[sim_ode](https://insightrx.github.io/PKPDsim/reference/sim_ode.md)
+
+## Examples
+
+``` r
+r1 <- new_regimen(amt=50, interval=12, n=20) # dose 50mg, q12hrs for 10 days
+r2 <- new_regimen(amt=50, times=c(0:19)*12)  # same, but using explicit times
+r3 <- new_regimen(amt=c(rep(100,4), rep(50,16)), times=c(0:19)*12)  # first 4 doses higher dose
+```

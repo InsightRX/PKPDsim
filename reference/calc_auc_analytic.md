@@ -1,0 +1,78 @@
+# Convenience function to calculate the AUC based on PK model parameters at any given moment, for linear iv models.
+
+Convenience function to calculate the AUC based on PK model parameters
+at any given moment, for linear iv models.
+
+## Usage
+
+``` r
+calc_auc_analytic(
+  f = c("1cmt_iv_infusion", "2cmt_iv_infusion", "3cmt_iv_infusion", "1cmt_iv_bolus",
+    "2cmt_iv_bolus", "3cmt_iv_bolus"),
+  parameters,
+  regimen = NULL,
+  dose = NULL,
+  interval = NULL,
+  t_inf = NULL,
+  t_obs = c(0, 24, 48, 72),
+  ...
+)
+```
+
+## Arguments
+
+- f:
+
+  analytic model to use, show available models using
+  [`advan()`](https://insightrx.github.io/PKPDsim/reference/advan.md)
+
+- parameters:
+
+  list of parameter estimates. Requires CL/V for 1-compartment models,
+  CL/V/Q/V2 for 2-compartment models, and CL/V/Q/V2/Q2/V3 for
+  3-compartment models.
+
+- regimen:
+
+  PKPDsim regimen created using `new_regimen`. Not required, regimen can
+  also be specified using `dose`, `interval`, and `t_inf`.
+
+- dose:
+
+  dosing amount for regimen (single value). Only used if no `regimen`
+  supplied.
+
+- interval:
+
+  dosing interval for regimen (single value). Only used if no .
+  `regimen` supplied.
+
+- t_inf:
+
+  infusion length for regimen (single value). Only used if no `regimen`
+  supplied.
+
+- t_obs:
+
+  vector of observation times for AUC
+
+- ...:
+
+  optional arguments passed to `advanc_create_data()`
+
+## Value
+
+a data.frame with `t` and `auc`
+
+## Examples
+
+``` r
+dat <- calc_auc_analytic(
+  f = "2cmt_iv_infusion",
+  regimen = new_regimen(
+    amt = 1000, n = 10, type = "infusion",
+    t_inf = 1, interval = 24
+  ),
+  parameters = list(CL = 5, V = 50, Q = 8, V2 = 150)
+)
+```
