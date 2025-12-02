@@ -4,14 +4,12 @@
 #' @param data NONMEM-type dataset
 #' @param reset_time start time for each simulated patient at 0, irrespective of design in dataset
 #' @param first_only use only design from first individual in dataset
-#' @param dose_cmts map from compartment number to dose type, defaults to compartment 1 being an infusion dose
 #' @export
 #' @return Regimen object
 nm_to_regimen <- function(
   data,
   reset_time = TRUE,
-  first_only = FALSE,
-  dose_cmts = NULL
+  first_only = FALSE
 ) {
   colnames(data) <- tolower(colnames(data))
   if(!"evid" %in% colnames(data)) {
@@ -37,19 +35,32 @@ nm_to_regimen <- function(
     if(reset_time) {
       tmp$time <- tmp$time - min(tmp$time)
     }
-    if (!is.null(dose_cmts) & !is.null(tmp$cmt)){
-      # map cmt to dose type
-      reg[[i]] <- new_regimen(
-        amt = tmp$amt,
-        times = tmp$time,
-        cmt = tmp$cmt,
-        type = unname(unlist(dose_cmts[as.character(tmp$cmt)])),
-        t_inf = ifelse(is.na(tmp$rate), NA, tmp$amt / tmp$rate)
-      )
+    # use CMT if it exists in input data
+    if (!is.null(tmp$cmt)){
+      # if RATE is given, use to calculate infusion time t_inf
+      if (!is.null(tmp$rate)){
+        suppressWarnings({
+          reg[[i]] <- new_regimen(
+            amt = tmp$amt,
+            times = tmp$time,
+            cmt = tmp$cmt,
+            t_inf = ifelse(tmp$rate == 0, 0, tmp$amt/tmp$rate)
+          )
+        })
+      } else {
+        # if no RATE is given, then assume bolus
+        suppressWarnings({
+          reg[[i]] <- new_regimen(
+            amt = tmp$amt,
+            times = tmp$time,
+            cmt = tmp$cmt
+          )
+        })
+      }
     } else if ("rate" %in% colnames(doses) &! 0 %in% doses$rate){
       # if rate exists and is non-zero, assume infusion
       reg[[i]] <- new_regimen(
-        amt = tmp$amt, 
+        amt = tmp$amt,
         times = tmp$time,
         type = "infusion",
         t_inf = tmp$amt / tmp$rate
@@ -57,9 +68,9 @@ nm_to_regimen <- function(
     } else {
       # assume bolus
       reg[[i]] <- new_regimen(
-        amt = tmp$amt, 
+        amt = tmp$amt,
         times = tmp$time,
-         type = "bolus"
+        type = "bolus"
       )
     }
   }
