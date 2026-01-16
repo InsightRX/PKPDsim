@@ -743,7 +743,7 @@ describe("IOV", {
 })
 
 describe("Compare results from sims with references", {
-  
+
   # Uses models defined in setup.R:
   # - mod_1cmt_oral
   # - mod_1cmt_iv
@@ -997,6 +997,572 @@ describe("Compare results from sims with references", {
       output_include = list(parameters = TRUE, covariates=TRUE)
     )
     expect_equal(length(unique(dat$id)), 3)
+  })
+
+})
+
+describe("Simulate with multiple observation types", {
+
+  # Uses model defined in setup.R:
+  # - pk_multi_obs
+  # - vars_multi_obs
+
+  regimen_multi_obs <- new_regimen(amt = 100, interval = 12, n = 5, type="infusion", t_inf = 1)
+  parameters_multi_obs <- list("CL" = 15, "V" = 150)
+  omega_multi_obs <- PKPDsim::cv_to_omega(list("CL" = 0.2, "V" = 0.2), parameters_multi_obs[1:2])
+
+  test_that("obs types are output by `sim`", {
+    obs_type <- c(1,2,1,3,1)
+    data <- sim(
+      ode = pk_multi_obs,
+      parameters = list(CL = 20, V = 200),
+      regimen = regimen_multi_obs,
+      int_step_size = 0.1,
+      only_obs = TRUE,
+      obs_type = obs_type,
+      t_obs = c(2, 4, 6, 8, 12),
+      output_include = list("variables" = TRUE)
+    )
+    expect_equal(data$obs_type, obs_type)
+    expect_equal(data$y, diag(as.matrix(data[1:5,5+obs_type])))
+  })
+
+
+  test_that("check obs at same timepoint but with different obs_type", {
+    obs_type <- c(1,2,1,3,1)
+    t_same <- sim(
+      ode = pk_multi_obs,
+      parameters = list(CL = 20, V = 200),
+      regimen = regimen_multi_obs,
+      int_step_size = 0.1,
+      only_obs = TRUE,
+      obs_type = obs_type,
+      t_obs = c(2, 4, 4, 8, 8),
+      output_include = list("variables" = TRUE)
+    )
+    expect_equal(t_same$t[2], t_same$t[3])
+    expect_equal(t_same$t[4], t_same$t[5])
+    expect_equal(t_same$y[3], t_same$METAB[3])
+    expect_equal(t_same$y[2], t_same$CONC[2])
+    expect_equal(t_same$y[5], t_same$METAB2[5])
+    expect_equal(t_same$y[4], t_same$CONC[4])
+  })
+
+
+  test_that("check that residual error correctly applied to right var", {
+    obs_type <- c(1,2,1,3,1)
+    set.seed(12345)
+    ruv_term3 <- list(prop = c(0, 0, 0.1), add = c(0, 0, 0.1))
+    ruv_term1 <- list(prop = c(.1, 0, 0), add = c(1, 0, 0))
+
+    data2 <- sim(
+      ode = pk_multi_obs,
+      parameters = list(CL = 20, V = 200),
+      regimen = regimen_multi_obs,
+      int_step_size = 0.1,
+      only_obs = TRUE,
+      obs_type = obs_type,
+      t_obs = c(2, 4, 6, 8, 12),
+      output_include = list("variables" = TRUE),
+      res_var = ruv_term3
+    )
+    y <- diag(as.matrix(data2[1:5, 5 + obs_type]))
+
+    # no residual error for obs_type 1 and 2, only 3
+    expect_equal(data2$y[-4], y[-4])
+    expect_true(data2$y[-4][4] != y[4])
+
+    data3 <- sim(
+      ode = pk_multi_obs,
+      parameters = list(CL = 20, V = 200),
+      regimen = regimen_multi_obs,
+      int_step_size = 0.1,
+      only_obs = TRUE,
+      obs_type = obs_type,
+      t_obs = c(2, 4, 6, 8, 12),
+      output_include = list("variables" = TRUE),
+      res_var = ruv_term1
+    )
+    y <- diag(as.matrix(data2[1:5, 5 + obs_type]))
+
+    # no residual error for obs_type 2/3, only and 1
+    expect_equal(data3$y[-c(1,3,5)], y[-c(1,3,5)])
+    expect_true(all(data3$y[c(1,3,5)] != y[c(1,3,5)]))
+  })
+
+
+  test_that("specifying ruv as multi-type when only 1 obs_type", {
+    obs_type <- c(1,2,1,3,1)
+    ruv_single <- list(prop = 0.1, add = 1)
+    ruv_multi <- list(prop = c(0.1, 1), add = c(1, 20))
+
+    s_single <- sim(
+      ode = pk_multi_obs,
+      parameters = parameters_multi_obs,
+      n_ind = 1,
+      regimen = regimen_multi_obs,
+      only_obs = TRUE,
+      t_obs = c(2,4,6,8),
+      seed = 123456,
+      res_var = ruv_single
+    )
+
+    ## specified as multi, but obs_type is all 1, so should
+    ## give same results as s_single
+    s_multi1 <- sim(
+      ode = pk_multi_obs,
+      parameters = parameters_multi_obs,
+      n_ind = 1,
+      regimen = regimen_multi_obs,
+      only_obs = TRUE,
+      t_obs = c(2,4,6,8),
+      obs_type = c(1, 1, 1, 1),
+      seed = 123456,
+      res_var = ruv_multi,
+      t_init = 10
+    )
+    expect_equal(s_multi1$y, s_single$y)
+
+    ## specifying ruv as multi-type when multiple obs_type
+    ## should now give different results
+    s_multi1 <- sim(
+      ode = pk_multi_obs,
+      parameters = parameters_multi_obs,
+      n_ind = 1,
+      regimen = regimen_multi_obs,
+      only_obs = TRUE,
+      t_obs = c(2,4,6,8),
+      obs_type = c(1, 2, 1, 2),
+      seed = 123456,
+      res_var = ruv_multi,
+      t_init = 10
+    )
+    expect_equal(s_multi1$y[c(1, 3)], s_single$y[c(1,3)])
+    expect_true(sum(abs(s_single$y[c(2,4)] - s_multi1$y[c(2,4)])) > 50)
+  })
+
+  test_that("multi-obs with baseline and obs_time = dose_time works correctly", {
+    tmp <- sim(
+      pk_multi_obs,
+      parameters = parameters_multi_obs,
+      regimen = regimen_multi_obs,
+      t_obs = c(0, 0, 6, 6),
+      obs_type = c(1, 4, 1, 4),
+      only_obs = TRUE,
+      output_include = list(variables = TRUE),
+      return_design = F
+    )
+    expect_equal(
+      tmp$y[tmp$obs_type == 1],
+      tmp$CONC[tmp$obs_type == 1]
+    )
+    expect_equal(
+      tmp$y[tmp$obs_type == 4],
+      tmp$ACT[tmp$obs_type == 4]
+    )
+  })
+
+  test_that("multi-obs model simulates correctly (bug 202205)", {
+    skip_on_cran()
+
+    pars <- list(
+      CL = 23.9,
+      CLM = 5.19,
+      V = 107,
+      Q = 3.31,
+      V2 = 46.2,
+      VM = 111,
+      KA = 18.6,
+      TLAG = 0.415
+    )
+    covs <- list(WT = PKPDsim::new_covariate(80))
+    mod <- new_ode_model(
+      code = "dAdt[0] = -KAi*A[0] \
+      dAdt[1] = +KAi*A[0] - (CLi/Vi)*A[1] - (Qi/Vi)*A[1] + (Qi/V2i)*A[2] \
+      dAdt[2] = +(Qi/Vi)*A[1] - (Qi/V2i)*A[2] \
+      dAdt[3] = +(CLi/Vi)*A[1] - (CLMi/VMi)*A[3] \
+      dAdt[4] = A[1]*1000.0/Vi \
+      CONC = A[1]/(Vi/1000.0) \
+      CONCM = A[3]/(VMi/1000.0) \
+      CONCT = CONC+CONCM \
+    ",
+      pk = "KAi = KA \
+      CLi = CL * pow(WT/70.0, 0.75) \
+      Vi = V *(WT/70.0) \
+      Qi = Q * pow(WT/70.0, 0.75)\
+      V2i = V2 * (WT/70.0) \
+      CLMi = CLM * pow(WT/70.0, 0.75) \
+      VMi = VM *(WT/70.0) \
+    ",
+      parameters = pars,
+      declare_variables = c( "CLi", "Vi", "V2i", "Qi", "KAi", "VMi", "CLMi", "CONC", "CONCM", "CONCT" ),
+      obs = list(
+        variable = c( "CONC", "CONCM", "CONC", "CONCM" )
+      ),
+      covariates = covs
+    )
+    regimen <- new_regimen(amt = 3.7, n=10, interval = 24, type = "oral", cmt = 1)
+    data <- data.frame(
+      t = 70,
+      y = 1,
+      evid = 0,
+      loq = 0,
+      obs_type = 2,
+      dv = 1
+    )
+    t_obs <- seq(0, 50, .5)
+    pop <- sim(
+      ode = mod,
+      regimen = regimen,
+      parameters = pars,
+      covariates = covs,
+      t_obs = rep(t_obs, each = 4),
+      only_obs = TRUE,
+      obs_type = rep(1:4, length(t_obs))
+    )
+    # correct obs_types
+    expect_equal(
+      pop[pop$t %in% c(23, 47), ]$obs_type,
+      c(1,2,3,4,1,2,3,4)
+    )
+    # correct output values
+    expect_equal(
+      round(pop[pop$t %in% c(23, 47), ]$y, 2),
+      c(0.52, 12.34, 0.52, 12.34, 0.63, 17.17, 0.63, 17.17)
+    )
+
+  })
+
+})
+
+describe("Multiple regimens", {
+  test_that("multiple regimens for multiple individuals can be simulated", {
+
+    # Uses a model defined in `setup.R`
+    cov_table <- data.frame(WT = rnorm(10, 70, 5))
+    multi_regs <- list()
+    for(i in seq(cov_table$WT)) {
+      multi_regs[[i]] <- new_regimen(amt = 10 * cov_table$WT[i], interval = 12, type = "infusion")
+    }
+    class(multi_regs) <- "regimen_multiple"
+
+    par <- list(CL = 5, V = 50)
+    reg <- new_regimen(amt = 2000, interval = 24, type = "infusion")
+    covariates = list(WT = new_covariate(1))
+    res <- sim_ode(
+      ode = mod_1cmt_iv,
+      parameters = par,
+      covariates = covariates,
+      regimen = multi_regs,
+      only_obs = TRUE
+    )
+    expect_equal(length(unique(res$id)),10)
+    expect_equal(sum(is.na(res$y)), 0)
+    # IDs ordered correctly:
+    expect_true(length(unique(res$id)) == 10 && all(diff(res$id) >= 0))
+  })
+
+})
+
+
+describe("Mixture models", {
+  # Uses model and covariates defined in setup.R:
+  # - mod_mixture
+  # - covs_mixture
+
+  par_mixture <- list(CL = 3, V = 50)
+  reg_mixture <- new_regimen(amt = 250, n = 5, interval = 6, type = 'infusion', t_inf = 1)
+  t_obs_mixture <- seq(0, 36, 4)
+
+  test_that("mixture model works properly for single patient", {
+    res0 <- sim_ode(mod_mixture, parameters = par_mixture, regimen = reg_mixture, covariates = covs_mixture, t_obs = t_obs_mixture, only_obs=T) # mixture_group not supplied
+    res1 <- sim(mod_mixture, parameters = par_mixture, regimen = reg_mixture, t_obs = t_obs_mixture, covariates = covs_mixture, mixture_group = 1, only_obs=T)
+    res2 <- sim(mod_mixture, parameters = par_mixture, regimen = reg_mixture, t_obs = t_obs_mixture, covariates = covs_mixture, mixture_group = 2, only_obs=T)
+    expect_equal(round(res0[res0$t == 24,]$y, 2), 9.07) # should use whatever is in `parameters`
+    expect_equal(round(res1[res1$t == 24,]$y, 2), 5.82)
+    expect_equal(round(res2[res2$t == 24,]$y, 2), 1.15)
+  })
+
+  test_that("mixture model works properly when vectorized (using parameters_table)", {
+    partab <- data.frame(CL = rep(0, 6), V = rep(50, 6))
+    suppressMessages({
+      expect_error(sim_ode(mod_mixture, parameters_table = partab, regimen = reg_mixture, t_obs = t_obs_mixture, covariates = covs_mixture, mixture_group = 1, only_obs=T))
+      res1 <- sim(mod_mixture, parameters_table = partab, regimen = reg_mixture, t_obs = t_obs_mixture, covariates = covs_mixture, mixture_group = rep(1, 6), only_obs=T)
+      res2 <- sim(mod_mixture, parameters_table = partab, regimen = reg_mixture, t_obs = t_obs_mixture, covariates = covs_mixture, mixture_group = rep(c(1,2), 3), only_obs=T, output_include = list(parameters = TRUE))
+    })
+    expect_equal(round(res1[res1$t == 24,]$y, 2), rep(5.82, 6))
+    expect_equal(round(res2[res2$t == 24,]$y, 2), rep(c(5.82, 1.15), 3))
+    expect_equal(res2[res2$id == 1,]$CL[1], 5)
+    expect_equal(res2[res2$id == 2,]$CL[1], 15)
+    expect_equal(res2[res2$id == 3,]$CL[1], 5)
+  })
+
+  test_that("mixture model works properly when vectorized (using covariates_table)", {
+    covtab <- data.frame(ID = 1:8, WT = rep(seq(40, 130, 30), 2))
+    suppressMessages({
+      expect_error(sim(mod_mixture, parameters = par_mixture, covariates_table = covtab, regimen = reg_mixture, t_obs = t_obs_mixture, mixture_group = 1, only_obs=T))
+      res <- sim(mod_mixture, parameters = par_mixture, covariates_table = covtab, regimen = reg_mixture, t_obs = t_obs_mixture, mixture_group = rep(c(1, 2), each=4), only_obs=T)
+    })
+    expect_equal(round(res[res$t == 24,]$y, 2), c(9.39, 5.82, 3.83, 2.65, 2.99, 1.15, 0.52, 0.25))
+  })
+
+})
+
+describe("Compartment mapping", {
+  # Uses model defined in setup.R:
+  # - pk1cmt_oral_cmt_mapping
+
+  test_that("Compartment mapping is added to attributes", {
+    expect_equal(attr(pk1cmt_oral_cmt_mapping, "cmt_mapping")[["oral"]], 1)
+    expect_equal(attr(pk1cmt_oral_cmt_mapping, "cmt_mapping")[["infusion"]], 2)
+  })
+
+  test_that("Admin route is interpreted and simulated correctly", {
+    regimen <- new_regimen(
+      amt = c(100, 100, 100, 100),
+      times = c(0, 12, 24, 36),
+      type = c("oral", "oral", "infusion", "infusion"),
+      t_inf = c(0, 0, 1, 1)
+    )
+    p <- list(KA = 1, CL = 5, V = 50)
+    res <-  sim_ode(
+      ode = pk1cmt_oral_cmt_mapping,
+      parameters = p,
+      regimen = regimen,
+      only_obs = FALSE
+    )
+    expect_equal(round(res$y[res$comp == 1 & res$t == 25], 4), 2e-04)
+    expect_true(res$y[res$comp == 2 & res$t == 25] >= 100)
+  })
+
+  test_that("multiple scaling types on one compartment works", {
+    skip_on_cran()
+    mod <- new_ode_model(
+      code = "
+        dAdt[1] = -KA * A[1];
+        dAdt[2] = -(CL/V) * A[2] + KA*A[1];
+      ",
+      obs = list(
+        cmt = c(2, 2),
+        scale = c(1, "V"),
+        label = c("abs", "conc")
+      ),
+      cpp_show_code = FALSE
+    )
+    par <- list(CL = 5, V = 50, KA = .5)
+    reg <- new_regimen(amt = 100, n = 5, interval = 12)
+    res <- sim_ode(
+      ode = mod,
+      parameters = par,
+      regimen = reg,
+      only_obs = TRUE
+    )
+    dat <- cbind(res[res$comp == "abs",]$y, res[res$comp == "conc",]$y)
+    expect_true("PKPDsim" %in% class(mod))
+    expect_equal(length(unique(res$comp)), 2)
+    expect_equal(round(dat[,1],1), round(dat[,2]*par$V,1))
+  })
+
+})
+
+describe("Model simulation with lagtime", {
+
+  test_that("dose dump after lagtime in correct order in output data", {
+    skip_on_cran()
+    reg <- new_regimen(amt = 500, n = 4, interval = 12, type = 'oral')
+    pars <- list(CL = 5, V = 50, KA = 0.5, TLAG = 0.83)
+    dat <- sim_ode(
+      ode = mod_1cmt_oral_lagtime,
+      regimen = reg,
+      parameters = pars,
+      only_obs = FALSE
+    )
+    ## Change after RXR-2394: time of TLAG not in dataset anymore unless requested by user in t_obs
+    ## Before change: expect_equal(round(dat[dat$t == 12.83 & dat$comp == 1,]$y, 1), c(1.2, 501.2))
+    ## After change:
+    expect_equal(nrow(dat[dat$t == 12.83,]), 0)
+    ## When grid requested by user, lagtime should be visible
+    dat <- sim_ode(
+      ode = mod_1cmt_oral_lagtime,
+      regimen = reg,
+      parameters = pars,
+      t_obs = seq(0, 1, 0.01),
+      only_obs = TRUE
+    )
+    tmp <- dat[dat$t >= 0.82 & dat$t <= 0.85, ]
+    expect_equal(tmp$t, c(0.82, 0.83, 0.84, 0.85))
+    expect_equal(round(tmp$y, 2), c(0, 0, 0.05, 0.10))
+  })
+
+})
+
+
+describe("Models with t_init", {
+  # Uses model defined in setup.R (conditional, NOT_CRAN only):
+  # - mod_t_init
+
+  skip_on_cran()
+
+  # Test t_init functionality
+  ## e.g. TDM before first dose:
+  ## at t=-8, conc=10000
+  ## Use this as true value in the simulations
+  par_t_init <- list(CL = 7.67, V = 97.7, TDM_INIT = 500)
+  reg_t_init <- new_regimen(amt = 100000, times=c(0, 24), type="bolus")
+  s <- sim(
+    ode = mod_t_init,
+    parameters = par_t_init,
+    n_ind = 1,
+    regimen = reg_t_init,
+    only_obs = TRUE,
+    output_include = list(variables = TRUE),
+    t_init = 10
+  )
+
+  test_that("TDM before first dose is considered a true initial value", {
+    expect_equal(sum(is.na(s$y)), 0)
+    expect_equal(s$y[1], 500)
+    expect_equal(round(s$y[3]), 427)
+    expect_equal(round(s$y[13]),1157)
+  })
+
+  test_that("Variables are set (also in first row) when TDM before first dose", {
+    expect_equal(round(s$CONC[1:5], 1), c(500, 462.2, 427.3, 395.1, 365.3))
+  })
+
+})
+
+describe("Time rounding issues", {
+
+  # rounding time should not produce NAs in sim
+  ## time-rounding bug 20170804
+
+  test_that("No NAs related to rounding", {
+    # Uses models defined in setup.R
+    p <- list(CL = 5, V = 50, Q = 10, V2 = 150)
+    r1 <- new_regimen(amt = 100, times = c(0, 24, 36), type = "infusion")
+    dat1 <- sim_ode(
+      ode = mod_2cmt_iv,
+      parameters = p,
+      regimen = r1,
+      t_obs=seq(0, 150, length.out = 100)
+    )
+    expect_equal(sum(is.na(dat1$y)), 0)
+  })
+
+})
+
+describe("Timevarying covariates are handled properly", {
+  # Uses model defined in setup.R (conditional, NOT_CRAN only):
+  # - mod_2cmt_timevar
+
+  skip_on_cran()
+
+  par_timevar <- list(CL = 3, V = 50, Q = 2.5, V2 = 70)
+  reg_timevar <- new_regimen(
+    amt = 250,
+    n = 60,
+    interval = 6,
+    type = 'infusion',
+    t_inf = 1
+  )
+
+  test_that("timevarying covariates handled", {
+    # CLi changes by several orders of magnitude after
+    # steady state is achieved, which should produce
+    # a new steady state that is much lower
+    covs <- list(
+      CRCL = new_covariate(
+        value = c(4.662744, 5.798767, 6.195943, 6.2, 600),
+        times = c(0, 18, 29, 209, 210),
+        implementation = "locf"
+      )
+    )
+    t_obs <- seq(0, 360, 0.1)
+    sim1 <- sim_ode(
+      mod_2cmt_timevar,
+      parameters = par_timevar,
+      regimen = reg_timevar,
+      covariates = covs,
+      only_obs = TRUE,
+      t_obs = t_obs,
+      output_include = list(parameters = TRUE, covariates = TRUE)
+    )
+    expect_equal(sim1$CRCL[sim1$t == 209], 6.2)
+    expect_equal(sim1$CRCL[sim1$t == 210], 600)
+    expect_true(sim1$y[sim1$t == 35 * 6] > 10 * sim1$y[sim1$t == 60 * 6])
+  })
+
+  test_that("timevarying covariates are interpolated and affect PK", {
+    covs_locf <- list(
+      CRCL = new_covariate(
+        times = c(0, 48, 96),
+        value = c(3, 10, 3),
+        implementation = "locf"
+      )
+    )
+    covs_inter <- list(
+      CRCL = new_covariate(
+        times = c(0, 48, 96),
+        value = c(3, 10, 3),
+        implementation = "interpolate"
+      )
+    )
+    t_obs <- seq(0, 120, 2)
+    sim2_inter <- sim_ode(
+      mod_2cmt_timevar,
+      parameters = par_timevar,
+      regimen = reg_timevar,
+      covariates = covs_inter,
+      only_obs = TRUE,
+      t_obs = t_obs,
+      output_include = list(parameters = TRUE, covariates = TRUE, variables = TRUE)
+    )
+    sim2_locf <- sim_ode(
+      mod_2cmt_timevar,
+      parameters = par_timevar,
+      regimen = reg_timevar,
+      covariates = covs_locf,
+      only_obs = TRUE,
+      t_obs = t_obs,
+      output_include = list(parameters = TRUE, covariates = TRUE, variables = TRUE)
+    )
+
+    ## Check covariate changing for inter, but not for locf
+    expect_equal(
+      round(sim2_inter$CRCL, 3)[1:10],
+      c(3, 3.292, 3.583, 3.875, 4.167, 4.458, 4.75, 5.042, 5.333, 5.625)
+    )
+    expect_equal(
+      round(sim2_locf$CRCL, 3)[1:10],
+      rep(3, 10)
+    )
+
+    ## Check interpolated covariates actually affect PK parameters
+    expect_equal(
+      round(sim2_inter$CLi, 3)[1:10],
+      c(6, 6.292, 6.583, 6.875, 7.167, 7.458, 7.75, 8.042, 8.333, 8.625)
+    )
+    expect_equal(
+      round(sim2_locf$CLi, 3)[1:10],
+      rep(6, 10)
+    )
+
+    ## Check interpolated covariates actually affect simulated conc
+    expect_equal(
+      round(sim2_inter$y, 3)[1:10],
+      c(0, 0.32, 0.611, 0.788, 1.205, 1.531, 1.708, 2.098, 2.379, 2.503)
+    )
+    expect_equal(
+      round(sim2_locf$y, 3)[1:10],
+      c(0, 0.321, 0.617, 0.805, 1.239, 1.598, 1.813, 2.251, 2.598, 2.792)
+    )
+
+    ## Visual check:
+    # ggplot(sim2_inter, aes(x = t, y = y)) +
+    #   geom_line() +
+    #   geom_line(data = sim2_locf, colour = "blue")
+
   })
 
 })
