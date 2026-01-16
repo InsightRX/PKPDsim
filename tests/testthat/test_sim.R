@@ -578,3 +578,166 @@ test_that("t_max is shifted correctly when t_ss != 0", {
   ))
   expect_equal(sum(is.na(evtab3)), 0)
 })
+
+describe("IOV", {
+
+  reg_iov <- new_regimen(
+    amt = 100,
+    interval = 24,
+    n = 5,
+    type = "infusion"
+  )
+  iov_var <- 0.3 ^ 2 # 30% IOV
+
+  test_that("Throws error when `iov_bins` supplied but not present in model", {
+    expect_error({
+      sim(
+        ode = pk_iov_none,
+        parameters = pars_iov_no_iov,
+        regimen = reg_iov,
+        omega = c(
+          0.3 # IIV in CL
+        ),
+        n = 1,
+        iov_bins = c(0, 24, 48, 72, 999), # !!
+        omega_type = "normal",
+        only_obs = TRUE,
+        output_include = list(parameters = TRUE, variables = TRUE)
+      )
+    }, "No IOV implemented for this model")
+  })
+
+  test_that("Throws error when number of `iov_bins` is higher than allowed for model", {
+    expect_error({
+      sim(
+        ode = pk_iov,
+        parameters = pars_iov,
+        regimen = reg_iov,
+        omega = c(
+          iov_var, # IOV in CL
+          0, iov_var,
+          0, 0, iov_var,
+          0, 0, 0, iov_var,
+          0, 0, 0, 0, 0.3 # IIV in CL
+        ),
+        n = 1,
+        iov_bins = c(0, 24, 48, 72, 999), # one bin too many
+        omega_type = "normal",
+        only_obs = TRUE,
+        output_include = list(parameters = TRUE, variables = TRUE)
+      )
+    }, "Number of allowed IOV bins for model is lower")
+  })
+
+  test_that("Throws warning when number of `iov_bins` is lower than allowed for model", {
+    expect_warning({
+      sim(
+        ode = pk_iov,
+        parameters = pars_iov,
+        regimen = reg_iov,
+        omega = c(
+          iov_var, # IOV in CL
+          0, iov_var,
+          0, 0, iov_var,
+          0, 0, 0, iov_var,
+          0, 0, 0, 0, 0.3 # IIV in CL
+        ),
+        n = 1,
+        iov_bins = c(0, 24, 999), # one bin too few
+        omega_type = "normal",
+        only_obs = TRUE,
+        output_include = list(parameters = TRUE, variables = TRUE)
+      )}, "Number of allowed IOV bins for model is higher"
+    )
+  })
+
+  test_that("IOV is added to parameters", {
+    skip_on_cran()
+    set.seed(32)
+
+    dat <- sim(
+      ode = pk_iov,
+      parameters = pars_iov,
+      regimen = reg_iov,
+      omega = c(
+        iov_var, # IOV in CL
+        0, iov_var,
+        0, 0, iov_var,
+        0, 0, 0, iov_var,
+        0, 0, 0, 0, 0.3 # IIV in CL
+      ),
+      n = 5,
+      iov_bins = c(0, 24, 48, 72),
+      omega_type = "normal",
+      only_obs = TRUE,
+      output_include = list(parameters = TRUE, variables = TRUE)
+    )
+
+    expect_equal(
+      signif(dat$kappa_CL[dat$t == 12], 4),
+      signif(dat$kappa_CL_1[dat$t == 1], 4)
+    )
+    expect_equal(
+      signif(dat$kappa_CL[dat$t == 36], 4),
+      signif(dat$kappa_CL_2[dat$t == 1], 4)
+    )
+    expect_equal(
+      signif(dat$kappa_CL[dat$t == 48], 4),
+      signif(dat$kappa_CL_3[dat$t == 1], 4)
+    )
+    expect_equal(
+      signif(exp(dat$kappa_CL + dat$eta_CL) * dat$CL, 4),
+      signif(dat$CL_iov, 4)
+    )
+  })
+  
+  test_that("error is not invoked when using parameters_table", {
+    parameters_table <- data.frame(
+      CL = runif(10), V = runif(10), KA = runif(10), eta_CL = runif(10),
+      kappa_CL_1 = 0, kappa_CL_2 = 0, kappa_CL_3 = 0, kappa_CL_4 = 0
+    )
+
+    # specifying both parameters_table but for a model with IOV should not fail!
+    expect_silent(
+      dat <- sim(
+        ode = pk_iov,
+        parameters_table = parameters_table,
+        regimen = reg_iov,
+        omega = c(
+          iov_var, # IOV in CL
+          0, iov_var,
+          0, 0, iov_var,
+          0, 0, 0, iov_var,
+          0, 0, 0, 0, 0.3 # IIV in CL
+        ),
+        n = 5,
+        iov_bins = c(0, 24, 48, 72),
+        omega_type = "normal",
+        only_obs = TRUE,
+        output_include = list(parameters = TRUE, variables = TRUE)
+      )
+    )
+
+    # specifying both parameters and parameters_table should fail
+    expect_error(
+      dat <- sim(
+        ode = pk_iov,
+        parameters = pars_iov,
+        parameters_table = parameters_table,
+        regimen = reg_iov,
+        omega = c(
+          iov_var, # IOV in CL
+          0, iov_var,
+          0, 0, iov_var,
+          0, 0, 0, iov_var,
+          0, 0, 0, 0, 0.3 # IIV in CL
+        ),
+        n = 5,
+        iov_bins = c(0, 24, 48, 72),
+        omega_type = "normal",
+        only_obs = TRUE,
+        output_include = list(parameters = TRUE, variables = TRUE)
+      )
+    )
+  })
+})
