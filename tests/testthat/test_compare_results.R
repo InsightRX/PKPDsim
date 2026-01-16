@@ -12,7 +12,7 @@ pk1cmt_oral_code <- new_ode_model(
   obs = list(cmt = 2, scale = "V")
 )
 
-test_that("Library and custom C++ and code matches analytic soln", {
+test_that("Model from library and custom C++ and code matches analytic solution", {
   p <- list(KA = 1, CL = 5, V = 50)
   t_obs <- c(0:72)
   t_obs2 <- t_obs + 0.1234 # also needs to be producing results with non-integer times
