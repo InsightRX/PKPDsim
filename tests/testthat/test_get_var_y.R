@@ -1,6 +1,9 @@
+# Uses models defined in setup.R:
+# - mod_1cmt_iv
+# - mod_2cmt_iv
+# - mod_1cmt_iv_mm (conditional, NOT_CRAN only)
 
 ## Set up simulations to test variance:
-## Uses model defined in setup.R
 reg <- new_regimen(
   amt = 100,
   n = 3,
@@ -130,13 +133,12 @@ test_that("Two compartment model", {
 
 test_that("One compartment with MM kinetics", {
   skip_on_cran()
-  mod3 <- new_ode_model("pk_1cmt_iv_mm")
   par3 <- list(VMAX = 5, KM = 5, V = 10)
   omega3 <- c(0.1,
               0.05, 0.1,
               0.01, 0.01, 0.1)
   res <- sim_ode(
-    mod3,
+    mod_1cmt_iv_mm,
     parameters = par3,
     t_obs = t_obs,
     regimen = reg,
@@ -144,14 +146,14 @@ test_that("One compartment with MM kinetics", {
   )
 
   v1 <- get_var_y(
-    model = mod3,
+    model = mod_1cmt_iv_mm,
     parameters = par3,
     t_obs = t_obs,
     regimen = reg,
     omega = omega3
   )
   v2 <- get_var_y(
-    model = mod3,
+    model = mod_1cmt_iv_mm,
     parameters = par3,
     t_obs = t_obs,
     regimen = reg,

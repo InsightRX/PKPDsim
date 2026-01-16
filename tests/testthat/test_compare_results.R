@@ -1,29 +1,16 @@
-## models: shared between tests and take a while to compile
-#  - oral models
-## Uses model defined in setup.R
+# Uses models defined in setup.R:
+# - mod_1cmt_oral
+# - mod_1cmt_iv
+# - dose_in_cmt_2
+
 pk1cmt_oral_anal = function(t, dose, KA, V, CL) {
   dose*KA/(V*(KA-CL/V))*(exp(-(CL/V) * t)-exp(-KA * t))
 }
+
 pk1cmt_oral_code <- new_ode_model(
   code = "dAdt[1] = -KA*A[1]; dAdt[2] = KA*A[1] - (CL/V)*A[2];",
-  obs=list(cmt = 2, scale="V")
+  obs = list(cmt = 2, scale = "V")
 )
-
-#   - iv models
-## Uses model defined in setup.R
-
-#   - model with dose cmt specified
-dose_in_cmt_2  <- new_ode_model(
-  code = "
-      dAdt[1] = -KA * A[1];
-      dAdt[2] = KA*A[1] -(CL/V) * A[2]
-      dAdt[3] = S2*(A[2]-A[3])
-    ",
-  obs = list(cmt=2, scale="V"),
-  dose = list(cmt = 2),
-  cpp_show_code = FALSE
-)
-
 
 test_that("Library and custom C++ and code matches analytic soln", {
   p <- list(KA = 1, CL = 5, V = 50)
@@ -43,7 +30,7 @@ test_that("Library and custom C++ and code matches analytic soln", {
     only_obs=TRUE
   )
 
-  pk1cmt_oral_code <- sim_ode(
+  pk1cmt_oral_code_res <- sim_ode(
     ode = pk1cmt_oral_code,
     parameters = p,
     duplicate_t_obs = TRUE,
@@ -55,7 +42,7 @@ test_that("Library and custom C++ and code matches analytic soln", {
 
   pk1cmt_oral_anal_res <- pk1cmt_oral_anal(t_obs, dose, p$KA, p$V, p$CL)
   expect_equal(round(pk1cmt_oral_lib$y, 3), round(pk1cmt_oral_anal_res, 3))
-  expect_equal(round(pk1cmt_oral_code$y, 3), round(pk1cmt_oral_anal_res, 3))
+  expect_equal(round(pk1cmt_oral_code_res$y, 3), round(pk1cmt_oral_anal_res, 3))
 })
 
 
@@ -87,6 +74,7 @@ test_that("test bug EmCo 20150925", {
 })
 
 test_that("model size is appropriate (bug: JeHi 20151204)", {
+  skip_on_cran()
   pk3cmt <- new_ode_model(
     code = "
       dAdt[1] = -KA*A[1];

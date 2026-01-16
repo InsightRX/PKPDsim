@@ -1,12 +1,9 @@
-pk1cmt_oral_code <- new_ode_model(
-  code = "dAdt[1] = -KA*A[1]; dAdt[2] = KA*A[1] - (CL/V)*A[2];",
-  obs = list(cmt = 2, scale="V"),
-  cmt_mapping = list(oral = 1, infusion = 2, bolus = 2)
-)
+# Uses model defined in setup.R:
+# - pk1cmt_oral_cmt_mapping
 
 test_that("Compartment mapping is added to attributes", {
-  expect_equal(attr(pk1cmt_oral_code, "cmt_mapping")[["oral"]], 1)
-  expect_equal(attr(pk1cmt_oral_code, "cmt_mapping")[["infusion"]], 2)
+  expect_equal(attr(pk1cmt_oral_cmt_mapping, "cmt_mapping")[["oral"]], 1)
+  expect_equal(attr(pk1cmt_oral_cmt_mapping, "cmt_mapping")[["infusion"]], 2)
 })
 
 test_that("Admin route is interpreted and simulated correctly", {
@@ -18,7 +15,7 @@ test_that("Admin route is interpreted and simulated correctly", {
   )
   p <- list(KA = 1, CL = 5, V = 50)
   res <-  sim_ode(
-    ode = pk1cmt_oral_code,
+    ode = pk1cmt_oral_cmt_mapping,
     parameters = p,
     regimen = regimen,
     only_obs = FALSE

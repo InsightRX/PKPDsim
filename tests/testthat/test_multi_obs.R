@@ -1,24 +1,17 @@
-# Example multiple observation types (e.g. different compartments! not just different residual errors)
+# Uses model defined in setup.R:
+# - pk_multi_obs
+# - vars_multi_obs
 
-## define parameters
-vars <- c("CONC", "METAB", "METAB2", "ACT")
-pk1 <- new_ode_model(
-  code = "dAdt[1] = -(CL/V)*A[1]; CONC = 1000*A[1]/V; METAB = CONC/2; METAB2 = CONC * t; ACT = 15",
-  obs = list(variable = vars),
-  declare_variables = vars,
-  cpp_show_code = F
-)
-
-regimen  <- new_regimen(amt = 100, interval = 12, n = 5, type="infusion", t_inf = 1)
-parameters   <- list("CL" = 15, "V" = 150)
-omega <- PKPDsim::cv_to_omega(list("CL" = 0.2, "V" = 0.2), parameters[1:2])
+regimen_multi_obs <- new_regimen(amt = 100, interval = 12, n = 5, type="infusion", t_inf = 1)
+parameters_multi_obs <- list("CL" = 15, "V" = 150)
+omega_multi_obs <- PKPDsim::cv_to_omega(list("CL" = 0.2, "V" = 0.2), parameters_multi_obs[1:2])
 
 test_that("obs types are output by `sim`", {
   obs_type <- c(1,2,1,3,1)
   data <- sim(
-    ode = pk1,
+    ode = pk_multi_obs,
     parameters = list(CL = 20, V = 200),
-    regimen = regimen,
+    regimen = regimen_multi_obs,
     int_step_size = 0.1,
     only_obs = TRUE,
     obs_type = obs_type,
@@ -33,9 +26,9 @@ test_that("obs types are output by `sim`", {
 test_that("check obs at same timepoint but with different obs_type", {
   obs_type <- c(1,2,1,3,1)
   t_same <- sim(
-    ode = pk1,
+    ode = pk_multi_obs,
     parameters = list(CL = 20, V = 200),
-    regimen = regimen,
+    regimen = regimen_multi_obs,
     int_step_size = 0.1,
     only_obs = TRUE,
     obs_type = obs_type,
@@ -58,9 +51,9 @@ test_that("check that residual error correctly applied to right var", {
   ruv_term1 <- list(prop = c(.1, 0, 0), add = c(1, 0, 0))
 
   data2 <- sim(
-    ode = pk1,
+    ode = pk_multi_obs,
     parameters = list(CL = 20, V = 200),
-    regimen = regimen,
+    regimen = regimen_multi_obs,
     int_step_size = 0.1,
     only_obs = TRUE,
     obs_type = obs_type,
@@ -75,9 +68,9 @@ test_that("check that residual error correctly applied to right var", {
   expect_true(data2$y[-4][4] != y[4])
 
   data3 <- sim(
-    ode = pk1,
+    ode = pk_multi_obs,
     parameters = list(CL = 20, V = 200),
-    regimen = regimen,
+    regimen = regimen_multi_obs,
     int_step_size = 0.1,
     only_obs = TRUE,
     obs_type = obs_type,
@@ -99,10 +92,10 @@ test_that("specifying ruv as multi-type when only 1 obs_type", {
   ruv_multi <- list(prop = c(0.1, 1), add = c(1, 20))
 
   s_single <- sim(
-    ode = pk1,
-    parameters = parameters,
+    ode = pk_multi_obs,
+    parameters = parameters_multi_obs,
     n_ind = 1,
-    regimen = regimen,
+    regimen = regimen_multi_obs,
     only_obs = TRUE,
     t_obs = c(2,4,6,8),
     seed = 123456,
@@ -112,10 +105,10 @@ test_that("specifying ruv as multi-type when only 1 obs_type", {
   ## specified as multi, but obs_type is all 1, so should
   ## give same results as s_single
   s_multi1 <- sim(
-    ode = pk1,
-    parameters = parameters,
+    ode = pk_multi_obs,
+    parameters = parameters_multi_obs,
     n_ind = 1,
-    regimen = regimen,
+    regimen = regimen_multi_obs,
     only_obs = TRUE,
     t_obs = c(2,4,6,8),
     obs_type = c(1, 1, 1, 1),
@@ -128,10 +121,10 @@ test_that("specifying ruv as multi-type when only 1 obs_type", {
   ## specifying ruv as multi-type when multiple obs_type
   ## should now give different results
   s_multi1 <- sim(
-    ode = pk1,
-    parameters = parameters,
+    ode = pk_multi_obs,
+    parameters = parameters_multi_obs,
     n_ind = 1,
-    regimen = regimen,
+    regimen = regimen_multi_obs,
     only_obs = TRUE,
     t_obs = c(2,4,6,8),
     obs_type = c(1, 2, 1, 2),
@@ -145,9 +138,9 @@ test_that("specifying ruv as multi-type when only 1 obs_type", {
 
 test_that("multi-obs with baseline and obs_time = dose_time works correctly", {
   tmp <- sim(
-    pk1,
-    parameters = parameters,
-    regimen = regimen,
+    pk_multi_obs,
+    parameters = parameters_multi_obs,
+    regimen = regimen_multi_obs,
     t_obs = c(0, 0, 6, 6),
     obs_type = c(1, 4, 1, 4),
     only_obs = TRUE,

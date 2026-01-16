@@ -1,3 +1,9 @@
+# Uses model and covariates defined in setup.R (conditional, NOT_CRAN only):
+# - model_carreno
+# - covs_carreno
+
+skip_on_cran()
+
 par_orig <- list(
   V = 25.76,
   SCLSlope = 0.036,
@@ -6,33 +12,8 @@ par_orig <- list(
   SCLInter = 0.18,
   TDM_INIT = 0)
 
-covs <- list(
-  CRCL = PKPDsim::new_covariate(5),
-  CL_HEMO = PKPDsim::new_covariate(0)
-)
-model <- new_ode_model( # Carreno et al
-  code = "
-    CLi = SCLInter + SCLSlope * (CRCL*16.667) + CL_HEMO \
-    Vi = V \
-    Qi = K12 * Vi \
-    V2i = Qi / K21 \
-    dAdt[0] = -(CLi/V)*A[0] - K12*A[0] + K21*A[1] \
-    dAdt[1] = K12*A[0] - K21*A[1] \
-    dAdt[2] = A[0]/V
-  ",
-  parameters = par_orig,
-  declare_variables = c("CLi", "Qi", "Vi", "V2i"),
-  covariates= covs,
-  obs = list(cmt = 1, scale = "V"),
-  reparametrization = list(
-    "CL" = "SCLInter + SCLSlope * (CRCL*16.667) + CL_HEMO",
-    "V" = "V",
-    "Q" = "K12 * V",
-    "V2" = "(K12 * V) / K21"
-  )
-)
-pars_covs_comb <- join_cov_and_par(covs, par_orig)
-pars <- reparametrize(model, pars_covs_comb, covariates = covs)
+pars_covs_comb <- join_cov_and_par(covs_carreno, par_orig)
+pars <- reparametrize(model_carreno, pars_covs_comb, covariates = covs_carreno)
 
 reg <- new_regimen(
   amt = 1000,
@@ -44,10 +25,10 @@ reg <- new_regimen(
   n_ss = 50
 )
 s <- sim(
-  ode = model,
+  ode = model_carreno,
   parameters = par_orig,
   regimen = reg,
-  covariates = covs,
+  covariates = covs_carreno,
   t_obs = c(0,24)
 )
 
@@ -96,4 +77,3 @@ test_that("Reparametrized model and analytics equations match", {
   cmin_ss_ode <- s[s$comp == "obs",]$y[1]
   expect_equal(cmin_ss_ode, cmin_ss_lin)
 })
-
