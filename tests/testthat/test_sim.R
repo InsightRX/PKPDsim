@@ -1309,8 +1309,12 @@ describe("Mixture models", {
 })
 
 describe("Compartment mapping", {
-  # Uses model defined in setup.R:
-  # - pk1cmt_oral_cmt_mapping
+
+  pk1cmt_oral_cmt_mapping <- new_ode_model(
+    code = "dAdt[1] = -KA*A[1]; dAdt[2] = KA*A[1] - (CL/V)*A[2];",
+    obs = list(cmt = 2, scale = "V"),
+    cmt_mapping = list(oral = 1, infusion = 2, bolus = 2)
+  )
 
   test_that("Compartment mapping is added to attributes", {
     expect_equal(attr(pk1cmt_oral_cmt_mapping, "cmt_mapping")[["oral"]], 1)
