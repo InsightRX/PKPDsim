@@ -1,6 +1,7 @@
 test_that("Simulating with table of parameters works", {
   skip_on_cran()
   parameters_table <- data.frame(
+    KA = rnorm(10, 1, .1),
     CL = rnorm(10, 5, 5),
     V = rnorm(10, 5, 0.5)
   )
