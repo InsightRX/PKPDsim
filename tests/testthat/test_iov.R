@@ -1,3 +1,4 @@
+# Uses mod_1cmt_no_iov and mod_1cmt_iov from setup.R
 pars <- list(
   "kappa_CL_1" = 0,
   "kappa_CL_2" = 0,
@@ -12,32 +13,6 @@ pars0 <- list(
   "V" = 50,
   "KA" = 1
 )
-pk0 <- new_ode_model( # no IOV
-  code = "
-      dAdt[1] = -KA * A[1]
-      dAdt[2] = +KA * A[1] -(CL/V) * A[2]
-    ",
-  obs = list(cmt = 2, scale = "V"),
-  dose = list(cmt = 1, bioav = 1),
-  parameters = names(pars0),
-  cpp_show_code = F
-)
-pk1 <- new_ode_model(
-  code = "
-      CL_iov = CL * exp(kappa_CL + eta_CL);
-      dAdt[1] = -KA * A[1]
-      dAdt[2] = +KA * A[1] -(CL_iov/V) * A[2]
-    ",
-  iov = list(
-    cv = list(CL = 0.2),
-    n_bins = 3
-  ),
-  obs = list(cmt = 2, scale = "V"),
-  dose = list(cmt = 1, bioav = 1),
-  declare_variables = c("kappa_CL", "CL_iov"),
-  parameters = names(pars),
-  cpp_show_code = F
-)
 reg1 <- new_regimen(
   amt = 100,
   interval = 24,
@@ -49,7 +24,7 @@ iov_var <- 0.3 ^ 2 # 30% IOV
 test_that("Throws error when `iov_bins` supplied but not present in model", {
   expect_error({
     sim(
-      ode = pk0,
+      ode = mod_1cmt_no_iov,
       parameters = pars0,
       regimen = reg1,
       omega = c(
@@ -67,7 +42,7 @@ test_that("Throws error when `iov_bins` supplied but not present in model", {
 test_that("Throws error when number of `iov_bins` is higher than allowed for model", {
   expect_error({
     sim(
-      ode = pk1,
+      ode = mod_1cmt_iov,
       parameters = pars,
       regimen = reg1,
       omega = c(
@@ -89,7 +64,7 @@ test_that("Throws error when number of `iov_bins` is higher than allowed for mod
 test_that("Throws warning when number of `iov_bins` is lower than allowed for model", {
   expect_warning({
     sim(
-      ode = pk1,
+      ode = mod_1cmt_iov,
       parameters = pars,
       regimen = reg1,
       omega = c(
@@ -113,7 +88,7 @@ test_that("IOV is added to parameters", {
   set.seed(32)
 
   dat <- sim(
-    ode = pk1,
+    ode = mod_1cmt_iov,
     parameters = pars,
     regimen = reg1,
     omega = c(
@@ -217,7 +192,7 @@ test_that("error is not invoked when using parameters_table", {
   # specifying both parameters_table but for a model with IOV should not fail!
   expect_silent(
     dat <- sim(
-      ode = pk1,
+      ode = mod_1cmt_iov,
       parameters_table = parameters_table,
       regimen = reg1,
       omega = c(
@@ -238,7 +213,7 @@ test_that("error is not invoked when using parameters_table", {
   # specifying both parameters and parameters_table should fail
   expect_error(
     dat <- sim(
-      ode = pk1,
+      ode = mod_1cmt_iov,
       parameters = pars,
       parameters_table = parameters_table,
       regimen = reg1,
