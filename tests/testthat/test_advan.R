@@ -296,7 +296,7 @@ describe("ADVANs with covariates", {
       times = seq(0, interval * n_days * (24/interval), interval),
       type = "bolus"
     )
-    ## there is slight difference in how bolus doses are handled.
+    ## TODO: there is slight difference in how bolus doses are handled.
     ## Analytical equation is perhaps more consistent, so not testing
     ## simulations at dose times. Should look into later.
     t_obs <- t_obs[! t_obs %in% reg_bolus$dose_times]
