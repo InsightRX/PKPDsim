@@ -1,3 +1,7 @@
+# Uses models defined in setup.R:
+# - mod_1cmt_iv, mod_2cmt_iv, mod_1cmt_oral
+# - pk_3cmt_iv, pk_2cmt_oral, pk_3cmt_oral (conditional, NOT_CRAN only)
+
 # shared parameters
 dose <- 100
 interval <- 12
@@ -6,13 +10,6 @@ reg_oral <- new_regimen(amt = dose, interval = interval, n = n_ss, type = "oral"
 reg_bolus <- new_regimen(amt = dose, interval = interval, n = n_ss, type = "bolus")
 reg_inf <- new_regimen(amt = dose, interval = interval, n = n_ss, type = "infusion")
 t_obs <- max(reg_oral$dose_times) + interval
-# Uses models defined in setup.R
-
-if (identical(Sys.getenv("NOT_CRAN"), "true")) {
-  pk_3cmt_iv <- new_ode_model("pk_3cmt_iv")
-}
-
-#delta <- function(x, ref) { abs(x-ref)/ref }
 
 test_that("1 cmt oral", {
   par <- list(CL = 5, V = 100, KA = 1)
@@ -72,7 +69,6 @@ test_that("1-cmt iv infusion", {
 
 test_that("2-cmt oral", {
   skip_on_cran()
-  pk_2cmt_oral <- new_ode_model("pk_2cmt_oral")
   par <- list(CL = 5, V = 100, Q = 3, V2 = 150, KA = 1)
   res_ana <- calc_ss_analytic(f = "2cmt_oral", dose = dose, interval = interval, parameters = par)
   res_ode <- sim(pk_2cmt_oral, parameters = par, regimen = reg_oral, t_obs = t_obs, only_obs = F)$y
@@ -98,7 +94,6 @@ test_that("2-cmt infusion", {
 
 test_that("3-cmt oral", {
   skip_on_cran()
-  pk_3cmt_oral <- new_ode_model("pk_3cmt_oral")
   par <- list(CL = 5, V = 100, Q = 3, V2 = 150, Q2 = 6, V3 = 250, KA = 1)
   res_ana <- calc_ss_analytic(f = "3cmt_oral", dose = dose, interval = interval, parameters = par)
   res_ode <- sim(pk_3cmt_oral, parameters = par, regimen = reg_oral, t_obs = t_obs, only_obs = F)$y
