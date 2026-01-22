@@ -19,14 +19,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/InsightRX/PKPDsim/blob/master/DESCRIPTION)
 
-Keizer R, Hughes J, Tong D, Woo K, Brooks J (2025). *PKPDsim: Tools for
+Keizer R, Hughes J, Tong D, Woo K, Brooks J (2026). *PKPDsim: Tools for
 Performing Pharmacokinetic-Pharmacodynamic Simulations*. R package
 version 1.5.0, <https://github.com/InsightRX/PKPDsim>.
 
     @Manual{,
       title = {PKPDsim: Tools for Performing Pharmacokinetic-Pharmacodynamic Simulations},
       author = {Ron Keizer and Jasmine Hughes and Dominic Tong and Kara Woo and Jordan Brooks},
-      year = {2025},
+      year = {2026},
       note = {R package version 1.5.0},
       url = {https://github.com/InsightRX/PKPDsim},
     }

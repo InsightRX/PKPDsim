@@ -37,7 +37,8 @@ function without arguments to see the currently available models:
 new_ode_model()
 ```
 
-    ## Error in new_ode_model(): Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:
+    ## Error in `new_ode_model()`:
+    ## ! Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:
     ##   pk_1cmt_iv
     ##   pk_1cmt_iv_auc
     ##   pk_1cmt_iv_mm
