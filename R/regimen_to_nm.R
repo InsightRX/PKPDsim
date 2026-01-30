@@ -43,8 +43,10 @@ regimen_to_nm <- function(
         }
         bioav_dose[is.na(bioav_dose)] <- 1
       }
-      dat$RATE <- dat$RATE * bioav_dose
-      message("Recalculating infusion rates to reflect bioavailability for infusion.")
+      # dat$RATE <- dat$RATE * bioav_dose
+      dat$RATE <- -1
+      message("Setting rate to be handled in NONMEM model using R parameters.")
+      # message("Recalculating infusion rates to reflect bioavailability for infusion.")
     }
   }
   if(!is.null(t_obs)) {
