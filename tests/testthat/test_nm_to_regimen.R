@@ -103,3 +103,21 @@ test_that("Doses in different compartments handled", {
   expect_equal(reg2$t_inf, c(1, 1, 1, 0.5, 0, 0))
   expect_equal(reg2$cmt, c(2, 2, 2, 2, 1, 1))
 })
+
+test_that("Different rates handled correctly", {
+  pt2 <- data.frame(
+    ID = 1,
+    EVID = c(1, 1, 0),
+    CMT = 2, 
+    AMT = c(100, 200, 0),
+    TIME = c(0, 6, 23),
+    RATE = c(0, 100, 0),
+    DV = c(0, 0, 5)
+  )
+  reg2 <- nm_to_regimen(pt2)
+  expect_true(inherits(reg2, "regimen"))
+  expect_equal(reg2$dose_amts, c(100, 200))
+  expect_equal(reg2$dose_times, c(0, 6))
+  expect_equal(reg2$t_inf, c(0, 2))
+  expect_equal(reg2$cmt, c(2, 2))
+})
