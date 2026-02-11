@@ -163,3 +163,108 @@ test_that("specifying overlapping covariates and variables throws error", {
     )
   })
 })
+
+test_that("IOV: Change in F in 2nd bin is applied in 2nd bin and not later.", {
+  skip_on_cran()
+  # Previously this was an issue because F, when defined in pk_code(), was not updated before the
+  # dose was applied to the state vector, so the bioavailability was not applied at the right time.
+  # This was fixed by rearranging the order of execution in sim.cpp in the main loop.
+
+  pars_iov_f <- list(
+    "CL" = 5,
+    "V" = 50,
+    "KA" = 1,
+    "F" = 1
+  )
+  pk_iov_f <- new_ode_model(
+    code = "
+        dAdt[1] = -KA * A[1]
+        dAdt[2] = +KA * A[1] -(CLi/V) * A[2]
+    ",
+    pk_code = "
+        Fi = F * exp(kappa_F);
+        CLi = CL;
+    ",
+    iov = list(
+      cv = list(F = 0.2),
+      n_bins = 3
+    ),
+    obs = list(cmt = 2, scale = "V"),
+    dose = list(cmt = 1, bioav = "Fi"),
+    declare_variables = c("kappa_F", "Fi", "CLi"),
+    parameters = names(pars_iov_f),
+    cpp_show_code = FALSE
+  )
+  reg <- new_regimen(amt = 800, interval = 24, n = 10, type = "oral")
+
+  # For a first simulation, we're simulating with no variability across the IOV bins:
+  pars_iov_f$kappa_F_1 <- 0
+  pars_iov_f$kappa_F_2 <- 0
+  pars_iov_f$kappa_F_3 <- 0
+  args_sim1 <- args <- list(
+    ode = pk_iov_f,
+    parameters = pars_iov_f,
+    regimen = reg,
+    only_obs = TRUE,
+    t_obs = seq(0, 50, .25),
+    iov_bins = c(0L, 24L, 48L, 9999L)
+  )
+  # For a second simulation, we're applying a change in parameter for the 2nd bin (24-48 hrs).
+  # This should affect predictions from 24 onward.
+  pars_iov_f$kappa_F_2 <- 1 # 2nd bin
+  args_sim2 <- args <- list(
+    ode = pk_iov_f,
+    parameters = pars_iov_f,
+    regimen = reg,
+    only_obs = TRUE,
+    t_obs = seq(0, 50, .25),
+    iov_bins = c(0L, 24L, 48L, 9999L)
+  )
+  res1 <- do.call("sim_ode", args = args_sim1)
+  res2 <- do.call("sim_ode", args = args_sim2)
+  expect_true(min(res1[res1$y != res2$y,]$t) <= 25)
+})
+
+describe("Models with bioavailability", {
+  parameters <- list(KA = 0.5, CL = 5, V = 50)
+  covs <- list(WT = new_covariate(50))
+  reg <- new_regimen(amt = 100, n = 1, interval = 12, type = "bolus")
+  mod1 <- oral_1cmt_allometric # defined in setup.R using same covs and pars as above
+  y1 <- sim_ode(mod1, parameters = parameters, regimen = reg, covariates = covs, only_obs=TRUE)$y
+
+  test_that("bioav numeric option working", {
+    skip_on_cran()
+    mod2 <- new_ode_model(
+      code = "
+      CLi = CL * pow(WT/70, 0.75)
+      dAdt[1] = -KA * A[1]
+      dAdt[2] = KA*A[1] - (CLi/V)*A[2]
+    ",
+    dose = list(cmt = 1, bioav = 0.5),
+    covariates = covs,
+    declare_variables = "CLi",
+    parameters = parameters
+    )
+
+    y2 <- sim_ode(mod2, parameters = parameters, regimen = reg, covariates = covs, only_obs=TRUE)$y
+
+    expect_equal(round(y1,1),  round(y2*2, 1))
+  })
+
+  test_that("bioav string option working", {
+    skip_on_cran()
+    mod3 <- new_ode_model(
+      code = "
+      CLi = CL * pow(WT/70, 0.75)
+      dAdt[1] = -KA * A[1]
+      dAdt[2] = KA*A[1] - (CLi/V)*A[2]
+    ",
+    dose = list(cmt = 1, bioav = "WT/70"),
+    covariates = covs,
+    declare_variables = "CLi",
+    parameters = parameters
+    )
+    y3 <- sim_ode(mod3, parameters = parameters, regimen = reg, covariates = covs, only_obs=TRUE)$y
+    expect_equal(round(y1*(50/70),1),  round(y3, 1))
+  })
+})

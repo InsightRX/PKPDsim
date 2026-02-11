@@ -21,6 +21,9 @@ nm_to_regimen <- function(
   if(! "time" %in% colnames(data)) {
     stop("TIME column is required in source dataset!")
   }
+  if (!"cmt" %in% colnames(data)) {
+    warning("CMT column is missing from source dataset!")
+  }
   m <- match(c("id", "mdv", "evid", "amt", "time", "rate", "cmt"), colnames(data), 0)
   m <- m[m>0]
   data <- data[,m]
