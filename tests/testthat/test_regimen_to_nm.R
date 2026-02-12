@@ -25,7 +25,7 @@ test_that("regimen with infusion correctly recalculates rates when bioavailabili
         bioav = 0.5
       )
     },
-    "Recalculating infusion rates"
+    "Setting rate to be handled in NONMEM model"
   )
   expect_warning(
     regimen_to_nm(
@@ -46,7 +46,7 @@ test_that("regimen with infusion correctly recalculates rates when bioavailabili
     "RATE"
   )
   expect_true(all(expected_cols %in% colnames(b)))
-  expect_equal(b$RATE, c(5, 0, 0, 0, 5, 5, 5, 5))
+  expect_equal(b$RATE, c(-1, 0, 0, 0, -1, -1, -1, -1))
 })
 
 test_that("rate is calculated for any regimen with an infusion length", {
@@ -65,7 +65,7 @@ test_that("rate is calculated for any regimen with an infusion length", {
         bioav = 0.5
       )
     },
-    "Recalculating infusion rates"
+    "Setting rate to be handled in NONMEM model"
   )
   expect_message(
     {
@@ -76,7 +76,7 @@ test_that("rate is calculated for any regimen with an infusion length", {
         bioav = c(0.5, 1)
       )
     },
-    "Recalculating infusion rates"
+    "Setting rate to be handled in NONMEM model"
   )
   expected_cols <- c(
     "ID",
@@ -90,9 +90,9 @@ test_that("rate is calculated for any regimen with an infusion length", {
   )
   expect_true(all(expected_cols %in% colnames(b)))
   expect_true(all(expected_cols %in% colnames(c)))
-  # in NONMEM, oral doses have a RATE of zero, which indicates a bolus dose
-  expect_equal(b$RATE, c(0, 0, 0, 0, 0, 10, 10, 0))
-  expect_equal(c$RATE, c(0, 0, 0, 0, 0, 10, 20, 0))
+  # RATE is set to -1 for doses when bioav is specified, to let NONMEM handle rate calculation
+  expect_equal(b$RATE, c(-1, 0, 0, 0, -1, -1, -1, -1))
+  expect_equal(c$RATE, c(-1, 0, 0, 0, -1, -1, -1, -1))
 })
 
 test_that("throws warning when bioav specified as model parameter and need to convert RATE, but not when not needed", {
@@ -109,7 +109,7 @@ test_that("throws warning when bioav specified as model parameter and need to co
       t_obs = c(1, 2, 3),
       bioav = c("Fi", 1)
     )
-  }, "Recalculating infusion rates")
+  }, "Setting rate to be handled in NONMEM model")
   a2 <- new_regimen(
     amt = 10,
     time = c(1, 2, 3, 4),
