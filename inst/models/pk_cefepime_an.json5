@@ -1,0 +1,92 @@
+{
+  "id": "pk_cefepime_an",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC>MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF>MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    if (SEX == 1) { \
+      LBW = 1.1 * WT - 0.0128 * pow(WT, 2) / pow(HT, 2) \
+    } else { \
+      LBW = 1.07 * WT - 0.0148 * pow(WT, 2) / pow(HT, 2) \
+    } \
+    LBW = max(LBW, 30.0) \
+    CRCLi = (140.0 - AGE) * LBW * pow(0.85, (1.0-SEX)) / (72.0 * CR) \
+    // if (CRRT > 0) { \
+    //   CLr = 1.64 \
+    // } else { \
+    CLr = 2.00 * (CRCLi / 54.0) \
+    // } \
+    CLtot = CLiiv * (CLr + CLnr) + CL_HEMO \
+    Vi = V * (WT/90.0) \
+    Qi = Q  \
+    V2i = V2 \
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "variable": ["CONC"] },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "cmt_mapping": {
+    "infusion": 1,
+    "infusion_iiv": 1,
+    "infusion_civ": 1
+  },
+  "covariates": [ "WT", "CR", "CL_HEMO", "MIC", "SEX", "AGE", "HT", "FU" ],
+  "variables": [ "Vi", "Qi", "V2i", "CRCLi", "LBW", "CLtot", "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CLr", "CONC", "CONCF" ],
+  "parameters" : {
+    "CLiiv": 1,
+    "V": 13.4,
+    "Q": 12.0,
+    "V2": 7.52,
+    "CLnr": 0.526
+  },
+  "fixed": [
+    "Q",
+    "CLnr"
+  ],
+  "iiv": {
+    "CL": 0.299,
+    "V": 0.654,
+    "V2": 0.173
+  },
+  "omega_matrix": [
+     0.089401,
+     0, 0.427716,
+     0, 0, 0.029929
+  ],
+  "ruv": {
+    "prop": [0.224],
+    "add": [6.44]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "development": {
+    "n_patients": 130,
+    "n_tdms": 278,
+    "age": { "median": 65, "IQR25": 52, "IQR75": 72, "unit": "years" },
+    "weight": { "median": 90, "IQR25": 70, "IQR75": 110, "unit": "kg" },
+    "crcl": { "median": 86, "IQR25": 52, "IQR75": 126, "unit": "ml/min" },
+    "sex": { "male": 76, "female": 54 }
+  },
+  "references": [
+    {
+      "ref": "Guohua An, et al., 2023",
+      "url": "https://academic.oup.com/jac/article-abstract/78/6/1460/7127727"
+    }
+  ],
+  "version": "0.1.8"
+}
