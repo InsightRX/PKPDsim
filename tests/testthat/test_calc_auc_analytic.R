@@ -113,6 +113,25 @@ test_that("Works for 1cmt model", {
   expect_equal(tmp$auc, aucfr$auc)
 })
 
+test_that("Doesn't crash when t_inf equals interval (all infusion-end times coincide with existing data times)", {
+  # Regression test: when t_inf = interval, every infusion-end event lands on the
+  # next dose's onset time (already in data$TIME). If an observation also covers
+  # the final end time, noDVindex is empty in advan_process_infusion_doses and
+  # the $<- assignment on a 0-row data frame used to throw
+  # "replacement has 1 row, data has 0".
+  reg <- new_regimen(amt = 750, n = 12, interval = 8, t_inf = 8, type = "infusion")
+  expect_no_error(
+    res <- calc_auc_analytic(
+      f = "2cmt_iv_infusion",
+      parameters = list(CL = 4.5, V = 45, Q = 2.3, V2 = 49),
+      regimen = reg,
+      t_obs = c(0, 88, 96)
+    )
+  )
+  # Trough at t=96 should be positive and finite
+  expect_true(is.finite(tail(res$y, 1)) && tail(res$y, 1) > 0)
+})
+
 test_that("Doesn't fail when t_inf is specified as 0 in regimen or as t_inf. Should be nearly equal to bolus", {
   reg1 <- new_regimen(amt = 1500, n = 10, interval = 24, type = "infusion", t_inf = 0)
   reg2 <- new_regimen(amt = 1500, n = 10, interval = 24, type = "bolus")
