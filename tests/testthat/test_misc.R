@@ -1,8 +1,7 @@
 test_that("now_utc returns time in UTC", {
-  mockery::stub(
-    now_utc,
-    "Sys.time",
-    structure(1640042187.11864, class = c("POSIXct", "POSIXt"))
+  local_mocked_bindings(
+    Sys.time = function() structure(1640042187.11864, class = c("POSIXct", "POSIXt")),
+    .package = "PKPDsim"
   )
   now <- now_utc()
   expect_equal(attr(now, "tzone"), "UTC")

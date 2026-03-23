@@ -9,4 +9,4 @@ WORKDIR /src/PKPDsim
 # Install system and CRAN dependencies
 RUN apt-get update
 RUN apt install -y pandoc qpdf
-RUN Rscript -e "install.packages(c('mockery', 'nlmixr2', 'knitr', 'rmarkdown'), repos = '${RSPM_SNAPSHOT}')"
+RUN Rscript -e "install.packages(c('nlmixr2', 'knitr', 'rmarkdown'), repos = '${RSPM_SNAPSHOT}')"

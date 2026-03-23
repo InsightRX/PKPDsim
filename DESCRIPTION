@@ -16,7 +16,6 @@ Imports: Rcpp (>= 1.0.13), BH, data.table, stringr, MASS,
 Suggests: 
     httr,
     testthat (>= 3.0.0),
-    mockery,
     knitr,
     rmarkdown
 LinkingTo: BH, Rcpp (>= 1.0.13)

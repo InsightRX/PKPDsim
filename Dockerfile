@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
     
-RUN Rscript -e "install.packages(c('mockery', 'nlmixr2', 'knitr', 'rmarkdown'), repos = 'https://cloud.r-project.org')"
+RUN Rscript -e "install.packages(c('nlmixr2', 'knitr', 'rmarkdown'), repos = 'https://cloud.r-project.org')"
 
 RUN R CMD check PKPDsim
 
