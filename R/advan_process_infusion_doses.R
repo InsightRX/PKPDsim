@@ -26,9 +26,11 @@ advan_process_infusion_doses <- function (data) {
   # Are there any doserows without a DV value?  These need to precede the infusion change
   noDVindex <- which(!doserowslast$TIME %in% data$TIME)
   doserowslastnoDV <- doserowslast[noDVindex,]
-  doserowslastnoDV$AMT <- 0
-  doserowslastnoDV$RATE <- 0
-  doserowslastnoDV$DNUM <- NA
+  if (nrow(doserowslastnoDV) > 0) {
+    doserowslastnoDV$AMT <- 0
+    doserowslastnoDV$RATE <- 0
+    doserowslastnoDV$DNUM <- NA
+  }
 
   # Collect the new rows
   doserows <- rbind(doserows, doserowslast, doserowslastnoDV)
