@@ -113,6 +113,36 @@ test_that("Works for 1cmt model", {
   expect_equal(tmp$auc, aucfr$auc)
 })
 
+test_that("Correct output when t_inf equals interval", {
+  # confirm that continuous infusion and infusion that is _nearly_ continuous
+  # produce nearly the same estimates and don't raise an error
+  reg_c <- new_regimen(
+    amt = 750, n = 12, interval = 8, t_inf = 8, type = "infusion"
+  )
+  reg_i <- new_regimen(
+    amt = 750, n = 12, interval = 8, t_inf = 7.999, type = "infusion"
+  )
+  expect_no_error(
+    res_c <- calc_auc_analytic(
+      f = "2cmt_iv_infusion",
+      parameters = list(CL = 4.5, V = 45, Q = 2.3, V2 = 49),
+      regimen = reg_c,
+      t_obs = c(0, 88, 96)
+    )
+  )
+  res_i <- calc_auc_analytic(
+    f = "2cmt_iv_infusion",
+    parameters = list(CL = 4.5, V = 45, Q = 2.3, V2 = 49),
+    regimen = reg_i,
+    t_obs = c(0, 88, 96)
+  )
+  # Trough at t=96 should be positive and finite
+  expect_true(is.finite(tail(res_c$y, 1)) && tail(res_c$y, 1) > 0)
+  # AUC and trough are nearly identical (difference is due to delta in t_inf)
+  expect_equal(round(res_c$auc[3]/res_i$auc[3], 5), 1)
+  expect_equal(round(res_c$y[3]/res_i$y[3], 3), 1)
+})
+
 test_that("Doesn't fail when t_inf is specified as 0 in regimen or as t_inf. Should be nearly equal to bolus", {
   reg1 <- new_regimen(amt = 1500, n = 10, interval = 24, type = "infusion", t_inf = 0)
   reg2 <- new_regimen(amt = 1500, n = 10, interval = 24, type = "bolus")

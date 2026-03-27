@@ -24,11 +24,15 @@ advan_process_infusion_doses <- function (data) {
   doserowslast[, badcols] <- NA
 
   # Are there any doserows without a DV value?  These need to precede the infusion change
-  noDVindex <- which(!doserowslast$TIME %in% data$TIME)
+  # Solely exclude observation-only times (AMT==0): infusion end times coinciding with dose times
+  # still need an AMT=0 sentinel row so ordering is correct in the RATEALL loop.
+  noDVindex <- which(!doserowslast$TIME %in% data$TIME[data$AMT == 0])
   doserowslastnoDV <- doserowslast[noDVindex,]
-  doserowslastnoDV$AMT <- 0
-  doserowslastnoDV$RATE <- 0
-  doserowslastnoDV$DNUM <- NA
+  if (nrow(doserowslastnoDV) > 0) {
+    doserowslastnoDV$AMT <- 0
+    doserowslastnoDV$RATE <- 0
+    doserowslastnoDV$DNUM <- NA
+  }
 
   # Collect the new rows
   doserows <- rbind(doserows, doserowslast, doserowslastnoDV)
