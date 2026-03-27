@@ -57,7 +57,7 @@ f
     ##         y ~ prop(err_prop) + add(err_add)
     ##     })
     ## }
-    ## <environment: 0x559b770176c8>
+    ## <environment: 0x558887999910>
 
 A full code example is included below.
 
