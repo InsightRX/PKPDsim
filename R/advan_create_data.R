@@ -18,13 +18,15 @@ advan_create_data <- function(
   covariate_model = NULL) {
 
   ## Set up basic structure
+  is_bolus <- is_bolus_or_oral(regimen)
   data <- data.frame(
     ID = 1,
     TIME = regimen$dose_times,
     AMT = regimen$dose_amts,
     EVID = 1, DV = 0,
     RATE = 0,
-    TYPE = ifelse(regimen$type == "infusion", 1, 0))
+    TYPE = ifelse(is_bolus, 0, 1)
+  )
 
   ## Add observation data points.
   if(!is.null(t_obs)) {
@@ -51,8 +53,8 @@ advan_create_data <- function(
     data[[key]] <- parameters[[key]]
   }
 
-  ## Parse infusions
-  inf_idx <- regimen$type == "infusion"
+  ## Parse infusions (assume all non-bolus doses are infusion-type)
+  inf_idx <- !is_bolus
   if(any(inf_idx)) {
     data_idx <- data$TYPE == 1
     data$RATE[data_idx] <- data$AMT[data_idx] / regimen$t_inf[inf_idx]
