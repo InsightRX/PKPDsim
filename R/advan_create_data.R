@@ -18,7 +18,7 @@ advan_create_data <- function(
   covariate_model = NULL) {
 
   ## Set up basic structure
-  is_bolus <- regimen$type == "bolus" | grepl("oral", regimen$type)
+  is_bolus <- is_bolus_or_oral(regimen)
   data <- data.frame(
     ID = 1,
     TIME = regimen$dose_times,
