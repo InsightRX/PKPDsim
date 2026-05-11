@@ -5,12 +5,14 @@
 PKPDsim can be installed from CRAN:
 
 ``` r
+
 install.packages("PKPDsim")
 ```
 
 Or you can install the development version from GitHub:
 
 ``` r
+
 devtools::install_github("InsightRX/PKPDsim")
 ```
 
@@ -35,6 +37,7 @@ user-specified ODE systems. However, as a first example, let’s implement
 the most simple example from the library:
 
 ``` r
+
 p <- list(CL = 1, V  = 10, KA = 0.5)
 pk1 <- new_ode_model("pk_1cmt_oral")
 r1 <- new_regimen(
@@ -64,6 +67,7 @@ Let’s look at the output. `PKPDsim` will output data in the “long”
 format, i.e. one row per observed timepoint, and split by compartment:
 
 ``` r
+
 head(dat)
 ```
 
@@ -80,6 +84,7 @@ To check what output was produced by
 plot it (installation of `ggplot2` required).
 
 ``` r
+
 ggplot(dat, aes(x = t, y = y)) +
   geom_line() +
   facet_wrap(vars(comp))
@@ -95,6 +100,7 @@ not the amounts in each compartment. We’re also going to use an infusion
 instead of bolus injection:
 
 ``` r
+
 pk2 <- new_ode_model(
   code = "dAdt[1] = -(CL/V) * A[1]",
   obs = list(cmt = 1, scale = "V"),
@@ -116,6 +122,7 @@ dat2 <- sim(
 ```
 
 ``` r
+
 ggplot(dat2, aes(x = t, y = y)) +
   geom_line()
 ```
@@ -132,6 +139,7 @@ These models can be installed as R packages using the
 function.
 
 ``` r
+
 model_from_api(
   system.file("models", "pk_vanco_anderson.json5", package = "PKPDsim"),
   to_package = TRUE,
@@ -150,6 +158,7 @@ To simulate PK, provide the model and parameters to
 with a dosing regimen and covariates.
 
 ``` r
+
 ## Create dosing regimen and covariates
 reg <- new_regimen(
   amt = 100,

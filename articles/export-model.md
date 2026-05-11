@@ -12,6 +12,7 @@ into R (default), or exported to a zip-file (`install = FALSE`).
 Example:
 
 ``` r
+
 p <- list(CL = 5, V = 50)
 reg <- new_regimen(amt = 100, n = 4, interval = 12, type = "bolus",  cmt = 1)
 
@@ -30,6 +31,7 @@ new_ode_model(
 To load the library and model:
 
 ``` r
+
 library(pktest)
 mod <- pktest::model()
 ```
@@ -37,6 +39,7 @@ mod <- pktest::model()
 To simulate from the model:
 
 ``` r
+
 sim(
   ode = mod, 
   parameters = p, 

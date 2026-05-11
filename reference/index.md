@@ -100,6 +100,9 @@
 - [`install_default_literature_model()`](https://insightrx.github.io/PKPDsim/reference/install_default_literature_model.md)
   : Install default literature model
 
+- [`is_bolus_or_oral()`](https://insightrx.github.io/PKPDsim/reference/is_bolus_or_oral.md)
+  : Is regimen type oral or bolus? (i.e., treat t_inf as zero)
+
 - [`is_positive_definite()`](https://insightrx.github.io/PKPDsim/reference/is_positive_definite.md)
   : Is matrix positive definite
 

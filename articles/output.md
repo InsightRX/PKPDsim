@@ -20,6 +20,7 @@ The output for the observation, as well as the compartment from which
 the observation is taken can be set using the `obs` argument:
 
 ``` r
+
 mod <- new_ode_model(code = "
   dAdt[1] = -KA * A[1];
   dAdt[2] = -(CL/V) * A[2] + KA*A[1];
@@ -35,6 +36,7 @@ example where the amount in the absorption compartment as well as the
 systemic drug concentration are outputted.
 
 ``` r
+
 mod <- new_ode_model(code = "
     dAdt[1] = -KA * A[1];
     dAdt[2] = -(CL/V) * A[2] + KA*A[1];
@@ -63,6 +65,7 @@ and between-subject variability is included in the simulation, or for
 debugging models. You can use the `output_include` argument for this:
 
 ``` r
+
 mod_1cmt_iv <- new_ode_model("pk_1cmt_iv")
 p <- list(CL = 5, V = 50)
 reg <- new_regimen(amt = 100, n = 4, interval = 12, type = "bolus",  cmt = 1)
@@ -88,6 +91,7 @@ dat <- sim(
     ## Simulating 3 individuals.
 
 ``` r
+
 head(dat)
 ```
 

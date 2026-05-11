@@ -9,6 +9,7 @@ the `state_init` argument, which allow you to specify the state of each
 compartment using code.
 
 ``` r
+
 library(PKPDsim)
 library(ggplot2)
 
@@ -64,6 +65,7 @@ models. In `PKPDsim` you can specify two or more model parts separately
 in a list to the `code` argument:
 
 ``` r
+
 pkpd <- new_ode_model(
   code = list(
     pk = "dAdt[1] = -(CL/V) * A[1]; conc = A[1]/V; ",

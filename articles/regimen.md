@@ -7,6 +7,7 @@ doses, and the dosing interval. However, how you provide that
 information is very flexible. You can e.g. specify:
 
 ``` r
+
 reg1 <- new_regimen(
   amt = 100,
   interval = 12,
@@ -18,6 +19,7 @@ which will administer 5 doses of 100 mg (or whatever the unit is), at an
 interval of 12 hours. The same can however also be specified as:
 
 ``` r
+
 reg1 <- new_regimen(
   amt = 100,
   times = c(0, 12, 24, 36, 48)
@@ -27,6 +29,7 @@ reg1 <- new_regimen(
 or:
 
 ``` r
+
 reg1 <- new_regimen(
   amt = c(100, 100, 100, 100, 100),
   times = c(0, 12, 24, 36, 48)
@@ -44,6 +47,7 @@ these should be given as infusion, specify the `type` and `t_inf`
 arguments:
 
 ``` r
+
 reg1 <- new_regimen(
   amt = 100,
   times = c(0, 12, 24, 36, 48),
@@ -59,6 +63,7 @@ the dose into a different compartment, you can override it with the
 `cmt` argument:
 
 ``` r
+
 reg1 <- new_regimen(
   amt = 100,
   times = c(0, 12, 24, 36, 48),
@@ -86,6 +91,7 @@ do so by specifying the `n_ss` argument, which takes the number of doses
 to simulate before assuming steady state.
 
 ``` r
+
 reg_ss <- new_regimen(
   amt = 100,
   interval = 12,

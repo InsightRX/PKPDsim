@@ -2,9 +2,9 @@
 
 This can be implemented using the `n` and `omega` options. The `omega`
 (nomenclature borrowed from NONMEM) should be specified as either a
-**vector** defining the lower triangle of the BSV or $\Omega$ matrix, or
-as a **matrix** defining the full $\Omega$ matrix. An alternative option
-is to specify the between-subject variability as CV, using the
+**vector** defining the lower triangle of the BSV or $`\Omega`$ matrix,
+or as a **matrix** defining the full $`\Omega`$ matrix. An alternative
+option is to specify the between-subject variability as CV, using the
 [`cv_to_omega()`](https://insightrx.github.io/PKPDsim/reference/cv_to_omega.md)
 function, but this assumes there is no correlation between individual
 parameters.
@@ -12,6 +12,7 @@ parameters.
 The following:
 
 ``` r
+
 model <- new_ode_model("pk_1cmt_iv")
 parameters <- list(CL = 5, V = 50)
 regimen <- new_regimen(
@@ -39,6 +40,7 @@ defined above. Alternatively, the coefficient of variation can be
 specified (assuming no correlation between parameters):
 
 ``` r
+
 dat <- sim(
   ode = model,
   parameters = parameters,
@@ -55,7 +57,7 @@ dat <- sim(
 
 Note that using the `cv_to_omega` function assumes the *CV is on the
 SD-scale* and not on the variance scale (and the definition of CV uses
-the assumption $1 + \eta \approx 1*\exp(\eta)$).
+the assumption $`1 + \eta \approx 1 * \exp(\eta)`$).
 
 ## Variability distribution
 
@@ -64,6 +66,7 @@ parameters if `omega` is specified. If normal distribution is desired
 for all parameters, please use the `omega_type` argument:
 
 ``` r
+
 dat <- sim(
   ode = model,
   parameters = parameters,
@@ -89,6 +92,7 @@ example below for the simulation of bioavailability using the
 logit-distribution.
 
 ``` r
+
 mod1 <- new_ode_model(
   code = "
     CLi = CL * exp(eta1)
@@ -128,6 +132,7 @@ dat <- sim(
 ```
 
 ``` r
+
 library(ggplot2)
 ggplot(dat, aes(x = t, y = y, group = id)) + geom_line()
 ```
@@ -135,6 +140,7 @@ ggplot(dat, aes(x = t, y = y, group = id)) + geom_line()
 ![](variability_files/figure-html/plot-1.png)
 
 ``` r
+
 ggplot(dat, aes(x = F1i)) + geom_histogram()
 ```
 

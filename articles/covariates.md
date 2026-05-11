@@ -7,6 +7,7 @@ Covariates are implemented using the
 function, wrapped in a named list. For example:
 
 ``` r
+
 covariates <- list(
   "WT" = new_covariate(value = 70),
   "SCR" = new_covariate(value = 120)
@@ -22,6 +23,7 @@ Time-varying covariates, such as creatinine values can be implemented
 easily as well. They just require the additional `times` argument:
 
 ``` r
+
 covariates <- list(
   "WT" = new_covariate(value = 70),
   "CR" = new_covariate(
@@ -45,6 +47,7 @@ covariate values per individual. It can handle both static and
 time-varying covariates. A covariate table could look like this:
 
 ``` r
+
 cov_table <- data.frame(
   id  = c(1, 1, 2, 3),
   WT  = c(40, 45, 50, 60),
@@ -62,6 +65,7 @@ A full example for a model with (simulated) covariates for a patient
 population:
 
 ``` r
+
 parameters <- list(
   CL = 1,
   V = 10,

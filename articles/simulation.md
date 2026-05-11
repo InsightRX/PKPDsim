@@ -9,6 +9,7 @@ individual. The command for
 e.g. like this:
 
 ``` r
+
 dat <- sim(
   ode = model,              # created using new_ode_model()
   parameters = parameters,  # a named list of parameter values
@@ -19,6 +20,7 @@ dat <- sim(
 Here is a minimal example using real code:
 
 ``` r
+
 model <- new_ode_model("pk_1cmt_iv")
 parameters <- list(CL = 5, V = 50)
 regimen <- new_regimen(
@@ -50,6 +52,7 @@ hour. However, you can specify a vector of observation times to get only
 those observations:
 
 ``` r
+
 dat2 <- sim(
   ode = model,
   parameters = parameters,

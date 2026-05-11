@@ -87,9 +87,9 @@
 <code>omega</code> options. The <code>omega</code> (nomenclature
 borrowed from NONMEM) should be specified as either a
 <strong>vector</strong> defining the lower triangle of the BSV or
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
 matrix, or as a <strong>matrix</strong> defining the full
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Ω</mi><annotation encoding="application/x-tex">\Omega</annotation></semantics></math>
 matrix. An alternative option is to specify the between-subject
 variability as CV, using the <code><a href="../reference/cv_to_omega.html">cv_to_omega()</a></code> function, but
 this assumes there is no correlation between individual parameters.</p>
@@ -133,7 +133,7 @@ specified (assuming no correlation between parameters):</p>
 <p>Note that using the <code>cv_to_omega</code> function assumes the
 <em>CV is on the SD-scale</em> and not on the variance scale (and the
 definition of CV uses the assumption
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mi>η</mi><mo>≈</mo><mn>1</mn><mo>*</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>η</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">1 + \eta \approx 1 * \exp(\eta)</annotation></semantics></math>).</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mi>η</mi><mo>≈</mo><mn>1</mn><mo>*</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>η</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">1 + \eta \approx 1 * \exp(\eta)</annotation></semantics></math>).</p>
 <div class="section level2">
 <h2 id="variability-distribution">Variability distribution<a class="anchor" aria-label="anchor" href="#variability-distribution"></a>
 </h2>

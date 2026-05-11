@@ -1,6 +1,7 @@
 # Model
 
 ``` r
+
 install.packages("PKPDsim")
 ```
 
@@ -26,6 +27,7 @@ model can be specified in three different ways:
 For example, a 1-compartment oral PK model can be obtained using:
 
 ``` r
+
 pk1 <- new_ode_model(model = "pk_1cmt_oral")
 ```
 
@@ -34,6 +36,7 @@ Run the
 function without arguments to see the currently available models:
 
 ``` r
+
 new_ode_model()
 ```
 
@@ -54,6 +57,7 @@ new_ode_model()
 The custom model needs to be specified as a string or text block:
 
 ``` r
+
 pk1 <- new_ode_model(code = "
   dAdt[1] = -KA * A[1]
   dAdt[2] = +KA * A[1] -(CL/V) * A[2]
@@ -77,6 +81,7 @@ model compiled correctly by typing the model name on the R command line,
 which prints the model information:
 
 ``` r
+
 pk1
 ```
 
@@ -110,6 +115,7 @@ You can introduce new variables in your code, but you will have to
 define them using `declare_variables` argument too:
 
 ``` r
+
 pk1 <- new_ode_model(code = "
   KEL = CL/V
   dAdt[1] = -KA * A[1]
@@ -122,6 +128,7 @@ how to define covariates is in the *Covariates* vignette), you will have
 to define them, both in the code and in the function call:
 
 ``` r
+
 pk1 <- new_ode_model(code = "
   CLi = WT/70
   KEL = CLi/V
@@ -137,6 +144,7 @@ indicate power functions, but uses the `pow(value, base)` function
 instead, so for example an allometric PK model should be written as:
 
 ``` r
+
 pk1 <- new_ode_model(code = "
   CLi = CL * pow((WT/70), 0.75)
   dAdt[1] = -KA * A[1]
@@ -152,6 +160,7 @@ using the `dose` argument. By default, the dose will go into compartment
 be either a number or a character string referring a parameter.
 
 ``` r
+
 pk1 <- new_ode_model(code = "
     dAdt[1] = -KA * A[1]
     dAdt[2] = +KA * A[1] -(CL/V) * A[2]
@@ -168,6 +177,7 @@ The way to implement this is by scaling the dose by the “weight”
 covariate using the bioavailability:
 
 ``` r
+
 mod <- new_ode_model(code = "
     dAdt[1] = -(CL/V)*A[1];
   ",
@@ -183,6 +193,7 @@ The observation compartment can be set by specifying a list to the `obs`
 argument, with either the elements `cmt` and `scale`, or `variable`.
 
 ``` r
+
 pk1 <- new_ode_model(code = "
     dAdt[1] = -KA * A[1]
     dAdt[2] = +KA * A[1] -(CL/V) * A[2]
@@ -199,6 +210,7 @@ block are not available as scaling parameters. E.g. for allometry you
 will have to redefine the scaled volume as follows:*
 
 ``` r
+
 pk1 <- new_ode_model(code = "
     Vi = V * (WT/70)
     dAdt[1] = -KA * A[1]
@@ -211,6 +223,7 @@ pk1 <- new_ode_model(code = "
 Or define the observation using a variable:
 
 ``` r
+
 pk1 <- new_ode_model(code = "
     dAdt[1] = -KA * A[1]
     dAdt[2] = +KA * A[1] -(CL/V) * A[2]
@@ -228,6 +241,7 @@ files. This is just a convenience function, i.e. it allows you to
 separate models from R code more easily.
 
 ``` r
+
 pk1 <- new_ode_model(
   file = "pk_1cmt_oral_nonlin_v1.txt",
   declare_variables = c("KEL", "CLi")

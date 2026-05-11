@@ -21,6 +21,7 @@ translator function has therefore been included in `PKPDsim` that allows
 translation of a `PKPDsim` model to `nlmixr2` syntax:
 
 ``` r
+
 mod <- new_ode_model("pk_1cmt_iv")
 f <- pkpdsim_to_nlmixr(
   model = mod,
@@ -37,6 +38,7 @@ is an object that defines the required model and parameter definitions
 in `nlmixr` syntax:
 
 ``` r
+
 f
 ```
 
@@ -57,7 +59,7 @@ f
     ##         y ~ prop(err_prop) + add(err_add)
     ##     })
     ## }
-    ## <environment: 0x558887999910>
+    ## <environment: 0x563b703d4f90>
 
 A full code example is included below.
 
@@ -67,6 +69,7 @@ active development. Syntax and results may therefore change.*
 ## Example
 
 ``` r
+
 library(tidyverse)
 library(nlmixr2)
 
@@ -123,13 +126,16 @@ fit <- nlmixr(
 ```
 
 ``` r
+
 fit
 ```
 
-$$\begin{aligned}
-{CL} & {= \exp\left( {logCL} + {eta\_ CL} \right)} \\
-V & {= \exp\left( {logV} + {eta\_ V} \right)} \\
-\frac{d\ A1}{dt} & {= - \left( \frac{CL}{V} \right) \times {A1}} \\
-y & {= \frac{A1}{V}} \\
-y & {\sim prop(err\_ prop) + add(err\_ add)}
-\end{aligned}$$
+``` math
+\begin{align*}
+{CL} & = \exp\left({logCL}+{eta\_CL}\right) \\
+{V} & = \exp\left({logV}+{eta\_V}\right) \\
+\frac{d \: A1}{dt} & = -\left(\frac{{CL}}{{V}}\right) {\times} {A1} \\
+{y} & = \frac{{A1}}{{V}} \\
+{y} & \sim prop({err\_prop})+add({err\_add})
+\end{align*}
+```

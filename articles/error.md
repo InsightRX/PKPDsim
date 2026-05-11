@@ -10,10 +10,17 @@ function. This argument requires a
 following components:
 
 - `prop`: proportional error:
-  $$y = \widehat{y} \cdot \left( 1 + \mathcal{N}(0,prop) \right)$$
-- `add`: additive error: $$y = \widehat{y} + \mathcal{N}(0,add))$$
+  ``` math
+  y = \hat{y} \cdot (1 + \mathcal{N}(0, prop))
+  ```
+- `add`: additive error:
+  ``` math
+  y = \hat{y} + \mathcal{N}(0, add))
+  ```
 - `exp`: exponential error:
-  $$y = \widehat{y} \cdot e^{\mathcal{N}{(0,exp)}}$$
+  ``` math
+  y = \hat{y} \cdot e^{\mathcal{N}(0, exp)}
+  ```
 
 These list elements can be combined, e.g. for a combined proportional
 and additive error model one would write:
@@ -25,6 +32,7 @@ Below are some examples of the `res_var` argument
 Combined proportional and additive:
 
 ``` r
+
 mod <- new_ode_model("pk_1cmt_iv")
 reg <- new_regimen(
   amt = 1000,
@@ -48,6 +56,7 @@ ggplot(sim1, aes(x = t, y = y)) +
 Exponential:
 
 ``` r
+
 sim2 <- sim(
   mod,
   parameters = list(CL = 5, V = 150),
@@ -63,6 +72,7 @@ the option to include it afterwards. For that, the function
 is useful.
 
 ``` r
+
 sim3 <- sim1
 sim3$y <- add_ruv(
   x = sim3$y, 

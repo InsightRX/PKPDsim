@@ -14,6 +14,7 @@ The [CRAN](https://cran.r-project.org/package=PKPDsim) version of
 PKPDsim can be installed using:
 
 ``` r
+
 install.packages("PKPDsim")
 ```
 
@@ -22,6 +23,7 @@ The development version of PKPDsim can be installed from
 [R-universe](https://insightrx.r-universe.dev/PKPDsim) using:
 
 ``` r
+
 # Install from GitHub:
 devtools::install_github("InsightRX/PKPDsim")
 
@@ -34,12 +36,14 @@ in PKPD simulations. To see which models are available for installation,
 run:
 
 ``` r
+
 available_default_literature_models()
 ```
 
 You can install these models as packages using the following commands:
 
 ``` r
+
 # To install a single model:
 install_default_literature_model("pk_busulfan_mccune")
 

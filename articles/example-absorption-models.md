@@ -10,6 +10,7 @@ Alternatively, it is also possible to specify a vector of lag times,
 with a value for each compartment.
 
 ``` r
+
 library(PKPDsim)
 
 pk <- new_ode_model(
@@ -54,6 +55,7 @@ implemented using a separate analytical equation.
 added soon to PKPDsim.*
 
 ``` r
+
 library(PKPDsim)
 
 parameters <- list(CL = 15, V = 50, MTT = 2.5, N = 4, KA = 1)
