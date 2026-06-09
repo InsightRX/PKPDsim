@@ -1570,3 +1570,35 @@ describe("Timevarying covariates are handled properly", {
   })
 
 })
+
+
+test_that("sim does not exhaust memory when lagtime exceeds the simulation window", {
+  # During MAP estimation, BFGS can take an unconstrained step that pushes a
+  # lagtime parameter (e.g. TLAG) to an extreme value. apply_lagtime() shifts 
+  # every dose event forward by TLAG, placing them far beyond the observation
+  # window. This test ensures we don't simulate unnecessarily large vectors,
+  # no matter what TLAG is.
+
+  reg <- new_regimen(amt = 100, n = 3, interval = 12, type = "oral")
+  par_extreme <- list(CL = 5, V = 50, KA = 0.5, TLAG = 1e7)  # extreme TLAG
+  t_obs <- c(12, 24, 36)
+
+  expect_no_error(
+    result <- sim(
+      ode = mod_1cmt_oral_lagtime,
+      parameters = par_extreme,
+      regimen = reg,
+      t_obs = t_obs,
+      only_obs = TRUE,
+      checks = FALSE
+    )
+  )
+
+  # Should complete without error and return one row per t_obs
+  expect_equal(nrow(result), length(t_obs))
+
+  # With TLAG >> simulation window, no dose is absorbed — concentrations are 0
+  # (This is not really physiologically reasonable, the goal is to ensure that
+  # the code does not crash simulating out 1e7 hours due to large TLAG)
+  expect_true(all(result$y == 0))
+})
