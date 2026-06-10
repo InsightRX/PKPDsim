@@ -162,6 +162,11 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
   std::vector<int> dose_cmt, dose_type, evid, obs_type, y_type;
   // insert variable definitions
 
+  // Capture t_max from the original design before lagtime shifts any events.
+  // This is the true simulation ceiling: no output is needed beyond this point.
+  std::vector<double> orig_times = as<std::vector<double> >(design["t"]);
+  double t_max_design = *std::max_element(orig_times.begin(), orig_times.end());
+
   // Handle lagtime parameter - can be numeric or character
   NumericVector lagtime_numeric = lagtime_to_numeric(lagtime, par);
   List events = apply_lagtime(design, lagtime_numeric, n_comp);
@@ -232,6 +237,9 @@ List sim_wrapper_cpp (NumericVector A, List design, List par, NumericVector iov_
         start = 0;
       }
     }
+    // Don't integrate past the original t_max; avoid unnecessarily large vectors
+    if(t_start > t_max_design) break;
+    t_end = std::min(t_end, t_max_design);
     ode_out tmp = sim_cpp(Aupd, t_start, t_end, step_size);
     if(start == 0) { // make sure observation variables are stored
       int k = 0;
