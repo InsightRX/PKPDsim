@@ -67,7 +67,7 @@ IIV and IOV are applied in `calculate_parameters.R` before simulation. Supported
 
 ### Testing patterns
 
-Tests live in `tests/testthat/` (51 files). Snapshot tests in `tests/testthat/_snaps/` validate complex numerical outputs. Update snapshots with `testthat::snapshot_review()` when intentional output changes occur.
+Tests live in `tests/testthat/`.
 
 ## CI
 
