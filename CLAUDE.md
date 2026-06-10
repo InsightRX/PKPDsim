@@ -8,7 +8,7 @@ PKPDsim is an R package for simulating pharmacokinetic-pharmacodynamic (PK-PD) m
 
 ## Commands
 
-```bash
+```r
 # Load package for interactive development
 devtools::load_all()
 
