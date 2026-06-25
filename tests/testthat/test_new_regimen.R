@@ -121,3 +121,17 @@ test_that("t_inf imputed correctly", {
   expect_equal(reg5$t_inf, c(2/60, 2.5, 3/60, 1))
 })
 
+test_that("regimens of type bolus/oral are recognized as such", {
+  expect_equal(
+    is_bolus_or_oral(
+      new_regimen(interval = 24, type = c("oral_x", "infusion", "sc"))
+    ),
+    c(TRUE, FALSE, FALSE)
+  )
+  expect_equal(
+    is_bolus_or_oral(
+      new_regimen(interval = 24, type = c("bolus_unknown", "infusion", "oral"))
+    ),
+    c(FALSE, FALSE, TRUE)
+  )
+})

@@ -127,20 +127,20 @@ new_regimen <- function(
   if(length(reg$type) != length(reg$dose_times)) {
     reg$type <- rep(reg$type[1], length(reg$dose_times))
   }
-  if(any(reg$type %in% c("infusion", "sc", "im"))) {
-    if(any(reg$t_inf == 0)) {
-      reg$t_inf[reg$t_inf == 0] <- 1/60
-      reg$rate[reg$t_inf == 0] <- 60
-    }
+  # zero-length infusion-type (infusion/sc/im) doses get a minimum 1-minute
+  # duration; other types (e.g. custom dose-compartment labels) are left as-is
+  # and treated as boluses below if applicable.
+  idx_infusion_0length <- reg$type %in% c("infusion", "sc", "im") & reg$t_inf == 0
+  if (any(idx_infusion_0length)) {
+    reg$t_inf[idx_infusion_0length] <- 1/60
+    reg$rate[idx_infusion_0length] <- 60
   }
-  if(any(reg$type == "bolus")) {
-    reg$t_inf[reg$type == "bolus"] <- 0
-    reg$rate[reg$type == "bolus"] <- 0
+  # oral/bolus t_inf is always zero
+  if(any(is_bolus_or_oral(reg))) {
+    reg$t_inf[is_bolus_or_oral(reg)] <- 0
+    reg$rate[is_bolus_or_oral(reg)] <- 0
   }
-  if(any(grepl("oral", reg$type))) {
-    reg$t_inf[grepl("oral", reg$type)] <- 0
-    reg$rate[grepl("oral", reg$type)] <- 0
-  }
+
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {
       cmt <- rep(cmt[1], length(reg$dose_times))
@@ -159,4 +159,18 @@ new_regimen <- function(
     reg$dose_times <- reg$dose_times + t_lag
   }
   return(reg)
+}
+
+#' Is regimen type oral or bolus? (i.e., treat t_inf as zero)
+#' 
+#' Any regimen matching exactly the string 'bolus' or containing the string 
+#' 'oral' will return `TRUE`, otherwise `FALSE`. Bolus/oral regimens are 
+#' generally treated as having an infusion duration of zero.
+#' 
+#' @param regimen object of class "regimen"`
+#' @returns Returns a logical vector of length equal to the number of doses in 
+#'   the regimen
+
+is_bolus_or_oral <- function(regimen) {
+   regimen$type == "bolus" | grepl("oral", regimen$type)
 }
