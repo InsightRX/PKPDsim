@@ -1,8 +1,8 @@
 #' Convert PKPDsim regimen to NONMEM table (doses only)
 #'
-#' Note: when bioavailability is used for insusions: NONMEM behaves differently from PKPDsim and Monolix, 
-#' in that rates are not automatically recomputed for infusions where bioavailabiliy also applies. 
-#' In PKPDsim/Monolix, for a bioavailability of 50%, an AMT of 100 mg and rate of 100mg/hr would be recalculated 
+#' Note: when bioavailability is used for insusions: NONMEM behaves differently from PKPDsim and Monolix,
+#' in that rates are not automatically recomputed for infusions where bioavailabiliy also applies.
+#' In PKPDsim/Monolix, for a bioavailability of 50%, an AMT of 100 mg and rate of 100mg/hr would be recalculated
 #' to 50 mg and 50 mg/hour, respectively, to keep the infusion length the same. This is not the case
 #' in NONMEM. Therefore, the easiest way to work around this is for the user to compute the rate manually
 #' in NONMEM using custom code. Therefore, we set the `RATE` column to `-1` for such infusions.
@@ -40,6 +40,8 @@ regimen_to_nm <- function(
   if(has_t_inf) {
     dat$RATE <- reg$dose_amts / reg$t_inf
     dat$RATE[reg$t_inf == 0] <- 0           # rate of zero indicates bolus
+    ## If there are infusions AND bioavailability is set for the model (which is rare),
+    ## then RATE should be specified in the NONMEM model. If bioav == 1, then just ignore.
     if(!is.null(bioav[dose_cmt])) {
       suppressWarnings(
         bioav_dose <- as.numeric(bioav[dose_cmt])
@@ -50,8 +52,10 @@ regimen_to_nm <- function(
         }
         bioav_dose[is.na(bioav_dose)] <- 1
       }
-      dat$RATE <- -1
-      message("Setting rate to be handled in NONMEM model using R parameters.")
+      if(! isTRUE(as.numeric(bioav[dose_cmt]) == 1)) {
+        dat$RATE <- -1
+        message("Setting rate to be handled in NONMEM model using R parameters.")
+      }
     }
   }
   if(!is.null(t_obs)) {

@@ -1,3 +1,5 @@
+devtools::load_all("~/git/insightrx/PKPDsim")
+
 test_that("regimen can be converted to nonmem format", {
   a <- new_regimen(amt = 10, n = 5, interval = 12)
   b <- regimen_to_nm(a, t_obs = c(1, 2, 3))
@@ -93,6 +95,35 @@ test_that("rate is calculated for any regimen with an infusion length", {
   # RATE is set to -1 for doses when bioav is specified, to let NONMEM handle rate calculation
   expect_equal(b$RATE, c(-1, 0, 0, 0, -1, -1, -1, -1))
   expect_equal(c$RATE, c(-1, 0, 0, 0, -1, -1, -1, -1))
+})
+
+test_that("rate is kept (not set to -1) when bioavailability is 1", {
+  a <- new_regimen(amt = 10, n = 5, interval = 12, t_inf = 1, type = "infusion")
+  expect_no_message(
+    b <- regimen_to_nm(
+      a,
+      t_obs = c(1, 2, 3),
+      bioav = 1
+    )
+  )
+  # rate = amt / t_inf = 10 / 1 = 10, not -1
+  expect_equal(b$RATE, c(10, 0, 0, 0, 10, 10, 10, 10))
+
+  # mixed bioav: cmt 1 has F=1 (rate kept), so no -1 and no message
+  a2 <- new_regimen(
+    amt = 10,
+    time = c(1, 2, 3, 4),
+    t_inf = c(1, 1, 1, 1),
+    type = c("infusion", "infusion", "infusion", "infusion")
+  )
+  expect_no_message(
+    c <- regimen_to_nm(
+      a2,
+      t_obs = c(1, 2, 3),
+      bioav = 1
+    )
+  )
+  expect_false(any(c$RATE == -1))
 })
 
 test_that("throws warning when bioav specified as model parameter and need to convert RATE, but not when not needed", {
