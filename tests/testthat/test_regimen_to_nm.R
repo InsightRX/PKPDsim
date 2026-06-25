@@ -1,5 +1,3 @@
-devtools::load_all("~/git/insightrx/PKPDsim")
-
 test_that("regimen can be converted to nonmem format", {
   a <- new_regimen(amt = 10, n = 5, interval = 12)
   b <- regimen_to_nm(a, t_obs = c(1, 2, 3))
@@ -30,10 +28,13 @@ test_that("regimen with infusion correctly recalculates rates when bioavailabili
     "Setting rate to be handled in NONMEM model"
   )
   expect_warning(
-    regimen_to_nm(
-      a,
-      t_obs = c(1, 2, 3),
-      bioav = "F1"
+    expect_message(
+      regimen_to_nm(
+        a,
+        t_obs = c(1, 2, 3),
+        bioav = "F1"
+      ),
+      "Setting rate to be handled in NONMEM model"
     ),
     "For compartments where bioavailability is specified"
   )
@@ -92,9 +93,9 @@ test_that("rate is calculated for any regimen with an infusion length", {
   )
   expect_true(all(expected_cols %in% colnames(b)))
   expect_true(all(expected_cols %in% colnames(c)))
-  # RATE is set to -1 for doses when bioav is specified, to let NONMEM handle rate calculation
-  expect_equal(b$RATE, c(-1, 0, 0, 0, -1, -1, -1, -1))
-  expect_equal(c$RATE, c(-1, 0, 0, 0, -1, -1, -1, -1))
+  # RATE is set to -1 for infusion doses where bioav affects the duration.
+  expect_equal(b$RATE, c(0, 0, 0, 0, 0, -1, -1, 0))
+  expect_equal(c$RATE, c(0, 0, 0, 0, 0, -1, 20, 0))
 })
 
 test_that("rate is kept (not set to -1) when bioavailability is 1", {
@@ -109,7 +110,7 @@ test_that("rate is kept (not set to -1) when bioavailability is 1", {
   # rate = amt / t_inf = 10 / 1 = 10, not -1
   expect_equal(b$RATE, c(10, 0, 0, 0, 10, 10, 10, 10))
 
-  # mixed bioav: cmt 1 has F=1 (rate kept), so no -1 and no message
+  # mixed compartments with F=1 keep the calculated rate.
   a2 <- new_regimen(
     amt = 10,
     time = c(1, 2, 3, 4),
@@ -120,7 +121,8 @@ test_that("rate is kept (not set to -1) when bioavailability is 1", {
     c <- regimen_to_nm(
       a2,
       t_obs = c(1, 2, 3),
-      bioav = 1
+      dose_cmt = c(1, 2, 1, 2),
+      bioav = c(1, 1)
     )
   )
   expect_false(any(c$RATE == -1))
@@ -133,14 +135,16 @@ test_that("throws warning when bioav specified as model parameter and need to co
     t_inf = c(0, 0, 1, 1),
     type = c("oral", "oral", "infusion", "infusion")
   )
-  expect_message({
+  expect_silent({
     b <- regimen_to_nm(
       a,
       dose_cmt = c(1, 1, 2, 2),
       t_obs = c(1, 2, 3),
       bioav = c("Fi", 1)
     )
-  }, "Setting rate to be handled in NONMEM model")
+  })
+  expect_false(any(b$RATE == -1))
+
   a2 <- new_regimen(
     amt = 10,
     time = c(1, 2, 3, 4),
@@ -148,12 +152,16 @@ test_that("throws warning when bioav specified as model parameter and need to co
     type = c("sc", "sc", "infusion", "infusion")
   )
   expect_warning(
-    regimen_to_nm(
-      a2,
-      dose_cmt = c(1, 1, 2, 2),
-      t_obs = c(1, 2, 3),
-      bioav = c("Fi", 1)
+    expect_message(
+      d <- regimen_to_nm(
+        a2,
+        dose_cmt = c(1, 1, 2, 2),
+        t_obs = c(1, 2, 3),
+        bioav = c("Fi", 1)
+      ),
+      "Setting rate to be handled in NONMEM model"
     ),
     "For compartments where bioavailability is specified"
   )
+  expect_equal(d$RATE[d$EVID == 1], c(-1, -1, 10, 10))
 })

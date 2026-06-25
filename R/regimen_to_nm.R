@@ -40,20 +40,18 @@ regimen_to_nm <- function(
   if(has_t_inf) {
     dat$RATE <- reg$dose_amts / reg$t_inf
     dat$RATE[reg$t_inf == 0] <- 0           # rate of zero indicates bolus
-    ## If there are infusions AND bioavailability is set for the model (which is rare),
-    ## then RATE should be specified in the NONMEM model. If bioav == 1, then just ignore.
     if(!is.null(bioav[dose_cmt])) {
       suppressWarnings(
         bioav_dose <- as.numeric(bioav[dose_cmt])
       )
-      if(any(is.na(bioav_dose))) {
-        if(any(is.na(bioav_dose) & reg$t_inf > 0)) { # only warn when it actually concerns an infusion
-          warning("For compartments where bioavailability is specified as model parameter and not as a number, any infusion rates are not corrected for bioavailability.")
-        }
-        bioav_dose[is.na(bioav_dose)] <- 1
+      bioav_model_parameter <- is.na(bioav_dose)
+      if(any(bioav_model_parameter & reg$t_inf > 0)) { # only warn when it actually concerns an infusion
+        warning("For compartments where bioavailability is specified as model parameter and not as a number, any infusion rates are not corrected for bioavailability.")
       }
-      if(! isTRUE(as.numeric(bioav[dose_cmt]) == 1)) {
-        dat$RATE <- -1
+
+      rate_in_nm <- reg$t_inf > 0 & (bioav_model_parameter | bioav_dose != 1)
+      if(any(rate_in_nm)) {
+        dat$RATE[rate_in_nm] <- -1
         message("Setting rate to be handled in NONMEM model using R parameters.")
       }
     }
