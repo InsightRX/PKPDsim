@@ -1,6 +1,6 @@
 #' Convert PKPDsim regimen to NONMEM table (doses only)
 #'
-#' Note: when bioavailability is used for insusions: NONMEM behaves differently from PKPDsim and Monolix,
+#' Note: when bioavailability is used for infusions: NONMEM behaves differently from PKPDsim and Monolix,
 #' in that rates are not automatically recomputed for infusions where bioavailabiliy also applies.
 #' In PKPDsim/Monolix, for a bioavailability of 50%, an AMT of 100 mg and rate of 100mg/hr would be recalculated
 #' to 50 mg and 50 mg/hour, respectively, to keep the infusion length the same. This is not the case
@@ -53,7 +53,7 @@ regimen_to_nm <- function(
       ## Only set rate to model-specified if bioav != 1
       ## For many IV models, bioav may be set explicitly to 1.
       ## But there we just want to ignore.
-      if(! isTRUE(as.numeric(bioav[dose_cmt]) == 1)) {
+      if(!isTRUE(as.numeric(bioav[dose_cmt]) == 1)) {
         dat$RATE <- -1
         message("Setting rate to be handled in NONMEM model using R parameters.")
       }
