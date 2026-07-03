@@ -95,6 +95,34 @@ test_that("rate is calculated for any regimen with an infusion length", {
   expect_equal(c$RATE, c(-1, 0, 0, 0, -1, -1, -1, -1))
 })
 
+test_that("rate is kept (not set to -1) when bioavailability is exactly 1", {
+  a <- new_regimen(amt = 10, n = 5, interval = 12, t_inf = 1, type = "infusion")
+  expect_no_message(
+    {
+      b <- regimen_to_nm(
+        a,
+        t_obs = c(1, 2, 3),
+        bioav = 1
+      )
+    },
+    message = "Setting rate to be handled in NONMEM model"
+  )
+  expected_cols <- c(
+    "ID",
+    "TIME",
+    "CMT",
+    "DV",
+    "AMT",
+    "EVID",
+    "MDV",
+    "RATE"
+  )
+  expect_true(all(expected_cols %in% colnames(b)))
+  # bioav == 1 means no recalculation is needed, so the rate (amt / t_inf = 10)
+  # is kept for doses rather than being set to -1.
+  expect_equal(b$RATE, c(10, 0, 0, 0, 10, 10, 10, 10))
+})
+
 test_that("throws warning when bioav specified as model parameter and need to convert RATE, but not when not needed", {
   a <- new_regimen(
     amt = 10,
