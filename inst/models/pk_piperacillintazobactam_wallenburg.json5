@@ -1,0 +1,120 @@
+{
+  "id": "pk_piperacillintazobactam_wallenburg",
+  "ode_code": "\
+    CLR_pip_i = (CRCL * 16.66667) * CLR_pip * exp(kappa_CLR) \
+    CL_tot_pip = CL_pip_i + CLR_pip_i + CL_HEMO \
+    CLR_taz_i = CLR_pip_i * 1.1 \
+    CL_tot_taz = CL_taz_i + CLR_taz_i + CL_HEMO \
+    dAdt[0] = -(CL_tot_pip/V_pip_i)*A[0] - (Q_pip_i/V_pip_i)*A[0] + (Q_pip_i/V2_pip_i)*A[1] \
+    dAdt[1] =                            + (Q_pip_i/V_pip_i)*A[0] - (Q_pip_i/V2_pip_i)*A[1] \
+    CONC_pip = A[0]/V_pip_i \
+    CONCF_pip = CONC_pip * FUPIP \
+    dAdt[2] = -(CL_tot_taz/V_taz_i)*A[2] - (Q_taz_i/V_taz_i)*A[2] + (Q_taz_i/V2_taz_i)*A[3] \
+    dAdt[3] =                            + (Q_taz_i/V_taz_i)*A[2] - (Q_taz_i/V2_taz_i)*A[3] \
+    CONC_taz = A[2]/V_taz_i \
+    CONCF_taz = CONC_taz * FUTAZ \
+    dAdt[4] = (CONC_pip > MICPIP) \
+    dAdt[5] = (CONC_pip > (4 * MICPIP)) \
+    dAdt[6] = (CONCF_pip > MICPIP) \
+    dAdt[7] = (CONCF_pip > (4 * MICPIP)) \
+    dAdt[8] = (CONC_taz > MICTAZ) \
+    dAdt[9] = (CONCF_taz > MICTAZ) \
+    dAdt[10] = CONC_pip \
+    dAdt[11] = CONC_taz \
+    TGTMIC_pip   = A[4] \
+    TGT4MIC_pip  = A[5] \
+    FTGTMIC_pip  = A[6] \
+    FTGT4MIC_pip = A[7] \
+    TGTMIC_taz   = A[8] \
+    FTGTMIC_taz  = A[9] \
+    AUC_pip      = A[10] \
+    AUC_taz      = A[11] \
+    TGTMIC = TGTMIC_pip \
+    FTGTMIC = FTGTMIC_pip \
+    TGT4MIC = TGT4MIC_pip \
+    FTGT4MIC = FTGT4MIC_pip \
+    CONC = CONC_pip \
+    CONCF = CONCF_pip \
+  ",
+  "pk_code": "\
+    BMI = WT / pow(HT/100.0, 2.0) \
+    if(SEX == 1) {  \
+      FFM = (9270.0 * WT) / (6680.0 + 216.0 * BMI) ;\
+    } else { \
+      FFM = (9270.0 * WT) / (8780.0 + 244.0 * BMI) ;\
+    } ;\
+    ALLOCL= pow(FFM/58.2, 0.75) \
+    ALLOV = FFM/58.2 \
+    CL_pip_i = CL_pip * ALLOCL * ETACL \
+    V_pip_i  = V_pip * ALLOV * ETAV1 \
+    V2_pip_i = V2_pip * ALLOV * ETAV2 \
+    Q_pip_i = Q_pip * ALLOCL \
+    CL_taz_i = CL_taz * ALLOCL * ETACL \
+    V_taz_i  = V_taz * ALLOV * ETAV1 \
+    V2_taz_i = V2_taz * ALLOV * ETAV2 \
+    Q_taz_i = Q_taz * ALLOCL \
+  ",
+  "n_comp": 12,
+  "obs": {
+    "variable": [ "CONC_pip", "CONC_taz", "CONCF_pip", "CONCF_taz"]
+  },
+  "dose": { "cmt": 1, "bioav": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+  "covariates": [ "MICPIP", "MICTAZ", "FUPIP", "FUTAZ", "WT", "HT", "SEX", "CL_HEMO", "CRCL" ],
+  "variables": [
+    "CL_pip_i", "V_pip_i", "Q_pip_i", "V2_pip_i", "CL_tot_pip",
+    "CL_taz_i", "V_taz_i", "Q_taz_i", "V2_taz_i", "CL_tot_taz",
+    "BMI", "FFM", "ALLOCL", "ALLOV", "CLR_pip_i", "CLR_taz_i",
+    "CONC_pip", "CONC_taz", "CONCF_pip", "CONCF_taz",
+    "TGTMIC_pip", "TGT4MIC_pip", "FTGTMIC_pip", "FTGT4MIC_pip",
+    "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONC", "CONCF",
+    "TGTMIC_taz", "FTGTMIC_taz", "AUC_pip", "AUC_taz"
+  ],
+  "parameters" : {
+    "ETACL": 1.0,
+    "ETAV1": 1.0,
+    "ETAV2": 1.0,
+    "CL_pip": 4.11,
+    "CLR_pip": 0.0613,
+    "V_pip": 29.7,
+    "V2_pip": 4.26,
+    "Q_pip": 3.27,
+    "CL_taz": 2.49,
+    "V_taz": 30.3,
+    "V2_taz": 4.56,
+    "Q_taz": 3.44
+  },
+  "omega_matrix": [
+    0.917764,
+    0, 0.1936,
+    0, 0, 1.0
+  ],
+  "fixed": [
+    "CL_pip", "CLR_pip", "V_pip", "V2_pip", "Q_pip",
+    "CL_taz", "V_taz", "V2_taz", "Q_taz"
+  ],
+  "iov": {
+    "use": true,
+    "cv": {
+      "CLR": 0.315
+    },
+    "n_bins": 2,
+    "bins": [0, 48, 9999]
+  },
+  "ruv": {
+    "prop": [ 0, 0, 0, 0],
+    "add": [ 0.28, 0.254, 0.28, 0.254]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "nonlinear",
+    "timevarying_parameter": false,
+    "init_parameter": false
+  },
+  "references": [
+    {
+      "ref": "Wallenburg, E., et al. Clinical Pharmacokinetics, 2022",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9249689/"
+    }
+  ],
+  "version": "0.1.6"
+}

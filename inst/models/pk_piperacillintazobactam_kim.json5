@@ -1,0 +1,113 @@
+{
+  "id": "pk_piperacillintazobactam_kim",
+ "ode_code": "\
+    dAdt[0] = -(CL_tot_pip/V_pip_i)*A[0] - (Q_pip_i/V_pip_i)*A[0] + (Q_pip_i/V2_pip_i)*A[1] \
+    dAdt[1] =                            + (Q_pip_i/V_pip_i)*A[0] - (Q_pip_i/V2_pip_i)*A[1] \
+    CONC_pip = A[0]/V_pip_i \
+    CONCF_pip = CONC_pip * FUPIP \
+    dAdt[2] = -(CL_tot_taz/V_taz_i)*A[2] - (Q_taz_i/V_taz_i)*A[2] + (Q_taz_i/V2_taz_i)*A[3] \
+    dAdt[3] =                            + (Q_taz_i/V_taz_i)*A[2] - (Q_taz_i/V2_taz_i)*A[3] \
+    CONC_taz = A[2]/V_taz_i \
+    CONCF_taz = CONC_taz * FUTAZ \
+    dAdt[4] = (CONC_pip > MICPIP) \
+    dAdt[5] = (CONC_pip > (4 * MICPIP)) \
+    dAdt[6] = (CONCF_pip > MICPIP) \
+    dAdt[7] = (CONCF_pip > (4 * MICPIP)) \
+    dAdt[8] = CONC_pip \
+    dAdt[9] = (CONC_taz > MICTAZ) \
+    dAdt[10] = (CONCF_taz > MICTAZ) \
+    dAdt[11] = CONC_taz \
+    TGTMIC_pip   = A[4] \
+    TGT4MIC_pip  = A[5] \
+    FTGTMIC_pip  = A[6] \
+    FTGT4MIC_pip = A[7] \
+    AUC_pip      = A[8] \
+    TGTMIC_taz   = A[9] \
+    FTGTMIC_taz  = A[10] \
+    AUC_taz      = A[11] \
+    CONC = CONC_pip \
+    CONCF = CONCF_pip \
+    TGTMIC = TGTMIC_pip \
+    FTGTMIC = FTGTMIC_pip \
+    TGT4MIC = TGT4MIC_pip \
+    FTGT4MIC = FTGT4MIC_pip \
+  ",
+  "pk_code": "\
+    if(CYSC <= 0.8) {  \
+      CKDEPICYSC = 133 * pow(CYSC/0.8, -0.499) * pow(0.996, AGE) * pow(0.932, 1-SEX) ;\
+    } else { \
+      CKDEPICYSC = 133 * pow(CYSC/0.8, -1.328) * pow(0.996, AGE) * pow(0.932, 1-SEX) ;\
+    } \
+    CL_pip_i = CL_pip * exp(0.00932 * (CKDEPICYSC - 52.77)) * pow(WT/70,0.75) \
+    CL_tot_pip = CL_pip_i + CL_HEMO \
+    V_pip_ecmo_i = V_pip_ecmo * WT/70 * V1pipecmoeta \
+    V_pip_necmo_i = V_pip_necmo * WT/70 * V1pipnecmoeta \
+    V_pip_i = (ECMO * V_pip_ecmo_i) + ((1 - ECMO) * V_pip_necmo_i) \
+    Q_pip_i = Q_pip * pow(WT/70,0.75) \
+    V2_pip_i = V2_pip * WT/70 \
+    CL_taz_i = CL_taz * exp(0.0113 * (CKDEPICYSC - 52.77)) * pow(WT/70,0.75) \
+    CL_tot_taz = CL_taz_i + CL_HEMO \
+    V_taz_ecmo_i = V_taz_ecmo * WT/70 * V1tazecmoeta \
+    V_taz_necmo_i = V_taz_necmo * WT/70 * V1taznecmoeta \
+    V_taz_i = (ECMO * V_taz_ecmo_i) + ((1 - ECMO) * V_taz_necmo_i) \
+    Q_taz_i = Q_taz * pow(WT/70,0.75) \
+    V2_taz_i = V2_taz * WT/70  \
+  ",
+  "n_comp": 12,
+  "obs": {
+    "variable": ["CONC_pip", "CONC_taz", "CONCF_pip", "CONCF_taz"]
+  },
+  "dose": { "cmt": 1, "bioav": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0] },
+  "covariates": ["MICPIP", "MICTAZ", "FUPIP", "FUTAZ", "AGE", "WT", "CYSC", "SEX", "ECMO", "CL_HEMO"],
+  "variables": [
+    "CL_pip_i", "V_pip_ecmo_i", "V_pip_necmo_i", "V_pip_i", "Q_pip_i", 
+    "V2_pip_i", "CL_tot_pip","CL_taz_i", "V_taz_ecmo_i", "V_taz_necmo_i", "V_taz_i",
+    "Q_taz_i", "V2_taz_i", "CL_tot_taz", "CONC_pip", "CONC_taz", "CONCF_pip", 
+    "CONCF_taz", "TGTMIC_pip", "TGT4MIC_pip", "FTGTMIC_pip", "FTGT4MIC_pip", 
+    "TGTMIC_taz", "FTGTMIC_taz", "AUC_pip", "AUC_taz", "CKDEPICYSC",
+    "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONC", "CONCF"
+  ],
+  "parameters" : {
+    "CL_pip": 5.05,
+    "V_pip_ecmo": 7.38,
+    "V1pipecmoeta": 1.0,
+    "V_pip_necmo": 16.5,
+    "V1pipnecmoeta": 1.0,
+    "Q_pip": 6.28,
+    "V2_pip": 6.27,
+    "CL_taz": 6.33,
+    "V_taz_ecmo": 13.3,
+    "V1tazecmoeta": 1.0,
+    "V_taz_necmo": 20.2,
+    "V1taznecmoeta": 1.0,
+    "Q_taz": 10.5,
+    "V2_taz": 8.96
+  },
+  "fixed": [ "V_pip_ecmo", "V_pip_necmo", "Q_pip", "V2_pip", "V_taz_ecmo", "V_taz_necmo", "Q_taz", "V2_taz" ],
+  "omega_matrix": [
+    0.1136,
+    0, 0.2107,
+    0, 0, 0.4264,
+    0, 0, 0, 0.1436,
+    0, 0, 0, 0, 0.1490,
+    0, 0, 0, 0, 0, 0.4199
+  ],
+  "ruv": {
+    "prop": [ 0.269, 0.229 ],
+    "add": [ 0.001, 0.001 ]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "nonlinear",
+    "timevarying_parameter": false,
+    "init_parameter": false
+  },
+  "references": [
+    {
+      "ref": "Kim et al. Journal of Antimicrobial Chemotherapy 2022",
+      "url": "https://doi.org/10.1093/jac/dkac059",
+      "doi": "10.1093/jac.dkac05910"
+    }
+  ],
+  "version": "0.1.3"
+}

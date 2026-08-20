@@ -1,0 +1,67 @@
+{
+  "id": "pk_piperacillin_delattre",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1] \
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    CONC    = A[0] / Vi \
+    CONCF   = CONC * FU \
+    dAdt[2] = (CONC>MIC)\
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF>MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+    ",
+  "pk_code": "\
+    CRCLi = (CRCL * 16.66667) * (70.0/WT)\
+    CLi = CL * pow((CRCLi/100.0), TH_CRCL) * pow(WT/70.0, 0.75)\
+    CLtot = CLi + CL_HEMO\
+    Vi = V * (WT/70.0)\
+    Qi = Q * pow(WT/70.0, 0.75)\
+    V2i = V2 * (WT/70.0)\
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "scale": "V * (WT/70.0)" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "WT", "CRCL", "CL_HEMO", "MIC", "FU" ],
+  "variables": [ 
+    "CLi", "Vi", "Qi", "V2i", "CRCLi", "CLtot", "TGTMIC", "TGT4MIC",
+    "FTGTMIC", "FTGT4MIC", "CONC", "CONCF"
+  ],
+  "parameters" : {
+    "CL": 9.97,
+    "V": 24.0,
+    "Q": 5.48,
+    "V2": 8.11,
+    "TH_CRCL": 0.62
+  },
+  "fixed": ["Q", "V2", "TH_CRCL"],
+  "omega_matrix": [
+    0.265225,
+    0.0584525, 0.206116
+  ],
+  "ruv": {
+    "prop": [0.307],
+    "add": [1.9]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Delattre et al. Clin Biochem 2012",
+      "url": "https://www.ncbi.nlm.nih.gov/pubmed/22503878"
+    },
+    {
+      "ref": "Delattre et al. Therapeutic Drug Monitoring 2010",
+      "url": "https://doi.org/10.1097/ftd.0b013e3181f675c2"
+    }
+  ],
+  "version": "0.2.14"
+}

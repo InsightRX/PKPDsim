@@ -1,0 +1,83 @@
+{
+  "id": "pk_meropenem_roberts",
+  "ode_code": "\
+    CLrrti = CLrrt_avg * exp(kappa_CLrrt) \
+    CLbodyi = CLbody_avg * exp(kappa_CL) \
+    CLi = CLrrti + CLbodyi \
+    Vi = V_avg * exp(kappa_V) \
+    dAdt[0] = -(CLi/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1] \
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    CONC = A[0]/Vi;\
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC > MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF > MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    CLrrt_avg = CLrrt * pow(PFR/4.0, 0.39) * exp(0.48 * SLED) \
+    CLbody_avg = CL * exp(0.61 * (1.0 - RUO)) \
+    CL_avg = CLrrt_avg + CLbody_avg \
+    V_avg = V \
+    V2_avg = V2 \
+    V2i = V2_avg \
+    Qi = Q \
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "PFR", "SLED", "RUO", "MIC", "FU" ],
+  "variables": [ 
+    "CLrrt_avg", "CLrrti", "CLbody_avg", "CLbodyi", "CL_avg", "CLi",
+    "V_avg", "V2_avg", "Vi", "Qi", "V2i", "CONC", "CONCF",
+    "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC"
+  ],
+  "parameters" : {
+    "CLrrt": 2.2,
+    "CL": 2.1,
+    "V": 18.8,
+    "V2": 15.3,
+    "Q": 11.1
+  },
+  "fixed": [],
+  "iov": {
+    "use": true,
+    "cv": {
+      "CLrrt": 0.16,
+      "CL": 0.5,
+      "V": 0.25
+    },
+    "n_bins": 3,
+    "bins": [0, 48, 96, 9999]
+  },
+  "omega_matrix": [
+    0.0729,
+    0, 0.25,
+    0, 0, 0.2601,
+    0, 0, 0, 0.2601,
+    0, 0, 0, 0, 0.5625
+  ],
+  "ruv": {
+    "prop": [0.1],
+    "add": [0.01]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Roberts, J.A., et al., (2025). Intensive Care Medicine",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12405346/"
+    }
+  ],
+  "version": "0.1.1"
+}

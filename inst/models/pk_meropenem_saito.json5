@@ -1,0 +1,134 @@
+{
+  "id": "pk_meropenem_saito",
+  "ode_code": "\
+    dAdt[0] = -(CLi/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1] \
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC > MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF > MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    if (AGE < 0.0192) { \
+      HR_TACH = 180 \
+      HR_BRAD = 100 \
+      RR_THRESH = 50 \
+      WBC_HI = 34 \
+      WBC_LO = -999 \
+      SBP_THRESH = 65 \
+    } else if (AGE < 0.0833) { \
+      HR_TACH = 180 \
+      HR_BRAD = 100 \
+      RR_THRESH = 40 \
+      WBC_HI = 19.5 \
+      WBC_LO = 5.0 \
+      SBP_THRESH = 75 \
+    } else if (AGE < 2.0) { \
+      HR_TACH = 180 \
+      HR_BRAD = 90 \
+      RR_THRESH = 34 \
+      WBC_HI = 17.5 \
+      WBC_LO = 5.0 \
+      SBP_THRESH = 100 \
+    } else if (AGE < 6.0) { \
+      HR_TACH = 140 \
+      HR_BRAD = -999 \
+      RR_THRESH = 22 \
+      WBC_HI = 15.5 \
+      WBC_LO = 6.0 \
+      SBP_THRESH = 94 \
+    } else if (AGE < 13.0) { \
+      HR_TACH = 130 \
+      HR_BRAD = -999 \
+      RR_THRESH = 18 \
+      WBC_HI = 13.5 \
+      WBC_LO = 4.5 \
+      SBP_THRESH = 105 \
+    } else { \
+      HR_TACH = 110 \
+      HR_BRAD = -999 \
+      RR_THRESH = 14 \
+      WBC_HI = 11 \
+      WBC_LO = 4.5 \
+      SBP_THRESH = 117 \
+    } \
+    HR_FLAG = 0 \
+    if (HR > HR_TACH || HR < HR_BRAD && HR_BRAD > 0) { \
+      HR_FLAG = 1 \
+    } \
+    RR_FLAG = 0 \
+    if (RR > RR_THRESH) { \
+      RR_FLAG = 1 \
+    } \
+    WBC_FLAG = 0 \
+    if (WBC > WBC_HI || WBC < WBC_LO && WBC_LO > 0) { \
+      WBC_FLAG = 1 \
+    } \
+    SBP_FLAG = 0 \
+    if (SBP < SBP_THRESH) { \
+      SBP_FLAG = 1 \
+    } \
+    SIRS_SCORE = HR_FLAG + RR_FLAG + WBC_FLAG + SBP_FLAG \
+    SIRS_yes = 0 \
+    if (SIRS_SCORE >= 2) { \
+      SIRS_yes = 1 \
+    } \
+    BSA = 0.016667 * pow(WT, 0.5) * pow(HT, 0.5) \
+    CRCL = ((0.413 * HT) / CR) * (BSA/1.73) \
+    CLi = CL * pow(CRCL/38.2, 0.19) * pow(1 + 0.35, SIRS_yes) * WT \
+    Vi = V * pow(1 + 0.66, CRRT) * WT \
+    V2i = V2 * WT \
+    Qi = Q * WT \
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "HT", "WT", "CR", "AGE", "HR", "RR", "WBC", "SBP", "CRRT", "MIC", "FU" ],
+  "variables": [
+    "HR_TACH", "HR_BRAD", "RR_THRESH", "WBC_HI", "WBC_LO", "SBP_THRESH",
+    "HR_FLAG", "RR_FLAG", "WBC_FLAG", "SBP_FLAG", "SIRS_SCORE",
+    "SIRS_yes", "BSA", "CRCL", "CLi", "Vi", "V2i", "Qi",
+    "CONC", "CONCF", "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC"
+  ],
+  "parameters": {
+    "CL": 0.45,
+    "V": 0.49,
+    "V2": 0.34,
+    "Q": 0.28
+  },
+  "fixed": [ "V2", "Q" ],
+  "omega_matrix": [
+    0.0734,
+    0.0000, 0.0992
+  ],
+  "ruv": {
+    "prop": [0.3323]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Saito J et al. Antimicrob Agents Chemother 2021",
+      "url": "https://www.mdpi.com/2079-6382/13/5/419",
+      "doi": "10.3390/antibiotics13050419"
+    },
+    {
+      "ref": "Goldstein et al. Pediatric Critical Care Medicine 2005",
+      "url": "http://journals.lww.com/00130478-200501000-00002",
+      "doi": "10.1097/01.PCC.0000149131.72248.E6"
+    }
+  ],
+  "version": "0.1.1"
+}

@@ -1,0 +1,57 @@
+{
+  "id": "pk_piperacillin_klastrup",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] \
+    CONC    = A[0] / Vi \
+    CONCF   = CONC * FU \
+    dAdt[1] = (CONC>MIC)\
+    dAdt[2] = (CONC > (4 * MIC)) \
+    dAdt[3] = (CONCF>MIC) \
+    dAdt[4] = (CONCF > (4 * MIC)) \
+    dAdt[5] = CONC \
+    TGTMIC = A[1] \
+    TGT4MIC = A[2] \
+    FTGTMIC = A[3] \
+    FTGT4MIC = A[4] \
+    ",
+  "pk_code": "\
+    CRCLi = (CRCL * 16.66667) \
+    CLi = CL * (2.25 + (0.119 * CRCLi)) \
+    CLtot = CLi + CL_HEMO\
+    Vi = V \
+  ",
+  "n_comp": 6,
+  "obs": { "cmt": 1, "scale": "V" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "CRCL", "CL_HEMO", "MIC", "FU" ],
+  "variables": [ 
+    "CLi", "Vi", "CRCLi", "CLtot", "TGTMIC", "TGT4MIC",
+    "FTGTMIC", "FTGT4MIC", "CONC", "CONCF"
+  ],
+  "parameters" : {
+    "CL": 1,
+    "V": 35.8
+  },
+  "fixed": [ "V" ],
+  "omega_matrix": [
+    0.3295
+  ],
+  "ruv": {
+    "prop": [ 0.226 ],
+    "add": [ 0.0001 ]
+  },
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Klastrup et al. AAC 2020",
+      "url": "https://doi.org/10.1128/aac.02556-19",
+      "doi": "10.1128/aac.02556-19"
+    }
+  ],
+  "version": "0.1.3"
+}

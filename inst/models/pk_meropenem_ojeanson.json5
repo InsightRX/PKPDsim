@@ -1,0 +1,90 @@
+{
+  "id": "pk_meropenem_ojeanson",
+  "ode_code": "\
+    dAdt[0] = -(CLi/Vi)*A[0] \
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[1] = (CONC > MIC) \
+    dAdt[2] = (CONC > (4 * MIC)) \
+    dAdt[3] = (CONCF > MIC) \
+    dAdt[4] = (CONCF > (4 * MIC)) \
+    dAdt[5] = CONC \
+    TGTMIC = A[1] \
+    TGT4MIC = A[2] \
+    FTGTMIC = A[3] \
+    FTGT4MIC = A[4] \
+  ",
+  "pk_code": "\
+    FSEX = pow(0.742, 1.0-SEX) \
+    FRACE = pow(1.212, RACE_BLACK) \
+    GFRi = 186 * pow(CR, -1.154) * FSEX * FRACE * pow(AGE, -0.203) \
+    RFS = 0 \
+    if (GFRi > 120) RFS = 1 \
+    IRRT = 0 \
+    if (IHD > 0) IRRT = 1 \
+    if (SLED > 0) IRRT = 1 \
+    CLcov1 = CLNR + 0.058 * GFRi \
+    CLcov2 = CLcov1 * (1.0 - CRRT) + 6.38 * CRRT \
+    CLcov3 = CLcov2 * (1.0 - RFS) + 13.9 * RFS \
+    CLcov4 = CLcov3 + 0.6 * ((UO / 845) - 1.0) \
+    CLcov5 = CLcov4 * (1.0 - IRRT) + 11 * IRRT \
+    CLi = CL * CLcov5 \
+    Vi = V \
+  ",
+  "n_comp": 6,
+  "obs": {
+    "cmt": 1,
+    "scale": "Vi"
+  },
+  "dose": {
+    "cmt": 1,
+    "bioav": [
+      1
+    ]
+  },
+  "covariates": [
+    "AGE",
+    "CR",
+    "SEX",
+    "RACE_BLACK",
+    "UO",
+    "CRRT",
+    "IHD",
+    "SLED",
+    "MIC",
+    "FU"
+  ],
+  "variables": [
+    "FSEX", "FRACE", "GFRi", "RFS", "IRRT", "CLcov1", "CLcov2", "CLcov3",
+    "CLcov4", "CLcov5", "CLi", "Vi","CONC", "CONCF", "TGTMIC", "TGT4MIC",
+    "FTGTMIC", "FTGT4MIC"
+  ],
+  "parameters": {
+    "CL": 1.0,
+    "CLNR": 1.36,
+    "V": 43.9
+  },
+  "fixed": ["CLNR"],
+  "omega_matrix": [
+    0.0906302,
+    0, 0.569496
+  ],
+  "ruv": {
+    "prop": [0.313],
+    "add": [0.01]
+  },
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "OJeanson, A., et al.(2021). European Journal of Drug Metabolism and Pharmacokinetics.",
+      "url": "https://doi.org/10.1007/s13318-021-00709-w"
+    }
+  ],
+  "version": "0.1.0"
+}

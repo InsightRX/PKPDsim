@@ -1,0 +1,64 @@
+{
+  "id": "pk_meropenem_rapp",
+  "ode_code": "\
+    dAdt[0] = -(Qi/Vi)*A[0] + (Qi/V2i)*A[1] -(CLtot/Vi)*A[0] \
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    CONC = A[0]/Vi;\
+    CONCF = CONC * FU \
+    dAdt[2] = A[1]/Vi \
+    dAdt[3] = (CONC > MIC)\
+    dAdt[4] = (CONC > (4 * MIC)) \
+    dAdt[5] = (CONCF > MIC) \
+    dAdt[6] = (CONCF > (4 * MIC)) \
+    dAdt[7] = CONC \
+    AUC = A[2] \
+    TGTMIC = A[3] \
+    TGT4MIC = A[4] \
+    FTGTMIC = A[5] \
+    FTGT4MIC = A[6] \
+  ",
+  "pk_code": "\
+    if(CRRT == 1) { \
+      CLi = 0.9 * CL * pow(WT/70, 0.75); \
+    } else { \
+      CLi = CL * pow(WT/70, 0.75) * pow(CRCL * 16.6667/100, 0.378); \
+    } \
+    CLtot = CLi + CL_HEMO \
+    Vi = V * WT/70 \
+    Qi = Q * pow(WT/70, 0.75) \
+    V2i = V2 * WT/70 \
+  ",
+  "n_comp": 8,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "WT", "CRCL", "MIC", "FU", "CRRT", "CL_HEMO" ],
+  "variables": [ "CLi", "CLtot", "Vi", "Qi", "V2i", "TGTMIC", "TGT4MIC",  "FTGTMIC", "FTGT4MIC", "CONC", "CONCF"],
+  "parameters" : {
+    "CL": 6.82,
+    "V": 40.6,
+    "Q": 1,
+    "V2": 9.2
+  },
+  "omega_matrix": [
+    0.16,
+    0, 1.0
+  ],
+  "fixed": ["Q", "V2"],
+  "ruv": {
+    "prop": [0.388],
+    "add": [0.0001]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Rapp et al. Eur. J. Clin. Pharmacol. 2020",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/31654149/"
+    }
+  ],
+  "version": "0.1.5"
+}

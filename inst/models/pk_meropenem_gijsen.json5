@@ -1,0 +1,65 @@
+{
+  "id": "pk_meropenem_gijsen",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1] \
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC > MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF > MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    CRCLi = ((140.0 - AGE) * WT * pow(0.85, (1.0-SEX))) / (72.0 * CR) \
+    CLi = CL * pow(CRCLi/111.7, 0.64) \
+    CLtot = CLi + CL_HEMO \
+    Vi = V \
+    Qi = Q \
+    V2i = V2 \
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "CR", "WT", "AGE", "SEX", "MIC", "FU", "CL_HEMO" ],
+  "variables": [ 
+    "CRCLi", "CLi", "CLtot", "Vi", "Qi", "V2i",
+    "CONC", "CONCF",
+    "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC"
+  ],
+  "parameters" : {
+    "CL": 13.7,
+    "V": 25.5,
+    "V2": 12.4,
+    "Q": 8.1
+  },
+  "fixed": [ "Q" ],
+  "omega_matrix": [
+    0.2882449,
+    0.185, 0.2813370,
+    0, 0, 0.4405336
+  ],
+  "ruv": {
+    "prop": [0.311],
+    "add": [0.147]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Gijsen, M., et al. (2022). Infection and Drug Resistance",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8754504/"
+    }
+  ],
+  "version": "0.1.1"
+}

@@ -1,0 +1,121 @@
+{
+  "id": "pk_piperacillintazobactam_colin",
+ "ode_code": "\
+    dAdt[0] = -(CL_tot_pip/V_pip_i)*A[0] - (Q_pip_i/V_pip_i)*A[0] + (Q_pip_i/V2_pip_i)*A[1] \
+    dAdt[1] =                          + (Q_pip_i/V_pip_i)*A[0] - (Q_pip_i/V2_pip_i)*A[1] \
+    CONC_pip = A[0]/V_pip_i \
+    CONCF_pip = CONC_pip * FUPIP \
+    dAdt[2] = -(CL_tot_taz/V_taz_i)*A[2] - (Q_taz_i/V_taz_i)*A[2] + (Q_taz_i/V2_taz_i)*A[3] \
+    dAdt[3] =                          + (Q_taz_i/V_taz_i)*A[2] - (Q_taz_i/V2_taz_i)*A[3] \
+    CONC_taz = A[2]/V_taz_i \
+    CONCF_taz = CONC_taz * FUTAZ \
+    dAdt[4] = (CONC_pip > MICPIP) \
+    dAdt[5] = (CONC_pip > (4 * MICPIP)) \
+    dAdt[6] = (CONCF_pip > MICPIP) \
+    dAdt[7] = (CONCF_pip > (4 * MICPIP)) \
+    dAdt[8] = CONC_pip \
+    dAdt[9] = (CONC_taz > MICTAZ) \
+    dAdt[10] = (CONCF_taz > MICTAZ) \
+    dAdt[11] = CONC_taz \
+    TGTMIC_pip   = A[4] \
+    TGT4MIC_pip  = A[5] \
+    FTGTMIC_pip  = A[6] \
+    FTGT4MIC_pip = A[7] \
+    AUC_pip      = A[8] \
+    TGTMIC_taz   = A[9] \
+    FTGTMIC_taz  = A[10] \
+    AUC_taz      = A[11] \
+    CONC_pip_dbs = CONC_pip * 0.3678794 \
+    CONC_taz_dbs = CONC_taz * 0.4484312 \
+    CONC = CONC_pip \
+    CONCF = CONCF_pip \
+    TGTMIC = TGTMIC_pip \
+    FTGTMIC = FTGTMIC_pip \
+    TGT4MIC = TGT4MIC_pip \
+    FTGT4MIC = FTGT4MIC_pip \
+  ",
+  "pk_code": "\
+    FSIZE = WT/70.0 \
+    RPMA = (35.0 + (40.0/52.0)) \
+    MGAM = exp(1.21) \
+    ME50 = exp(0.0358)  \
+    FMAT = pow(PMA/52.0, MGAM)/(pow(PMA/52.0, MGAM)+pow(ME50,MGAM)) \
+    RFMAT= pow(RPMA, MGAM)/(pow(RPMA, MGAM)+pow(ME50,MGAM)) \
+    DGAM = exp(0.653) \
+    PD50 = exp(4.49) \
+    PFD  = pow(PD50, DGAM)/(pow(PMA/52.0, DGAM)+pow(PD50, DGAM)) \
+    PRFD = pow(PD50, DGAM)/(pow(RPMA, DGAM)+pow(PD50, DGAM)) \
+    TD50 = exp(4.12) \
+    TFD  = pow(TD50, DGAM)/(pow(PMA/52.0, DGAM)+pow(TD50, DGAM)) \
+    TRFD = pow(TD50, DGAM)/(pow(RPMA, DGAM)+pow(TD50, DGAM)) \
+    STCR = exp(1.42-(1.17*(pow((PMA/52.0)/100.0, -0.5)))-(0.203*(pow((PMA/52.0)/100.0, -0.5))*log((PMA/52.0)/100.0))) \
+    ESCR = exp(-1.06) \
+    FSCR = exp(-ESCR*(CR-STCR)) \
+    V_pip_i = V_pip * V1eta * FSIZE \
+    CL_pip_i = CL_pip * pow(FSIZE, 0.75) * (FMAT / RFMAT) * (PFD/PRFD) * FSCR \
+    CL_tot_pip = CL_pip_i + CL_HEMO \
+    V2_pip_i = V2_pip * V2eta * FSIZE \
+    V2SZ = V2_pip_i / exp(2.45) \
+    Q_pip_i = Q_pip * Qeta * pow(V2SZ, 0.75) \
+    V_taz_i = V_taz * V1eta * FSIZE \
+    CL_taz_i = CL_taz * pow(FSIZE, 0.75) * (FMAT / RFMAT) * (TFD / TRFD) * FSCR \
+    CL_tot_taz = CL_taz_i + CL_HEMO \
+    V2_taz_i = V2_taz * V2eta * FSIZE \
+    V4SZ = V2_taz_i / exp(2.62) \
+    Q_taz_i = Q_taz * Qeta * pow(V4SZ, 0.75) \
+  ",
+  "n_comp": 12,
+  "obs": {
+    "variable": [ "CONC_pip", "CONC_taz", "CONCF_pip", "CONCF_taz", "CONC_pip_dbs", "CONC_taz_dbs"]
+  },
+  "dose": { "cmt": 1, "bioav": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0] },
+  "covariates": [ "MICPIP", "MICTAZ", "FUPIP", "FUTAZ", "PMA", "WT", "CR", "CL_HEMO" ],
+  "variables": [
+    "CL_pip_i", "V_pip_i", "Q_pip_i", "V2_pip_i", "CL_tot_pip",
+    "CL_taz_i", "V_taz_i", "Q_taz_i", "V2_taz_i", "CL_tot_taz",
+    "CONC_pip", "CONC_taz", "CONCF_pip", "CONCF_taz", "CONC_pip_dbs", "CONC_taz_dbs",
+    "TGTMIC_pip", "TGT4MIC_pip", "FTGTMIC_pip", "FTGT4MIC_pip", "TGTMIC_taz",
+    "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONC", "CONCF",
+    "FTGTMIC_taz", "AUC_pip", "AUC_taz", "FSIZE", "RPMA", "MGAM",
+    "ME50", "FMAT", "RFMAT", "DGAM", "PD50", "PFD", "PRFD", "TD50",
+    "TFD", "TRFD", "STCR", "ESCR", "FSCR", "V4SZ", "V2SZ"
+  ],
+  "parameters" : {
+    "CL_pip": 10.5910,
+    "CL_taz": 9.5831,
+    "V1eta": 1.0,
+    "V2eta": 1.0,
+    "Qeta": 1.0,
+    "V_pip": 10.3812,
+    "V2_pip": 11.5884,
+    "Q_pip": 15.1803,
+    "V_taz": 10.4856,
+    "V2_taz": 13.7357,
+    "Q_taz": 16.7769
+  },
+  "fixed": ["V_pip", "Q_pip", "V2_pip", "V_taz", "Q_taz", "V2_taz"],
+  "omega_matrix": [
+    0.171,
+    0, 0.159,
+    0, 0, 0.167,
+    0, 0, 0, 0.5,
+    0, 0, 0, 0, 0.358
+  ],
+  "ruv": {
+    "prop": [ 0.3016621, 0.2846050, 0.3646917, 0.2846050, 0.3016621, 0.2846050 ],
+    "add": [ 0.1469694, 0.001, 0.7469940, 0.001, 0.1469694, 0.001 ]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "nonlinear",
+    "timevarying_parameter": false,
+    "init_parameter": false
+  },
+  "references": [
+    {
+      "ref": "Kong, D., et al. Clinical Pharmacokinetics. 2024.",
+      "url": "https://link.springer.com/article/10.1007/s40262-024-01460-6"
+    }
+  ],
+  "version": "0.1.12"
+}

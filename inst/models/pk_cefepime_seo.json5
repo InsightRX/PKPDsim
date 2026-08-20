@@ -1,0 +1,61 @@
+{
+  "id": "pk_cefepime_seo",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC>MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF>MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    CLi = CL * pow(CRCL / 4.63, 0.656) \
+    CLtot = CLi + CL_HEMO \
+    Vi = V \
+    Qi = Q  \
+    V2i = V2 \
+  ",
+  "n_comp": 7,
+  "obs": { "variable": ["CONC"] },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "WT", "CRCL", "CL_HEMO", "MIC", "FU"],
+  "variables": [ "CLi", "Vi", "Qi", "V2i", "CLtot", "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONC", "CONCF" ],
+  "parameters" : {
+    "CL": 6.6,
+    "V": 13.3,
+    "Q": 16.5,
+    "V2": 13.0
+  },
+  "fixed": [],
+  "omega_matrix": [
+     0.113569,
+     0, 0.116281,
+     0, 0, 0.258064,
+     0, 0, 0, 0.160801
+  ],
+  "ruv": {
+    "prop": [0.0762],
+    "add": [0.0001]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Seo, H., et al. Infection & Chemotherapy. 2023",
+      "doi": "doi.org/10.3947/ic.2022.0087",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10079447/"
+    }
+  ],
+  "version": "0.1.9"
+}

@@ -1,0 +1,60 @@
+{
+  "id": "pk_piperacillin_andersen",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1] \
+    dAdt[1] =                + (Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    CONC    = A[0]/Vi \
+    CONCF   = CONC * FU \
+    dAdt[2] = (CONC>MIC)\
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF>MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC  = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    TVCL = CLnr + TH_CRCL * (CRCL*16.6667) \
+    CLi = CL * TVCL \
+    CLtot = CLi + CL_HEMO \
+    Vi = V \
+    Qi = Q \
+    V2i = V2 \
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "CRCL", "MIC", "FU", "CL_HEMO" ],
+  "variables": [ "TVCL", "CLi", "CLtot", "Vi", "Qi", "V2i", "TGTMIC","TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONC", "CONCF" ],
+  "parameters" : {
+    "CL": 1,
+    "CLnr": 2.23,
+    "V": 12.4,
+    "Q": 3.54,
+    "V2": 3.48,
+    "TH_CRCL": 0.0757
+  },
+  "omega_matrix": [
+    0.08821
+  ],
+  "fixed": ["V", "Q", "V2", "TH_CRCL", "CLnr"],
+  "ruv": {
+    "prop": [0.115],
+    "add": [0.0001]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Andersen MG et al. Population pharmacokinetics of piperacillin in sepsis patients: should alternative dosing strategies be considered? Antimicrob Agents Chemother (2018) 62:e02306-17",
+      "url": "http://aac.asm.org/lookup/doi/10.1128/AAC.02306-17"
+    }
+  ],
+  "version": "0.2.14"
+}
