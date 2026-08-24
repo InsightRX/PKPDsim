@@ -1,0 +1,76 @@
+{
+  "id": "pk_meropenem_boutzoukas",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1] \
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC > MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF > MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    BMI = WT / pow((HT/100.0), 2.0) \
+    if(SEX == 1) {  \
+      FFM = (9270.0 * WT) / (6680.0 + 216.0 * BMI) \
+    } else { \
+      FFM = (9270.0 * WT) / (8780.0 + 244.0 * BMI) \
+    } \
+    CRCLi = ((140.0 - AGE) * WT * pow(0.85, (1.0-SEX))) / (72.0 * CR) \
+    CRCLi = std::min(CRCLi, 300.00) \
+    CLRi = CLR * (CRCLi/88.0) \
+    CLNRi = CLNR * pow(FFM/57.0, 0.75) \
+    CLi = CL * (CLRi + CLNRi) * pow(0.67, VASO) \
+    CLtot = CLi + CL_HEMO \
+    Vi = V * (WT/82.0) \
+    Qi = Q \
+    V2i = V2 * (WT/82.0) \
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "CR", "WT", "HT", "AGE", "SEX", "MIC", "FU", "CL_HEMO", "VASO"],
+  "variables": [ 
+    "CLi", "Vi", "Qi", "V2i", "CLtot", "CLNRi", "CLRi",
+    "BMI", "FFM", "CRCLi",
+    "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONCF"
+  ],
+  "parameters" : {
+    "CL": 1.0,
+    "V": 24.0,
+    "V2": 7.34,
+    "Q": 4.24,
+    "CLR": 3.81,
+    "CLNR": 3.4
+  },
+  "fixed": ["Q", "CLR", "CLNR"],
+  "omega_matrix": [
+    0.1369,
+    0, 0.2401,
+    0, 0, 1.1664
+  ],
+  "ruv": {
+    "prop": [0.30],
+    "add": [0.24]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Boutzoukas, A.E., et al., (2025). Clinical Pharmacokinetics",
+      "url": "https://link.springer.com/article/10.1007/s40262-024-01465-1"
+    }
+  ],
+  "version": "0.1.1"
+}

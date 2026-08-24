@@ -1,0 +1,86 @@
+{
+  "id": "pk_piperacillintazobactam_hemmersbachmiller",
+  "ode_code": "\
+    dAdt[0] = -(CL_tot_pip/V_pip_i)*A[0]  \
+    CONC_pip = A[0]/V_pip_i \
+    CONCF_pip = CONC_pip * FUPIP \
+    dAdt[1] = -(CL_tot_taz/V_taz_i)*A[1] \
+    CONC_taz = A[1]/V_taz_i \
+    CONCF_taz = CONC_taz * FUTAZ \
+    dAdt[2] = (CONC_pip > MICPIP) \
+    dAdt[3] = (CONC_pip > (4.0 * MICPIP)) \
+    dAdt[4] = (CONCF_pip > MICPIP) \
+    dAdt[5] = (CONCF_pip > (4.0 * MICPIP)) \
+    dAdt[6] = CONC_pip \
+    dAdt[7] = (CONC_taz > MICTAZ) \
+    dAdt[8] = (CONCF_taz > MICTAZ) \
+    dAdt[9] = CONC_taz \
+    TGTMIC_pip   = A[2] \
+    TGT4MIC_pip  = A[3] \
+    FTGTMIC_pip  = A[4] \
+    FTGT4MIC_pip = A[5] \
+    AUC_pip      = A[6] \
+    TGTMIC_taz   = A[7] \
+    FTGTMIC_taz  = A[8] \
+    AUC_taz      = A[9] \
+    CONC = CONC_pip \
+    CONCF = CONCF_pip \
+    TGTMIC = TGTMIC_pip \
+    FTGTMIC = FTGTMIC_pip \
+    TGT4MIC = TGT4MIC_pip \
+    FTGT4MIC = FTGT4MIC_pip \
+  ",
+  "pk_code": "\
+    CRCLn = CRCL * 16.66667 / 69.0 \
+    CL_pip_i = CL_pip * (4.09 * CRCLn + 2.44) \
+    CL_tot_pip = CL_pip_i + CL_HEMO \
+    V_pip_i  = V_pip * (WT/89.0) \
+    CL_taz_i = CL_taz * (5.18 * CRCLn + 1.14 * pow(WT/89.0, 0.75)) \
+    CL_tot_taz = CL_taz_i + CL_HEMO \
+    V_taz_i  = V_taz * (WT/89.0) \
+  ",
+  "n_comp": 10,
+  "obs": {
+    "variable": [ "CONC_pip", "CONC_taz", "CONCF_pip", "CONCF_taz"]
+  },
+  "dose": { "cmt": 1, "bioav": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1] },
+  "covariates": [ "MICPIP", "MICTAZ", "FUPIP", "FUTAZ", "WT", "CRCL", "CL_HEMO" ],
+  "variables": [
+    "CL_pip_i", "V_pip_i", "CL_tot_pip",
+    "CL_taz_i", "V_taz_i", "CL_tot_taz",
+    "CONC_pip", "CONC_taz", "CONCF_pip", "CONCF_taz",
+    "TGTMIC_pip", "TGT4MIC_pip", "FTGTMIC_pip", "FTGT4MIC_pip",
+    "TGTMIC_taz", "FTGTMIC_taz", "AUC_pip", "AUC_taz", "CRCLn",
+    "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONC", "CONCF"
+  ],
+  "parameters" : {
+    "CL_pip": 1.0,
+    "V_pip": 31.8,
+    "CL_taz": 1.0,
+    "V_taz": 40.3
+  },
+  "omega_matrix": [
+    0.2209,
+    0, 0.0625,
+    0, 0, 0.2209,
+    0, 0, 0, 0.0441
+  ],
+  "fixed": [],
+  "ruv": {
+    "prop": [ 0.358, 0.3, 0.358, 0.3],
+    "add": [ 0.0488, 0.562, 0.0488, 0.562]
+  },
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "nonlinear",
+    "timevarying_parameter": false,
+    "init_parameter": false
+  },
+  "references": [
+    {
+      "ref": "Hemmersbach, M., et al. Clinical Pharmacokinetics, 2023",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9969806/"
+    }
+  ],
+  "version": "0.1.10"
+}

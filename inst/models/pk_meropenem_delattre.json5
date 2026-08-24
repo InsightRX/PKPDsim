@@ -1,0 +1,63 @@
+{
+  "id": "pk_meropenem_delattre",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
+    CONC = A[0]/Vi\
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC>MIC)\
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF>MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+",
+  "pk_code": "\
+    CRCLi = (CRCL * 16.66667) * (70.0/WT)\
+    CLi = CL * pow((CRCLi/100.0), TH_CRCL) * pow(WT/70.0, 0.75)\
+    CLtot = CLi + CL_HEMO\
+    Vi = V * (WT/70.0)\
+    Qi = Q * pow(WT/70.0, 0.75)\
+    V2i = V2 * (WT/70.0)\
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "WT", "CRCL", "CL_HEMO", "MIC", "FU" ],
+  "variables": [ 
+    "CLi", "Vi", "Qi", "V2i", 
+    "CRCLi", "CLtot", "CONC", "CONCF", "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC"
+  ],
+  "fixed": ["TH_CRCL", "V2", "Q"],
+  "parameters" : {
+    "CL": 9.87,
+    "V": 24.4,
+    "Q": 4.97,
+    "V2": 7.01,
+    "TH_CRCL": 0.51
+  },
+  "omega_matrix": [
+    0.194481,
+    0.059094, 0.287296
+  ],
+  "ruv": {
+    "prop": [0.371],
+    "add": [0.0001]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Delattre et al. Clin Biochem 2012",
+      "url": "https://www.ncbi.nlm.nih.gov/pubmed/22503878"
+    }
+  ],
+  "version": "0.2.16"
+}

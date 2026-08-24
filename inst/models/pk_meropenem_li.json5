@@ -1,0 +1,68 @@
+{
+  "id": "pk_meropenem_li",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1] \
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1] \
+    CONC = A[0]/Vi;\
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC>MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF>MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    IBWbase = 45.5 \
+    if(SEX == 1) { IBWbase = 50; } \
+    IBW = IBWbase + 0.91 * (HT - 152.4) \
+    CRCLibw = ((140.0 - AGE) * IBW * pow(0.85, (1-SEX))) / (72.0 * CR) \
+    CLi = CL * pow(CRCLibw/83.0, 0.62) * pow(AGE/35.0, -0.34) \
+    CLtot = CLi + CL_HEMO \
+    Vi = V * pow(WT/70.0, 0.99) \
+    Qi = Q \
+    V2i = V2 \
+  ",
+  "n_comp": 7,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "CR", "WT", "HT", "AGE", "SEX", "MIC", "FU", "CL_HEMO"],
+  "variables": [ 
+    "CLi", "Vi", "Qi", "V2i", "IBWbase", "IBW", "CRCLibw", "CLtot",
+    "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONCF"
+  ],
+  "parameters" : {
+    "CL": 14.6,
+    "V": 10.8,
+    "Q": 18.6,
+    "V2": 12.6
+  },
+  "fixed": [],
+  "omega_matrix": [
+    0.118,
+    0, 0.143,
+    0, 0, 0.29,
+    0, 0, 0, 0.102
+  ],
+  "ruv": {
+    "prop": [0.1876],
+    "add": [0.469]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Li, C., Kuti, J. L., Nightingale, C. H., & Nicolau, D. P. (2006). Population Pharmacokinetic Analysis and Dosing Regimen Optimization of Meropenem in Adult Patients. The Journal of Clinical Pharmacology, 46(10), 1171–1178. doi:10.1177/0091270006291035",
+      "url": "https://www.ncbi.nlm.nih.gov/pubmed/16988206"
+    }
+  ],
+  "version": "0.2.18"
+}

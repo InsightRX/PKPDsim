@@ -1,0 +1,61 @@
+{
+  "id": "pk_cefepime_jonckheere",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC>MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF>MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+",
+  "pk_code": "\
+    CLi = (CL_R * pow(CRCL*16.6667/60.0, TH_CRCL) + CL_NR) * pow(WT/70.0, 0.75)\
+    CLtot = CLi + CL_HEMO \
+    Vi = V * (WT/70.0)\
+    V2i = V2 * (WT/70.0)\
+    Qi = Q * pow(WT/70.0, 0.75) \
+  ",
+  "n_comp": 7,
+  "obs": { "variable": ["CONC"] },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "WT", "CRCL", "FU", "MIC", "CL_HEMO"],
+  "variables": [ "CLi", "Vi", "V2i", "Qi", "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONC", "CONCF", "CLtot" ],
+  "parameters" : {
+    "CL_R": 2.29,
+    "V": 10.7,
+    "CL_NR": 0.795,
+    "TH_CRCL": 0.943,
+    "Q": 11.0,
+    "V2": 12.2
+  },
+  "fixed": [ "TH_CRCL", "Q", "V2" ],
+  "omega_matrix": [
+    0.060516 ,
+    0, 0.208849,
+    0, 0, 0.481636
+  ],
+  "ruv": {
+    "prop": [0.223],
+    "add": [0.001]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Jonckheere et al. Antimicrob Agents Chemother 2020",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7187597"
+    }
+  ],
+  "version": "0.1.10"
+}

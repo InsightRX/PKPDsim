@@ -1,0 +1,56 @@
+{
+  "id": "pk_meropenem_pokorna",
+  "ode_code": "\
+    dAdt[0] = -(CLi/Vi)*A[0] \
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[1] = (CONC > MIC) \
+    dAdt[2] = (CONC > (4 * MIC)) \
+    dAdt[3] = (CONCF > MIC) \
+    dAdt[4] = (CONCF > (4 * MIC)) \
+    dAdt[5] = CONC \
+    TGTMIC = A[1] \
+    TGT4MIC = A[2] \
+    FTGTMIC = A[3] \
+    FTGT4MIC = A[4] \
+  ",
+  "pk_code": "\
+    CLi = CL * (WT / 7.88) \
+    Vi = V * (WT / 7.88) * pow(1.0 + V_CRRT, CRRT) \
+  ",
+  "n_comp": 6,
+  "obs": { "cmt": 1, "scale": "Vi" },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "WT", "CRRT", "MIC", "FU" ],
+  "variables": [ 
+    "CLi", "Vi", "CONC", "CONCF", "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC" 
+  ],
+  "parameters" : {
+    "CL": 1.09,
+    "V": 3.98,
+    "V_CRRT": 1.04
+  },
+  "fixed": ["V_CRRT"],
+  "omega_matrix": [
+    0.0887,
+    0.0000, 0.9160
+  ],
+  "ruv": {
+    "prop": [0.17]
+  },
+  "misc": {
+    "model_type": "1cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true,
+    "int_step_size": 0.01
+  },
+  "references": [
+    {
+      "ref": "Pokorná P et al. Antibiotics 2024",
+      "url": "https://www.mdpi.com/2079-6382/13/5/419",
+      "doi": "10.3390/antibiotics13050419"
+    }
+  ],
+  "version": "0.1.0"
+}

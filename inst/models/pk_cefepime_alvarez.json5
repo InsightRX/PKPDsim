@@ -1,0 +1,65 @@
+{
+  "id": "pk_cefepime_alvarez",
+  "ode_code": "\
+    dAdt[0] = -(CLtot/Vi)*A[0] - (Qi/Vi)*A[0] + (Qi/V2i)*A[1];\
+    dAdt[1] = +(Qi/Vi)*A[0] - (Qi/V2i)*A[1];\
+    CONC = A[0]/Vi \
+    CONCF = CONC * FU \
+    dAdt[2] = (CONC>MIC) \
+    dAdt[3] = (CONC > (4 * MIC)) \
+    dAdt[4] = (CONCF>MIC) \
+    dAdt[5] = (CONCF > (4 * MIC)) \
+    dAdt[6] = CONC \
+    TGTMIC = A[2] \
+    TGT4MIC = A[3] \
+    FTGTMIC = A[4] \
+    FTGT4MIC = A[5] \
+  ",
+  "pk_code": "\
+    CLi = CL_comb * (TH_CL * exp(TH_CR * CR/0.47))  \
+    CLtot = CLi + CL_HEMO \
+    Vi = V \
+    Qi = Q \
+    V2i = V2 \
+  ",
+  "n_comp": 7,
+  "obs": { "variable": ["CONC"] },
+  "dose": { "cmt": 1, "bioav": [1] },
+  "covariates": [ "WT", "CR", "MIC", "FU" , "CL_HEMO"],
+  "variables": [ "CLi", "Vi", "Qi", "V2i", "TGTMIC", "TGT4MIC", "FTGTMIC", "FTGT4MIC", "CONC", "CONCF", "CLtot" ],
+  "parameters" : {
+    "CL_comb": 1.0,
+    "V": 23.8,
+    "Q": 23.4,
+    "V2": 13.3,
+    "TH_CL": 20.6,
+    "TH_CR": -0.415
+  },
+  "fixed": [
+    "TH_CL",
+    "TH_CR"
+  ],
+  "omega_matrix": [
+    0.051529,
+    0, 0.093636,
+    0, 0, 1.0,
+    0, 0, 0, 0.881721
+  ],
+  "ruv": {
+    "prop": [0],
+    "add": [1.86]
+  },
+  "misc": {
+    "model_type": "2cmt_iv",
+    "linearity": "linear",
+    "timevarying_parameter": false,
+    "init_parameter": true
+  },
+  "references": [
+    {
+      "ref": "Álvarez et al. Antibiotics 2021",
+      "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8146514/"
+    }
+  ],
+  "version": "0.1.8"
+}
