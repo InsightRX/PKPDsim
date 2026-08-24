@@ -17,7 +17,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/InsightRX/PKPDsim/blob/pkpdsim-v1.5.0-dev-93b8bbd/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/InsightRX/PKPDsim/blob/master/DESCRIPTION)
 
 Keizer R, Hughes J, Tong D, Woo K, Brooks J (2026). *PKPDsim: Tools for
 Performing Pharmacokinetic-Pharmacodynamic Simulations*. R package

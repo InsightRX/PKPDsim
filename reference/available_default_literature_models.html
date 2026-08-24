@@ -51,7 +51,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>See models from the literature available for installation</h1>
-      <small class="dont-index">Source: <a href="https://github.com/InsightRX/PKPDsim/blob/pkpdsim-v1.5.0-dev-93b8bbd/R/install_default_literature_model.R" class="external-link"><code>R/install_default_literature_model.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/InsightRX/PKPDsim/blob/master/R/install_default_literature_model.R" class="external-link"><code>R/install_default_literature_model.R</code></a></small>
       <div class="d-none name"><code>available_default_literature_models.Rd</code></div>
     </div>
 
@@ -72,31 +72,53 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">available_default_literature_models</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "pk_busulfan_mccune"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "pk_busulfan_shukla"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "pk_cefepime_an"                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "pk_pegasparaginase_modified_wurthwein"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pk_vanco_adane"                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "pk_vanco_anderson"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "pk_vanco_brooks"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "pk_vanco_buelga"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pk_vanco_capparelli"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "pk_vanco_carreno"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "pk_vanco_colin"                       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "pk_vanco_dao"                         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pk_vanco_frymoyer"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14] "pk_vanco_germovsek"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "pk_vanco_goti"                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "pk_vanco_hughes"                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "pk_vanco_jacqzaigrain"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18] "pk_vanco_kloprogge"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "pk_vanco_le"                          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20] "pk_vanco_thomson"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "pk_vanco_thomson_capped"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "pk_vanco_tong"                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "pk_voriconazole_friberg"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [24] "pkpd_neutropenia_template1"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "pkpd_neutropenia_template2"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "pk_busulfan_mccune"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "pk_busulfan_shukla"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "pk_cefepime_alvarez"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "pk_cefepime_an"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pk_cefepime_delattre"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "pk_cefepime_jonckheere"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "pk_cefepime_seo"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "pk_meropenem_boutzoukas"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pk_meropenem_delattre"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "pk_meropenem_gijsen"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "pk_meropenem_li"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "pk_meropenem_minichmayr"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pk_meropenem_ojeanson"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14] "pk_meropenem_pokorna"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "pk_meropenem_rapp"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "pk_meropenem_roberts"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "pk_meropenem_saito"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18] "pk_meropenem_sjovall"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "pk_pegasparaginase_modified_wurthwein"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20] "pk_piperacillin_andersen"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "pk_piperacillin_delattre"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "pk_piperacillin_klastrup"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "pk_piperacillintazobactam_colin"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24] "pk_piperacillintazobactam_hemmersbachmiller"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "pk_piperacillintazobactam_kim"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26] "pk_piperacillintazobactam_wallenburg"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "pk_vanco_adane"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28] "pk_vanco_anderson"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "pk_vanco_brooks"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [30] "pk_vanco_buelga"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "pk_vanco_capparelli"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [32] "pk_vanco_carreno"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "pk_vanco_colin"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [34] "pk_vanco_dao"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "pk_vanco_frymoyer"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [36] "pk_vanco_germovsek"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "pk_vanco_goti"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [38] "pk_vanco_hughes"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "pk_vanco_jacqzaigrain"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [40] "pk_vanco_kloprogge"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "pk_vanco_le"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [42] "pk_vanco_thomson"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "pk_vanco_thomson_capped"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [44] "pk_vanco_tong"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "pk_voriconazole_friberg"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [46] "pkpd_neutropenia_template1"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "pkpd_neutropenia_template2"                 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
