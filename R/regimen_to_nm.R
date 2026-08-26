@@ -8,7 +8,8 @@
 #' in NONMEM using custom code. Therefore, we set the `RATE` column to `-1` for such infusions.
 #'
 #' @param reg `PKPDsim` regimen, created using `new_regimen()` function
-#' @param dose_cmt dosing compartment, if not specified in `reg` object
+#' @param dose_cmt dosing compartment, if not specified in `reg` object. When
+#'   supplied explicitly, takes precedence over the compartments in `reg`.
 #' @param n_ind repeat for `n_ind` subjects
 #' @param t_obs add observation time(s)
 #' @param obs_cmt observation compartment for added observation time(s)
@@ -26,6 +27,9 @@ regimen_to_nm <- function(
 ) {
   if(is.null(reg) || ! "regimen" %in% class(reg)) {
     stop("No regimen or invalid regimen object supplied.")
+  }
+  if(missing(dose_cmt) && !is.null(reg$cmt)) {
+    dose_cmt <- reg$cmt
   }
   dat <- data.frame(cbind(
     ID = rep(1:n_ind, each = length(reg$dose_times)),
