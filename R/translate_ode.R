@@ -68,7 +68,7 @@ translate_ode <- function(
     ## if power specified using ^ in RxODE model, need to translate to pow() function
     ## since C++ only allows for that, Fortran allows for both. This cannot be done
     ## simply using regex, need to be parsed more properly. For now, let's just throw an error:
-    if(any(stringr::str_detect(lines, "^"))) {
+    if(any(stringr::str_detect(lines, stringr::fixed("^")))) {
       stop("Sorry, use of the `base^exp` syntax for power functions is not supported by translator yet. Please specify RxODE model using `pow(base, exp)` instead.")
     }
 
