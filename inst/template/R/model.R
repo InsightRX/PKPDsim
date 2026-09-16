@@ -28,6 +28,7 @@ model <- function(mod = NULL) {
   attr(ret, "development") <- list([DEVELOPMENT])
   attr(ret, "cmt_mapping") <- [CMT_MAPPING]
   attr(ret, "nonmem") <- "[NONMEM]"
+  attr(ret, "ferx") <- "[FERX]"
   attr(ret, "comments") <- "[COMMENTS]"
   attr(ret, "version") <- "[VERSION]"
   class(ret) <- c("PKPDsim", class(ret))

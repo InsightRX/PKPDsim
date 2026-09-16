@@ -37,6 +37,7 @@
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @param nonmem add NONMEM code as attribute to model object
+#' @param ferx add FeRx code as attribute to model object
 #' @param comments comments for model
 #' @param version number of library
 #' @param quiet passed on to `system2` as setting for stderr and stdout; how to
@@ -85,6 +86,7 @@ new_ode_model <- function (model = NULL,
                            verbose = FALSE,
                            as_is = FALSE,
                            nonmem = NULL,
+                           ferx = NULL,
                            comments = NULL,
                            version = "0.1.0",
                            quiet = "",
@@ -346,6 +348,7 @@ new_ode_model <- function (model = NULL,
         state_init <- add_quotes(state_init)
       }
       if(is.null(nonmem) || length(nonmem) == 0) { nonmem <- "NULL" }
+      if(is.null(ferx) || length(ferx) == 0) { ferx <- "NULL" }
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- vector_to_R_code(reqd)
       covs <- vector_to_R_code(cov_names)
@@ -380,7 +383,8 @@ new_ode_model <- function (model = NULL,
                        "\\[CMT_MAPPING\\]", paste0(deparse(cmt_mapping), collapse = ""),
                        "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
                        "\\[COMMENTS\\]", paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n"))),
-                       "\\[NONMEM\\]", as.character(nonmem)
+                       "\\[NONMEM\\]", as.character(nonmem),
+                       "\\[FERX\\]", as.character(ferx)
       ), ncol=2, byrow=TRUE)
       if(verbose) {
         print(repl)

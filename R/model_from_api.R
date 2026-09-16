@@ -3,6 +3,7 @@
 #' @param url URL or file path to JSON representation of model
 #' @param model model id (used in messages)
 #' @param nonmem URL or file path to NONMEM file
+#' @param ferx URL or file path to FeRx file
 #' @param verbose verbosity (T/F)
 #' @param get_definition return only the model definition, do not compile
 #' @param to_package compile to package?
@@ -15,6 +16,7 @@
 model_from_api <- function(url,
                            model = NULL,
                            nonmem = NULL,
+                           ferx = NULL,
                            verbose = TRUE,
                            get_definition = FALSE,
                            to_package = FALSE,
@@ -40,6 +42,9 @@ model_from_api <- function(url,
   }
   if(!is.null(nonmem) && !is.null(def$implementations$nonmem)) {
     nonmem <- paste(readLines(nonmem), collapse="\n")
+  }
+  if(!is.null(ferx) && !is.null(def$implementations$ferx)) {
+    ferx <- paste(readLines(ferx), collapse="\n")
   }
   if(is.null(def$comments)) def$comments <- ""
   mod <- NULL
@@ -85,6 +90,7 @@ model_from_api <- function(url,
         state_init = def$state_init,
         verbose = verbose,
         nonmem = nonmem,
+        ferx = ferx,
         int_step_size = def$simulation$int_step_size,
         comments = stringr::str_replace_all(def$comments, '\\"', ""),
         version = ifelse(!is.null(def$version), def$version, "0.1.0"),
