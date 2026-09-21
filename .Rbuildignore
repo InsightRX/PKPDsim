@@ -18,3 +18,4 @@ vignettes/variability.Rmd
 Dockerfile
 docker-compose.yml
 ^CRAN-SUBMISSION$
+^AGENTS\.md$
