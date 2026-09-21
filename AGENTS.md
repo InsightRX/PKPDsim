@@ -57,10 +57,13 @@ Notes:
 ```
 new_ode_model() / (pre-built ADVAN models)
     ↓
-sim()  →  sim_core()  →  C++ ODE solver (Boost odeint RK4)
+sim()  →  compiled C++ ODE solver (Boost odeint RK4)
     ↓
 data.frame output (compartment amounts × time)
 ```
+
+`sim()` and `sim_core()` are siblings, not a chain: `sim()` never calls
+`sim_core()`. Both end up calling the compiled `ode` object directly.
 
 `sim()` branches: if `analytical` is supplied it skips ODE solving entirely and
 routes through `advan()` / `advan_create_data()` / `advan_parse_output()`
@@ -70,13 +73,13 @@ builds an event table and calls the dynamically compiled ODE solver.
 ### Key function files
 
 - **`R/new_ode_model.R`** — Defines ODE models: takes user-supplied C++ ODE code as a string, transforms it (index-shifting, auto-declaring variables, injecting infusion rate terms), then compiles it dynamically via `Rcpp::sourceCpp()`. This is the entry point for custom models.
-- **`R/sim.R`** — Main user-facing simulation function. Handles input validation, covariate interpolation, IIV/IOV sampling, and dispatch to `sim_core()` or the ADVAN analytical path.
-- **`R/sim_core.R`** — Stripped-down simulation wrapper for iterative use (estimation, optimal design); skips validation for performance.
+- **`R/sim.R`** — Main user-facing simulation function. Handles input validation, covariate interpolation, IIV sampling and application, event-table construction, and then either calls the compiled `ode` object or routes to the ADVAN analytical path.
+- **`R/sim_core.R`** — Separate fast entry point for iterative use (estimation, optimal design). It consumes a precalculated design — e.g. the object from `sim(..., return_design = TRUE)` — and calls the compiled `ode` with no validation.
 - **`R/advan.R`** — Large (~41KB) file implementing ADVAN1–5 analytical solutions for standard PK models without ODE solving.
 - **`R/compile_sim_cpp.R`** — Transforms user ODE strings into compilable C++ and calls `Rcpp::sourceCpp()`.
 - **`R/shift_state_indices.R`** — Rewrites compartment indices in ODE code (R is 1-based, C++ is 0-based) before compilation.
 - **`R/translate_ode.R`** — Translates ODE code between PKPDsim and RxODE syntax.
-- **`R/calculate_parameters.R`** — Applies IIV/IOV variability to typical-value parameters.
+- **`R/calculate_parameters.R`** — Convenience wrapper around `sim_ode()` that returns model-specific / effective parameters and variables (e.g. `CLi` from `CL` and covariates). Not used by `sim()` itself.
 - **`R/create_event_table.R`** — Builds the design matrix (event table) used by the C++ solver.
 - **`R/model_library.R`** — Named library of standard structural models (`pk_1cmt_iv`, `pk_2cmt_iv_auc`, `pk_1cmt_iv_mm`, `pk_*_oral`, …), each a list of ODE code plus `obs`/`dose` defaults. This is what `new_ode_model("pk_1cmt_iv")` resolves against.
 - **`R/new_regimen.R`**, **`R/new_covariate.R`** — Constructors for the two other main user-facing inputs to `sim()`; regimen joining/shifting helpers live in `R/join_regimen.R`, `R/shift_regimen.R`, `R/merge_regimen.R`.
@@ -111,12 +114,24 @@ untouched if that would produce a negative index — so already-0-based code is
 left alone. `new_ode_model(as_is = TRUE)` disables this rewriting (and
 line-ending substitution) entirely. Variables that are not
 parameters or covariates must be listed in `declare_variables`, otherwise the
-generated C++ will not compile. `pk_code` runs before the derivatives each step;
-`state_init` initializes compartment amounts.
+generated C++ will not compile. `pk_code` runs once at initialization and then
+at each event, before that interval is integrated — not before every derivative
+evaluation, since RK4 evaluates the ODE several times within an interval, so do
+not put per-derivative logic there. `state_init` initializes compartment
+amounts.
 
 ### Variability modeling
 
-IIV and IOV are applied in `calculate_parameters.R` before simulation. Supported distributions: exponential (`TVPAR * exp(ETA)`) and additive (`TVPAR + ETA`). Mixture models and quasi-random (Halton/Sobol) sampling are supported via `randtoolbox`.
+IIV is sampled and applied in `R/sim.R`: `mvrnorm2()` draws the ETAs, and the
+`omega_type` block applies them per parameter. Accepted `omega_type` values are
+`exponential` (`TVPAR * exp(ETA)`) and `normal` (`TVPAR + ETA`).
+
+IOV is different: `R/new_ode_model.R` generates the `kappa_*` bin logic into the
+model C++ at compile time, and the compiled solver picks the right bin at
+runtime from the `iov_bins` passed through `sim()`.
+
+Mixture models and quasi-random (Halton/Sobol) sampling are supported via
+`randtoolbox`.
 
 ### Interoperability
 
@@ -137,9 +152,12 @@ Tests live in `tests/testthat/` (testthat edition 3).
 - The test suite does not hit the network: `test_model_from_api.R` points
   `model_from_api()` at local fixtures in `tests/testthat/sample_json/`. Keep it
   that way when adding tests for API-backed models.
-- Tests that install a model as a package (`test_model_from_api.R`,
-  `test_install_default_literature_model.R`) write to explicit temp dirs and are
-  gated with `skip_on_cran()`.
+- The one test that actually installs a model as a package
+  (`test_model_from_api.R`, "Can install a package from json") writes to an
+  explicit temp lib dir and is gated with `skip_on_cran()`. Follow that pattern
+  for any new installing test; tests that only exercise dispatch (e.g.
+  `test_install_default_literature_model.R`) mock `model_from_api()` instead and
+  need neither.
 
 ## CI
 
