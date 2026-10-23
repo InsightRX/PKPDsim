@@ -8,6 +8,7 @@
 #' @param to_package compile to package?
 #' @param force force install even if same version number of model already installed.
 #' @param install_all force install all, even if model inactive
+#' @param ferx URL or file path to FeRx file
 #' @param ... arguments passed to `new_ode_model()` function
 #' @export
 #' @return Model object created with [PKPDsim::new_ode_model()]
@@ -20,6 +21,7 @@ model_from_api <- function(url,
                            to_package = FALSE,
                            force = FALSE,
                            install_all = FALSE,
+                           ferx = NULL,
                            ...) {
   def <- read_model_json(url)
   if(verbose) {
@@ -40,6 +42,9 @@ model_from_api <- function(url,
   }
   if(!is.null(nonmem) && !is.null(def$implementations$nonmem)) {
     nonmem <- paste(readLines(nonmem), collapse="\n")
+  }
+  if(!is.null(ferx) && !is.null(def$implementations$ferx)) {
+    ferx <- paste(readLines(ferx), collapse="\n")
   }
   if(is.null(def$comments)) def$comments <- ""
   mod <- NULL
@@ -85,6 +90,7 @@ model_from_api <- function(url,
         state_init = def$state_init,
         verbose = verbose,
         nonmem = nonmem,
+        ferx = ferx,
         int_step_size = def$simulation$int_step_size,
         comments = stringr::str_replace_all(def$comments, '\\"', ""),
         version = ifelse(!is.null(def$version), def$version, "0.1.0"),
