@@ -197,3 +197,30 @@ test_that("ferx argument does not shift existing positional arguments", {
   expect_equal(args_ode[length(args_ode)], "ferx")
   expect_equal(args_ode[length(args_ode) - 1], "definition")
 })
+
+test_that("nonmem code with quotes, backslashes and newlines round-trips", {
+  skip_on_cran()
+  nonmem_code <- paste(
+    "$PROB 'one cmt'",
+    '$INPUT ID TIME DV ; "quoted"',
+    "$DATA C:\\data\\nm.csv \\1",
+    sep = "\n"
+  )
+  model_file <- generate_model_package("ferxtest6", nonmem = nonmem_code)
+  expect_silent(parse(model_file))
+  attrs <- get_generated_attributes(model_file)
+  expect_equal(attrs$nonmem, nonmem_code)
+})
+
+test_that("nonmem code is stored as attribute on directly compiled models", {
+  skip_on_cran()
+  nonmem_code <- '$PROB "1cmt"\n$PK'
+  mod <- new_ode_model(
+    code = "dAdt[0] = -(CL/V)*A[0];",
+    obs = list(cmt = 1, scale = "V"),
+    parameters = list(CL = 5, V = 50),
+    nonmem = nonmem_code
+  )
+  expect_equal(attr(mod, "nonmem"), nonmem_code)
+  expect_null(attr(mod_1cmt_iv, "nonmem"))
+})

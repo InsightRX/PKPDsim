@@ -289,6 +289,9 @@ new_ode_model <- function (model = NULL,
       if(!is.null(int_step_size)) {
         attr(sim_out, "int_step_size") <- int_step_size
       }
+      if(!is.null(nonmem)) {
+        attr(sim_out, "nonmem") <- paste(nonmem, collapse = "\n")
+      }
       if(!is.null(ferx)) {
         attr(sim_out, "ferx") <- paste(ferx, collapse = "\n")
       }
@@ -351,6 +354,7 @@ new_ode_model <- function (model = NULL,
         state_init <- add_quotes(state_init)
       }
       if(is.null(nonmem) || length(nonmem) == 0) { nonmem <- "NULL" }
+      nonmem <- string_to_R_literal(nonmem)
       if(is.null(ferx) || length(ferx) == 0) { ferx <- "NULL" }
       ferx <- string_to_R_literal(ferx)
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
@@ -387,7 +391,7 @@ new_ode_model <- function (model = NULL,
                        "\\[CMT_MAPPING\\]", paste0(deparse(cmt_mapping), collapse = ""),
                        "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
                        "\\[COMMENTS\\]", paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n"))),
-                       "\\[NONMEM\\]", as.character(nonmem),
+                       "\\[NONMEM\\]", nonmem,
                        "\\[FERX\\]", ferx
       ), ncol=2, byrow=TRUE)
       if(verbose) {
