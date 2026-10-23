@@ -158,3 +158,42 @@ test_that("ferx attribute available on installed model package", {
   expect_equal(attr(mod, "ferx"), ferx_code)
   expect_equal(attr(mod, "nonmem"), "NULL")
 })
+
+test_that("ferx code with quotes, backslashes and newlines round-trips", {
+  skip_on_cran()
+  ferx_code <- paste(
+    'label = "central"',
+    "path = 'C:\\models\\1cmt'",
+    "regex = \\1 and \\\\",
+    sep = "\n"
+  )
+  model_file <- generate_model_package("ferxtest5", ferx = ferx_code)
+  expect_silent(parse(model_file))
+  attrs <- get_generated_attributes(model_file)
+  expect_equal(attrs$ferx, ferx_code)
+})
+
+test_that("ferx code is stored as attribute on directly compiled models", {
+  skip_on_cran()
+  ferx_code <- 'model "1cmt"\nend'
+  mod <- new_ode_model(
+    code = "dAdt[0] = -(CL/V)*A[0];",
+    obs = list(cmt = 1, scale = "V"),
+    parameters = list(CL = 5, V = 50),
+    ferx = ferx_code
+  )
+  expect_equal(attr(mod, "ferx"), ferx_code)
+  expect_null(attr(mod_1cmt_iv, "ferx"))
+})
+
+test_that("ferx argument does not shift existing positional arguments", {
+  args_api <- names(formals(model_from_api))
+  expect_equal(
+    args_api[1:8],
+    c("url", "model", "nonmem", "verbose", "get_definition",
+      "to_package", "force", "install_all")
+  )
+  args_ode <- names(formals(new_ode_model))
+  expect_equal(args_ode[length(args_ode)], "ferx")
+  expect_equal(args_ode[length(args_ode) - 1], "definition")
+})

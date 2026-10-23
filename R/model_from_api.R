@@ -3,12 +3,12 @@
 #' @param url URL or file path to JSON representation of model
 #' @param model model id (used in messages)
 #' @param nonmem URL or file path to NONMEM file
-#' @param ferx URL or file path to FeRx file
 #' @param verbose verbosity (T/F)
 #' @param get_definition return only the model definition, do not compile
 #' @param to_package compile to package?
 #' @param force force install even if same version number of model already installed.
 #' @param install_all force install all, even if model inactive
+#' @param ferx URL or file path to FeRx file
 #' @param ... arguments passed to `new_ode_model()` function
 #' @export
 #' @return Model object created with [PKPDsim::new_ode_model()]
@@ -16,12 +16,12 @@
 model_from_api <- function(url,
                            model = NULL,
                            nonmem = NULL,
-                           ferx = NULL,
                            verbose = TRUE,
                            get_definition = FALSE,
                            to_package = FALSE,
                            force = FALSE,
                            install_all = FALSE,
+                           ferx = NULL,
                            ...) {
   def <- read_model_json(url)
   if(verbose) {

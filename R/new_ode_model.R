@@ -37,7 +37,6 @@
 #' @param verbose show more output
 #' @param as_is use C-code as-is, don't substitute line-endings or shift indices
 #' @param nonmem add NONMEM code as attribute to model object
-#' @param ferx add FeRx code as attribute to model object
 #' @param comments comments for model
 #' @param version number of library
 #' @param quiet passed on to `system2` as setting for stderr and stdout; how to
@@ -46,6 +45,7 @@
 #' @param definition optional, filename for the JSON file the full definition
 #' for the model. The definition file will be stored as `definition.json` in the
 #' resulting package.
+#' @param ferx add FeRx code as attribute to model object
 #' @export
 #' @return If package name is NULL, returns the model object. Otherwise has no
 #'   return value.
@@ -86,11 +86,11 @@ new_ode_model <- function (model = NULL,
                            verbose = FALSE,
                            as_is = FALSE,
                            nonmem = NULL,
-                           ferx = NULL,
                            comments = NULL,
                            version = "0.1.0",
                            quiet = "",
-                           definition = NULL
+                           definition = NULL,
+                           ferx = NULL
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -289,6 +289,9 @@ new_ode_model <- function (model = NULL,
       if(!is.null(int_step_size)) {
         attr(sim_out, "int_step_size") <- int_step_size
       }
+      if(!is.null(ferx)) {
+        attr(sim_out, "ferx") <- paste(ferx, collapse = "\n")
+      }
       class(sim_out) <- c("PKPDsim", class(sim_out))
       return(sim_out)
     }
@@ -349,6 +352,7 @@ new_ode_model <- function (model = NULL,
       }
       if(is.null(nonmem) || length(nonmem) == 0) { nonmem <- "NULL" }
       if(is.null(ferx) || length(ferx) == 0) { ferx <- "NULL" }
+      ferx <- string_to_R_literal(ferx)
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- vector_to_R_code(reqd)
       covs <- vector_to_R_code(cov_names)
@@ -384,7 +388,7 @@ new_ode_model <- function (model = NULL,
                        "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
                        "\\[COMMENTS\\]", paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n"))),
                        "\\[NONMEM\\]", as.character(nonmem),
-                       "\\[FERX\\]", as.character(ferx)
+                       "\\[FERX\\]", ferx
       ), ncol=2, byrow=TRUE)
       if(verbose) {
         print(repl)

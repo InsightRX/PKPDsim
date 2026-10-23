@@ -45,7 +45,8 @@ new_ode_model(
   comments = NULL,
   version = "0.1.0",
   quiet = "",
-  definition = NULL
+  definition = NULL,
+  ferx = NULL
 )
 }
 \arguments{
@@ -134,6 +135,8 @@ TRUE captures the output and saves as a file.}
 \item{definition}{optional, filename for the JSON file the full definition
 for the model. The definition file will be stored as \code{definition.json} in the
 resulting package.}
+
+\item{ferx}{add FeRx code as attribute to model object}
 }
 \value{
 If package name is NULL, returns the model object. Otherwise has no
