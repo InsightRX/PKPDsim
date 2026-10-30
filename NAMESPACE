@@ -37,6 +37,7 @@ export(get_parameters_from_code)
 export(get_var_y)
 export(ifelse0)
 export(install_default_literature_model)
+export(is_bolus_or_oral)
 export(is_positive_definite)
 export(join_cov_and_par)
 export(join_regimen)
@@ -71,11 +72,15 @@ export(translate_ode)
 export(triangle_to_full)
 importFrom(Rcpp,sourceCpp)
 importFrom(magrittr,`%>%`)
-importFrom(stats,aggregate)
-importFrom(stats,qnorm)
-importFrom(stats,quantile)
-importFrom(stats,reshape)
-importFrom(stats,rnorm)
-importFrom(utils,packageVersion)
-importFrom(utils,tail)
+importFrom(stats,
+  aggregate,
+  qnorm,
+  quantile,
+  reshape,
+  rnorm
+)
+importFrom(utils,
+  packageVersion,
+  tail
+)
 useDynLib(PKPDsim)
