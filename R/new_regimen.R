@@ -140,7 +140,7 @@ new_regimen <- function(
     reg$t_inf[is_bolus_or_oral(reg)] <- 0
     reg$rate[is_bolus_or_oral(reg)] <- 0
   }
-  
+
   if(!is.null(cmt)) {
     if(length(cmt) != length(reg$dose_times)) {
       cmt <- rep(cmt[1], length(reg$dose_times))
@@ -162,15 +162,15 @@ new_regimen <- function(
 }
 
 #' Is regimen type oral or bolus? (i.e., treat t_inf as zero)
-#' 
-#' Any regimen matching exactly the string 'bolus' or containing the string 
-#' 'oral' will return `TRUE`, otherwise `FALSE`. Bolus/oral regimens are 
+#'
+#' Any regimen matching exactly the string 'bolus' or containing the string
+#' 'oral' will return `TRUE`, otherwise `FALSE`. Bolus/oral regimens are
 #' generally treated as having an infusion duration of zero.
-#' 
+#'
 #' @param regimen object of class "regimen"`
-#' @returns Returns a logical vector of length equal to the number of doses in 
+#' @returns Returns a logical vector of length equal to the number of doses in
 #'   the regimen
-
+#' @export
 is_bolus_or_oral <- function(regimen) {
    regimen$type == "bolus" | grepl("oral", regimen$type)
 }
