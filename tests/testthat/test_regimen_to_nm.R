@@ -154,3 +154,55 @@ test_that("throws warning when bioav specified as model parameter and need to co
     "For compartments where bioavailability is specified"
   )
 })
+
+test_that("dosing compartments specified in the regimen are used for CMT", {
+  a <- new_regimen(
+    amt = c(100, 100, 150),
+    times = c(0, 12, 24),
+    type = "bolus",
+    cmt = c(2, 2, 1)
+  )
+  b <- regimen_to_nm(a)
+  expect_equal(b$CMT, c(2, 2, 1))
+})
+
+test_that("dose_cmt is used when the regimen has no dosing compartments", {
+  a <- new_regimen(amt = 10, n = 3, interval = 12)
+  expect_equal(regimen_to_nm(a)$CMT, c(1, 1, 1))
+  expect_equal(regimen_to_nm(a, dose_cmt = 2)$CMT, c(2, 2, 2))
+})
+
+test_that("explicit dose_cmt takes precedence over regimen dosing compartments", {
+  a <- new_regimen(amt = 10, times = c(0, 12), type = "bolus", cmt = c(2, 2))
+  expect_equal(regimen_to_nm(a, dose_cmt = 1)$CMT, c(1, 1))
+  expect_equal(regimen_to_nm(a, dose_cmt = c(3, 4))$CMT, c(3, 4))
+})
+
+test_that("dosing compartments survive a NONMEM round trip", {
+  pt <- data.frame(
+    ID = 1,
+    EVID = c(1, 1, 0, 1, 1, 0, 1, 1, 0),
+    CMT = c(2, 2, 2, 2, 2, 2, 1, 1, 2), # last two doses are oral
+    AMT = c(100, 100, 0, 200, 200, 0, 150, 150, 0),
+    TIME = c(0, 12, 23, 25, 36, 47, 48, 60, 71),
+    RATE = c(100, 100, 0, 200, 400, 0, 0, 0, 0),
+    DV = c(0, 0, 5, 0, 0, 12, 0, 0, 14)
+  )
+  reg <- nm_to_regimen(pt)
+  b <- regimen_to_nm(reg)
+  expect_equal(b$CMT, pt$CMT[pt$EVID == 1])
+})
+
+test_that("observations keep obs_cmt when the regimen specifies dosing compartments", {
+  a <- new_regimen(amt = 10, times = c(0, 12), type = "bolus", cmt = c(2, 2))
+  b <- regimen_to_nm(a, t_obs = c(1, 2), obs_cmt = 1)
+  expect_equal(b$CMT[b$EVID == 1], c(2, 2))
+  expect_equal(b$CMT[b$EVID == 0], c(1, 1))
+})
+
+test_that("dosing compartments are repeated for each individual", {
+  a <- new_regimen(amt = 10, times = c(0, 12), type = "bolus", cmt = c(2, 1))
+  b <- regimen_to_nm(a, n_ind = 3)
+  expect_equal(b$ID, rep(1:3, each = 2))
+  expect_equal(b$CMT, rep(c(2, 1), 3))
+})
