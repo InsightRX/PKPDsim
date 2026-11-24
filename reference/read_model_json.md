@@ -2,7 +2,7 @@
 
 Does some substitution of escaped characters in strings in the JSON
 file, then converts to a list with
-[`jsonlite::fromJSON()`](https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html)
+[`jsonlite::fromJSON()`](https://rdrr.io/pkg/jsonlite/man/fromJSON.html)
 
 ## Usage
 
