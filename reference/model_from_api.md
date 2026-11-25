@@ -14,6 +14,7 @@ model_from_api(
   to_package = FALSE,
   force = FALSE,
   install_all = FALSE,
+  ferx = NULL,
   ...
 )
 ```
@@ -51,6 +52,10 @@ model_from_api(
 - install_all:
 
   force install all, even if model inactive
+
+- ferx:
+
+  URL or file path to FeRx file
 
 - ...:
 

@@ -46,7 +46,8 @@ new_ode_model(
   comments = NULL,
   version = "0.1.0",
   quiet = "",
-  definition = NULL
+  definition = NULL,
+  ferx = NULL
 )
 ```
 
@@ -236,6 +237,10 @@ new_ode_model(
   optional, filename for the JSON file the full definition for the
   model. The definition file will be stored as `definition.json` in the
   resulting package.
+
+- ferx:
+
+  add FeRx code as attribute to model object
 
 ## Value
 
