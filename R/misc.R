@@ -55,6 +55,20 @@ search_replace_in_file <- function(files = c(), find = NULL, replacement = NULL)
 }
 
 
+#' Convert a character vector into an R string literal
+#'
+#' Collapses `x` using newlines and deparses it, so that quotes and newlines
+#' are escaped. Backslashes are escaped once more so the result can be used
+#' as a `replacement` in [search_replace_in_file()] (which uses `gsub()`).
+#'
+#' @param x character vector
+#' @return a single string containing R code for a string literal
+#' @noRd
+string_to_R_literal <- function(x) {
+  x <- paste0(deparse(paste(x, collapse = "\n")), collapse = "")
+  gsub("\\\\", "\\\\\\\\", x)
+}
+
 #' Put vector values in quotes
 #'
 #' @param x vector of string / numeric

@@ -45,6 +45,7 @@
 #' @param definition optional, filename for the JSON file the full definition
 #' for the model. The definition file will be stored as `definition.json` in the
 #' resulting package.
+#' @param ferx add FeRx code as attribute to model object
 #' @export
 #' @return If package name is NULL, returns the model object. Otherwise has no
 #'   return value.
@@ -88,7 +89,8 @@ new_ode_model <- function (model = NULL,
                            comments = NULL,
                            version = "0.1.0",
                            quiet = "",
-                           definition = NULL
+                           definition = NULL,
+                           ferx = NULL
                           ) {
   if (is.null(model) & is.null(code) & is.null(file) & is.null(func)) {
     stop(paste0("Either a model name (from the PKPDsim library), ODE code, an R function, or a file containing code for the ODE system have to be supplied to this function. The following models are available:\n  ", model_library()))
@@ -287,6 +289,12 @@ new_ode_model <- function (model = NULL,
       if(!is.null(int_step_size)) {
         attr(sim_out, "int_step_size") <- int_step_size
       }
+      if(!is.null(nonmem)) {
+        attr(sim_out, "nonmem") <- paste(nonmem, collapse = "\n")
+      }
+      if(!is.null(ferx)) {
+        attr(sim_out, "ferx") <- paste(ferx, collapse = "\n")
+      }
       class(sim_out) <- c("PKPDsim", class(sim_out))
       return(sim_out)
     }
@@ -346,6 +354,9 @@ new_ode_model <- function (model = NULL,
         state_init <- add_quotes(state_init)
       }
       if(is.null(nonmem) || length(nonmem) == 0) { nonmem <- "NULL" }
+      nonmem <- string_to_R_literal(nonmem)
+      if(is.null(ferx) || length(ferx) == 0) { ferx <- "NULL" }
+      ferx <- string_to_R_literal(ferx)
       if(is.null(int_step_size)) { int_step_size <- "NULL" }
       pars <- vector_to_R_code(reqd)
       covs <- vector_to_R_code(cov_names)
@@ -380,7 +391,8 @@ new_ode_model <- function (model = NULL,
                        "\\[CMT_MAPPING\\]", paste0(deparse(cmt_mapping), collapse = ""),
                        "\\[INT_STEP_SIZE\\]", as.character(int_step_size),
                        "\\[COMMENTS\\]", paste0("\n", as.character(paste0(paste0(" - ", comments), collapse = "\n"))),
-                       "\\[NONMEM\\]", as.character(nonmem)
+                       "\\[NONMEM\\]", nonmem,
+                       "\\[FERX\\]", ferx
       ), ncol=2, byrow=TRUE)
       if(verbose) {
         print(repl)
