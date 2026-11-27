@@ -40,11 +40,25 @@ model_from_api <- function(url,
     ## Add a parameter and initialization code for setting the initial concentration based on a TDM value
     def <- define_tdm_init_model(def)
   }
-  if(!is.null(nonmem) && !is.null(def$implementations$nonmem)) {
-    nonmem <- paste(readLines(nonmem), collapse="\n")
+  if(!is.null(nonmem)) {
+    if(!is.null(def$implementations$nonmem)) {
+      nonmem <- paste(readLines(nonmem), collapse="\n")
+    } else {
+      if(verbose) {
+        message("- Model definition does not list a NONMEM implementation; ignoring `nonmem`.")
+      }
+      nonmem <- NULL
+    }
   }
-  if(!is.null(ferx) && !is.null(def$implementations$ferx)) {
-    ferx <- paste(readLines(ferx), collapse="\n")
+  if(!is.null(ferx)) {
+    if(!is.null(def$implementations$ferx)) {
+      ferx <- paste(readLines(ferx), collapse="\n")
+    } else {
+      if(verbose) {
+        message("- Model definition does not list a FeRx implementation; ignoring `ferx`.")
+      }
+      ferx <- NULL
+    }
   }
   if(is.null(def$comments)) def$comments <- ""
   mod <- NULL
