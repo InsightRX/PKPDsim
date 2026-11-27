@@ -224,3 +224,70 @@ test_that("nonmem code is stored as attribute on directly compiled models", {
   expect_equal(attr(mod, "nonmem"), nonmem_code)
   expect_null(attr(mod_1cmt_iv, "nonmem"))
 })
+
+test_that("model_from_api resets nonmem and ferx to NULL when definition lacks implementation", {
+  captured <- NULL
+  local_mocked_bindings(
+    new_ode_model = function(...) {
+      captured <<- list(...)
+      "model"
+    }
+  )
+
+  model_from_api(
+    url = test_path("sample_json", "test_1cmt_iv.json5"),
+    model = "test_1cmt_iv",
+    nonmem = "path/to/model.mod",
+    ferx = "path/to/model.ferx",
+    verbose = FALSE,
+    force = TRUE
+  )
+  expect_null(captured$nonmem)
+  expect_null(captured$ferx)
+
+  expect_message(
+    expect_message(
+      model_from_api(
+        url = test_path("sample_json", "test_1cmt_iv.json5"),
+        model = "test_1cmt_iv",
+        nonmem = "path/to/model.mod",
+        ferx = "path/to/model.ferx",
+        verbose = TRUE,
+        force = TRUE
+      ),
+      "NONMEM"
+    ),
+    "FeRx"
+  ) |> suppressMessages()
+  expect_null(captured$nonmem)
+  expect_null(captured$ferx)
+})
+
+test_that("model_from_api reads listed implementation and resets unlisted one to NULL", {
+  def_file <- tempfile(fileext = ".json5")
+  nonmem_file <- tempfile(fileext = ".mod")
+  on.exit(unlink(c(def_file, nonmem_file)), add = TRUE)
+  writeLines(c("$PROB test", "$PK"), nonmem_file)
+  def <- read_model_json(test_path("sample_json", "test_1cmt_iv.json5"))
+  def$implementations <- list(nonmem = TRUE)
+  writeLines(jsonlite::toJSON(def, auto_unbox = TRUE), def_file)
+
+  captured <- NULL
+  local_mocked_bindings(
+    new_ode_model = function(...) {
+      captured <<- list(...)
+      "model"
+    }
+  )
+
+  model_from_api(
+    url = def_file,
+    model = "test_1cmt_iv",
+    nonmem = nonmem_file,
+    ferx = "path/to/model.ferx",
+    verbose = FALSE,
+    force = TRUE
+  )
+  expect_equal(captured$nonmem, "$PROB test\n$PK")
+  expect_null(captured$ferx)
+})
